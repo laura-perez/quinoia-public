@@ -9,7 +9,7 @@ const Hero = () => {
             trueState: "opacity-100 -translate-y-0",
             falseState: "opacity-0 -translate-y-3"
         }}>
-            <section className="py-28 overflow-hidden bg-[#FDFBF8] text-[#414535] duration-300 ease-in">
+            <section className="pt-8 md:pt-12 lg:pt-16 pb-0 overflow-hidden bg-[#FDFBF8] text-[#414535] duration-300 ease-in">
                 <div className="custom-screen items-center gap-12 md:flex">
                     <div className='flex-none space-y-6 max-w-2xl'>
                         <h1 className="text-4xl font-extrabold sm:text-5xl">

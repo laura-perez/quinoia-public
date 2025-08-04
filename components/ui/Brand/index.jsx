@@ -4,7 +4,8 @@ const Brand = () => (
     <Image
         src="/quinoia_logo.png"
         alt="QuinoIA Logo"
-        width="150" height="42"
+        width="140" height="42"
+        priority
     />
 )
 

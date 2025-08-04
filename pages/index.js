@@ -1,11 +1,7 @@
 import Hero from "../components/ui/Hero";
 import Navbar from "../components/ui/Navbar";
-import GradientWrapper from "../components/GradientWrapper";
-import CenteredCTA from "../components/ui/CenteredCTA";
-import Stats from "../components/ui/Stats";
-import Features from "../components/ui/Features";
-import CTA from "../components/ui/CTA";
-import Pricing from "../components/ui/Pricing";
+import PourquoiQuinoIA from "../components/ui/Features/PourquoiQuinoIA";
+import CeQueTuVasRecevoir from "../components/ui/Features/CeQueTuVasRecevoir";
 import Testimonial from "../components/ui/Testimonial";
 import Footer from "../components/ui/Footer";
 import FooterCTA from "../components/ui/FooterCTA";
@@ -15,13 +11,8 @@ export default function Home() {
     <>
       <Navbar />
       <Hero />
-      <GradientWrapper className='pb-0 sm:my-16'>
-        <CenteredCTA />
-        <Stats />
-      </GradientWrapper>
-      <Features />
-      <CTA />
-      <Pricing />
+      <PourquoiQuinoIA />
+      <CeQueTuVasRecevoir />
       <Testimonial />
       <FooterCTA />
       <Footer />

@@ -1,23 +1,14 @@
 import Link from "next/link"
 import Brand from "../Brand"
-import NavLink from "../NavLink"
 
 const Navbar = () => (
-    <header>
-        <nav className="custom-screen py-3 flex items-center justify-between md:py-5">
-            <div>
-                <Link href="/">
-                    <Brand />
-                </Link>
-            </div>
-            <NavLink
-                href="#get-started"
-                className="font-medium text-sm text-white bg-gray-800 hover:bg-gray-600 focus:bg-gray-900 ring-offset-2 ring-gray-800 focus:ring-2"
-            >
-                Get started
-            </NavLink>
-        </nav>
-    </header>
+  <header className="bg-[#FDFBF8] border-b border-[#EAEAEA] text-[#414535] sticky top-0 z-50 backdrop-blur bg-opacity-90 transition-shadow duration-300" id="navbar">
+    <nav className="custom-screen py-4 flex items-center justify-between">
+      <Link href="/" className="flex items-center gap-2">
+        <Brand />
+      </Link>
+    </nav>
+  </header>
 )
 
 export default Navbar
