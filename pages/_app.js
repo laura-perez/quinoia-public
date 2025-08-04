@@ -21,10 +21,10 @@ export default function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>QuinoIA</title>
+        <title>Quinoïa</title>
         <meta
           name="description"
-          content="Quinoia est l assistant nutritionnel intelligent qui transforme ta semaine en un menu personnalisé, sain, à base de produits bruts, sans que tu aies à y penser."
+          content="Quinoïa est l assistant nutritionnel intelligent qui transforme ta semaine en un menu personnalisé, sain, à base de produits bruts, sans que tu aies à y penser."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.png" />

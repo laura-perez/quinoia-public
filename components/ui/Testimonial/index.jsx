@@ -2,20 +2,20 @@ export default function Testimonials() {
   const testimonials = [
     {
       quote:
-        "J’en avais marre de réfléchir à mes repas. Maintenant, QuinoIA me propose des plats équilibrés qui me plaisent, et je gagne un temps fou chaque semaine.",
+        "J’en avais marre de réfléchir à mes repas. Maintenant, Quinoïa me propose des plats équilibrés qui me plaisent, et je gagne un temps fou chaque semaine.",
       name: "Marine, 30 ans",
     },
     {
       quote:
-        "Je pensais que ça allait être encore une appli reloue. Mais en fait tout est simple, clair, rapide. Et les recettes sont vraiment bonnes.",
-      name: "Laura, 36 ans",
+        "Je pensais que ça allait être encore une enième appli de nutrition. Mais en fait tout est simple, clair, rapide. Et les recettes sont vraiment bonnes.",
+      name: "Sophie, 36 ans",
     },
   ];
 
   return (
     <section className="bg-[#FDFBF8] py-16">
       <h2 className="text-2xl font-bold text-[#414535] text-center mb-12">
-        Elles ont testé QuinoIA
+        Elles ont testé Quinoïa
       </h2>
       <div className="custom-screen grid gap-8 md:grid-cols-2">
         {testimonials.map((t, i) => (

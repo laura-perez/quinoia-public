@@ -1,7 +1,7 @@
 export default function PourquoiQuinoIA() {
   return (
     <section className="custom-screen pt-28 pb-12 bg-gray-50">
-      <h2 className="text-2xl font-bold text-[#414535] mb-8 text-center">Pourquoi QuinoIA ?</h2>
+      <h2 className="text-2xl font-bold text-[#414535] mb-8 text-center">Quinoïa, c’est bien plus qu’un menu</h2>
       <div className="flex flex-col md:flex-row gap-6 justify-center">
         {/* Card 1 */}
         <div className="flex-1 bg-white rounded-xl border border-[#EAEAEA] p-6 shadow-sm flex flex-col items-center">
@@ -14,7 +14,7 @@ export default function PourquoiQuinoIA() {
           </span>
           <h3 className="text-lg font-semibold text-[#414535] mb-2">Sérénité garantie</h3>
           <p className="text-[#8A8A8A] text-center">
-            Plus de charge mentale des repas.<br/>Tu laisses QuinoIA gérer, tu respires, tu profites.
+            Plus de charge mentale des repas.<br/>Tu laisses Quinoïa gérer, tu respires, tu profites.
           </p>
         </div>
         {/* Card 2 */}

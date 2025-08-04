@@ -16,15 +16,15 @@ const Hero = () => {
                             Bien manger, sans y penser.
                         </h1>
                         <p className="text-lg text-[#8A8A8A]">
-                            QuinoIA te prépare chaque semaine un menu personnalisé, sain, et à base de produits bruts. Zéro friction. Zéro plat transformé. Juste toi, bien nourri·e.
+                            Reçois ton menu personnalisé chaque semaine. Sain, simple, rassasiant.
                         </p>
                         <SubscribeForm />
                     </div>
                     <div className='flex-none mt-12 md:mt-0'>
                         <Image
                             src={previewImage}
-                            alt="QuinoIA aperçu"
-                            className="w-full rounded-xl border border-[#EAEAEA] shadow-lg md:max-w-2xl"
+                            alt="Quinoïa aperçu"
+                            className="w-full md:max-w-2xl"
                             priority
                         />
                     </div>

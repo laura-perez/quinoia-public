@@ -5,7 +5,7 @@ export default function FinalCTA() {
     <section className="bg-[#FDFBF8] py-10 px-6">
       <div className="max-w-3xl mx-auto bg-[#F4C95D] rounded-xl shadow-md px-8 py-10 text-center">
         <h2 className="text-2xl font-bold text-[#414535] mb-4">
-          Et si tu laissais QuinoIA te simplifier la vie dès cette semaine ?
+          Et si tu laissais Quinoïa te simplifier la vie dès cette semaine ?
         </h2>
         <p className="text-[#414535] text-lg mb-8">
           Reçois ton menu personnalisé, ta liste de courses prête, et tes recettes équilibrées – sans rien faire.
