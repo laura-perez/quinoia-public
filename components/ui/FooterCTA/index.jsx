@@ -1,29 +1,22 @@
-import SectionWrapper from "../../SectionWrapper"
-import NavLink from "../NavLink"
+import Link from "next/link"
 
-const FooterCTA = () => {
-    return (
-        <SectionWrapper>
-            <div className="custom-screen text-center">
-                <div className="max-w-xl mx-auto">
-                    <h2 className="text-gray-800 text-3xl font-semibold sm:text-4xl">
-                        Let’s get started now
-                    </h2>
-                    <p className="mt-3 text-gray-600">
-                        Work with a project management software that's easy and fun to use.
-                    </p>
-                </div>
-                <div className="space-y-3 gap-3 justify-center items-center mt-4 sm:flex sm:space-y-0">
-                    <NavLink href="#get-started" className="inline-block w-full font-medium text-sm text-white bg-sky-500 hover:bg-sky-600 active:bg-sky-700 shadow rounded-lg sm:w-auto">
-                        Get started
-                    </NavLink>
-                    <NavLink href="mailto:example@domain.com" className="inline-block w-full font-medium text-sm text-gray-800 hover:bg-gray-50 active:bg-gray-100 rounded-lg border sm:w-auto">
-                        Contact us
-                    </NavLink>
-                </div>
-            </div>
-        </SectionWrapper>
-    )
+export default function FinalCTA() {
+  return (
+    <section className="bg-[#FDFBF8] py-10 px-6">
+      <div className="max-w-3xl mx-auto bg-[#F4C95D] rounded-xl shadow-md px-8 py-10 text-center">
+        <h2 className="text-2xl font-bold text-[#414535] mb-4">
+          Et si tu laissais QuinoIA te simplifier la vie dès cette semaine ?
+        </h2>
+        <p className="text-[#414535] text-lg mb-8">
+          Reçois ton menu personnalisé, ta liste de courses prête, et tes recettes équilibrées – sans rien faire.
+        </p>
+        <Link
+          href="/formulaire"
+          className="inline-block bg-[#414535] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#2f3226] transition"
+        >
+          Voir mon menu
+        </Link>
+      </div>
+    </section>
+  )
 }
-
-export default FooterCTA

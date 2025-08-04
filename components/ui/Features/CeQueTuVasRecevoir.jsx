@@ -52,27 +52,38 @@ export default function CeQueTuVasRecevoir() {
       <h2 className="text-2xl font-bold text-[#414535] mb-12 text-center">
         Ce que tu vas recevoir chaque semaine
       </h2>
-      <ol className="relative border-l-2 border-[#F4C95D] max-w-2xl mx-auto">
-        {steps.map((step, idx) => (
-            <li key={idx} className="mb-12 ml-0 last:mb-0 flex flex-col md:flex-row md:items-start relative">
-            {/* Icône fixe */}
-            <span className="absolute -left-6 top-0 flex items-center justify-center w-12 h-12 bg-[#F4C95D] rounded-full ring-8 ring-white shadow-md">
-                {step.icon}
-            </span>
-            {/* Texte animé (pas le <li> complet) */}
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut", delay: idx * 0.1 }}
-                viewport={{ once: true }}
-                className="mt-4 md:mt-0 md:ml-6"
-            >
-                <h3 className="font-semibold text-[#414535] text-lg mb-2 ml-6">{step.title}</h3>
-                <p className="text-[#8A8A8A] ml-6">{step.text}</p>
-            </motion.div>
-            </li>
-        ))}
-        </ol>
+    <ol className="relative max-w-2xl mx-auto pl-6">
+  {/* Ligne verticale continue */}
+  <span className="absolute left-12 top-0 w-px h-full bg-[#F4C95D]" />
+
+  {steps.map((step, idx) => (
+    <li
+      key={idx}
+      className="mb-12 last:mb-0 flex items-start relative"
+    >
+      {/* Colonne gauche : icône centrée sur la ligne */}
+      <div className="relative z-10">
+        <div className="w-12 h-12 flex items-center justify-center bg-[#F4C95D] rounded-full ring-8 ring-white shadow-md">
+          {step.icon}
+        </div>
+      </div>
+
+      {/* Colonne droite : texte animé */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: idx * 0.1 }}
+        viewport={{ once: true }}
+        className="ml-6 flex-1"
+      >
+        <h3 className="font-semibold text-[#414535] text-lg mb-2">{step.title}</h3>
+        <p className="text-[#8A8A8A]">{step.text}</p>
+      </motion.div>
+    </li>
+  ))}
+</ol>
+
+
     </section>
   );
 }

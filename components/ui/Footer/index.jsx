@@ -1,9 +1,18 @@
-const Footer = () => (
-    <footer>
-        <div className="custom-screen py-10 mt-20 border-t text-center text-gray-600 sm:mt-28">
-            <p>© 2023 Starboard. All rights reserved.</p>
-        </div>
-    </footer>
-)
+import Link from "next/link"
 
-export default Footer
+export default function Footer() {
+  return (
+    <footer className="bg-gray-100 py-6 px-4 text-sm text-[#414535]">
+      <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="text-center md:text-left">
+          © {new Date().getFullYear()} QuinoIA. Tous droits réservés.
+        </div>
+        <div className="text-center md:text-right">
+          <Link href="mailto:hello@quinoia.app" className="hover:underline">
+            Contact : hello@quinoia.app
+          </Link>
+        </div>
+      </div>
+    </footer>
+  )
+}
