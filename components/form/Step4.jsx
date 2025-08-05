@@ -1,10 +1,12 @@
 import { useState } from "react"
 
-export default function Step4({ formData, goToPrev }) {
+export default function Step4({ formData, updateFormData, goToPrev }) {
   const [agreed, setAgreed] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState("")
+  const [objectif, setObjectif] = useState(formData.objectif || "")
+  const [messageLibre, setMessageLibre] = useState(formData.messageLibre || "")
 
   const handleSubmit = async () => {
     if (!agreed) return
@@ -13,15 +15,23 @@ export default function Step4({ formData, goToPrev }) {
     setError("")
 
     try {
-      const response = await fetch("YOUR_N8N_WEBHOOK_URL", {
+      const token = await grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: "submit_form" })
+
+      const body = JSON.stringify({
+        ...formData,
+        recaptchaToken: token,
+        objectif,
+        messageLibre,
+        consentement: agreed,
+      })
+      
+      const response = await fetch("https://your-n8n-instance.example/webhook/menu", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body,
       })
 
-      if (!response.ok) {
-        throw new Error("Erreur lors de l’envoi.")
-      }
+      if (!response.ok) throw new Error("Erreur lors de l’envoi.")
 
       setSubmitted(true)
     } catch (err) {
@@ -31,6 +41,14 @@ export default function Step4({ formData, goToPrev }) {
       setIsSubmitting(false)
     }
   }
+
+  const objectifs = [
+    "Manger plus sainement",
+    "Gagner du temps",
+    "Manger plus de protéines",
+    "Perdre du poids",
+    "Prendre du poids de manière saine",
+  ]
 
   return (
     <div>
@@ -53,10 +71,50 @@ export default function Step4({ formData, goToPrev }) {
         <>
           <h2 className="text-2xl font-bold text-[#414535] mb-2">Tu es à 2 doigts de recevoir ton menu personnalisé ✨</h2>
           <p className="text-[#8A8A8A] mb-6">
-            Récap’ : tu vas recevoir chaque semaine un menu équilibré, une liste de courses organisée et des recettes simples à suivre.
+            Dernière question avant de générer ton menu. Merci pour ta confiance !
           </p>
 
-          {/* Case à cocher */}
+          {/* Objectif principal */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-[#414535] mb-2">Quel est ton objectif principal avec ce menu ?</label>
+            <div className="flex flex-col gap-3">
+              {objectifs.map((opt) => (
+                <label
+                  key={opt}
+                  className={`cursor-pointer rounded-lg border px-4 py-3 text-sm transition ${
+                    objectif === opt
+                      ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
+                      : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="objectif"
+                    value={opt}
+                    checked={objectif === opt}
+                    onChange={(e) => setObjectif(e.target.value)}
+                    className="sr-only"
+                  />
+                  {opt}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Message libre */}
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-[#414535] mb-1">Autre chose que tu souhaites ajouter ?</label>
+            <textarea
+              name="messageLibre"
+              value={messageLibre}
+              onChange={(e) => setMessageLibre(e.target.value)}
+              rows={4}
+              placeholder="Ex : j'aime le régime méditerranéen, anti-inflammatoire etc."
+              className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
+            />
+          </div>
+
+          {/* Consentement */}
           <label className="flex items-start space-x-2 text-sm text-[#414535] mb-6">
             <input
               type="checkbox"
@@ -71,6 +129,7 @@ export default function Step4({ formData, goToPrev }) {
 
           {error && <p className="text-sm text-red-500 mb-4">{error}</p>}
 
+          {/* Navigation */}
           <div className="mt-8 flex justify-between">
             <button
               onClick={goToPrev}
@@ -82,9 +141,7 @@ export default function Step4({ formData, goToPrev }) {
               onClick={handleSubmit}
               disabled={!agreed || isSubmitting}
               className={`px-6 py-3 rounded-md font-semibold transition text-white ${
-                agreed
-                  ? "bg-[#414535] hover:bg-[#2f3226]"
-                  : "bg-[#8A8A8A] cursor-not-allowed"
+                agreed ? "bg-[#414535] hover:bg-[#2f3226]" : "bg-[#8A8A8A] cursor-not-allowed"
               }`}
             >
               {isSubmitting ? "Envoi en cours…" : "C’est parti !"}

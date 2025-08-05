@@ -8,11 +8,22 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }))
   }
 
+  const handleCheckbox = (e) => {
+    const { name, value, checked } = e.target
+    const current = formData[name] || []
+    const updated = checked ? [...current, value] : current.filter((v) => v !== value)
+    updateFormData({ [name]: updated })
+  }
+
+  const handleToggle = (e) => {
+    updateFormData({ [e.target.name]: e.target.checked })
+  }
+
   const handleSubmit = () => {
-    const requiredFields = ["cuisine", "nbPersonnes", "frequenceRepas"]
+    const requiredFields = ["cuisine", "nbRecettes", "nbPortions"]
     const newErrors = {}
     requiredFields.forEach((field) => {
-      if (!formData[field] || formData[field].trim() === "") {
+      if (!formData[field] || formData[field].toString().trim() === "") {
         newErrors[field] = "Ce champ est requis"
       }
     })
@@ -45,18 +56,17 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
           <label className="block text-sm font-medium text-[#414535] mb-2">Quel est ton niveau en cuisine ?</label>
           <div className="flex flex-col gap-3">
             {[
-              "Débutant·e : Je fais ce que je peux",
-              "Intermédiaire : J’aime bien cuisiner quand j’ai le temps",
+              "Débutant·e : Je veux juste que ce soit simple et rapide",
+              "Intermédiaire : Je suis à l’aise, mais pas un chef non plus",
               "Confirmé·e : Cuisiner, c’est mon terrain de jeu",
             ].map((option) => (
               <label
                 key={option}
-                className={`cursor-pointer rounded-lg border px-4 py-3 text-sm transition
-                  ${
-                    formData.cuisine === option
-                      ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
-                      : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
-                  }`}
+                className={`cursor-pointer rounded-lg border px-4 py-3 text-sm transition ${
+                  formData.cuisine === option
+                    ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
+                    : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
+                }`}
               >
                 <input
                   type="radio"
@@ -73,67 +83,104 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
           {errors.cuisine && <p className="text-sm text-red-500 mt-2">{errors.cuisine}</p>}
         </div>
 
-        {/* Nombre de personnes à table */}
+        {/* Équipements */}
         <div>
-          <label className="block text-sm font-medium text-[#414535] mb-2">Combien de personnes à table au quotidien ?</label>
-          <div className="flex flex-col sm:flex-row gap-3">
-            {["1", "2", "3 ou +"].map((option) => (
+          <label className="block text-sm font-medium text-[#414535] mb-2">Quels équipements de cuisine as-tu ?</label>
+          <div className="grid grid-cols-2 sm:grid-cols-2 gap-3">
+            {["Four", "Mixeur/Blender", "Thermomix", "Air Fryer"].map((option) => (
               <label
                 key={option}
-                className={`flex-1 cursor-pointer rounded-lg border px-4 py-3 text-center text-sm font-medium transition
-                  ${
-                    formData.nbPersonnes === option
-                      ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
-                      : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
-                  }`}
+                className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition ${
+                  formData.equipment?.includes(option)
+                    ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
+                    : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
+                }`}
               >
                 <input
-                  type="radio"
-                  name="nbPersonnes"
+                  type="checkbox"
+                  name="equipment"
                   value={option}
-                  checked={formData.nbPersonnes === option}
-                  onChange={handleChange}
+                  checked={formData.equipment?.includes(option)}
+                  onChange={handleCheckbox}
                   className="sr-only"
                 />
                 {option}
               </label>
             ))}
           </div>
-          {errors.nbPersonnes && <p className="text-sm text-red-500 mt-2">{errors.nbPersonnes}</p>}
         </div>
 
-        {/* Fréquence repas maison */}
+        {/* Nombre de recettes */}
         <div>
-          <label className="block text-sm font-medium text-[#414535] mb-2">Combien de repas fais-tu chez toi en semaine ?</label>
-          <div className="flex flex-col gap-3">
-            {[
-              "Moins de 4 repas maison/semaine",
-              "4 à 7 repas maison/semaine",
-              "8 à 10 repas maison/semaine",
-              "11 repas ou plus / semaine",
-            ].map((option) => (
+          <label className="block text-sm font-medium text-[#414535] mb-2">Combien de recettes veux tu cette semaine ?</label>
+          <div className="flex flex-wrap gap-3">
+            {[2, 3, 4, 5, 6, 7].map((num) => (
               <label
-                key={option}
-                className={`cursor-pointer rounded-lg border px-4 py-3 text-sm transition
-                  ${
-                    formData.frequenceRepas === option
-                      ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
-                      : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
-                  }`}
+                key={num}
+                className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition ${
+                  formData.nbRecettes === String(num)
+                    ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
+                    : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
+                }`}
               >
                 <input
                   type="radio"
-                  name="frequenceRepas"
-                  value={option}
-                  checked={formData.frequenceRepas === option}
+                  name="nbRecettes"
+                  value={num}
+                  checked={formData.nbRecettes === String(num)}
                   onChange={handleChange}
                   className="sr-only"
                 />
-                {option}
+                {num}
               </label>
             ))}
           </div>
-          {errors.frequenceRepas && <p className="text-sm text-red-500 mt-2">{errors.frequenceRepas}</p>}
+          {errors.nbRecettes && <p className="text-sm text-red-500 mt-2">{errors.nbRecettes}</p>}
+        </div>
+
+        {/* Nombre de portions */}
+        <div>
+          <label className="block text-sm font-medium text-[#414535] mb-2">Combien de portions par recette ?</label>
+          <div className="flex flex-wrap gap-3">
+            {[1, 2, 3, "4+"].map((num) => (
+              <label
+                key={num}
+                className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition ${
+                  formData.nbPortions === String(num)
+                    ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
+                    : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="nbPortions"
+                  value={num}
+                  checked={formData.nbPortions === String(num)}
+                  onChange={handleChange}
+                  className="sr-only"
+                />
+                {num}
+              </label>
+            ))}
+          </div>
+          {errors.nbPortions && <p className="text-sm text-red-500 mt-2">{errors.nbPortions}</p>}
+        </div>
+
+        {/* Toggle batch cooking */}
+        <div>
+          <div className="flex items-center justify-between">
+            <label className="block text-sm font-medium text-[#414535]">Souhaites-tu recevoir des conseils en batch cooking ?</label>
+            <input
+              type="checkbox"
+              name="batch"
+              checked={formData.batch || false}
+              onChange={handleToggle}
+              className="w-10 h-5 bg-[#EAEAEA] border-2 border-[#EAEAEA] rounded-full appearance-none cursor-pointer checked:bg-[#F4C95D] relative transition"
+            />
+          </div>
+          <p className="text-xs text-[#8A8A8A] mt-1">
+            💡 Le batch cooking, c’est une méthode pour s'organiser en avance, cuisiner plusieurs plats d’un coup, puis assembler ou réchauffer facilement la semaine.
+          </p>
         </div>
       </div>
 

@@ -38,14 +38,14 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
       </div>
 
       <h2 className="text-2xl font-bold text-[#414535] mb-2">Tes préférences alimentaires</h2>
-      <p className="text-[#8A8A8A] mb-6">Pas besoin d’être stricte – ça me donne juste une idée de ta base alimentaire.</p>
+      <p className="text-[#8A8A8A] mb-6">Raconte moi un peu comment tu manges aujourd’hui, ce que tu veux éviter, et ce que tu veux retrouver dans ton assiette.</p>
 
       <div className="space-y-6">
         {/* Régime alimentaire (radio group) */}
         <div>
           <label className="block text-sm font-medium text-[#414535] mb-2">Quel est ton type d’alimentation ?</label>
           <div className="flex flex-col sm:flex-row gap-3">
-            {["Omnivore", "Végétarien", "Vegan", "Flexitarien"].map((option) => (
+            {["Omnivore", "Flexitarien", "Végétarien", "Vegan"].map((option) => (
               <label
                 key={option}
                 className={`flex-1 cursor-pointer rounded-lg border px-4 py-3 text-center text-sm font-medium transition
@@ -70,25 +70,25 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
           {errors.regime && <p className="text-sm text-red-500 mt-2">{errors.regime}</p>}
         </div>
 
-        {/* Exclusions alimentaires (checkbox) */}
+        {/* Protéines préférées (checkbox) */}
         <div>
-          <label className="block text-sm font-medium text-[#414535] mb-2">Y a-t-il des aliments que tu ne veux pas qu’on te propose ?</label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {["Viande rouge", "Porc", "Poisson", "Produits laitiers", "Gluten", "Œufs"].map((option) => (
+          <label className="block text-sm font-medium text-[#414535] mb-2">Quels types de protéines aimes-tu consommer ?</label>
+          <div className="grid grid-cols-2 sm:grid-cols-2 gap-3">
+            {["Boeuf", "Volaille", "Poisson", "Œufs", "Fromages, Produits laitiers", "Tofu", "Légumineuses (Pois chiches, lentilles ..)", "Simili-viandes (Heura, LaVie etc ..)"].map((option) => (
               <label
                 key={option}
                 className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition
                   ${
-                    formData.exclusions?.includes(option)
+                    formData.proteins?.includes(option)
                       ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
                       : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
                   }`}
               >
                 <input
                   type="checkbox"
-                  name="exclusions"
+                  name="proteins"
                   value={option}
-                  checked={formData.exclusions?.includes(option)}
+                  checked={formData.proteins?.includes(option)}
                   onChange={handleCheckbox}
                   className="sr-only"
                 />
@@ -111,15 +111,27 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
           />
         </div>
 
-        {/* Aliments détestés */}
+        {/* Aliments exclus */}
         <div>
-          <label className="block text-sm font-medium text-[#414535] mb-1">Des aliments que tu détestes ?</label>
+          <label className="block text-sm font-medium text-[#414535] mb-1">Des aliments que tu n'aimes pas ?</label>
           <input
             type="text"
             name="alimentsDetestes"
             value={formData.alimentsDetestes || ""}
             onChange={handleChange}
-            placeholder="Ex : brocoli, tofu, lentilles…"
+            placeholder="Ex : tofu, lentilles, fenouil…"
+            className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
+          />
+        </div>
+        {/* Aliments préférés */}
+        <div>
+          <label className="block text-sm font-medium text-[#414535] mb-1">À	l'inverse, des aliments que tu adores ?</label>
+          <input
+            type="text"
+            name="alimentsPreferes"
+            value={formData.alimentsPreferes || ""}
+            onChange={handleChange}
+            placeholder="Ex : tomates, poulet, pâtes…"
             className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
           />
         </div>
