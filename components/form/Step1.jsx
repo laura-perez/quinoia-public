@@ -46,7 +46,7 @@ export default function Step1({ formData, updateFormData, goToNext }) {
           <label className="block text-sm font-medium text-[#414535] mb-1">Comment t'appelles-tu ?</label>
           <input
             type="text"
-            name="prenom"
+            name="name"
             value={formData.prenom || ""}
             onChange={handleChange}
             className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
@@ -78,16 +78,16 @@ export default function Step1({ formData, updateFormData, goToNext }) {
                 key={option}
                 className={`flex-1 cursor-pointer rounded-lg border px-4 py-3 text-center text-sm font-medium transition
                   ${
-                    formData.genre === option
+                    formData.gender === option
                       ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
                       : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
                   }`}
               >
                 <input
                   type="radio"
-                  name="genre"
+                  name="gender"
                   value={option}
-                  checked={formData.genre === option}
+                  checked={formData.gender === option}
                   onChange={handleChange}
                   className="sr-only"
                 />
@@ -95,7 +95,7 @@ export default function Step1({ formData, updateFormData, goToNext }) {
               </label>
             ))}
           </div>
-          {errors.genre && <p className="text-sm text-red-500 mt-2">{errors.genre}</p>}
+          {errors.gender && <p className="text-sm text-red-500 mt-2">{errors.gender}</p>}
         </div>
 
         {/* Taille + Poids */}
@@ -104,25 +104,25 @@ export default function Step1({ formData, updateFormData, goToNext }) {
             <label className="block text-sm font-medium text-[#414535] mb-1">Taille (cm)</label>
             <input
               type="number"
-              name="taille"
-              value={formData.taille || ""}
+              name="height_cm"
+              value={formData.height_cm || ""}
               onChange={handleChange}
               className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
               placeholder="cm"
             />
-            {errors.taille && <p className="text-sm text-red-500 mt-1">{errors.taille}</p>}
+            {errors.height_cm && <p className="text-sm text-red-500 mt-1">{errors.height_cm}</p>}
           </div>
           <div className="flex-1">
             <label className="block text-sm font-medium text-[#414535] mb-1">Poids (kg)</label>
             <input
               type="number"
-              name="poids"
-              value={formData.poids || ""}
+              name="weight_kg"
+              value={formData.weight_kg || ""}
               onChange={handleChange}
               className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
               placeholder="kg"
             />
-            {errors.poids && <p className="text-sm text-red-500 mt-1">{errors.poids}</p>}
+            {errors.weight_kg && <p className="text-sm text-red-500 mt-1">{errors.weight_kg}</p>}
           </div>
         </div>
 
@@ -139,16 +139,16 @@ export default function Step1({ formData, updateFormData, goToNext }) {
                 key={option}
                 className={`cursor-pointer rounded-lg border px-4 py-3 text-sm transition
                   ${
-                    formData.activite === option
+                    formData.exercise_level === option
                       ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
                       : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
                   }`}
               >
                 <input
                   type="radio"
-                  name="activite"
+                  name="exercise_level"
                   value={option}
-                  checked={formData.activite === option}
+                  checked={formData.exercise_level === option}
                   onChange={handleChange}
                   className="sr-only"
                 />
@@ -156,7 +156,7 @@ export default function Step1({ formData, updateFormData, goToNext }) {
               </label>
             ))}
           </div>
-          {errors.activite && <p className="text-sm text-red-500 mt-2">{errors.activite}</p>}
+          {errors.exercise_level && <p className="text-sm text-red-500 mt-2">{errors.exercise_level}</p>}
         </div>
       </div>
 

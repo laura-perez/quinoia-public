@@ -17,8 +17,8 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
 
   const handleSubmit = () => {
     const newErrors = {}
-    if (!formData.regime || formData.regime.trim() === "") {
-      newErrors.regime = "Ce champ est requis"
+    if (!formData.diet_type || formData.diet_type.trim() === "") {
+      newErrors.diet_type = "Ce champ est requis"
     }
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
@@ -50,16 +50,16 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
                 key={option}
                 className={`flex-1 cursor-pointer rounded-lg border px-4 py-3 text-center text-sm font-medium transition
                   ${
-                    formData.regime === option
+                    formData.diet_type === option
                       ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
                       : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
                   }`}
               >
                 <input
                   type="radio"
-                  name="regime"
+                  name="diet_type"
                   value={option}
-                  checked={formData.regime === option}
+                  checked={formData.diet_type === option}
                   onChange={handleChange}
                   className="sr-only"
                 />
@@ -67,7 +67,7 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
               </label>
             ))}
           </div>
-          {errors.regime && <p className="text-sm text-red-500 mt-2">{errors.regime}</p>}
+          {errors.diet_type && <p className="text-sm text-red-500 mt-2">{errors.diet_type}</p>}
         </div>
 
         {/* Protéines préférées (checkbox) */}
@@ -79,16 +79,16 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
                 key={option}
                 className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition
                   ${
-                    formData.proteins?.includes(option)
+                    formData.protein_preference?.includes(option)
                       ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
                       : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
                   }`}
               >
                 <input
                   type="checkbox"
-                  name="proteins"
+                  name="protein_preference"
                   value={option}
-                  checked={formData.proteins?.includes(option)}
+                  checked={formData.protein_preference?.includes(option)}
                   onChange={handleCheckbox}
                   className="sr-only"
                 />
@@ -116,8 +116,8 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
           <label className="block text-sm font-medium text-[#414535] mb-1">Des aliments que tu n'aimes pas ?</label>
           <input
             type="text"
-            name="alimentsDetestes"
-            value={formData.alimentsDetestes || ""}
+            name="disliked_food"
+            value={formData.disliked_food || ""}
             onChange={handleChange}
             placeholder="Ex : tofu, lentilles, fenouil…"
             className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
@@ -128,8 +128,8 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
           <label className="block text-sm font-medium text-[#414535] mb-1">À	l'inverse, des aliments que tu adores ?</label>
           <input
             type="text"
-            name="alimentsPreferes"
-            value={formData.alimentsPreferes || ""}
+            name="favourite_food"
+            value={formData.favourite_food || ""}
             onChange={handleChange}
             placeholder="Ex : tomates, poulet, pâtes…"
             className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"

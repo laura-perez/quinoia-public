@@ -20,7 +20,7 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
   }
 
   const handleSubmit = () => {
-    const requiredFields = ["cuisine", "nbRecettes", "nbPortions"]
+    const requiredFields = ["cooking_level", "nbRecipes", "nbPortions"]
     const newErrors = {}
     requiredFields.forEach((field) => {
       if (!formData[field] || formData[field].toString().trim() === "") {
@@ -63,16 +63,16 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
               <label
                 key={option}
                 className={`cursor-pointer rounded-lg border px-4 py-3 text-sm transition ${
-                  formData.cuisine === option
+                  formData.cooking_level === option
                     ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
                     : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
                 }`}
               >
                 <input
                   type="radio"
-                  name="cuisine"
+                  name="cooking_level"
                   value={option}
-                  checked={formData.cuisine === option}
+                  checked={formData.cooking_level === option}
                   onChange={handleChange}
                   className="sr-only"
                 />
@@ -80,7 +80,7 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
               </label>
             ))}
           </div>
-          {errors.cuisine && <p className="text-sm text-red-500 mt-2">{errors.cuisine}</p>}
+          {errors.cooking_level && <p className="text-sm text-red-500 mt-2">{errors.cooking_level}</p>}
         </div>
 
         {/* Équipements */}
@@ -118,16 +118,16 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
               <label
                 key={num}
                 className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition ${
-                  formData.nbRecettes === String(num)
+                  formData.nbRecipes === String(num)
                     ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
                     : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
                 }`}
               >
                 <input
                   type="radio"
-                  name="nbRecettes"
+                  name="nbRecipes"
                   value={num}
-                  checked={formData.nbRecettes === String(num)}
+                  checked={formData.nbRecipes === String(num)}
                   onChange={handleChange}
                   className="sr-only"
                 />
@@ -135,7 +135,7 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
               </label>
             ))}
           </div>
-          {errors.nbRecettes && <p className="text-sm text-red-500 mt-2">{errors.nbRecettes}</p>}
+          {errors.nbRecipes && <p className="text-sm text-red-500 mt-2">{errors.nbRecipes}</p>}
         </div>
 
         {/* Nombre de portions */}

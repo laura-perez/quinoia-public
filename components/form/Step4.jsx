@@ -5,8 +5,8 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState("")
-  const [objectif, setObjectif] = useState(formData.objectif || "")
-  const [messageLibre, setMessageLibre] = useState(formData.messageLibre || "")
+  const [goal, setGoal] = useState(formData.goal || "")
+  const [note, setNote] = useState(formData.note || "")
 
   const handleSubmit = async () => {
     if (!agreed) return
@@ -20,9 +20,9 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
       const body = JSON.stringify({
         ...formData,
         recaptchaToken: token,
-        objectif,
-        messageLibre,
-        consentement: agreed,
+        goal,
+        note,
+        consent: agreed,
       })
       
       const response = await fetch("https://your-n8n-instance.example/webhook/menu", {
@@ -42,7 +42,7 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
     }
   }
 
-  const objectifs = [
+  const goals = [
     "Manger plus sainement",
     "Gagner du temps",
     "Manger plus de protéines",
@@ -78,21 +78,21 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
           <div className="mb-6">
             <label className="block text-sm font-medium text-[#414535] mb-2">Quel est ton objectif principal avec ce menu ?</label>
             <div className="flex flex-col gap-3">
-              {objectifs.map((opt) => (
+              {goals.map((opt) => (
                 <label
                   key={opt}
                   className={`cursor-pointer rounded-lg border px-4 py-3 text-sm transition ${
-                    objectif === opt
+                    goal === opt
                       ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
                       : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
                   }`}
                 >
                   <input
                     type="radio"
-                    name="objectif"
+                    name="goal"
                     value={opt}
-                    checked={objectif === opt}
-                    onChange={(e) => setObjectif(e.target.value)}
+                    checked={goal === opt}
+                    onChange={(e) => setGoal(e.target.value)}
                     className="sr-only"
                   />
                   {opt}
@@ -105,16 +105,16 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
           <div className="mb-6">
             <label className="block text-sm font-medium text-[#414535] mb-1">Autre chose que tu souhaites ajouter ?</label>
             <textarea
-              name="messageLibre"
-              value={messageLibre}
-              onChange={(e) => setMessageLibre(e.target.value)}
+              name="note"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
               rows={4}
               placeholder="Ex : j'aime le régime méditerranéen, anti-inflammatoire etc."
               className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
             />
           </div>
 
-          {/* Consentement */}
+          {/* consent */}
           <label className="flex items-start space-x-2 text-sm text-[#414535] mb-6">
             <input
               type="checkbox"
