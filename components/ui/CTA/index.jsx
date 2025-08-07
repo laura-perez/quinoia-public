@@ -14,10 +14,10 @@ const CTA = () => {
                 }}>
                     <div className="flex-none max-w-xl mt-12 space-y-3 delay-200 duration-300 ease-in md:mt-0">
                         <h2 className="text-gray-800 text-3xl font-semibold sm:text-4xl">
-                            Get a free trial today and start making progress!
+                            Quinoia, ton assiette intelligente. Mieux manger, sans y penser.
                         </h2>
                         <p className="text-gray-600">
-                            Starboard is a comprehensive project management software that captures the entire project lifecycle, from backlog to release. With a variety of features. Allow your teams to collaborate effectively on projects and stay on top of deadlines.
+                            Quinoia est l’assistant nutritionnel intelligent qui transforme ta semaine en un menu personnalisé, sain, à base de produits bruts, sans que tu aies à y penser.
                         </p>
                         <div className='pt-1'>
                             <NavLink href="#get-started" className="inline-block w-full font-medium text-sm text-white bg-sky-500 hover:bg-sky-600 active:bg-sky-700 shadow rounded-lg sm:w-auto">

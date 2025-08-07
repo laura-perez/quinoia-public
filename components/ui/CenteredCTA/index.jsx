@@ -5,10 +5,10 @@ const CenteredCTA = () => {
         <section className="custom-screen text-center">
             <div className="max-w-2xl md:mx-auto">
                 <h2 className="text-gray-800 text-3xl font-semibold sm:text-4xl">
-                    Cut your project management time by 50% and start focusing on what
+                    Quinoia, ton assiette intelligente. Mieux manger, sans y penser.
                 </h2>
                 <p className="mt-3 text-gray-600">
-                    Starboard is a comprehensive project management software that captures the entire project lifecycle, from backlog to release. With a variety of features like real-time reporting, Kanban layouts and more
+                    Quinoia est l’assistant nutritionnel intelligent qui transforme ta semaine en un menu personnalisé, sain, à base de produits bruts, sans que tu aies à y penser.
                 </p>
             </div>
             <div className="mt-4">

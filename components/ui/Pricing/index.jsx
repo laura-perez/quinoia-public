@@ -23,11 +23,11 @@ const Pricing = () => {
             <div className="custom-screen text-gray-600">
                 <div className='relative max-w-2xl mx-auto sm:text-center'>
                     <h2 className='text-gray-800 text-3xl font-semibold sm:text-4xl'>
-                        Buy once, use forever.
+                        Quinoia ton assiette intelligente. Mieux manger, sans y penser.
                     </h2>
                     <div className='mt-3 max-w-xl'>
                         <p>
-                            Starboard is a quality product that will last a lifetime, so you never have to buy again.
+                            Quinoia est l’assistant nutritionnel intelligent qui transforme ta semaine en un menu personnalisé, sain, à base de produits bruts, sans que tu aies à y penser.
                         </p>
                     </div>
                 </div>

@@ -34,10 +34,10 @@ const Features = () => {
             <div className="custom-screen text-gray-600">
                 <div className="max-w-2xl space-y-3">
                     <h2 className="text-gray-800 text-3xl font-semibold sm:text-4xl">
-                        Never miss a beat with Easy Projects
+                        Quinoia, ton assiette intelligente. Mieux manger, sans y penser.
                     </h2>
                     <p>
-                        Feeling overwhelmed with the lack of time and resources? With Starboard, you'll never have to worry about your team's productivity again!
+                        Quinoia est l’assistant nutritionnel intelligent qui transforme ta semaine en un menu personnalisé, sain, à base de produits bruts, sans que tu aies à y penser.
                     </p>
                 </div>
                 <div className="mt-12">
