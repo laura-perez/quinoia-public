@@ -9,7 +9,7 @@ export default function Step1({ formData, updateFormData, goToNext }) {
   }
 
   const handleSubmit = () => {
-    const requiredFields = ["prenom", "age", "genre", "taille", "poids", "activite"]
+    const requiredFields = ["name", "age", "gender", "height_cm", "weight_kg", "exercise_level"]
     const newErrors = {}
     requiredFields.forEach((field) => {
       if (!formData[field] || formData[field].toString().trim() === "") {
@@ -47,12 +47,12 @@ export default function Step1({ formData, updateFormData, goToNext }) {
           <input
             type="text"
             name="name"
-            value={formData.prenom || ""}
+            value={formData.name || ""}
             onChange={handleChange}
             className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
             placeholder="Prénom"
           />
-          {errors.prenom && <p className="text-sm text-red-500 mt-1">{errors.prenom}</p>}
+          {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
         </div>
 
         {/* Âge */}
