@@ -7,9 +7,14 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
   const [error, setError] = useState("")
   const [goal, setGoal] = useState(formData.goal || "")
   const [note, setNote] = useState(formData.note || "")
+  const [email, setEmail] = useState(formData.email || "")
 
   const handleSubmit = async () => {
     if (!agreed) return
+    if (!email) {
+      setError("Merci de renseigner ton adresse email.");
+      return;
+    }
 
     setIsSubmitting(true)
     setError("")
@@ -19,6 +24,7 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
 
       const body = JSON.stringify({
         ...formData,
+        email,
         recaptchaToken: token,
         goal,
         note,
@@ -110,6 +116,19 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
               onChange={(e) => setNote(e.target.value)}
               rows={4}
               placeholder="Ex : j'aime le régime méditerranéen, anti-inflammatoire etc."
+              className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
+            />
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-[#414535] mb-2">Ton adresse email</label>
+            <input
+              type="email"
+              name="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+              placeholder="exemple@email.com"
               className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
             />
           </div>
