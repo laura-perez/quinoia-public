@@ -1,6 +1,6 @@
 import Image from "next/image"
 import SubscribeForm from "../SubscribeForm"
-import previewImage from "../../../public/hero_image.png"
+import previewImage from "../../../../public/hero_image.png"
 import LayoutEffect from "../../LayoutEffect"
 
 const Hero = () => {
