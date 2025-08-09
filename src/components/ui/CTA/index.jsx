@@ -1,7 +1,7 @@
-import Image from 'next/image'
+import Image from "next/image"
 import SectionWrapper from "../../SectionWrapper"
 import NavLink from "../NavLink"
-import cta_image from '../../../public/cta-img.png'
+import cta_image from '../../../../public/cta-img.png'
 import LayoutEffect from '../../LayoutEffect'
 
 const CTA = () => {

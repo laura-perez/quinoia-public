@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import Navbar from "../components/ui/Navbar"
-import Step1 from "../components/form/Step1"
-import Step2 from "../components/form/Step2"
-import Step3 from "../components/form/Step3"
-import Step4 from "../components/form/Step4"
+import Navbar from "../src/components/ui/Navbar"
+import Step1 from "../src/components/form/Step1"
+import Step2 from "../src/components/form/Step2"
+import Step3 from "../src/components/form/Step3"
+import Step4 from "../src/components/form/Step4"
 
 const steps = [
   { id: 1, component: Step1 },
