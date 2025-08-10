@@ -2,9 +2,9 @@ import { env, assertServerEnv } from './env';
 import crypto from 'crypto';
 
 /**
- * Signe un body avec HMAC-SHA256 et retourne la signature en base64url.
- * @param body Le contenu à signer
- * @returns La signature HMAC en format base64url
+ * Sign a body with HMAC-SHA256 and return the signature in base64url format.
+ * @param body The content to sign
+ * @returns The HMAC signature in base64url format
  */
 export function signBody(body: string): string {
   assertServerEnv();
@@ -15,10 +15,10 @@ export function signBody(body: string): string {
 }
 
 /**
- * Vérifie une signature HMAC-SHA256 pour un body donné.
- * @param body Le contenu original
- * @param signature La signature à vérifier (format base64url)
- * @returns true si la signature est valide, false sinon
+ * Verify an HMAC-SHA256 signature for a given body.
+ * @param body The original content
+ * @param signature The signature to verify (base64url format)
+ * @returns true if the signature is valid, false otherwise
  */
 export function verifySignature(body: string, signature: string): boolean {
   assertServerEnv();

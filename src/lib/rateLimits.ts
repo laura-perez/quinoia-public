@@ -5,7 +5,7 @@ import { env } from './env';
 let redis: Redis | null = null;
 let ratelimit: Ratelimit | null = null;
 
-// Initialise Redis et Ratelimit si les variables d'environnement sont présentes
+// Initialize Redis and Ratelimit if Upstash environment variables are present
 if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
   redis = new Redis({
     url: env.UPSTASH_REDIS_REST_URL,
@@ -14,24 +14,24 @@ if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
 
   ratelimit = new Ratelimit({
     redis,
-    limiter: Ratelimit.tokenBucket(10, '1m', 10), // Configuration par défaut
+  limiter: Ratelimit.tokenBucket(10, '1m', 10), // Default configuration
     analytics: true,
   });
 }
 
 /**
- * Rate limit une clé avec token bucket.
- * @param key Clé unique pour identifier la source (IP, user ID, etc.)
- * @param max Nombre maximum de requêtes autorisées
- * @param windowSec Fenêtre en secondes
- * @returns Résultat du rate limiting
+ * Rate limit a key using token bucket algorithm.
+ * @param key Unique key to identify the source (IP, user ID, etc.)
+ * @param max Maximum number of allowed requests
+ * @param windowSec Window in seconds
+ * @returns Result of the rate limiting
  */
 export async function limit(key: string, max: number, windowSec: number): Promise<{
   success: boolean;
   remaining: number;
   reset: number;
 }> {
-  // Mode no-op si Redis n'est pas configuré
+  // No-op mode if Redis is not configured
   if (!redis || !ratelimit) {
     return {
       success: true,
@@ -40,7 +40,7 @@ export async function limit(key: string, max: number, windowSec: number): Promis
     };
   }
 
-  // Crée un ratelimiter spécifique pour ces paramètres
+  // Create a specific ratelimiter for these parameters
   const specificRatelimit = new Ratelimit({
     redis,
     limiter: Ratelimit.tokenBucket(max, `${windowSec}s`, max),

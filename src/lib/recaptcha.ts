@@ -39,14 +39,14 @@ export async function verifyRecaptcha(token: string, ip?: string): Promise<{
       body: params.toString(),
     });
   } catch (err) {
-    throw new Error('Erreur réseau lors de la vérification reCAPTCHA');
+    throw new Error('Network error during reCAPTCHA verification' + (err && typeof err === 'object' && 'message' in err ? (err as Error).message : String(err)));
   }
 
   let data: RecaptchaResponse;
   try {
     data = await res.json();
   } catch (err) {
-    throw new Error('Réponse reCAPTCHA invalide');
+    throw new Error('Invalid reCAPTCHA response: ' + (err instanceof Error ? err.message : String(err)));
   }
 
   return {

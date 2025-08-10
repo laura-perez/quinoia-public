@@ -2,15 +2,15 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-  RECAPTCHA_SECRET_KEY: z.string().min(1, 'RECAPTCHA_SECRET_KEY est requis'),
-  SUPABASE_URL: z.string().min(1, 'SUPABASE_URL est requis'),
-  SUPABASE_SERVICE_KEY: z.string().min(1, 'SUPABASE_SERVICE_KEY est requis'),
-  N8N_WEBHOOK_URL: z.string().min(1, 'N8N_WEBHOOK_URL est requis'),
-  N8N_WEBHOOK_SECRET: z.string().min(1, 'N8N_WEBHOOK_SECRET est requis'),
-  HMAC_SECRET: z.string().min(1, 'HMAC_SECRET est requis'),
-  APP_BASE_URL: z.string().min(1, 'APP_BASE_URL est requis'),
+  RECAPTCHA_SECRET_KEY: z.string().min(1, 'RECAPTCHA_SECRET_KEY is required'),
+  SUPABASE_URL: z.string().min(1, 'SUPABASE_URL is required'),
+  SUPABASE_SERVICE_KEY: z.string().min(1, 'SUPABASE_SERVICE_KEY is required'),
+  N8N_WEBHOOK_URL: z.string().min(1, 'N8N_WEBHOOK_URL is required'),
+  N8N_WEBHOOK_SECRET: z.string().min(1, 'N8N_WEBHOOK_SECRET is required'),
+  HMAC_SECRET: z.string().min(1, 'HMAC_SECRET is required'),
+  APP_BASE_URL: z.string().min(1, 'APP_BASE_URL is required'),
 
-  // Optionnelles
+  // Optional
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().optional(),
   UPSTASH_REDIS_REST_URL: z.string().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
@@ -32,19 +32,19 @@ const _env = {
 const parsed = envSchema.safeParse(_env);
 
 if (!parsed.success) {
-  // Affiche toutes les erreurs de validation
+  // Show all validation errors
   const errors = parsed.error.issues.map(e => `${String(e.path[0])}: ${e.message}`).join('\n');
-  throw new Error(`Erreur de configuration des variables d'environnement :\n${errors}`);
+  throw new Error(`Environment variable configuration error:\n${errors}`);
 }
 
 export const env: z.infer<typeof envSchema> = parsed.data;
 
 /**
- * À appeler dans les routes API pour s'assurer que les variables sont bien présentes côté serveur.
- * Jette une erreur claire si une variable obligatoire manque.
+ * Call in API routes to ensure all required server env variables are present.
+ * Throws a clear error if a required variable is missing.
  */
 export function assertServerEnv() {
-  // Cette fonction ne fait rien car la validation a déjà eu lieu à l'import,
-  // mais elle permet d'être explicite dans les routes API.
+  // This function is a no-op because validation already happens at import,
+  // but it makes intent explicit in API routes.
   return true;
 }

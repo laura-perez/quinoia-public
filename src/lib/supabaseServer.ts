@@ -2,13 +2,13 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { env, assertServerEnv } from './env';
 
-// Empêche l'import côté client
+// Prevent import on the client side
 if (typeof window !== 'undefined') {
-  throw new Error('lib/supabaseServer.ts ne doit jamais être importé côté client');
+  throw new Error('lib/supabaseServer.ts must never be imported on the client side');
 }
 
 /**
- * Retourne un client Supabase initialisé avec les credentials serveur.
+ * Returns a Supabase client initialized with server credentials.
  */
 export function getServiceClient(): SupabaseClient {
   assertServerEnv();
