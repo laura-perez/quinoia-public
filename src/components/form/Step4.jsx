@@ -1,60 +1,99 @@
 import { useState } from "react"
 
+/**
+ * Types for formData
+ */
+/**
+ * @typedef {"saveTime" | "eatHealthier" | "weightLoss"} PrimaryGoal
+ * @typedef {"highProtein" | null} SecondaryFocus
+ */
+import RadioGroup from "./form-components/RadioGroup";
+import ToggleSwitch from "./form-components/ToggleSwitch";
+import TextInput from "./form-components/TextInput"
+import TextArea from "./form-components/TextArea"
+import FormError from "./form-components/FormError"
+import ConsentCheckbox from "./form-components/ConsentCheckbox"
+
 export default function Step4({ formData, updateFormData, goToPrev }) {
   const [agreed, setAgreed] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState("")
-  const [goal, setGoal] = useState(formData.goal || "")
+    const [errors, setErrors] = useState({});
+  // Remove goal state, use formData.primaryGoal
   const [note, setNote] = useState(formData.note || "")
   const [email, setEmail] = useState(formData.email || "")
 
   const handleSubmit = async () => {
-    if (!agreed) return
-    if (!email) {
-      setError("Merci de renseigner ton adresse email.");
-      return;
-    }
-
-    setIsSubmitting(true)
-    setError("")
-
-    try {
-      const token = await grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: "submit_form" })
-
-      const body = JSON.stringify({
+      // Validate required fields
+      const newErrors = {};
+      if (!formData.primaryGoal || formData.primaryGoal === "") {
+        newErrors.primaryGoal = "Merci de sélectionner un objectif principal.";
+      }
+      if (!agreed) {
+        newErrors.consent = "Merci d'accepter l'utilisation de tes données.";
+      }
+      if (!email) {
+        setError("Merci de renseigner ton adresse email.");
+        setErrors(newErrors);
+        return;
+      }
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
+      }
+    // Log form data in development only
+    if (process.env.NODE_ENV === "development") {
+      console.log("Form data submitted:", {
         ...formData,
+        physicalActivity: formData.physicalActivity,
         email,
-        recaptchaToken: token,
-        goal,
+        primaryGoal: formData.primaryGoal,
         note,
         consent: agreed,
-      })
-      
+      });
+    }
+
+    setIsSubmitting(true);
+    setError("");
+      setErrors({});
+
+    try {
+      const token = await grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: "submit_form" });
+
+      // Ensure latest physicalActivity is included
+      const body = JSON.stringify({
+        ...formData,
+        physicalActivity: formData.physicalActivity,
+        email,
+        recaptchaToken: token,
+        primaryGoal: formData.primaryGoal,
+        note,
+        consent: agreed,
+      });
+
       const response = await fetch("https://your-n8n-instance.example/webhook/menu", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body,
-      })
+      });
 
-      if (!response.ok) throw new Error("Erreur lors de l’envoi.")
+      if (!response.ok) throw new Error("Erreur lors de l’envoi.");
 
-      setSubmitted(true)
+      setSubmitted(true);
     } catch (err) {
-      console.error(err)
-      setError("Une erreur est survenue. Merci de réessayer.")
+      console.error(err);
+      setError("Une erreur est survenue. Merci de réessayer.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
-  const goals = [
-    "Manger plus sainement",
-    "Gagner du temps",
-    "Manger plus de protéines",
-    "Perdre du poids",
-    "Prendre du poids de manière saine",
-  ]
+  const PRIMARY_GOAL_OPTIONS = [
+    { label: "Gagner du temps", value: "saveTime" },
+    { label: "Manger plus sainement", value: "eatHealthier" },
+    { label: "Perdre du poids", value: "weightLoss" },
+  ];
 
   return (
     <div>
@@ -82,71 +121,60 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
 
           {/* Objectif principal */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#414535] mb-2">Quel est ton objectif principal avec ce menu ?</label>
-            <div className="flex flex-col gap-3">
-              {goals.map((opt) => (
-                <label
-                  key={opt}
-                  className={`cursor-pointer rounded-lg border px-4 py-3 text-sm transition ${
-                    goal === opt
-                      ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
-                      : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="goal"
-                    value={opt}
-                    checked={goal === opt}
-                    onChange={(e) => setGoal(e.target.value)}
-                    className="sr-only"
-                  />
-                  {opt}
-                </label>
-              ))}
+            <RadioGroup
+              name="primaryGoal"
+              options={PRIMARY_GOAL_OPTIONS.map(opt => opt.label)}
+              value={PRIMARY_GOAL_OPTIONS.find(opt => opt.value === formData.primaryGoal)?.label || ""}
+              onChange={e => {
+                const selected = PRIMARY_GOAL_OPTIONS.find(opt => opt.label === e.target.value);
+                updateFormData({ primaryGoal: selected ? selected.value : "" });
+              }}
+              error={errors && errors.primaryGoal}
+              label="Quel est ton objectif principal avec ce menu ?"
+              optionClassName="text-sm"
+            />
+            <div className="mt-4">
+              <ToggleSwitch
+                name="secondaryFocus"
+                checked={formData.secondaryFocus === "highProtein"}
+                onChange={e => updateFormData({ secondaryFocus: e.target.checked ? "highProtein" : null })}
+                label="Je souhaite prioriser les protéines"
+              />
             </div>
           </div>
 
+
           {/* Message libre */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#414535] mb-1">Autre chose que tu souhaites ajouter ?</label>
-            <textarea
+            <TextArea
+              label="Autre chose que tu souhaites ajouter ?"
               name="note"
               value={note}
-              onChange={(e) => setNote(e.target.value)}
-              rows={4}
+              onChange={e => setNote(e.target.value)}
               placeholder="Ex : j'aime le régime méditerranéen, anti-inflammatoire etc."
-              className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
             />
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#414535] mb-2">Ton adresse email</label>
-            <input
-              type="email"
+            <TextInput
+              label="Ton adresse email"
               name="email"
+              type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
               placeholder="exemple@email.com"
-              className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
             />
           </div>
 
           {/* consent */}
-          <label className="flex items-start space-x-2 text-sm text-[#414535] mb-6">
-            <input
-              type="checkbox"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-              className="mt-1 rounded border-[#EAEAEA] text-[#414535] focus:ring-[#B7D3C6]"
-            />
-            <span>
-              J’accepte que mes données soient utilisées pour générer mon menu personnalisé. Elles ne seront jamais partagées.
-            </span>
-          </label>
+          <ConsentCheckbox
+            checked={agreed}
+            onChange={e => setAgreed(e.target.checked)}
+            label="J’accepte que mes données soient utilisées pour générer mon menu personnalisé. Elles ne seront jamais partagées."
+          />
 
-          {error && <p className="text-sm text-red-500 mb-4">{error}</p>}
+          <FormError error={error} />
 
           {/* Navigation */}
           <div className="mt-8 flex justify-between">

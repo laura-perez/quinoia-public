@@ -1,31 +1,52 @@
-import { useState } from "react"
 
+import { useState } from "react";
+import RadioGroup from "./form-components/RadioGroup";
+import CheckboxGroup from "./form-components/CheckboxGroup";
+
+const DIET_OPTIONS = ["Omnivore", "Flexitarien", "Végétarien", "Vegan"];
+const PROTEIN_OPTIONS = [
+  "Boeuf",
+  "Volaille",
+  "Poisson",
+  "Œufs",
+  "Fromages, Produits laitiers",
+  "Tofu",
+  "Légumineuses (Pois chiches, lentilles ..)",
+  "Simili-viandes (Heura, LaVie etc ..)",
+];
+
+/**
+ * Step 2: Dietary preferences and restrictions.
+ */
 export default function Step2({ formData, updateFormData, goToNext, goToPrev }) {
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState({});
 
+  // Handle text/radio input changes
   const handleChange = (e) => {
-    updateFormData({ [e.target.name]: e.target.value })
-    setErrors((prev) => ({ ...prev, [e.target.name]: "" }))
-  }
+    updateFormData({ [e.target.name]: e.target.value });
+    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+  };
 
+  // Handle checkbox group changes
   const handleCheckbox = (e) => {
-    const { name, value, checked } = e.target
-    const current = formData[name] || []
-    const updated = checked ? [...current, value] : current.filter((v) => v !== value)
-    updateFormData({ [name]: updated })
-  }
+    const { name, value, checked } = e.target;
+    const current = formData[name] || [];
+    const updated = checked ? [...current, value] : current.filter((v) => v !== value);
+    updateFormData({ [name]: updated });
+  };
 
+  // Validate required fields
   const handleSubmit = () => {
-    const newErrors = {}
+    const newErrors = {};
     if (!formData.diet_type || formData.diet_type.trim() === "") {
-      newErrors.diet_type = "Ce champ est requis"
+      newErrors.diet_type = "Ce champ est requis";
     }
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-    } else {
-      goToNext()
+      setErrors(newErrors);
+      return;
     }
-  }
+    goToNext();
+  };
 
   return (
     <div>
@@ -41,67 +62,31 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
       <p className="text-[#8A8A8A] mb-6">Raconte moi un peu comment tu manges aujourd’hui, ce que tu veux éviter, et ce que tu veux retrouver dans ton assiette.</p>
 
       <div className="space-y-6">
-        {/* Régime alimentaire (radio group) */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-2">Quel est ton type d’alimentation ?</label>
-          <div className="flex flex-col sm:flex-row gap-3">
-            {["Omnivore", "Flexitarien", "Végétarien", "Vegan"].map((option) => (
-              <label
-                key={option}
-                className={`flex-1 cursor-pointer rounded-lg border px-4 py-3 text-center text-sm font-medium transition
-                  ${
-                    formData.diet_type === option
-                      ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
-                      : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
-                  }`}
-              >
-                <input
-                  type="radio"
-                  name="diet_type"
-                  value={option}
-                  checked={formData.diet_type === option}
-                  onChange={handleChange}
-                  className="sr-only"
-                />
-                {option}
-              </label>
-            ))}
-          </div>
-          {errors.diet_type && <p className="text-sm text-red-500 mt-2">{errors.diet_type}</p>}
-        </div>
+        {/* Diet type radio group */}
+        <RadioGroup
+          name="diet_type"
+          options={DIET_OPTIONS}
+          value={formData.diet_type || ""}
+          onChange={handleChange}
+          error={errors.diet_type}
+          label="Quel est ton type d’alimentation ?"
+          optionClassName="flex-1 text-center font-medium"
+        />
 
-        {/* Protéines préférées (checkbox) */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-2">Quels types de protéines aimes-tu consommer ?</label>
-          <div className="grid grid-cols-2 sm:grid-cols-2 gap-3">
-            {["Boeuf", "Volaille", "Poisson", "Œufs", "Fromages, Produits laitiers", "Tofu", "Légumineuses (Pois chiches, lentilles ..)", "Simili-viandes (Heura, LaVie etc ..)"].map((option) => (
-              <label
-                key={option}
-                className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition
-                  ${
-                    formData.protein_preference?.includes(option)
-                      ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
-                      : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
-                  }`}
-              >
-                <input
-                  type="checkbox"
-                  name="protein_preference"
-                  value={option}
-                  checked={formData.protein_preference?.includes(option)}
-                  onChange={handleCheckbox}
-                  className="sr-only"
-                />
-                {option}
-              </label>
-            ))}
-          </div>
-        </div>
+        {/* Protein preferences checkbox group */}
+        <CheckboxGroup
+          name="protein_preference"
+          options={PROTEIN_OPTIONS}
+          values={formData.protein_preference || []}
+          onChange={handleCheckbox}
+          label="Quels types de protéines aimes-tu consommer ?"
+        />
 
         {/* Allergies */}
         <div>
-          <label className="block text-sm font-medium text-[#414535] mb-1">As-tu des allergies ou intolérances ?</label>
+          <label className="block text-sm font-medium text-[#414535] mb-1" htmlFor="allergies">As-tu des allergies ou intolérances ?</label>
           <input
+            id="allergies"
             type="text"
             name="allergies"
             value={formData.allergies || ""}
@@ -111,10 +96,11 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
           />
         </div>
 
-        {/* Aliments exclus */}
+        {/* Disliked foods */}
         <div>
-          <label className="block text-sm font-medium text-[#414535] mb-1">Des aliments que tu n'aimes pas ?</label>
+          <label className="block text-sm font-medium text-[#414535] mb-1" htmlFor="disliked_food">Des aliments que tu n'aimes pas ?</label>
           <input
+            id="disliked_food"
             type="text"
             name="disliked_food"
             value={formData.disliked_food || ""}
@@ -123,10 +109,12 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
             className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
           />
         </div>
-        {/* Aliments préférés */}
+
+        {/* Favorite foods */}
         <div>
-          <label className="block text-sm font-medium text-[#414535] mb-1">À	l'inverse, des aliments que tu adores ?</label>
+          <label className="block text-sm font-medium text-[#414535] mb-1" htmlFor="favourite_food">À l'inverse, des aliments que tu adores ?</label>
           <input
+            id="favourite_food"
             type="text"
             name="favourite_food"
             value={formData.favourite_food || ""}
@@ -137,21 +125,23 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
         </div>
       </div>
 
-      {/* Boutons navigation */}
+      {/* Navigation buttons */}
       <div className="mt-8 flex justify-between">
         <button
           onClick={goToPrev}
           className="bg-white border border-[#414535] text-[#414535] px-6 py-3 rounded-md font-medium hover:bg-[#FDFBF8] transition"
+          type="button"
         >
           Retour
         </button>
         <button
           onClick={handleSubmit}
           className="bg-[#414535] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#2f3226] transition"
+          type="button"
         >
           Étape suivante
         </button>
       </div>
     </div>
-  )
+  );
 }
