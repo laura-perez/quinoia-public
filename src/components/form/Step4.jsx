@@ -42,11 +42,6 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
         setErrors(newErrors);
         return;
       }
-    if (!email) {
-      setError("Merci de renseigner ton adresse email.");
-      return;
-    }
-
     // Log form data in development only
     if (process.env.NODE_ENV === "development") {
       console.log("Form data submitted:", {
@@ -166,7 +161,7 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
               name="email"
               type="email"
               value={email}
-              onChange={e => setEmail(e)}
+              onChange={e => setEmail(e.target.value)}
               required
               placeholder="exemple@email.com"
             />
