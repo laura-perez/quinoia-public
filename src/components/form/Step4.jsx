@@ -22,8 +22,10 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
     try {
       const token = await grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: "submit_form" })
 
+      // Ensure latest physicalActivity is included
       const body = JSON.stringify({
         ...formData,
+        physicalActivity: formData.physicalActivity,
         email,
         recaptchaToken: token,
         goal,

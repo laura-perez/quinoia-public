@@ -1,28 +1,89 @@
-import { useState } from "react"
+
+import { useState } from "react";
+import PhysicalActivityGroup from "./form-components/PhysicalActivityGroup";
+
+const initialPhysicalActivity = { deskJob: null, dailySteps: null, sessionsPerWeek: null, highIntensity: null };
+
+function TextInput({ label, name, type = "text", value, onChange, error, placeholder }) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-[#414535] mb-1">{label}</label>
+      <input
+        type={type}
+        name={name}
+        value={value || ""}
+        onChange={onChange}
+        className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
+        placeholder={placeholder}
+      />
+      {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+    </div>
+  );
+}
+
+function RadioGroup({ label, name, options, value, onChange, error }) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-[#414535] mb-2">{label}</label>
+      <div className="flex flex-col sm:flex-row gap-3">
+        {options.map((option) => (
+          <label
+            key={option}
+            className={`flex-1 cursor-pointer rounded-lg border px-4 py-3 text-center text-sm font-medium transition
+              ${value === option ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]" : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"}`}
+          >
+            <input
+              type="radio"
+              name={name}
+              value={option}
+              checked={value === option}
+              onChange={onChange}
+              className="sr-only"
+            />
+            {option}
+          </label>
+        ))}
+      </div>
+      {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
+    </div>
+  );
+}
+
 
 export default function Step1({ formData, updateFormData, goToNext }) {
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState({});
+  const pa = formData.physicalActivity ?? initialPhysicalActivity;
 
   const handleChange = (e) => {
-    updateFormData({ [e.target.name]: e.target.value })
-    setErrors((prev) => ({ ...prev, [e.target.name]: "" }))
-  }
+    updateFormData({ [e.target.name]: e.target.value });
+    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+  };
 
   const handleSubmit = () => {
-    const requiredFields = ["name", "age", "gender", "height_cm", "weight_kg", "exercise_level"]
-    const newErrors = {}
+    const requiredFields = ["name", "age", "gender", "height_cm", "weight_kg"];
+    const newErrors = {};
     requiredFields.forEach((field) => {
       if (!formData[field] || formData[field].toString().trim() === "") {
-        newErrors[field] = "Ce champ est requis"
+        newErrors[field] = "Ce champ est requis";
       }
-    })
+    });
+
+    // Validate physicalActivity fields
+    const paErrors = {};
+  if (pa.deskJob === null) paErrors.deskJob = "Ce champ est requis";
+  if (pa.dailySteps === null) paErrors.dailySteps = "Ce champ est requis";
+  if (pa.sessionsPerWeek === null) paErrors.sessionsPerWeek = "Ce champ est requis";
+  if (pa.highIntensity === null) paErrors.highIntensity = "Ce champ est requis";
+    if (Object.keys(paErrors).length > 0) {
+      newErrors.physicalActivity = paErrors;
+    }
 
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
+      setErrors(newErrors);
     } else {
-      goToNext()
+      goToNext();
     }
-  }
+  };
 
   return (
     <div>
@@ -36,128 +97,56 @@ export default function Step1({ formData, updateFormData, goToNext }) {
 
       <h2 className="text-2xl font-bold text-[#414535] mb-2">Ton profil de base</h2>
       <p className="text-[#8A8A8A] mb-6">
-        Ces infos me permettent d’adapter les portions et les repas à ton corps et ton rythme de vie.<br />
-        Rien de médical ici, juste de quoi te proposer un menu qui te correspond vraiment.
+        Pour ajuster les repas à ton corps et ton rythme. Rien de médical, juste du sur-mesure.
       </p>
 
       <div className="space-y-6">
-        {/* Prénom */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-1">Comment t'appelles-tu ?</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name || ""}
-            onChange={handleChange}
-            className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
-            placeholder="Prénom"
-          />
-          {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
-        </div>
-
-        {/* Âge */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-1">Quel est ton âge ?</label>
-          <input
-            type="number"
-            name="age"
-            value={formData.age || ""}
-            onChange={handleChange}
-            className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
-            placeholder="Âge"
-          />
-          {errors.age && <p className="text-sm text-red-500 mt-1">{errors.age}</p>}
-        </div>
-
-        {/* Genre (Radio Group) */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-2">Quel est ton genre ?</label>
-          <div className="flex flex-col sm:flex-row gap-3">
-            {["Femme", "Homme", "Pas précisé"].map((option) => (
-              <label
-                key={option}
-                className={`flex-1 cursor-pointer rounded-lg border px-4 py-3 text-center text-sm font-medium transition
-                  ${
-                    formData.gender === option
-                      ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
-                      : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
-                  }`}
-              >
-                <input
-                  type="radio"
-                  name="gender"
-                  value={option}
-                  checked={formData.gender === option}
-                  onChange={handleChange}
-                  className="sr-only"
-                />
-                {option}
-              </label>
-            ))}
-          </div>
-          {errors.gender && <p className="text-sm text-red-500 mt-2">{errors.gender}</p>}
-        </div>
-
-        {/* Taille + Poids */}
+        <TextInput
+          label="Comment t'appelles-tu ?"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          error={errors.name}
+          placeholder="Prénom"
+        />
+        <TextInput
+          label="Quel est ton âge ?"
+          name="age"
+          type="number"
+          value={formData.age}
+          onChange={handleChange}
+          error={errors.age}
+          placeholder="Âge"
+        />
+        <RadioGroup
+          label="Quel est ton genre ?"
+          name="gender"
+          options={["Femme", "Homme", "Pas précisé"]}
+          value={formData.gender}
+          onChange={handleChange}
+          error={errors.gender}
+        />
         <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-[#414535] mb-1">Taille (cm)</label>
-            <input
-              type="number"
-              name="height_cm"
-              value={formData.height_cm || ""}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
-              placeholder="cm"
-            />
-            {errors.height_cm && <p className="text-sm text-red-500 mt-1">{errors.height_cm}</p>}
-          </div>
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-[#414535] mb-1">Poids (kg)</label>
-            <input
-              type="number"
-              name="weight_kg"
-              value={formData.weight_kg || ""}
-              onChange={handleChange}
-              className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
-              placeholder="kg"
-            />
-            {errors.weight_kg && <p className="text-sm text-red-500 mt-1">{errors.weight_kg}</p>}
-          </div>
+          <TextInput
+            label="Taille (cm)"
+            name="height_cm"
+            type="number"
+            value={formData.height_cm}
+            onChange={handleChange}
+            error={errors.height_cm}
+            placeholder="cm"
+          />
+          <TextInput
+            label="Poids (kg)"
+            name="weight_kg"
+            type="number"
+            value={formData.weight_kg}
+            onChange={handleChange}
+            error={errors.weight_kg}
+            placeholder="kg"
+          />
         </div>
-
-        {/* Activité physique (Radio Group) */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-2">Niveau d’activité physique</label>
-          <div className="flex flex-col gap-3">
-            {[
-              "Faible (travail de bureau, peu de sport)",
-              "Modéré (1-2 séances de sport/semaine)",
-              "Élevé (3 séances ou plus/semaine)",
-            ].map((option) => (
-              <label
-                key={option}
-                className={`cursor-pointer rounded-lg border px-4 py-3 text-sm transition
-                  ${
-                    formData.exercise_level === option
-                      ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
-                      : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
-                  }`}
-              >
-                <input
-                  type="radio"
-                  name="exercise_level"
-                  value={option}
-                  checked={formData.exercise_level === option}
-                  onChange={handleChange}
-                  className="sr-only"
-                />
-                {option}
-              </label>
-            ))}
-          </div>
-          {errors.exercise_level && <p className="text-sm text-red-500 mt-2">{errors.exercise_level}</p>}
-        </div>
+        <PhysicalActivityGroup value={pa} updateFormData={updateFormData} errors={errors?.physicalActivity} />
       </div>
 
       {/* Bouton suivant */}
@@ -168,5 +157,5 @@ export default function Step1({ formData, updateFormData, goToNext }) {
         Étape suivante
       </button>
     </div>
-  )
+  );
 }
