@@ -99,7 +99,6 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
     { label: "Manger plus sainement", value: "eatHealthier" },
     { label: "Perdre du poids", value: "weightLoss" },
   ];
-  const PRIMARY_GOAL_VALUES = PRIMARY_GOAL_OPTIONS.map(opt => opt.value);
 
   return (
     <div>
@@ -129,14 +128,15 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
           <div className="mb-6">
             <RadioGroup
               name="primaryGoal"
-              options={PRIMARY_GOAL_VALUES}
-              value={formData.primaryGoal || ""}
-              onChange={e => updateFormData({ primaryGoal: e.target.value })}
+              options={PRIMARY_GOAL_OPTIONS.map(opt => opt.label)}
+              value={PRIMARY_GOAL_OPTIONS.find(opt => opt.value === formData.primaryGoal)?.label || ""}
+              onChange={e => {
+                const selected = PRIMARY_GOAL_OPTIONS.find(opt => opt.label === e.target.value);
+                updateFormData({ primaryGoal: selected ? selected.value : "" });
+              }}
               error={errors && errors.primaryGoal}
               label="Quel est ton objectif principal avec ce menu ?"
-              helpText="Utilisé pour calculer la cible calorique et la tolérance."
               optionClassName="text-sm"
-              renderOptionLabel={val => PRIMARY_GOAL_OPTIONS.find(opt => opt.value === val)?.label || val}
             />
             <div className="mt-4">
               <ToggleSwitch
