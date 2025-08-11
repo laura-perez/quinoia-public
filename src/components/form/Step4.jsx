@@ -1,5 +1,14 @@
 import { useState } from "react"
+
+/**
+ * Types for formData
+ */
+/**
+ * @typedef {"saveTime" | "eatHealthier" | "weightLoss"} PrimaryGoal
+ * @typedef {"highProtein" | null} SecondaryFocus
+ */
 import RadioGroup from "./form-components/RadioGroup";
+import ToggleSwitch from "./form-components/ToggleSwitch";
 import TextInput from "./form-components/TextInput"
 import TextArea from "./form-components/TextArea"
 import FormError from "./form-components/FormError"
@@ -119,16 +128,24 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
           {/* Objectif principal */}
           <div className="mb-6">
             <RadioGroup
-            name="primaryGoal"
-            options={PRIMARY_GOAL_VALUES}
-            value={formData.primaryGoal || ""}
-            onChange={e => updateFormData({ primaryGoal: e.target.value })}
-            error={errors && errors.primaryGoal}
-            label="Quel est ton objectif principal avec ce menu ?"
-            helpText="Utilisé pour calculer la cible calorique et la tolérance."
-            optionClassName="text-sm"
-            renderOptionLabel={val => PRIMARY_GOAL_OPTIONS.find(opt => opt.value === val)?.label || val}
-          />
+              name="primaryGoal"
+              options={PRIMARY_GOAL_VALUES}
+              value={formData.primaryGoal || ""}
+              onChange={e => updateFormData({ primaryGoal: e.target.value })}
+              error={errors && errors.primaryGoal}
+              label="Quel est ton objectif principal avec ce menu ?"
+              helpText="Utilisé pour calculer la cible calorique et la tolérance."
+              optionClassName="text-sm"
+              renderOptionLabel={val => PRIMARY_GOAL_OPTIONS.find(opt => opt.value === val)?.label || val}
+            />
+            <div className="mt-4">
+              <ToggleSwitch
+                name="secondaryFocus"
+                checked={formData.secondaryFocus === "highProtein"}
+                onChange={e => updateFormData({ secondaryFocus: e.target.checked ? "highProtein" : null })}
+                label="Je souhaite prioriser les protéines"
+              />
+            </div>
           </div>
 
 
