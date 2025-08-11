@@ -1,5 +1,5 @@
 import { useState } from "react"
-import RadioGroup from "./form-components/RadioGroup"
+import RadioGroup from "./form-components/RadioGroup";
 import TextInput from "./form-components/TextInput"
 import TextArea from "./form-components/TextArea"
 import FormError from "./form-components/FormError"
@@ -10,12 +10,29 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState("")
-  const [goal, setGoal] = useState(formData.goal || "")
+    const [errors, setErrors] = useState({});
+  // Remove goal state, use formData.primaryGoal
   const [note, setNote] = useState(formData.note || "")
   const [email, setEmail] = useState(formData.email || "")
 
   const handleSubmit = async () => {
-    if (!agreed) return;
+      // Validate required fields
+      const newErrors = {};
+      if (!formData.primaryGoal || formData.primaryGoal === "") {
+        newErrors.primaryGoal = "Merci de sélectionner un objectif principal.";
+      }
+      if (!agreed) {
+        newErrors.consent = "Merci d'accepter l'utilisation de tes données.";
+      }
+      if (!email) {
+        setError("Merci de renseigner ton adresse email.");
+        setErrors(newErrors);
+        return;
+      }
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
+      }
     if (!email) {
       setError("Merci de renseigner ton adresse email.");
       return;
@@ -27,7 +44,7 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
         ...formData,
         physicalActivity: formData.physicalActivity,
         email,
-        goal,
+        primaryGoal: formData.primaryGoal,
         note,
         consent: agreed,
       });
@@ -35,6 +52,7 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
 
     setIsSubmitting(true);
     setError("");
+      setErrors({});
 
     try {
       const token = await grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: "submit_form" });
@@ -45,7 +63,7 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
         physicalActivity: formData.physicalActivity,
         email,
         recaptchaToken: token,
-        goal,
+        primaryGoal: formData.primaryGoal,
         note,
         consent: agreed,
       });
@@ -67,13 +85,12 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
     }
   };
 
-  const goals = [
-    "Manger plus sainement",
-    "Gagner du temps",
-    "Manger plus de protéines",
-    "Perdre du poids",
-    "Prendre du poids de manière saine",
-  ]
+  const PRIMARY_GOAL_OPTIONS = [
+    { label: "Gagner du temps", value: "saveTime" },
+    { label: "Manger plus sainement", value: "eatHealthier" },
+    { label: "Perdre du poids", value: "weightLoss" },
+  ];
+  const PRIMARY_GOAL_VALUES = PRIMARY_GOAL_OPTIONS.map(opt => opt.value);
 
   return (
     <div>
@@ -102,12 +119,16 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
           {/* Objectif principal */}
           <div className="mb-6">
             <RadioGroup
-              name="goal"
-              options={goals}
-              value={goal}
-              onChange={e => setGoal(e.target.value)}
-              label="Quel est ton objectif principal avec ce menu ?"
-            />
+            name="primaryGoal"
+            options={PRIMARY_GOAL_VALUES}
+            value={formData.primaryGoal || ""}
+            onChange={e => updateFormData({ primaryGoal: e.target.value })}
+            error={errors && errors.primaryGoal}
+            label="Quel est ton objectif principal avec ce menu ?"
+            helpText="Utilisé pour calculer la cible calorique et la tolérance."
+            optionClassName="text-sm"
+            renderOptionLabel={val => PRIMARY_GOAL_OPTIONS.find(opt => opt.value === val)?.label || val}
+          />
           </div>
 
 
