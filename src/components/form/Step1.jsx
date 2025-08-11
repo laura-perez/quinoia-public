@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import RadioGroup from "./form-components/RadioGroup";
-import PhysicalActivityGroup from "./form-components/PhysicalActivityGroup";
+import PhysicalActivityRadioGroup from "./form-components/PhysicalActivityRadioGroup";
+import HighIntensityToggle from "./form-components/HighIntensityToggle";
 
 // Initial state for the physical activity group
 const INITIAL_PHYSICAL_ACTIVITY = {
@@ -138,7 +139,54 @@ export default function Step1({ formData, updateFormData, goToNext }) {
             placeholder="kg"
           />
         </div>
-        <PhysicalActivityGroup value={pa} updateFormData={updateFormData} errors={errors?.physicalActivity} />
+        {/* Activité physique */}
+        <fieldset className="border border-[#EAEAEA] rounded-lg px-4 py-4 mb-6">
+          <legend className="block text-lg font-bold text-[#414535] mb-2">Activité physique</legend>
+          <div className="space-y-6">
+            <PhysicalActivityRadioGroup
+              name="deskJob"
+              label="Poste sédentaire"
+              options={[
+                { label: "Oui", value: true },
+                { label: "Non", value: false },
+              ]}
+              value={pa.deskJob}
+              onChange={(deskJob) => updateFormData({ physicalActivity: { ...pa, deskJob } })}
+              error={errors?.physicalActivity?.deskJob}
+            />
+            <PhysicalActivityRadioGroup
+              name="dailySteps"
+              label="Pas par jour"
+              options={[
+                { label: "< 5 000", value: "<5k" },
+                { label: "5 000 – 8 000", value: "5-8k" },
+                { label: "> 8 000", value: ">8k" },
+              ]}
+              value={pa.dailySteps}
+              onChange={(dailySteps) => updateFormData({ physicalActivity: { ...pa, dailySteps } })}
+              error={errors?.physicalActivity?.dailySteps}
+              optionClassName="flex-1 text-center font-medium"
+            />
+            <PhysicalActivityRadioGroup
+              name="sessionsPerWeek"
+              label="Séances de sport/semaine"
+              options={[
+                { label: "0", value: "0" },
+                { label: "1-2", value: "1-2" },
+                { label: "3-4", value: "3-4" },
+                { label: ">=5", value: ">=5" },
+              ]}
+              value={pa.sessionsPerWeek}
+              onChange={(sessionsPerWeek) => updateFormData({ physicalActivity: { ...pa, sessionsPerWeek } })}
+              error={errors?.physicalActivity?.sessionsPerWeek}
+            />
+            <HighIntensityToggle
+              checked={!!pa.highIntensity}
+              onChange={(checked) => updateFormData({ physicalActivity: { ...pa, highIntensity: checked } })}
+              error={errors?.physicalActivity?.highIntensity}
+            />
+          </div>
+        </fieldset>
       </div>
 
       {/* Next button */}
