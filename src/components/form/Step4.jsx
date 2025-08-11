@@ -15,17 +15,29 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
   const [email, setEmail] = useState(formData.email || "")
 
   const handleSubmit = async () => {
-    if (!agreed) return
+    if (!agreed) return;
     if (!email) {
       setError("Merci de renseigner ton adresse email.");
       return;
     }
 
-    setIsSubmitting(true)
-    setError("")
+    // Log form data in development only
+    if (process.env.NODE_ENV === "development") {
+      console.log("Form data submitted:", {
+        ...formData,
+        physicalActivity: formData.physicalActivity,
+        email,
+        goal,
+        note,
+        consent: agreed,
+      });
+    }
+
+    setIsSubmitting(true);
+    setError("");
 
     try {
-      const token = await grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: "submit_form" })
+      const token = await grecaptcha.execute(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY, { action: "submit_form" });
 
       // Ensure latest physicalActivity is included
       const body = JSON.stringify({
@@ -36,24 +48,24 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
         goal,
         note,
         consent: agreed,
-      })
-      
+      });
+
       const response = await fetch("https://your-n8n-instance.example/webhook/menu", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body,
-      })
+      });
 
-      if (!response.ok) throw new Error("Erreur lors de l’envoi.")
+      if (!response.ok) throw new Error("Erreur lors de l’envoi.");
 
-      setSubmitted(true)
+      setSubmitted(true);
     } catch (err) {
-      console.error(err)
-      setError("Une erreur est survenue. Merci de réessayer.")
+      console.error(err);
+      setError("Une erreur est survenue. Merci de réessayer.");
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const goals = [
     "Manger plus sainement",
