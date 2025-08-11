@@ -1,88 +1,79 @@
 
+
 import { useState } from "react";
+import RadioGroup from "./form-components/RadioGroup";
 import PhysicalActivityGroup from "./form-components/PhysicalActivityGroup";
 
-const initialPhysicalActivity = { deskJob: null, dailySteps: null, sessionsPerWeek: null, highIntensity: null };
+// Initial state for the physical activity group
+const INITIAL_PHYSICAL_ACTIVITY = {
+  deskJob: null,
+  dailySteps: null,
+  sessionsPerWeek: null,
+  highIntensity: null,
+};
 
+const GENDER_OPTIONS = ["Femme", "Homme", "Pas précisé"];
+
+/**
+ * Controlled text input with label and error display.
+ */
 function TextInput({ label, name, type = "text", value, onChange, error, placeholder }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-[#414535] mb-1">{label}</label>
+      <label className="block text-sm font-medium text-[#414535] mb-1" htmlFor={name}>{label}</label>
       <input
+        id={name}
         type={type}
         name={name}
         value={value || ""}
         onChange={onChange}
         className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
         placeholder={placeholder}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${name}-error` : undefined}
       />
-      {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
-    </div>
-  );
-}
-
-function RadioGroup({ label, name, options, value, onChange, error }) {
-  return (
-    <div>
-      <label className="block text-sm font-medium text-[#414535] mb-2">{label}</label>
-      <div className="flex flex-col sm:flex-row gap-3">
-        {options.map((option) => (
-          <label
-            key={option}
-            className={`flex-1 cursor-pointer rounded-lg border px-4 py-3 text-center text-sm font-medium transition
-              ${value === option ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]" : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"}`}
-          >
-            <input
-              type="radio"
-              name={name}
-              value={option}
-              checked={value === option}
-              onChange={onChange}
-              className="sr-only"
-            />
-            {option}
-          </label>
-        ))}
-      </div>
-      {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
+      {error && <p id={`${name}-error`} className="text-sm text-red-500 mt-1">{error}</p>}
     </div>
   );
 }
 
 
+/**
+ * Step 1: User profile and physical activity form.
+ */
 export default function Step1({ formData, updateFormData, goToNext }) {
   const [errors, setErrors] = useState({});
-  const pa = formData.physicalActivity ?? initialPhysicalActivity;
+  const pa = formData.physicalActivity ?? INITIAL_PHYSICAL_ACTIVITY;
 
+  // Handle text/radio input changes
   const handleChange = (e) => {
     updateFormData({ [e.target.name]: e.target.value });
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
+  // Validate all required fields and physical activity group
   const handleSubmit = () => {
     const requiredFields = ["name", "age", "gender", "height_cm", "weight_kg"];
     const newErrors = {};
-    requiredFields.forEach((field) => {
+    for (const field of requiredFields) {
       if (!formData[field] || formData[field].toString().trim() === "") {
         newErrors[field] = "Ce champ est requis";
       }
-    });
-
-    // Validate physicalActivity fields
+    }
+    // Validate physical activity fields
     const paErrors = {};
-  if (pa.deskJob === null) paErrors.deskJob = "Ce champ est requis";
-  if (pa.dailySteps === null) paErrors.dailySteps = "Ce champ est requis";
-  if (pa.sessionsPerWeek === null) paErrors.sessionsPerWeek = "Ce champ est requis";
-  if (pa.highIntensity === null) paErrors.highIntensity = "Ce champ est requis";
+    if (pa.deskJob === null) paErrors.deskJob = "Ce champ est requis";
+    if (pa.dailySteps === null) paErrors.dailySteps = "Ce champ est requis";
+    if (pa.sessionsPerWeek === null) paErrors.sessionsPerWeek = "Ce champ est requis";
+    if (pa.highIntensity === null) paErrors.highIntensity = "Ce champ est requis";
     if (Object.keys(paErrors).length > 0) {
       newErrors.physicalActivity = paErrors;
     }
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-    } else {
-      goToNext();
+      return;
     }
+    goToNext();
   };
 
   return (
@@ -119,12 +110,13 @@ export default function Step1({ formData, updateFormData, goToNext }) {
           placeholder="Âge"
         />
         <RadioGroup
-          label="Quel est ton genre ?"
           name="gender"
-          options={["Femme", "Homme", "Pas précisé"]}
+          options={GENDER_OPTIONS}
           value={formData.gender}
           onChange={handleChange}
           error={errors.gender}
+          label="Quel est ton genre ?"
+          optionClassName="flex-1 text-center font-medium"
         />
         <div className="flex flex-col sm:flex-row gap-4">
           <TextInput
@@ -149,10 +141,11 @@ export default function Step1({ formData, updateFormData, goToNext }) {
         <PhysicalActivityGroup value={pa} updateFormData={updateFormData} errors={errors?.physicalActivity} />
       </div>
 
-      {/* Bouton suivant */}
+      {/* Next button */}
       <button
         onClick={handleSubmit}
         className="mt-8 bg-[#414535] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#2f3226] transition"
+        type="button"
       >
         Étape suivante
       </button>

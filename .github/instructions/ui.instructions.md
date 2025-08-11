@@ -14,6 +14,7 @@ applyTo: "src/components/**/*.{jsx,ts}"
 - FR labels, EN values (to match contracts). Tooltips where helpful.
 - Show **disclaimer calories & IA**; link to a detailed page.
 - reCAPTCHA loaded only on the form page; disable submit while resolving.
+- HyperUI components are used for the form
 
 ## Public page `/menu/[shareId]`
 - **No PII**. Add `<meta name="robots" content="noindex,nofollow">`.

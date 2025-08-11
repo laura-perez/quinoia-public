@@ -1,40 +1,72 @@
-import { useState } from "react"
+
+// Step 3: Cooking habits and kitchen equipment
+import { useState } from "react";
+import RadioGroup from "./form-components/RadioGroup";
+import CheckboxGroup from "./form-components/CheckboxGroup";
+import ToggleSwitch from "./form-components/ToggleSwitch";
+
+// Cooking level options
+const COOKING_LEVELS = [
+  "Débutant·e : Je veux juste que ce soit simple et rapide",
+  "Intermédiaire : Je suis à l’aise, mais pas un chef non plus",
+  "Confirmé·e : Cuisiner, c’est mon terrain de jeu",
+];
+
+// Equipment options
+const EQUIPMENT_OPTIONS = ["Four", "Mixeur/Blender", "Thermomix", "Air Fryer"];
+
+// Recipe and portion count options
+const RECIPE_COUNTS = [2, 3, 4, 5, 6, 7];
+const PORTION_COUNTS = [1, 2, 3, "4+"];
+
 
 export default function Step3({ formData, updateFormData, goToNext, goToPrev }) {
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState({});
 
-  const handleChange = (e) => {
-    updateFormData({ [e.target.name]: e.target.value })
-    setErrors((prev) => ({ ...prev, [e.target.name]: "" }))
-  }
+  /**
+   * Handle text and radio input changes.
+   */
+  const handleInputChange = (e) => {
+    updateFormData({ [e.target.name]: e.target.value });
+    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+  };
 
-  const handleCheckbox = (e) => {
-    const { name, value, checked } = e.target
-    const current = formData[name] || []
-    const updated = checked ? [...current, value] : current.filter((v) => v !== value)
-    updateFormData({ [name]: updated })
-  }
+  /**
+   * Handle checkbox group changes (for arrays).
+   */
+  const handleCheckboxChange = (e) => {
+    const { name, value, checked } = e.target;
+    const current = formData[name] || [];
+    const updated = checked ? [...current, value] : current.filter((v) => v !== value);
+    updateFormData({ [name]: updated });
+  };
 
-  const handleToggle = (e) => {
-    updateFormData({ [e.target.name]: e.target.checked })
-  }
+  /**
+   * Handle toggle switches (boolean values).
+   */
+  const handleToggleChange = (e) => {
+    updateFormData({ [e.target.name]: e.target.checked });
+  };
 
+  /**
+   * Validate required fields and proceed to next step if valid.
+   */
   const handleSubmit = () => {
-    const requiredFields = ["cooking_level", "nbRecipes", "nbPortions"]
-    const newErrors = {}
-    requiredFields.forEach((field) => {
+    const requiredFields = ["cooking_level", "nbRecipes", "nbPortions"];
+    const newErrors = {};
+    for (const field of requiredFields) {
       if (!formData[field] || formData[field].toString().trim() === "") {
-        newErrors[field] = "Ce champ est requis"
+        newErrors[field] = "Ce champ est requis";
       }
-    })
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-    } else {
-      goToNext()
     }
-  }
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    goToNext();
+  };
 
+  // Main render
   return (
     <div>
       {/* Progress bar */}
@@ -51,154 +83,74 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
       </p>
 
       <div className="space-y-6">
-        {/* Niveau en cuisine */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-2">Quel est ton niveau en cuisine ?</label>
-          <div className="flex flex-col gap-3">
-            {[
-              "Débutant·e : Je veux juste que ce soit simple et rapide",
-              "Intermédiaire : Je suis à l’aise, mais pas un chef non plus",
-              "Confirmé·e : Cuisiner, c’est mon terrain de jeu",
-            ].map((option) => (
-              <label
-                key={option}
-                className={`cursor-pointer rounded-lg border px-4 py-3 text-sm transition ${
-                  formData.cooking_level === option
-                    ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
-                    : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="cooking_level"
-                  value={option}
-                  checked={formData.cooking_level === option}
-                  onChange={handleChange}
-                  className="sr-only"
-                />
-                {option}
-              </label>
-            ))}
-          </div>
-          {errors.cooking_level && <p className="text-sm text-red-500 mt-2">{errors.cooking_level}</p>}
-        </div>
+        {/* Cooking level radio group */}
+        <RadioGroup
+          name="cooking_level"
+          options={COOKING_LEVELS}
+          value={formData.cooking_level || ""}
+          onChange={handleInputChange}
+          error={errors.cooking_level}
+          label="Quel est ton niveau en cuisine ?"
+        />
 
-        {/* Équipements */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-2">Quels équipements de cuisine as-tu ?</label>
-          <div className="grid grid-cols-2 sm:grid-cols-2 gap-3">
-            {["Four", "Mixeur/Blender", "Thermomix", "Air Fryer"].map((option) => (
-              <label
-                key={option}
-                className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition ${
-                  formData.equipment?.includes(option)
-                    ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
-                    : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  name="equipment"
-                  value={option}
-                  checked={formData.equipment?.includes(option)}
-                  onChange={handleCheckbox}
-                  className="sr-only"
-                />
-                {option}
-              </label>
-            ))}
-          </div>
-        </div>
+        {/* Equipment checkbox group */}
+        <CheckboxGroup
+          name="equipment"
+          options={EQUIPMENT_OPTIONS}
+          values={formData.equipment || []}
+          onChange={handleCheckboxChange}
+          label="Quels équipements de cuisine as-tu ?"
+        />
 
-        {/* Nombre de recettes */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-2">Combien de recettes veux tu cette semaine ?</label>
-          <div className="flex flex-wrap gap-3">
-            {[2, 3, 4, 5, 6, 7].map((num) => (
-              <label
-                key={num}
-                className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition ${
-                  formData.nbRecipes === String(num)
-                    ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
-                    : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="nbRecipes"
-                  value={num}
-                  checked={formData.nbRecipes === String(num)}
-                  onChange={handleChange}
-                  className="sr-only"
-                />
-                {num}
-              </label>
-            ))}
-          </div>
-          {errors.nbRecipes && <p className="text-sm text-red-500 mt-2">{errors.nbRecipes}</p>}
-        </div>
+        {/* Number of recipes radio group */}
+        <RadioGroup
+          name="nbRecipes"
+          options={RECIPE_COUNTS}
+          value={formData.nbRecipes || ""}
+          onChange={handleInputChange}
+          error={errors.nbRecipes}
+          label="Combien de recettes veux tu cette semaine ?"
+        />
 
-        {/* Nombre de portions */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-2">Combien de portions par recette ?</label>
-          <div className="flex flex-wrap gap-3">
-            {[1, 2, 3, "4+"].map((num) => (
-              <label
-                key={num}
-                className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition ${
-                  formData.nbPortions === String(num)
-                    ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
-                    : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="nbPortions"
-                  value={num}
-                  checked={formData.nbPortions === String(num)}
-                  onChange={handleChange}
-                  className="sr-only"
-                />
-                {num}
-              </label>
-            ))}
-          </div>
-          {errors.nbPortions && <p className="text-sm text-red-500 mt-2">{errors.nbPortions}</p>}
-        </div>
+        {/* Number of portions radio group */}
+        <RadioGroup
+          name="nbPortions"
+          options={PORTION_COUNTS}
+          value={formData.nbPortions || ""}
+          onChange={handleInputChange}
+          error={errors.nbPortions}
+          label="Combien de portions par recette ?"
+        />
 
-        {/* Toggle batch cooking */}
-        <div>
-          <div className="flex items-center justify-between">
-            <label className="block text-sm font-medium text-[#414535]">Souhaites-tu recevoir des conseils en batch cooking ?</label>
-            <input
-              type="checkbox"
-              name="batch"
-              checked={formData.batch || false}
-              onChange={handleToggle}
-              className="w-10 h-5 bg-[#EAEAEA] border-2 border-[#EAEAEA] rounded-full appearance-none cursor-pointer checked:bg-[#F4C95D] relative transition"
-            />
-          </div>
-          <p className="text-xs text-[#8A8A8A] mt-1">
-            💡 Le batch cooking, c’est une méthode pour s'organiser en avance, cuisiner plusieurs plats d’un coup, puis assembler ou réchauffer facilement la semaine.
-          </p>
-        </div>
+        {/* Batch cooking toggle */}
+        <ToggleSwitch
+          name="batch"
+          checked={formData.batch || false}
+          onChange={handleToggleChange}
+          label="Souhaites-tu recevoir des conseils en batch cooking ?"
+          description="💡 Le batch cooking, c’est une méthode pour s'organiser en avance, cuisiner plusieurs plats d’un coup, puis assembler ou réchauffer facilement la semaine."
+        />
       </div>
 
-      {/* Navigation */}
+      {/* Navigation buttons */}
       <div className="mt-8 flex justify-between">
         <button
           onClick={goToPrev}
           className="bg-white border border-[#414535] text-[#414535] px-6 py-3 rounded-md font-medium hover:bg-[#FDFBF8] transition"
+          type="button"
         >
           Retour
         </button>
         <button
           onClick={handleSubmit}
           className="bg-[#414535] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#2f3226] transition"
+          type="button"
         >
           Étape suivante
         </button>
       </div>
     </div>
-  )
+  );
 }
+
+

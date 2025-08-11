@@ -1,4 +1,9 @@
 import { useState } from "react"
+import RadioGroup from "./form-components/RadioGroup"
+import TextInput from "./form-components/TextInput"
+import TextArea from "./form-components/TextArea"
+import FormError from "./form-components/FormError"
+import ConsentCheckbox from "./form-components/ConsentCheckbox"
 
 export default function Step4({ formData, updateFormData, goToPrev }) {
   const [agreed, setAgreed] = useState(false)
@@ -84,71 +89,47 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
 
           {/* Objectif principal */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#414535] mb-2">Quel est ton objectif principal avec ce menu ?</label>
-            <div className="flex flex-col gap-3">
-              {goals.map((opt) => (
-                <label
-                  key={opt}
-                  className={`cursor-pointer rounded-lg border px-4 py-3 text-sm transition ${
-                    goal === opt
-                      ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
-                      : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="goal"
-                    value={opt}
-                    checked={goal === opt}
-                    onChange={(e) => setGoal(e.target.value)}
-                    className="sr-only"
-                  />
-                  {opt}
-                </label>
-              ))}
-            </div>
+            <RadioGroup
+              name="goal"
+              options={goals}
+              value={goal}
+              onChange={e => setGoal(e.target.value)}
+              label="Quel est ton objectif principal avec ce menu ?"
+            />
           </div>
+
 
           {/* Message libre */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#414535] mb-1">Autre chose que tu souhaites ajouter ?</label>
-            <textarea
+            <TextArea
+              label="Autre chose que tu souhaites ajouter ?"
               name="note"
               value={note}
-              onChange={(e) => setNote(e.target.value)}
-              rows={4}
+              onChange={e => setNote(e.target.value)}
               placeholder="Ex : j'aime le régime méditerranéen, anti-inflammatoire etc."
-              className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
             />
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#414535] mb-2">Ton adresse email</label>
-            <input
-              type="email"
+            <TextInput
+              label="Ton adresse email"
               name="email"
+              type="email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={e => setEmail(e)}
               required
               placeholder="exemple@email.com"
-              className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
             />
           </div>
 
           {/* consent */}
-          <label className="flex items-start space-x-2 text-sm text-[#414535] mb-6">
-            <input
-              type="checkbox"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-              className="mt-1 rounded border-[#EAEAEA] text-[#414535] focus:ring-[#B7D3C6]"
-            />
-            <span>
-              J’accepte que mes données soient utilisées pour générer mon menu personnalisé. Elles ne seront jamais partagées.
-            </span>
-          </label>
+          <ConsentCheckbox
+            checked={agreed}
+            onChange={e => setAgreed(e.target.checked)}
+            label="J’accepte que mes données soient utilisées pour générer mon menu personnalisé. Elles ne seront jamais partagées."
+          />
 
-          {error && <p className="text-sm text-red-500 mb-4">{error}</p>}
+          <FormError error={error} />
 
           {/* Navigation */}
           <div className="mt-8 flex justify-between">
