@@ -8,7 +8,7 @@ const INITIAL_PHYSICAL_ACTIVITY = {
   deskJob: null,
   dailySteps: null,
   sessionsPerWeek: null,
-  highIntensity: false,
+  highIntensity: null,
 };
 
 const GENDER_OPTIONS = ["Femme", "Homme", "Pas précisé"];
