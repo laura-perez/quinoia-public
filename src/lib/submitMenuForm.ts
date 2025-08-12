@@ -8,22 +8,21 @@ declare const grecaptcha: {
 export interface SubmitMenuFormParams {
   formData: Record<string, any>;
   agreed: boolean;
-  note: string;
-  email: string;
 }
 
-export default async function submitMenuForm({
+export default async function SubmitMenuForm({
   formData,
-  agreed,
+  agreed
 }: SubmitMenuFormParams): Promise<void> {
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
   if (!siteKey) throw new Error("reCAPTCHA site key is not defined");
   const token = await grecaptcha.execute(siteKey, { action: "submit_form" });
   const body = JSON.stringify({
     ...formData,
-    consent: agreed,
     recaptchaToken: token,
+    consent: agreed,
   });
+
   const response = await fetch("https://your-n8n-instance.example/webhook/menu", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
