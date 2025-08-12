@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
-
-/**
- * Types for formData
- */
-/**
- * @typedef {"saveTime" | "eatHealthier" | "weightLoss"} PrimaryGoal
- * @typedef {"highProtein" | null} SecondaryFocus
- */
 import RadioGroup from "./form-components/RadioGroup";
+import ProgressBar from "./form-components/ProgressBar";
 import TextInput from "./form-components/TextInput"
 import TextArea from "./form-components/TextArea"
 import FormError from "./form-components/FormError"
 import ConsentCheckbox from "./form-components/ConsentCheckbox"
+
+const PRIMARY_GOAL_OPTIONS = [
+    { label: "Gagner du temps", value: "saveTime" },
+    { label: "Manger plus sainement", value: "eatHealthier" },
+    { label: "Perdre du poids", value: "weightLoss" },
+  ];
 
 export default function Step4({ formData, updateFormData, goToPrev }) {
     useEffect(() => {
@@ -92,21 +91,9 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
     }
   };
 
-  const PRIMARY_GOAL_OPTIONS = [
-    { label: "Gagner du temps", value: "saveTime" },
-    { label: "Manger plus sainement", value: "eatHealthier" },
-    { label: "Perdre du poids", value: "weightLoss" },
-  ];
-
   return (
     <div>
-      {/* Progress bar */}
-      <div className="mb-6">
-        <div className="h-2 bg-[#EAEAEA] rounded-full overflow-hidden">
-          <div className="h-full bg-[#F4C95D] transition-all duration-500" style={{ width: "100%" }} />
-        </div>
-        <p className="text-sm text-[#8A8A8A] mt-2 text-right">4 sur 4</p>
-      </div>
+  <ProgressBar step={4} total={4} />
 
       {submitted ? (
         <div className="text-center">

@@ -1,7 +1,6 @@
-
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import RadioGroup from "./form-components/RadioGroup";
+import ProgressBar from "./form-components/ProgressBar";
 import TextInput from "./form-components/TextInput";
 
 // Initial state for the physical activity group
@@ -18,6 +17,10 @@ const GENDER_OPTIONS = ["Femme", "Homme", "Pas précisé"];
  * Step 1: User profile and physical activity form.
  */
 export default function Step1({ formData, updateFormData, goToNext }) {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const [errors, setErrors] = useState({});
   const pa = formData.physicalActivity ?? INITIAL_PHYSICAL_ACTIVITY;
 
@@ -53,13 +56,7 @@ export default function Step1({ formData, updateFormData, goToNext }) {
 
   return (
     <div>
-      {/* Progress bar */}
-      <div className="mb-6">
-        <div className="h-2 bg-[#EAEAEA] rounded-full overflow-hidden">
-          <div className="h-full bg-[#F4C95D] transition-all duration-500" style={{ width: "25%" }} />
-        </div>
-        <p className="text-sm text-[#8A8A8A] mt-2 text-right">1 sur 4</p>
-      </div>
+  <ProgressBar step={1} total={4} />
 
       <h2 className="text-2xl font-bold text-[#414535] mb-2">Ton profil de base</h2>
       <p className="text-[#8A8A8A] mb-6">
@@ -177,14 +174,16 @@ export default function Step1({ formData, updateFormData, goToNext }) {
         </fieldset>
       </div>
 
-      {/* Next button */}
-      <button
-        onClick={handleSubmit}
-        className="mt-8 bg-[#414535] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#2f3226] transition"
-        type="button"
-      >
-        Étape suivante
-      </button>
+      {/* Next button aligned right */}
+      <div className="mt-8 flex justify-end">
+        <button
+          onClick={handleSubmit}
+          className="bg-[#414535] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#2f3226] transition"
+          type="button"
+        >
+          Étape suivante
+        </button>
+      </div>
     </div>
   );
 }

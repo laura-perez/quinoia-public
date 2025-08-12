@@ -1,9 +1,7 @@
-
-// Step 3: Cooking habits and kitchen equipment
 import { useState, useEffect } from "react";
 import RadioGroup from "./form-components/RadioGroup";
+import ProgressBar from "./form-components/ProgressBar";
 import CheckboxGroup from "./form-components/CheckboxGroup";
-import ToggleSwitch from "./form-components/ToggleSwitch";
 
 // Cooking level options
 const COOKING_LEVELS = [
@@ -19,12 +17,13 @@ const EQUIPMENT_OPTIONS = ["Four", "Mixeur/Blender", "Thermomix", "Air Fryer"];
 const RECIPE_COUNTS = [2, 3, 4, 5, 6, 7];
 const PORTION_COUNTS = [1, 2, 3, "4+"];
 
-
 export default function Step3({ formData, updateFormData, goToNext, goToPrev }) {
-  const [errors, setErrors] = useState({});
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
+
+  const [errors, setErrors] = useState({});
 
   // Handle text and radio input changes
   const handleInputChange = (e) => {
@@ -38,11 +37,6 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
     const current = formData[name] || [];
     const updated = checked ? [...current, value] : current.filter((v) => v !== value);
     updateFormData({ [name]: updated });
-  };
-
-  // Handle toggle switches (boolean values)
-  const handleToggleChange = (e) => {
-    updateFormData({ [e.target.name]: e.target.checked });
   };
 
   // Validate required fields and proceed to next step if valid
@@ -64,13 +58,7 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
   // Main render
   return (
     <div>
-      {/* Progress bar */}
-      <div className="mb-6">
-        <div className="h-2 bg-[#EAEAEA] rounded-full overflow-hidden">
-          <div className="h-full bg-[#F4C95D] transition-all duration-500" style={{ width: "75%" }} />
-        </div>
-        <p className="text-sm text-[#8A8A8A] mt-2 text-right">3 sur 4</p>
-      </div>
+  <ProgressBar step={3} total={4} />
 
       <h2 className="text-2xl font-bold text-[#414535] mb-2">Ton quotidien en cuisine</h2>
       <p className="text-[#8A8A8A] mb-6">
