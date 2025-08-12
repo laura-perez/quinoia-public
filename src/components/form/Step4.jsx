@@ -1,4 +1,4 @@
-import react, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import RadioGroup from "./form-components/RadioGroup";
 import ProgressBar from "./form-components/ProgressBar";
 import TextInput from "./form-components/TextInput";
