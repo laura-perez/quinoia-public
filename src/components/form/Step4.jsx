@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import react, { useState, useEffect, useCallback } from "react";
 import RadioGroup from "./form-components/RadioGroup";
 import ProgressBar from "./form-components/ProgressBar";
 import TextInput from "./form-components/TextInput";
@@ -90,12 +90,15 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
     setError("");
     setErrors({});
     try {
-      await submitMenuForm({
+      const dataToSend = {
         formData,
         agreed: formState.agreed,
-        note: formState.note,
-        email: formState.email,
-      });
+        recaptchaToken: "token",
+      };
+      if (process.env.NODE_ENV === "development") {
+        console.log("Submitting menu form with data:", dataToSend);
+      }
+      await submitMenuForm(formData, formState.agreed);
       setSubmitted(true);
     } catch (err) {
       console.error(err);
@@ -155,17 +158,6 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
                 optionClassName="flex-1 text-center font-medium"
               />
             </div>
-          </div>
-
-          {/* Message libre */}
-          <div className="mb-6">
-            <TextArea
-              label="Autre chose que tu souhaites ajouter ?"
-              name="note"
-              value={formState.note}
-              onChange={handleNoteChange}
-              placeholder="Ex : j'aime le régime méditerranéen, anti-inflammatoire etc."
-            />
           </div>
 
           <div className="mb-6">

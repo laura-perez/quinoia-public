@@ -15,20 +15,14 @@ export interface SubmitMenuFormParams {
 export default async function submitMenuForm({
   formData,
   agreed,
-  note,
-  email,
 }: SubmitMenuFormParams): Promise<void> {
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
   if (!siteKey) throw new Error("reCAPTCHA site key is not defined");
   const token = await grecaptcha.execute(siteKey, { action: "submit_form" });
   const body = JSON.stringify({
     ...formData,
-    physicalActivity: formData.physicalActivity,
-    email,
-    recaptchaToken: token,
-    primaryGoal: formData.primaryGoal,
-    note,
     consent: agreed,
+    recaptchaToken: token,
   });
   const response = await fetch("https://your-n8n-instance.example/webhook/menu", {
     method: "POST",
