@@ -1,10 +1,9 @@
-
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { env, assertServerEnv } from './env';
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { env, assertServerEnv } from "./env";
 
 // Prevent import on the client side
-if (typeof window !== 'undefined') {
-  throw new Error('lib/supabaseServer.ts must never be imported on the client side');
+if (typeof window !== "undefined") {
+  throw new Error("lib/supabaseServer.ts must never be imported on the client side");
 }
 
 /**

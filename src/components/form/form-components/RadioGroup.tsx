@@ -34,7 +34,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
             className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition ${
               value === optionStr
                 ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
-                : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#B7D3C6]"
+                : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#F4C95D]"
             } ${optionClassName}`}
           >
             <input

@@ -1,9 +1,7 @@
-
-// Step 3: Cooking habits and kitchen equipment
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import RadioGroup from "./form-components/RadioGroup";
+import ProgressBar from "./form-components/ProgressBar";
 import CheckboxGroup from "./form-components/CheckboxGroup";
-import ToggleSwitch from "./form-components/ToggleSwitch";
 
 // Cooking level options
 const COOKING_LEVELS = [
@@ -19,21 +17,20 @@ const EQUIPMENT_OPTIONS = ["Four", "Mixeur/Blender", "Thermomix", "Air Fryer"];
 const RECIPE_COUNTS = [2, 3, 4, 5, 6, 7];
 const PORTION_COUNTS = [1, 2, 3, "4+"];
 
-
 export default function Step3({ formData, updateFormData, goToNext, goToPrev }) {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const [errors, setErrors] = useState({});
 
-  /**
-   * Handle text and radio input changes.
-   */
+  // Handle text and radio input changes
   const handleInputChange = (e) => {
     updateFormData({ [e.target.name]: e.target.value });
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
-  /**
-   * Handle checkbox group changes (for arrays).
-   */
+  // Handle checkbox group changes (for arrays)
   const handleCheckboxChange = (e) => {
     const { name, value, checked } = e.target;
     const current = formData[name] || [];
@@ -41,16 +38,7 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
     updateFormData({ [name]: updated });
   };
 
-  /**
-   * Handle toggle switches (boolean values).
-   */
-  const handleToggleChange = (e) => {
-    updateFormData({ [e.target.name]: e.target.checked });
-  };
-
-  /**
-   * Validate required fields and proceed to next step if valid.
-   */
+  // Validate required fields and proceed to next step if valid
   const handleSubmit = () => {
     const requiredFields = ["cooking_level", "nbRecipes", "nbPortions"];
     const newErrors = {};
@@ -69,17 +57,12 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
   // Main render
   return (
     <div>
-      {/* Progress bar */}
-      <div className="mb-6">
-        <div className="h-2 bg-[#EAEAEA] rounded-full overflow-hidden">
-          <div className="h-full bg-[#F4C95D] transition-all duration-500" style={{ width: "75%" }} />
-        </div>
-        <p className="text-sm text-[#8A8A8A] mt-2 text-right">3 sur 4</p>
-      </div>
+      <ProgressBar step={3} total={4} />
 
       <h2 className="text-2xl font-bold text-[#414535] mb-2">Ton quotidien en cuisine</h2>
       <p className="text-[#8A8A8A] mb-6">
-        Ici, pas de jugement – je veux juste m’adapter à ta réalité : ton emploi du temps, ton niveau, ton style de vie.
+        Ici, pas de jugement – je veux juste m’adapter à ta réalité : ton emploi du temps, ton
+        niveau, ton style de vie.
       </p>
 
       <div className="space-y-6">
@@ -122,14 +105,22 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
           label="Combien de portions par recette ?"
         />
 
-        {/* Batch cooking toggle */}
-        <ToggleSwitch
+        {/* Batch cooking radio group */}
+        <RadioGroup
           name="batch"
-          checked={formData.batch || false}
-          onChange={handleToggleChange}
           label="Souhaites-tu recevoir des conseils en batch cooking ?"
-          description="💡 Le batch cooking, c’est une méthode pour s'organiser en avance, cuisiner plusieurs plats d’un coup, puis assembler ou réchauffer facilement la semaine."
+          options={["Oui", "Non"]}
+          value={formData.batch === true ? "Oui" : formData.batch === false ? "Non" : ""}
+          onChange={(e) => {
+            const val = e.target.value === "Oui" ? true : e.target.value === "Non" ? false : null;
+            updateFormData({ batch: val });
+          }}
+          optionClassName="flex-1 text-center font-medium"
         />
+        <div className="text-xs text-[#8A8A8A] mt-1">
+          💡 Le batch cooking, c’est une méthode pour s'organiser en avance, cuisiner plusieurs
+          plats d’un coup, puis assembler ou réchauffer facilement la semaine.
+        </div>
       </div>
 
       {/* Navigation buttons */}

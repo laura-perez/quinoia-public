@@ -1,5 +1,4 @@
-
-import { env, assertServerEnv } from './env';
+import { env, assertServerEnv } from "./env";
 
 type RecaptchaResponse = {
   success: boolean;
@@ -17,7 +16,10 @@ type RecaptchaResponse = {
  * @returns Les champs utiles de la réponse Google
  * @throws Erreur réseau ou parsing
  */
-export async function verifyRecaptcha(token: string, ip?: string): Promise<{
+export async function verifyRecaptcha(
+  token: string,
+  ip?: string
+): Promise<{
   success: boolean;
   score?: number;
   hostname?: string;
@@ -29,24 +31,29 @@ export async function verifyRecaptcha(token: string, ip?: string): Promise<{
     secret: env.RECAPTCHA_SECRET_KEY,
     response: token,
   });
-  if (ip) params.append('remoteip', ip);
+  if (ip) params.append("remoteip", ip);
 
   let res: Response;
   try {
-    res = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    res = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: params.toString(),
     });
   } catch (err) {
-    throw new Error('Network error during reCAPTCHA verification' + (err && typeof err === 'object' && 'message' in err ? (err as Error).message : String(err)));
+    throw new Error(
+      "Network error during reCAPTCHA verification" +
+        (err && typeof err === "object" && "message" in err ? (err as Error).message : String(err))
+    );
   }
 
   let data: RecaptchaResponse;
   try {
     data = await res.json();
   } catch (err) {
-    throw new Error('Invalid reCAPTCHA response: ' + (err instanceof Error ? err.message : String(err)));
+    throw new Error(
+      "Invalid reCAPTCHA response: " + (err instanceof Error ? err.message : String(err))
+    );
   }
 
   return {

@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "next/link";
 
 export default function FinalCTA() {
   return (
@@ -8,7 +8,8 @@ export default function FinalCTA() {
           Et si tu laissais Quinoïa te simplifier la vie dès cette semaine ?
         </h2>
         <p className="text-[#414535] text-lg mb-8">
-          Reçois ton menu personnalisé, ta liste de courses prête, et tes recettes équilibrées – sans rien faire.
+          Reçois ton menu personnalisé, ta liste de courses prête, et tes recettes équilibrées –
+          sans rien faire.
         </p>
         <Link
           href="/formulaire"
@@ -18,5 +19,5 @@ export default function FinalCTA() {
         </Link>
       </div>
     </section>
-  )
+  );
 }
