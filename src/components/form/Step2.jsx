@@ -2,6 +2,7 @@
 import { useState } from "react";
 import RadioGroup from "./form-components/RadioGroup";
 import CheckboxGroup from "./form-components/CheckboxGroup";
+import TextInput from "./form-components/TextInput";
 
 const DIET_OPTIONS = ["Omnivore", "Flexitarien", "Végétarien", "Vegan"];
 const PROTEIN_OPTIONS = [
@@ -83,46 +84,31 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
         />
 
         {/* Allergies */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-1" htmlFor="allergies">As-tu des allergies ou intolérances ?</label>
-          <input
-            id="allergies"
-            type="text"
-            name="allergies"
-            value={formData.allergies || ""}
-            onChange={handleChange}
-            placeholder="Ex : lactose, noix, gluten..."
-            className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
-          />
-        </div>
+        <TextInput
+          label="As-tu des allergies ou intolérances ?"
+          name="allergies"
+          value={formData.allergies || ""}
+          onChange={handleChange}
+          placeholder="Ex : lactose, noix, gluten..."
+        />
 
         {/* Disliked foods */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-1" htmlFor="disliked_food">Des aliments que tu n'aimes pas ?</label>
-          <input
-            id="disliked_food"
-            type="text"
-            name="disliked_food"
-            value={formData.disliked_food || ""}
-            onChange={handleChange}
-            placeholder="Ex : tofu, lentilles, fenouil…"
-            className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
-          />
-        </div>
+        <TextInput
+          label="Des aliments que tu n'aimes pas ?"
+          name="disliked_food"
+          value={formData.disliked_food || ""}
+          onChange={handleChange}
+          placeholder="Ex : tofu, lentilles, fenouil…"
+        />
 
         {/* Favorite foods */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-1" htmlFor="favourite_food">À l'inverse, des aliments que tu adores ?</label>
-          <input
-            id="favourite_food"
-            type="text"
-            name="favourite_food"
-            value={formData.favourite_food || ""}
-            onChange={handleChange}
-            placeholder="Ex : tomates, poulet, pâtes…"
-            className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
-          />
-        </div>
+        <TextInput
+          label="À l'inverse, des aliments que tu adores ?"
+          name="favourite_food"
+          value={formData.favourite_food || ""}
+          onChange={handleChange}
+          placeholder="Ex : tomates, poulet, pâtes…"
+        />
       </div>
 
       {/* Navigation buttons */}

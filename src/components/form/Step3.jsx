@@ -1,6 +1,6 @@
 
 // Step 3: Cooking habits and kitchen equipment
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import RadioGroup from "./form-components/RadioGroup";
 import CheckboxGroup from "./form-components/CheckboxGroup";
 import ToggleSwitch from "./form-components/ToggleSwitch";
@@ -22,18 +22,17 @@ const PORTION_COUNTS = [1, 2, 3, "4+"];
 
 export default function Step3({ formData, updateFormData, goToNext, goToPrev }) {
   const [errors, setErrors] = useState({});
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
-  /**
-   * Handle text and radio input changes.
-   */
+  // Handle text and radio input changes
   const handleInputChange = (e) => {
     updateFormData({ [e.target.name]: e.target.value });
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
-  /**
-   * Handle checkbox group changes (for arrays).
-   */
+  // Handle checkbox group changes (for arrays)
   const handleCheckboxChange = (e) => {
     const { name, value, checked } = e.target;
     const current = formData[name] || [];
@@ -41,16 +40,12 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
     updateFormData({ [name]: updated });
   };
 
-  /**
-   * Handle toggle switches (boolean values).
-   */
+  // Handle toggle switches (boolean values)
   const handleToggleChange = (e) => {
     updateFormData({ [e.target.name]: e.target.checked });
   };
 
-  /**
-   * Validate required fields and proceed to next step if valid.
-   */
+  // Validate required fields and proceed to next step if valid
   const handleSubmit = () => {
     const requiredFields = ["cooking_level", "nbRecipes", "nbPortions"];
     const newErrors = {};
@@ -122,14 +117,21 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
           label="Combien de portions par recette ?"
         />
 
-        {/* Batch cooking toggle */}
-        <ToggleSwitch
+        {/* Batch cooking radio group */}
+        <RadioGroup
           name="batch"
-          checked={formData.batch || false}
-          onChange={handleToggleChange}
           label="Souhaites-tu recevoir des conseils en batch cooking ?"
-          description="💡 Le batch cooking, c’est une méthode pour s'organiser en avance, cuisiner plusieurs plats d’un coup, puis assembler ou réchauffer facilement la semaine."
+          options={["Oui", "Non"]}
+          value={formData.batch === true ? "Oui" : formData.batch === false ? "Non" : ""}
+          onChange={e => {
+            const val = e.target.value === "Oui" ? true : e.target.value === "Non" ? false : null;
+            updateFormData({ batch: val });
+          }}
+          optionClassName="flex-1 text-center font-medium"
         />
+        <div className="text-xs text-[#8A8A8A] mt-1">
+          💡 Le batch cooking, c’est une méthode pour s'organiser en avance, cuisiner plusieurs plats d’un coup, puis assembler ou réchauffer facilement la semaine.
+        </div>
       </div>
 
       {/* Navigation buttons */}

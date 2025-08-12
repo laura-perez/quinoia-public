@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react";
 
 /**
  * Types for formData
@@ -8,13 +8,16 @@ import { useState } from "react"
  * @typedef {"highProtein" | null} SecondaryFocus
  */
 import RadioGroup from "./form-components/RadioGroup";
-import ToggleSwitch from "./form-components/ToggleSwitch";
 import TextInput from "./form-components/TextInput"
 import TextArea from "./form-components/TextArea"
 import FormError from "./form-components/FormError"
 import ConsentCheckbox from "./form-components/ConsentCheckbox"
 
 export default function Step4({ formData, updateFormData, goToPrev }) {
+    useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const [agreed, setAgreed] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
@@ -134,11 +137,16 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
               optionClassName="text-sm"
             />
             <div className="mt-4">
-              <ToggleSwitch
+              <RadioGroup
                 name="secondaryFocus"
-                checked={formData.secondaryFocus === "highProtein"}
-                onChange={e => updateFormData({ secondaryFocus: e.target.checked ? "highProtein" : null })}
                 label="Je souhaite prioriser les protéines"
+                options={["Oui", "Non"]}
+                value={formData.secondaryFocus === "highProtein" ? "Oui" : formData.secondaryFocus === null ? "Non" : ""}
+                onChange={e => {
+                  const val = e.target.value === "Oui" ? "highProtein" : null;
+                  updateFormData({ secondaryFocus: val });
+                }}
+                optionClassName="flex-1 text-center font-medium"
               />
             </div>
           </div>

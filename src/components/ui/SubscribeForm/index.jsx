@@ -26,7 +26,7 @@ const SubscribeForm = () => {
                     placeholder="Ton adresse email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-12 pr-3 focus:border-[#B7D3C6] text-[#414535]"
+                    className="w-full pl-12 pr-3 focus:border-[#F4C95D] text-[#414535]"
                 />
             </div>
             <Button

@@ -13,7 +13,7 @@ const ConsentCheckbox: React.FC<ConsentCheckboxProps> = ({ checked, onChange, la
       type="checkbox"
       checked={checked}
       onChange={onChange}
-      className="mt-1 rounded border-[#EAEAEA] text-[#414535] focus:ring-[#B7D3C6]"
+      className="mt-1 rounded border-[#EAEAEA] text-[#414535] focus:ring-[#F4C95D]"
     />
     <span>{label}</span>
   </label>
