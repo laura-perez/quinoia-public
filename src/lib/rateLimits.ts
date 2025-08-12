@@ -1,6 +1,6 @@
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
-import { env } from './env';
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+import { env } from "./env";
 
 let redis: Redis | null = null;
 let ratelimit: Ratelimit | null = null;
@@ -14,7 +14,7 @@ if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
 
   ratelimit = new Ratelimit({
     redis,
-  limiter: Ratelimit.tokenBucket(10, '1m', 10), // Default configuration
+    limiter: Ratelimit.tokenBucket(10, "1m", 10), // Default configuration
     analytics: true,
   });
 }
@@ -26,7 +26,11 @@ if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
  * @param windowSec Window in seconds
  * @returns Result of the rate limiting
  */
-export async function limit(key: string, max: number, windowSec: number): Promise<{
+export async function limit(
+  key: string,
+  max: number,
+  windowSec: number
+): Promise<{
   success: boolean;
   remaining: number;
   reset: number;

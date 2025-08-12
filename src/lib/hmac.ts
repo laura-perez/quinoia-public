@@ -1,5 +1,5 @@
-import { env, assertServerEnv } from './env';
-import crypto from 'crypto';
+import { env, assertServerEnv } from "./env";
+import crypto from "crypto";
 
 /**
  * Sign a body with HMAC-SHA256 and return the signature in base64url format.
@@ -8,9 +8,9 @@ import crypto from 'crypto';
  */
 export function signBody(body: string): string {
   assertServerEnv();
-  const hmac = crypto.createHmac('sha256', env.N8N_WEBHOOK_SECRET);
+  const hmac = crypto.createHmac("sha256", env.N8N_WEBHOOK_SECRET);
   hmac.update(body);
-  const signature = hmac.digest('base64url');
+  const signature = hmac.digest("base64url");
   return signature;
 }
 
@@ -24,7 +24,7 @@ export function verifySignature(body: string, signature: string): boolean {
   assertServerEnv();
   const expectedSignature = signBody(body);
   return crypto.timingSafeEqual(
-    Buffer.from(signature, 'base64url'),
-    Buffer.from(expectedSignature, 'base64url')
+    Buffer.from(signature, "base64url"),
+    Buffer.from(expectedSignature, "base64url")
   );
 }

@@ -1,7 +1,8 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import RadioGroup from "./form-components/RadioGroup";
+import ProgressBar from "./form-components/ProgressBar";
 import CheckboxGroup from "./form-components/CheckboxGroup";
+import TextInput from "./form-components/TextInput";
 
 const DIET_OPTIONS = ["Omnivore", "Flexitarien", "Végétarien", "Vegan"];
 const PROTEIN_OPTIONS = [
@@ -19,6 +20,10 @@ const PROTEIN_OPTIONS = [
  * Step 2: Dietary preferences and restrictions.
  */
 export default function Step2({ formData, updateFormData, goToNext, goToPrev }) {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
   const [errors, setErrors] = useState({});
 
   // Handle text/radio input changes
@@ -50,16 +55,13 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
 
   return (
     <div>
-      {/* Progress bar */}
-      <div className="mb-6">
-        <div className="h-2 bg-[#EAEAEA] rounded-full overflow-hidden">
-          <div className="h-full bg-[#F4C95D] transition-all duration-500" style={{ width: "50%" }} />
-        </div>
-        <p className="text-sm text-[#8A8A8A] mt-2 text-right">2 sur 4</p>
-      </div>
+      <ProgressBar step={2} total={4} />
 
       <h2 className="text-2xl font-bold text-[#414535] mb-2">Tes préférences alimentaires</h2>
-      <p className="text-[#8A8A8A] mb-6">Raconte moi un peu comment tu manges aujourd’hui, ce que tu veux éviter, et ce que tu veux retrouver dans ton assiette.</p>
+      <p className="text-[#8A8A8A] mb-6">
+        Raconte moi un peu comment tu manges aujourd’hui, ce que tu veux éviter, et ce que tu veux
+        retrouver dans ton assiette.
+      </p>
 
       <div className="space-y-6">
         {/* Diet type radio group */}
@@ -83,46 +85,31 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
         />
 
         {/* Allergies */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-1" htmlFor="allergies">As-tu des allergies ou intolérances ?</label>
-          <input
-            id="allergies"
-            type="text"
-            name="allergies"
-            value={formData.allergies || ""}
-            onChange={handleChange}
-            placeholder="Ex : lactose, noix, gluten..."
-            className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
-          />
-        </div>
+        <TextInput
+          label="As-tu des allergies ou intolérances ?"
+          name="allergies"
+          value={formData.allergies || ""}
+          onChange={handleChange}
+          placeholder="Ex : lactose, noix, gluten..."
+        />
 
         {/* Disliked foods */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-1" htmlFor="disliked_food">Des aliments que tu n'aimes pas ?</label>
-          <input
-            id="disliked_food"
-            type="text"
-            name="disliked_food"
-            value={formData.disliked_food || ""}
-            onChange={handleChange}
-            placeholder="Ex : tofu, lentilles, fenouil…"
-            className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
-          />
-        </div>
+        <TextInput
+          label="Des aliments que tu n'aimes pas ?"
+          name="disliked_food"
+          value={formData.disliked_food || ""}
+          onChange={handleChange}
+          placeholder="Ex : tofu, lentilles, fenouil…"
+        />
 
         {/* Favorite foods */}
-        <div>
-          <label className="block text-sm font-medium text-[#414535] mb-1" htmlFor="favourite_food">À l'inverse, des aliments que tu adores ?</label>
-          <input
-            id="favourite_food"
-            type="text"
-            name="favourite_food"
-            value={formData.favourite_food || ""}
-            onChange={handleChange}
-            placeholder="Ex : tomates, poulet, pâtes…"
-            className="w-full rounded-lg border border-[#EAEAEA] bg-white px-4 py-2 text-sm shadow-sm placeholder:text-[#8A8A8A] focus:border-[#B7D3C6] focus:outline-none focus:ring-1 focus:ring-[#B7D3C6]"
-          />
-        </div>
+        <TextInput
+          label="À l'inverse, des aliments que tu adores ?"
+          name="favourite_food"
+          value={formData.favourite_food || ""}
+          onChange={handleChange}
+          placeholder="Ex : tomates, poulet, pâtes…"
+        />
       </div>
 
       {/* Navigation buttons */}
