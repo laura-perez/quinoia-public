@@ -20,7 +20,9 @@ const TextArea: React.FC<TextAreaProps> = ({
   rows = 4,
 }) => (
   <div>
-    <label className="block text-sm font-medium text-[#414535] mb-1" htmlFor={name}>{label}</label>
+    <label className="block text-sm font-medium text-[#414535] mb-1" htmlFor={name}>
+      {label}
+    </label>
     <textarea
       id={name}
       name={name}
@@ -32,7 +34,11 @@ const TextArea: React.FC<TextAreaProps> = ({
       aria-invalid={!!error}
       aria-describedby={error ? `${name}-error` : undefined}
     />
-    {error && <p id={`${name}-error`} className="text-sm text-red-500 mt-1">{error}</p>}
+    {error && (
+      <p id={`${name}-error`} className="text-sm text-red-500 mt-1">
+        {error}
+      </p>
+    )}
   </div>
 );
 

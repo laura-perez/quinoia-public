@@ -56,7 +56,7 @@ export default function Step1({ formData, updateFormData, goToNext }) {
 
   return (
     <div>
-  <ProgressBar step={1} total={4} />
+      <ProgressBar step={1} total={4} />
 
       <h2 className="text-2xl font-bold text-[#414535] mb-2">Ton profil de base</h2>
       <p className="text-[#8A8A8A] mb-6">
@@ -112,15 +112,18 @@ export default function Step1({ formData, updateFormData, goToNext }) {
         </div>
         {/* Activité physique */}
         <fieldset className="border border-[#EAEAEA] rounded-lg px-4 py-4 mb-6">
-          <legend className="block text-lg font-bold text-[#414535] mb-2">Ton activité physique 🏃</legend>
+          <legend className="block text-lg font-bold text-[#414535] mb-2">
+            Ton activité physique 🏃
+          </legend>
           <div className="space-y-6">
             <RadioGroup
               name="deskJob"
               label="Travailles tu assis ?"
               options={["Oui", "Non"]}
               value={pa.deskJob === true ? "Oui" : pa.deskJob === false ? "Non" : ""}
-              onChange={e => {
-                const val = e.target.value === "Oui" ? true : e.target.value === "Non" ? false : null;
+              onChange={(e) => {
+                const val =
+                  e.target.value === "Oui" ? true : e.target.value === "Non" ? false : null;
                 updateFormData({ physicalActivity: { ...pa, deskJob: val } });
               }}
               error={errors?.physicalActivity?.deskJob}
@@ -131,12 +134,15 @@ export default function Step1({ formData, updateFormData, goToNext }) {
               label="Combien de pas/jour ?"
               options={["< 5 000", "5 000 – 8 000", "> 8 000"]}
               value={
-                pa.dailySteps === "<5k" ? "< 5 000" :
-                pa.dailySteps === "5-8k" ? "5 000 – 8 000" :
-                pa.dailySteps === ">8k" ? "> 8 000" :
-                ""
+                pa.dailySteps === "<5k"
+                  ? "< 5 000"
+                  : pa.dailySteps === "5-8k"
+                    ? "5 000 – 8 000"
+                    : pa.dailySteps === ">8k"
+                      ? "> 8 000"
+                      : ""
               }
-              onChange={e => {
+              onChange={(e) => {
                 let val = null;
                 if (e.target.value === "< 5 000") val = "<5k";
                 else if (e.target.value === "5 000 – 8 000") val = "5-8k";
@@ -151,7 +157,7 @@ export default function Step1({ formData, updateFormData, goToNext }) {
               label="Combien de séances de sport/semaine ?"
               options={["0", "1-2", "3-4", ">=5"]}
               value={pa.sessionsPerWeek || ""}
-              onChange={e => {
+              onChange={(e) => {
                 updateFormData({ physicalActivity: { ...pa, sessionsPerWeek: e.target.value } });
               }}
               error={errors?.physicalActivity?.sessionsPerWeek}
@@ -163,8 +169,9 @@ export default function Step1({ formData, updateFormData, goToNext }) {
                 label="Séances intenses ? (cardio, HIIT, muscu)"
                 options={["Oui", "Non"]}
                 value={pa.highIntensity === true ? "Oui" : pa.highIntensity === false ? "Non" : ""}
-                onChange={e => {
-                  const val = e.target.value === "Oui" ? true : e.target.value === "Non" ? false : null;
+                onChange={(e) => {
+                  const val =
+                    e.target.value === "Oui" ? true : e.target.value === "Non" ? false : null;
                   updateFormData({ physicalActivity: { ...pa, highIntensity: val } });
                 }}
                 optionClassName="flex-1 text-center font-medium"

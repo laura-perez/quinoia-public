@@ -18,7 +18,6 @@ const RECIPE_COUNTS = [2, 3, 4, 5, 6, 7];
 const PORTION_COUNTS = [1, 2, 3, "4+"];
 
 export default function Step3({ formData, updateFormData, goToNext, goToPrev }) {
-
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
@@ -58,11 +57,12 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
   // Main render
   return (
     <div>
-  <ProgressBar step={3} total={4} />
+      <ProgressBar step={3} total={4} />
 
       <h2 className="text-2xl font-bold text-[#414535] mb-2">Ton quotidien en cuisine</h2>
       <p className="text-[#8A8A8A] mb-6">
-        Ici, pas de jugement – je veux juste m’adapter à ta réalité : ton emploi du temps, ton niveau, ton style de vie.
+        Ici, pas de jugement – je veux juste m’adapter à ta réalité : ton emploi du temps, ton
+        niveau, ton style de vie.
       </p>
 
       <div className="space-y-6">
@@ -111,14 +111,15 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
           label="Souhaites-tu recevoir des conseils en batch cooking ?"
           options={["Oui", "Non"]}
           value={formData.batch === true ? "Oui" : formData.batch === false ? "Non" : ""}
-          onChange={e => {
+          onChange={(e) => {
             const val = e.target.value === "Oui" ? true : e.target.value === "Non" ? false : null;
             updateFormData({ batch: val });
           }}
           optionClassName="flex-1 text-center font-medium"
         />
         <div className="text-xs text-[#8A8A8A] mt-1">
-          💡 Le batch cooking, c’est une méthode pour s'organiser en avance, cuisiner plusieurs plats d’un coup, puis assembler ou réchauffer facilement la semaine.
+          💡 Le batch cooking, c’est une méthode pour s'organiser en avance, cuisiner plusieurs
+          plats d’un coup, puis assembler ou réchauffer facilement la semaine.
         </div>
       </div>
 
@@ -142,5 +143,3 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
     </div>
   );
 }
-
-

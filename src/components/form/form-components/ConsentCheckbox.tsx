@@ -7,7 +7,12 @@ interface ConsentCheckboxProps {
   className?: string;
 }
 
-const ConsentCheckbox: React.FC<ConsentCheckboxProps> = ({ checked, onChange, label, className = "" }) => (
+const ConsentCheckbox: React.FC<ConsentCheckboxProps> = ({
+  checked,
+  onChange,
+  label,
+  className = "",
+}) => (
   <label className={`flex items-start space-x-2 text-sm text-[#414535] mb-6 ${className}`}>
     <input
       type="checkbox"

@@ -1,4 +1,4 @@
-import { http, HttpResponse, type HttpHandler } from 'msw';
+import { http, HttpResponse, type HttpHandler } from "msw";
 
 export const handlers: HttpHandler[] = [];
 export { http, HttpResponse };

@@ -22,7 +22,9 @@ const TextInput: React.FC<TextInputProps> = ({
   required = false,
 }) => (
   <div>
-    <label className="block text-sm font-medium text-[#414535] mb-1" htmlFor={name}>{label}</label>
+    <label className="block text-sm font-medium text-[#414535] mb-1" htmlFor={name}>
+      {label}
+    </label>
     <input
       id={name}
       type={type}
@@ -35,7 +37,11 @@ const TextInput: React.FC<TextInputProps> = ({
       aria-invalid={!!error}
       aria-describedby={error ? `${name}-error` : undefined}
     />
-    {error && <p id={`${name}-error`} className="text-sm text-red-500 mt-1">{error}</p>}
+    {error && (
+      <p id={`${name}-error`} className="text-sm text-red-500 mt-1">
+        {error}
+      </p>
+    )}
   </div>
 );
 

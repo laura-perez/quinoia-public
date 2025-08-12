@@ -1,14 +1,13 @@
-
-import { z } from 'zod';
+import { z } from "zod";
 
 const envSchema = z.object({
-  RECAPTCHA_SECRET_KEY: z.string().min(1, 'RECAPTCHA_SECRET_KEY is required'),
-  SUPABASE_URL: z.string().min(1, 'SUPABASE_URL is required'),
-  SUPABASE_SERVICE_KEY: z.string().min(1, 'SUPABASE_SERVICE_KEY is required'),
-  N8N_WEBHOOK_URL: z.string().min(1, 'N8N_WEBHOOK_URL is required'),
-  N8N_WEBHOOK_SECRET: z.string().min(1, 'N8N_WEBHOOK_SECRET is required'),
-  HMAC_SECRET: z.string().min(1, 'HMAC_SECRET is required'),
-  APP_BASE_URL: z.string().min(1, 'APP_BASE_URL is required'),
+  RECAPTCHA_SECRET_KEY: z.string().min(1, "RECAPTCHA_SECRET_KEY is required"),
+  SUPABASE_URL: z.string().min(1, "SUPABASE_URL is required"),
+  SUPABASE_SERVICE_KEY: z.string().min(1, "SUPABASE_SERVICE_KEY is required"),
+  N8N_WEBHOOK_URL: z.string().min(1, "N8N_WEBHOOK_URL is required"),
+  N8N_WEBHOOK_SECRET: z.string().min(1, "N8N_WEBHOOK_SECRET is required"),
+  HMAC_SECRET: z.string().min(1, "HMAC_SECRET is required"),
+  APP_BASE_URL: z.string().min(1, "APP_BASE_URL is required"),
 
   // Optional
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().optional(),
@@ -33,7 +32,7 @@ const parsed = envSchema.safeParse(_env);
 
 if (!parsed.success) {
   // Show all validation errors
-  const errors = parsed.error.issues.map(e => `${String(e.path[0])}: ${e.message}`).join('\n');
+  const errors = parsed.error.issues.map((e) => `${String(e.path[0])}: ${e.message}`).join("\n");
   throw new Error(`Environment variable configuration error:\n${errors}`);
 }
 

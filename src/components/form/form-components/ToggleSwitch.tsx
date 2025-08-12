@@ -26,9 +26,11 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
         checked={checked}
         onChange={onChange}
         className="w-14 h-7 bg-[#EAEAEA] border-2 border-[#EAEAEA] rounded-full appearance-none cursor-pointer checked:bg-[#F4C95D] focus:ring-2 focus:ring-[#F4C95D] focus:border-[#F4C95D] transition relative shadow-md"
-        style={{ boxShadow: checked ? '0 0 0 2px #F4C95D' : undefined }}
+        style={{ boxShadow: checked ? "0 0 0 2px #F4C95D" : undefined }}
       />
-      <span className={`text-sm font-semibold ${checked ? 'text-[#F4C95D]' : 'text-[#8A8A8A]'}`}>{checked ? 'Oui' : 'Non'}</span>
+      <span className={`text-sm font-semibold ${checked ? "text-[#F4C95D]" : "text-[#8A8A8A]"}`}>
+        {checked ? "Oui" : "Non"}
+      </span>
     </div>
     {description && <p className="text-xs text-[#8A8A8A] mt-1">{description}</p>}
   </div>

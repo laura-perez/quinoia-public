@@ -12,7 +12,12 @@ export interface SubmitMenuFormParams {
   email: string;
 }
 
-export default async function submitMenuForm({ formData, agreed, note, email }: SubmitMenuFormParams): Promise<void> {
+export default async function submitMenuForm({
+  formData,
+  agreed,
+  note,
+  email,
+}: SubmitMenuFormParams): Promise<void> {
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
   if (!siteKey) throw new Error("reCAPTCHA site key is not defined");
   const token = await grecaptcha.execute(siteKey, { action: "submit_form" });

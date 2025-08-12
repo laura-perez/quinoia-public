@@ -55,10 +55,13 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
 
   return (
     <div>
-  <ProgressBar step={2} total={4} />
+      <ProgressBar step={2} total={4} />
 
       <h2 className="text-2xl font-bold text-[#414535] mb-2">Tes préférences alimentaires</h2>
-      <p className="text-[#8A8A8A] mb-6">Raconte moi un peu comment tu manges aujourd’hui, ce que tu veux éviter, et ce que tu veux retrouver dans ton assiette.</p>
+      <p className="text-[#8A8A8A] mb-6">
+        Raconte moi un peu comment tu manges aujourd’hui, ce que tu veux éviter, et ce que tu veux
+        retrouver dans ton assiette.
+      </p>
 
       <div className="space-y-6">
         {/* Diet type radio group */}

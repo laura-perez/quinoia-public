@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import RadioGroup from "./form-components/RadioGroup";
 import ProgressBar from "./form-components/ProgressBar";
@@ -8,14 +7,11 @@ import FormError from "./form-components/FormError";
 import ConsentCheckbox from "./form-components/ConsentCheckbox";
 import submitMenuForm from "../../lib/submitMenuForm";
 
-
 const PRIMARY_GOAL_OPTIONS = [
   { label: "Gagner du temps", value: "saveTime" },
   { label: "Manger plus sainement", value: "eatHealthier" },
   { label: "Perdre du poids", value: "weightLoss" },
 ];
-
-
 
 export default function Step4({ formData, updateFormData, goToPrev }) {
   useEffect(() => {
@@ -40,20 +36,35 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
   }, []);
 
   // Memoized handlers for form fields
-  const handleNoteChange = useCallback((e) => handleFieldChange("note", e.target.value), [handleFieldChange]);
-  const handleEmailChange = useCallback((e) => handleFieldChange("email", e.target.value), [handleFieldChange]);
-  const handleConsentChange = useCallback((e) => handleFieldChange("agreed", e.target.checked), [handleFieldChange]);
+  const handleNoteChange = useCallback(
+    (e) => handleFieldChange("note", e.target.value),
+    [handleFieldChange]
+  );
+  const handleEmailChange = useCallback(
+    (e) => handleFieldChange("email", e.target.value),
+    [handleFieldChange]
+  );
+  const handleConsentChange = useCallback(
+    (e) => handleFieldChange("agreed", e.target.checked),
+    [handleFieldChange]
+  );
 
-  const handlePrimaryGoalChange = useCallback((e) => {
-    const selected = PRIMARY_GOAL_OPTIONS.find(opt => opt.label === e.target.value);
-    updateFormData({ primaryGoal: selected ? selected.value : "" });
-    setErrors((prev) => ({ ...prev, primaryGoal: undefined }));
-  }, [updateFormData]);
+  const handlePrimaryGoalChange = useCallback(
+    (e) => {
+      const selected = PRIMARY_GOAL_OPTIONS.find((opt) => opt.label === e.target.value);
+      updateFormData({ primaryGoal: selected ? selected.value : "" });
+      setErrors((prev) => ({ ...prev, primaryGoal: undefined }));
+    },
+    [updateFormData]
+  );
 
-  const handleSecondaryFocusChange = useCallback((e) => {
-    const val = e.target.value === "Oui" ? "highProtein" : null;
-    updateFormData({ secondaryFocus: val });
-  }, [updateFormData]);
+  const handleSecondaryFocusChange = useCallback(
+    (e) => {
+      const val = e.target.value === "Oui" ? "highProtein" : null;
+      updateFormData({ secondaryFocus: val });
+    },
+    [updateFormData]
+  );
 
   // Validation
   const validate = useCallback(() => {
@@ -102,12 +113,15 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
         <div className="text-center">
           <h2 className="text-2xl font-bold text-[#414535] mb-4">C’est envoyé 🎉</h2>
           <p className="text-[#8A8A8A] max-w-md mx-auto">
-            Merci ! Tu vas recevoir très bientôt ton menu personnalisé directement dans ta boîte mail.
+            Merci ! Tu vas recevoir très bientôt ton menu personnalisé directement dans ta boîte
+            mail.
           </p>
         </div>
       ) : (
         <>
-          <h2 className="text-2xl font-bold text-[#414535] mb-2">Tu es à 2 doigts de recevoir ton menu personnalisé ✨</h2>
+          <h2 className="text-2xl font-bold text-[#414535] mb-2">
+            Tu es à 2 doigts de recevoir ton menu personnalisé ✨
+          </h2>
           <p className="text-[#8A8A8A] mb-6">
             Dernière question avant de générer ton menu. Merci pour ta confiance !
           </p>
@@ -116,8 +130,10 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
           <div className="mb-6">
             <RadioGroup
               name="primaryGoal"
-              options={PRIMARY_GOAL_OPTIONS.map(opt => opt.label)}
-              value={PRIMARY_GOAL_OPTIONS.find(opt => opt.value === formData.primaryGoal)?.label || ""}
+              options={PRIMARY_GOAL_OPTIONS.map((opt) => opt.label)}
+              value={
+                PRIMARY_GOAL_OPTIONS.find((opt) => opt.value === formData.primaryGoal)?.label || ""
+              }
               onChange={handlePrimaryGoalChange}
               error={errors && errors.primaryGoal}
               label="Quel est ton objectif principal avec ce menu ?"
@@ -128,7 +144,13 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
                 name="secondaryFocus"
                 label="Je souhaite prioriser les protéines"
                 options={["Oui", "Non"]}
-                value={formData.secondaryFocus === "highProtein" ? "Oui" : formData.secondaryFocus === null ? "Non" : ""}
+                value={
+                  formData.secondaryFocus === "highProtein"
+                    ? "Oui"
+                    : formData.secondaryFocus === null
+                      ? "Non"
+                      : ""
+                }
                 onChange={handleSecondaryFocusChange}
                 optionClassName="flex-1 text-center font-medium"
               />
@@ -179,7 +201,9 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
               onClick={handleSubmit}
               disabled={!formState.agreed || isSubmitting}
               className={`px-6 py-3 rounded-md font-semibold transition text-white ${
-                formState.agreed ? "bg-[#414535] hover:bg-[#2f3226]" : "bg-[#8A8A8A] cursor-not-allowed"
+                formState.agreed
+                  ? "bg-[#414535] hover:bg-[#2f3226]"
+                  : "bg-[#8A8A8A] cursor-not-allowed"
               }`}
             >
               {isSubmitting ? "Envoi en cours…" : "C’est parti !"}
