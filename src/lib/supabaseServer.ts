@@ -1,6 +1,11 @@
+import { createLogger, redact } from "./logger";
+
 // Upsert user and submission (centralized DB logic)
 export async function upsertUserAndSubmission({ email, normalizedInput, recaptchaMeta, rawFormData }) {
+  const logger = createLogger();
   const supabase = getServiceClient();
+  
+  logger.info('Starting database upsert', { email: redact(email) });
   
   // Upsert user (by email) - table name is 'user' (singular)
   const { data: userData, error: userError } = await supabase
@@ -9,8 +14,11 @@ export async function upsertUserAndSubmission({ email, normalizedInput, recaptch
     .select("id")
     .single();
   if (userError || !userData?.id) {
+    logger.error('User upsert failed', { error: userError, email: redact(email) });
     throw new Error(userError?.message || "User upsert failed");
   }
+  
+  logger.debug('User upsert successful', { userId: userData.id, email: redact(email) });
   
   // Insert submission - table name is 'submission' (singular)
   const { data: submissionData, error: submissionError } = await supabase
@@ -53,8 +61,19 @@ export async function upsertUserAndSubmission({ email, normalizedInput, recaptch
     .select("id")
     .single();
   if (submissionError || !submissionData?.id) {
+    logger.error('Submission insert failed', { 
+      error: submissionError, 
+      userId: userData.id,
+      email: redact(email)
+    });
     throw new Error(submissionError?.message || "Submission insert failed");
   }
+  
+  logger.info('Database upsert completed successfully', { 
+    submissionId: submissionData.id,
+    userId: userData.id,
+    email: redact(email)
+  });
   
   return submissionData.id;
 }
