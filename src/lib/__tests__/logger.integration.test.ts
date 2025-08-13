@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createLogger, redact } from '../logger';
+import { createLogger, redact, LoggerFactory } from '../logger';
 
 // Mock console methods to capture output
 const mockConsoleLog = vi.fn();
@@ -165,7 +165,8 @@ describe('Logger Integration Tests', () => {
       vi.stubEnv('NODE_ENV', 'production');
       vi.stubEnv('ENABLE_DEBUG_LOGS', 'false');
       
-      const logger = createLogger();
+      // Create logger with production configuration
+      const logger = LoggerFactory.production();
       logger.debug('Debug message');
       
       // Aucun appel ne doit être fait pour debug en production
