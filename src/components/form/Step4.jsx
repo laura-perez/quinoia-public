@@ -167,7 +167,7 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
     } finally {
       setIsSubmitting(false);
     }
-  }, [validate, formData, formState]);
+  }, [validate, formData, formState, logger]);
 
   return (
     <div>
