@@ -51,7 +51,9 @@ function PhysicalActivityRadioGroup<T extends string | number>({
         ))}
       </div>
       {error && (
-        <p id={ariaDescribedBy || `${name}-error`} className="text-sm text-red-500 mt-2">{error}</p>
+        <p id={ariaDescribedBy || `${name}-error`} className="text-sm text-red-500 mt-2">
+          {error}
+        </p>
       )}
     </div>
   );

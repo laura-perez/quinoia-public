@@ -23,7 +23,7 @@ describe("hmac", () => {
   beforeEach(async () => {
     originalEnv = { ...process.env };
     Object.assign(process.env, REQUIRED_ENV);
-  hmac = await import("../../lib/hmac");
+    hmac = await import("../../lib/hmac");
   });
 
   afterEach(() => {

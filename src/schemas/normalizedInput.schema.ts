@@ -1,8 +1,5 @@
 import { z } from "zod";
-import {
-  canonicalAllergens,
-  extractAllergens,
-} from "./mappers";
+import { canonicalAllergens, extractAllergens } from "./mappers";
 
 const genderEnum = ["female", "male", "unspecified"] as const;
 const dietEnum = ["omnivore", "flexitarian", "vegetarian", "vegan"] as const;
@@ -40,8 +37,14 @@ export const normalizedInputSchema = z
     firstName: z.string().trim().max(80).optional(),
     age: z.coerce.number().int().min(13).max(100),
     gender: z.enum(genderEnum),
-    heightCm: z.coerce.number().min(120, { message: "Taille minimale 120 cm" }).max(230, { message: "Taille maximale 230 cm" }),
-    weightKg: z.coerce.number().min(30, { message: "Poids minimal 30 kg" }).max(250, { message: "Poids maximal 250 kg" }),
+    heightCm: z.coerce
+      .number()
+      .min(120, { message: "Taille minimale 120 cm" })
+      .max(230, { message: "Taille maximale 230 cm" }),
+    weightKg: z.coerce
+      .number()
+      .min(30, { message: "Poids minimal 30 kg" })
+      .max(250, { message: "Poids maximal 250 kg" }),
     diet: z.enum(dietEnum),
     proteinPreferences: z.array(z.enum(proteinEnum)).default([]),
     equipmentAvailable: z.array(z.enum(equipmentEnum)).default([]),

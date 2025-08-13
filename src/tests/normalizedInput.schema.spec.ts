@@ -15,7 +15,7 @@ function makeForm(overrides: Partial<any> = {}) {
     diet_type: "Omnivore",
     protein_preference: ["Bœuf", "Boeuf", "Poisson", "poisson"],
     equipment: ["Four", "Four", "Mixeur/Blender"],
-  cooking_level: "Intermédiaire : Je suis à l’aise, mais pas un chef non plus",
+    cooking_level: "Intermédiaire : Je suis à l’aise, mais pas un chef non plus",
     nbRecipes: 4,
     nbPortions: 2,
     favourite_food: "pâtes, pizza",
@@ -81,42 +81,49 @@ describe("normalizedInputSchema integration", () => {
 
   it('gender="Autre" → unspecified', () => {
     const form = makeForm({ gender: "Autre" });
-  const candidate = normalizeFormInput(form) as any;
-  expect(candidate.gender).toBe("unspecified");
-  expect(() => normalizedInputSchema.parse(candidate)).not.toThrow();
+    const candidate = normalizeFormInput(form) as any;
+    expect(candidate.gender).toBe("unspecified");
+    expect(() => normalizedInputSchema.parse(candidate)).not.toThrow();
   });
 
   it("protein_preference avec doublons et accents → dédup + map correct", () => {
     const form = makeForm({ protein_preference: ["Bœuf", "Boeuf", "Poisson", "poisson"] });
-  const candidate = normalizeFormInput(form) as any;
-  expect(candidate.proteinPreferences).toEqual(["Beef", "Fish"]);
+    const candidate = normalizeFormInput(form) as any;
+    expect(candidate.proteinPreferences).toEqual(["Beef", "Fish"]);
   });
 
   it("equipment avec doublons → dédup", () => {
     const form = makeForm({ equipment: ["Four", "Four", "Mixeur/Blender"] });
-  const candidate = normalizeFormInput(form) as any;
-  expect(candidate.equipmentAvailable).toEqual(["Oven", "Blender"]);
+    const candidate = normalizeFormInput(form) as any;
+    expect(candidate.equipmentAvailable).toEqual(["Oven", "Blender"]);
   });
 
   it("physicalActivity valeurs hors enum → error enum", () => {
-    const form = makeForm({ physicalActivity: { deskJob: true, dailySteps: "test", sessionsPerWeek: "42", highIntensity: false } });
+    const form = makeForm({
+      physicalActivity: {
+        deskJob: true,
+        dailySteps: "test",
+        sessionsPerWeek: "42",
+        highIntensity: false,
+      },
+    });
     const candidate = normalizeFormInput(form);
     try {
       normalizedInputSchema.parse(candidate);
       throw new Error("Should have failed");
     } catch (err: any) {
-  const errors = formatZodErrors(err);
-  const allFieldErrors = Object.values(errors.fieldErrors).flat();
-  // Log pour audit si besoin
-  // console.log(errors.fieldErrors);
-  expect(allFieldErrors.length).toBeGreaterThan(0);
+      const errors = formatZodErrors(err);
+      const allFieldErrors = Object.values(errors.fieldErrors).flat();
+      // Log pour audit si besoin
+      // console.log(errors.fieldErrors);
+      expect(allFieldErrors.length).toBeGreaterThan(0);
     }
   });
 
   it('allergies "lait, gluten, œufs" → allergens contient ["Milk","Gluten","Eggs"]', () => {
     const form = makeForm({ allergies: "lait, gluten, œufs" });
-  const candidate = normalizeFormInput(form) as any;
-  expect(candidate.allergens).toEqual(["Milk", "Gluten", "Eggs"]);
+    const candidate = normalizeFormInput(form) as any;
+    expect(candidate.allergens).toEqual(["Milk", "Gluten", "Eggs"]);
   });
 
   it("clé inconnue sneaky:x dans le candidat avant parse → .strict() la rejette", () => {

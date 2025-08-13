@@ -1,5 +1,3 @@
-
-
 import { z, ZodError } from "zod";
 type ZodErrorMapFn = Parameters<typeof z.setErrorMap>[0];
 // @ts-expect-error Zod type signature mismatch tolerated for robust error mapping
@@ -31,13 +29,19 @@ const frErrorMap: ZodErrorMapFn = (issue: any, ctx: any, ..._rest: any[]) => {
     }
     case "too_small": {
       const t = issue?.type;
-      const what = t === "array" ? "liste" : t === "string" ? "texte" : t === "number" ? "nombre" : path;
-      return issue?.inclusive ? msg(`${what} trop petit: min ${issue?.minimum}.`) : msg(`${what} doit être > ${issue?.minimum}.`);
+      const what =
+        t === "array" ? "liste" : t === "string" ? "texte" : t === "number" ? "nombre" : path;
+      return issue?.inclusive
+        ? msg(`${what} trop petit: min ${issue?.minimum}.`)
+        : msg(`${what} doit être > ${issue?.minimum}.`);
     }
     case "too_big": {
       const t = issue?.type;
-      const what = t === "array" ? "liste" : t === "string" ? "texte" : t === "number" ? "nombre" : path;
-      return issue?.inclusive ? msg(`${what} trop grand: max ${issue?.maximum}.`) : msg(`${what} doit être < ${issue?.maximum}.`);
+      const what =
+        t === "array" ? "liste" : t === "string" ? "texte" : t === "number" ? "nombre" : path;
+      return issue?.inclusive
+        ? msg(`${what} trop grand: max ${issue?.maximum}.`)
+        : msg(`${what} doit être < ${issue?.maximum}.`);
     }
     case "invalid_date":
       return msg("Date invalide.");

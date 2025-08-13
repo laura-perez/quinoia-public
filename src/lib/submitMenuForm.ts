@@ -12,7 +12,7 @@ export interface SubmitMenuFormParams {
 
 export default async function SubmitMenuForm({
   formData,
-  agreed
+  agreed,
 }: SubmitMenuFormParams): Promise<void> {
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
   if (!siteKey) throw new Error("reCAPTCHA site key is not defined");

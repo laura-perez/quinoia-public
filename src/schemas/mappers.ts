@@ -53,7 +53,7 @@ export const canonicalAllergens = [
   "Mustard",
 ] as const;
 
-export const allergenSynonymsFr: Record<string, typeof canonicalAllergens[number]> = {
+export const allergenSynonymsFr: Record<string, (typeof canonicalAllergens)[number]> = {
   gluten: "Gluten",
   lait: "Milk",
   lactose: "Milk",
@@ -74,7 +74,10 @@ function stripAccents(str: string): string {
   return str.normalize("NFD").replace(/\p{Diacritic}/gu, "");
 }
 
-export function mapValue<T extends Record<string, string>>(map: T, input: string): string | undefined {
+export function mapValue<T extends Record<string, string>>(
+  map: T,
+  input: string
+): string | undefined {
   const norm = stripAccents(input.trim().toLowerCase());
   for (const [k, v] of Object.entries(map)) {
     if (stripAccents(k.toLowerCase()) === norm) return v;
@@ -82,7 +85,10 @@ export function mapValue<T extends Record<string, string>>(map: T, input: string
   return undefined;
 }
 
-export function mapArrayUnique<T extends Record<string, string>>(map: T, inputs: string[]): string[] {
+export function mapArrayUnique<T extends Record<string, string>>(
+  map: T,
+  inputs: string[]
+): string[] {
   const out: string[] = [];
   for (const val of inputs) {
     const mapped = mapValue(map, val);
@@ -91,17 +97,17 @@ export function mapArrayUnique<T extends Record<string, string>>(map: T, inputs:
   return out;
 }
 
-export function extractAllergens(input: string): readonly typeof canonicalAllergens[number][] {
+export function extractAllergens(input: string): readonly (typeof canonicalAllergens)[number][] {
   const tokens = input
     .split(/[;,\s]+/)
     .map((s) => stripAccents(s.trim().toLowerCase()))
     .filter(Boolean);
-  const found = new Set<typeof canonicalAllergens[number]>();
+  const found = new Set<(typeof canonicalAllergens)[number]>();
   for (const token of tokens) {
     const mapped = allergenSynonymsFr[token];
     if (mapped && (canonicalAllergens as readonly string[]).includes(mapped)) {
       found.add(mapped);
     }
   }
-  return Array.from(found) as readonly typeof canonicalAllergens[number][];
+  return Array.from(found) as readonly (typeof canonicalAllergens)[number][];
 }

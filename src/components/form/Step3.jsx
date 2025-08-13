@@ -143,5 +143,3 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev }) 
     </div>
   );
 }
-
-
