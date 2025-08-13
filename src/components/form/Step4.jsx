@@ -4,6 +4,7 @@ import ProgressBar from "./form-components/ProgressBar";
 import TextInput from "./form-components/TextInput";
 import FormError from "./form-components/FormError";
 import ConsentCheckbox from "./form-components/ConsentCheckbox";
+import { createEnvironmentLogger } from "@/lib/logger";
 
 const PRIMARY_GOAL_OPTIONS = [
   { label: "Gagner du temps", value: "saveTime" },
@@ -12,6 +13,9 @@ const PRIMARY_GOAL_OPTIONS = [
 ];
 
 export default function Step4({ formData, updateFormData, goToPrev }) {
+  // Initialize logger for this component (stable reference)
+  const logger = React.useMemo(() => createEnvironmentLogger(), []);
+  
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
@@ -87,9 +91,31 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
     try {
       // Get reCAPTCHA token
       const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-      if (!siteKey) throw new Error("reCAPTCHA site key is not defined");
+      if (!siteKey) {
+        logger.error('reCAPTCHA configuration error', {
+          error: 'Site key not defined in environment variables',
+          environment: process.env.NODE_ENV
+        });
+        throw new Error("reCAPTCHA site key is not defined");
+      }
+      
+      if (!window.grecaptcha) {
+        logger.error('reCAPTCHA runtime error', {
+          error: 'reCAPTCHA script not loaded',
+          userAgent: navigator.userAgent,
+          url: window.location.href
+        });
+        throw new Error("reCAPTCHA is not available");
+      }
       
       const token = await window.grecaptcha.execute(siteKey, { action: "submit_form" });
+      if (!token) {
+        logger.error('reCAPTCHA token generation failed', {
+          siteKey: siteKey.slice(0, 10) + '...',
+          action: 'submit_form'
+        });
+        throw new Error("Failed to generate security token");
+      }
       
       // Prepare submission data
       const submissionData = {
@@ -116,14 +142,27 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
           if (errorData.error) {
             errorMessage = errorData.error;
           }
-        } catch {
-          // Use default error message if JSON parsing fails
+        } catch (parseError) {
+          // Log JSON parsing error for debugging while using default message for user
+          logger.error('API response parsing failed', {
+            parseError: parseError.message,
+            responseStatus: response.status,
+            responseStatusText: response.statusText,
+            url: response.url
+          });
         }
         throw new Error(errorMessage);
       }
 
       setSubmitted(true);
     } catch (err) {
+      logger.error('Form submission failed', {
+        error: err.message || 'Unknown error',
+        stack: err.stack,
+        formDataKeys: Object.keys(formData),
+        hasEmail: !!formState.email,
+        hasConsent: formState.agreed
+      });
       setError(err.message || "Une erreur est survenue. Merci de réessayer.");
     } finally {
       setIsSubmitting(false);
