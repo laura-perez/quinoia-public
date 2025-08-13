@@ -9,7 +9,7 @@ import {
   CLAMP_MIN,
   CLAMP_MAX,
   clampActivityFactor,
-} from "../../constants/activityFactor";
+} from "@/lib/constants/activityFactor";
 
 export function computeActivityFactor(input: ActivityInput): number {
   let factor = BASE_ACTIVITY_FACTOR;
