@@ -3,9 +3,9 @@ import { setZodErrorMapFR, formatZodErrors } from "@/schemas/zodErrorMap.fr";
 import { submitRequestSchema } from "@/schemas/submitRequest.schema";
 import { normalizeFormInput } from "@/schemas/normalizeFormInput";
 import { normalizedInputSchema } from "@/schemas/normalizedInput.schema";
-import { verifyAndExtractRecaptcha } from "@/lib/recaptcha";
-import { upsertUserAndSubmission } from "@/lib/supabaseServer";
-import { triggerN8n } from "@/lib/n8n";
+import { verifyAndExtractRecaptcha } from "@/lib/auth";
+import { upsertUserAndSubmission } from "@/lib/database";
+import { triggerN8n } from "@/lib/integrations";
 import { createLogger, redact } from "@/lib/logger";
 
 setZodErrorMapFR();

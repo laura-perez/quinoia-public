@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { computeActivityFactor, computeActivityFactorBreakdown } from "../../lib/activityFactor";
-import type { ActivityInput } from "../../lib/activityFactor";
+import { computeActivityFactor, computeActivityFactorBreakdown } from "../../lib/business";
+import type { ActivityInput } from "../../lib/business/activityFactor";
 
 const steps = ["<5k", "5-8k", ">8k"] as const;
 const sessions = ["0", "1-2", "3-4", ">=5"] as const;

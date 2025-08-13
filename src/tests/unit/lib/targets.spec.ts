@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { computeTargets } from "../../../lib/targets";
+import { computeTargets } from "../../../lib/business";
 import type { NormalizedInput } from "@/schemas";
 
 describe("computeTargets", () => {

@@ -1,4 +1,4 @@
-import { env, assertServerEnv } from "./env";
+import { env, assertServerEnv } from "../config";
 import crypto from "crypto";
 
 /**

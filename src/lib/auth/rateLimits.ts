@@ -1,6 +1,6 @@
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
-import { env } from "./env";
+import { env } from "../config";
 
 let redis: Redis | null = null;
 let ratelimit: Ratelimit | null = null;

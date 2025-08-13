@@ -1,4 +1,4 @@
-import { createLogger, redact } from "./logger";
+import { createLogger, redact } from "../logger";
 
 // Upsert user and submission (centralized DB logic)
 export async function upsertUserAndSubmission({ email, normalizedInput, recaptchaMeta, rawFormData }) {
@@ -78,7 +78,7 @@ export async function upsertUserAndSubmission({ email, normalizedInput, recaptch
   return submissionData.id;
 }
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
-import { env, assertServerEnv } from "./env";
+import { env, assertServerEnv } from "../config";
 
 // Prevent import on the client side
 if (typeof window !== "undefined") {

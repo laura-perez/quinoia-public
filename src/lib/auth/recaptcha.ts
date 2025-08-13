@@ -1,5 +1,5 @@
-import { env, assertServerEnv } from "./env";
-import { createLogger, redact } from "./logger";
+import { env, assertServerEnv } from "../config";
+import { createLogger, redact } from "../logger";
 
 // Helper: verify and extract reCAPTCHA metadata for API
 export async function verifyAndExtractRecaptcha(token: string, ip?: string) {

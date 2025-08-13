@@ -9,7 +9,7 @@ import {
   clampActivityFactor,
   BMR_FORMULA,
   GENDER_MALE,
-} from "../constants/nutrition";
+} from "../../constants/nutrition";
 
 function computeBMR(gender: string, weightKg: number, heightCm: number, age: number): number {
   return Math.round(

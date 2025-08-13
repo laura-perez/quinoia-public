@@ -1,6 +1,6 @@
-import { env } from "./env";
-import { signBody } from "./hmac";
-import { createLogger, redact } from "./logger";
+import { env } from "../config";
+import { signBody } from "../auth";
+import { createLogger, redact } from "../logger";
 
 /**
  * Trigger n8n workflow with strict, non-PII payload

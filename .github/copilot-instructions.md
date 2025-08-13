@@ -45,7 +45,7 @@
 
 ## Examples
 
-- **Env import**: `import { env } from '@/lib/env'`
+- **Env import**: `import { env } from '@/lib/config'`
 - **API error shape**: `{ error: 'Invalid input', code: 400, details: { ... } }`
 - **Unit test**: See `tests/unit/hmac.test.ts` for env mocking and signature checks.
 
