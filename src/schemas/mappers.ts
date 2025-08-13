@@ -1,6 +1,3 @@
-// src/schemas/mappers.ts
-// FR→EN mapping dictionaries and allergen utilities (no external deps)
-
 export const genderMap = {
   Femme: "female",
   Homme: "male",
@@ -15,9 +12,9 @@ export const dietMap = {
 } as const;
 
 export const cookingLevelMap = {
-  "Débutant·e : Je veux juste que ce soit simple et rapide": "beginner",
+  "Débutant : Je veux juste que ce soit simple et rapide": "beginner",
   "Intermédiaire : Je suis à l’aise, mais pas un chef non plus": "intermediate",
-  "Confirmé·e : Cuisiner, c’est mon terrain de jeu": "advanced",
+  "Confirmé : Cuisiner, c’est mon terrain de jeu": "advanced",
 } as const;
 
 export const proteinPreferenceMap = {

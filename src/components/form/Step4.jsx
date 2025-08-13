@@ -4,7 +4,7 @@ import ProgressBar from "./form-components/ProgressBar";
 import TextInput from "./form-components/TextInput";
 import FormError from "./form-components/FormError";
 import ConsentCheckbox from "./form-components/ConsentCheckbox";
-import submitMenuForm from "../../lib/submitMenuForm";
+import { createEnvironmentLogger } from "@/lib/logger";
 
 const PRIMARY_GOAL_OPTIONS = [
   { label: "Gagner du temps", value: "saveTime" },
@@ -13,6 +13,9 @@ const PRIMARY_GOAL_OPTIONS = [
 ];
 
 export default function Step4({ formData, updateFormData, goToPrev }) {
+  // Initialize logger for this component (stable reference)
+  const logger = React.useMemo(() => createEnvironmentLogger(), []);
+  
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
@@ -84,24 +87,87 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
     setIsSubmitting(true);
     setError("");
     setErrors({});
+    
     try {
-      const dataToSend = {
-        formData,
-        agreed: formState.agreed,
-        recaptchaToken: "token",
-      };
-      if (process.env.NODE_ENV === "development") {
-        console.log("Submitting menu form with data:", dataToSend);
+      // Get reCAPTCHA token
+      const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+      if (!siteKey) {
+        logger.error('reCAPTCHA configuration error', {
+          error: 'Site key not defined in environment variables',
+          environment: process.env.NODE_ENV
+        });
+        throw new Error("reCAPTCHA site key is not defined");
       }
-      await submitMenuForm(formData, formState.agreed);
+      
+      if (!window.grecaptcha) {
+        logger.error('reCAPTCHA runtime error', {
+          error: 'reCAPTCHA script not loaded',
+          userAgent: navigator.userAgent,
+          url: window.location.href
+        });
+        throw new Error("reCAPTCHA is not available");
+      }
+      
+      const token = await window.grecaptcha.execute(siteKey, { action: "submit_form" });
+      if (!token) {
+        logger.error('reCAPTCHA token generation failed', {
+          siteKey: siteKey.slice(0, 10) + '...',
+          action: 'submit_form'
+        });
+        throw new Error("Failed to generate security token");
+      }
+      
+      // Prepare submission data
+      const submissionData = {
+        recaptchaToken: token,
+        form: {
+          ...formData,
+          email: formState.email,
+          consent: formState.agreed,
+        },
+      };
+
+
+      // Submit to our API
+      const response = await fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(submissionData),
+      });
+      
+      if (!response.ok) {
+        let errorMessage = "Une erreur est survenue. Merci de réessayer.";
+        try {
+          const errorData = await response.json();
+          if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+        } catch (parseError) {
+          // Log JSON parsing error for debugging while using default message for user
+          logger.error('API response parsing failed', {
+            parseError: parseError.message,
+            responseStatus: response.status,
+            responseStatusText: response.statusText,
+            url: response.url
+          });
+        }
+        throw new Error(errorMessage);
+      }
+
       setSubmitted(true);
     } catch (err) {
-      console.error(err);
-      setError("Une erreur est survenue. Merci de réessayer.");
+      logger.error('Form submission failed', {
+        error: err.message || 'Unknown error',
+        stack: err.stack,
+        formDataKeys: Object.keys(formData),
+        hasEmail: !!formState.email,
+        hasConsent: formState.agreed
+      });
+      setError(err.message || "Une erreur est survenue. Merci de réessayer.");
     } finally {
       setIsSubmitting(false);
     }
-  }, [validate, formData, formState]);
+  }, [validate, formData, formState, logger]);
 
   return (
     <div>

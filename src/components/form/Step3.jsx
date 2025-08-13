@@ -5,9 +5,9 @@ import CheckboxGroup from "./form-components/CheckboxGroup";
 
 // Cooking level options
 const COOKING_LEVELS = [
-  "Débutant·e : Je veux juste que ce soit simple et rapide",
+  "Débutant : Je veux juste que ce soit simple et rapide",
   "Intermédiaire : Je suis à l’aise, mais pas un chef non plus",
-  "Confirmé·e : Cuisiner, c’est mon terrain de jeu",
+  "Confirmé : Cuisiner, c’est mon terrain de jeu",
 ];
 
 // Equipment options

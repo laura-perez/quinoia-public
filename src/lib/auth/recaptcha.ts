@@ -1,4 +1,41 @@
-import { env, assertServerEnv } from "./env";
+import { env, assertServerEnv } from "../config";
+import { createLogger, redact } from "../logger";
+
+// Helper: verify and extract reCAPTCHA metadata for API
+export async function verifyAndExtractRecaptcha(token: string, ip?: string) {
+  const logger = createLogger();
+  
+  logger.info('Starting reCAPTCHA verification', { 
+    hasToken: Boolean(token),
+    ip: ip ? redact(ip) : undefined
+  });
+  
+  const result = await verifyRecaptcha(token, ip);
+
+  if (!result.success || (result.score !== undefined && result.score < 0.5)) {
+    logger.warn('reCAPTCHA verification failed', { 
+      success: result.success, 
+      score: result.score,
+      ip: ip ? redact(ip) : undefined
+    });
+    return { ok: false, error: "Échec de la vérification reCAPTCHA. Veuillez réessayer." };
+  }
+  
+  logger.info('reCAPTCHA verification successful', { 
+    score: result.score,
+    action: result.action
+  });
+  
+  return {
+    ok: true,
+    meta: {
+      score: result.score,
+      action: result.action,
+      challengeTs: result.challengeTs,
+      hostname: result.hostname,
+    },
+  };
+}
 
 type RecaptchaResponse = {
   success: boolean;
@@ -26,6 +63,7 @@ export async function verifyRecaptcha(
   action?: string;
   challengeTs?: string;
 }> {
+  const logger = createLogger();
   assertServerEnv();
   const params = new URLSearchParams({
     secret: env.RECAPTCHA_SECRET_KEY,
@@ -35,12 +73,18 @@ export async function verifyRecaptcha(
 
   let res: Response;
   try {
+    logger.debug('Sending reCAPTCHA verification request', { 
+      hasToken: Boolean(token),
+      hasIp: Boolean(ip)
+    });
+    
     res = await fetch("https://www.google.com/recaptcha/api/siteverify", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: params.toString(),
     });
   } catch (err) {
+    logger.error('Network error during reCAPTCHA verification', { error: err });
     throw new Error(
       "Network error during reCAPTCHA verification" +
         (err && typeof err === "object" && "message" in err ? (err as Error).message : String(err))
@@ -51,10 +95,17 @@ export async function verifyRecaptcha(
   try {
     data = await res.json();
   } catch (err) {
+    logger.error('Invalid reCAPTCHA response', { error: err });
     throw new Error(
       "Invalid reCAPTCHA response: " + (err instanceof Error ? err.message : String(err))
     );
   }
+
+  logger.debug('reCAPTCHA verification response received', { 
+    success: data.success,
+    score: data.score,
+    action: data.action
+  });
 
   return {
     success: data.success,

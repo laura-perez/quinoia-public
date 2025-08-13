@@ -30,7 +30,7 @@ function makeForm(overrides: Partial<any> = {}) {
       highIntensity: false,
     },
     allergies: "",
-    agreed: true,
+    consent: true,
     email: "jean@example.com",
     ...overrides,
   };
@@ -115,7 +115,6 @@ describe("normalizedInputSchema integration", () => {
       const errors = formatZodErrors(err);
       const allFieldErrors = Object.values(errors.fieldErrors).flat();
       // Log pour audit si besoin
-      // console.log(errors.fieldErrors);
       expect(allFieldErrors.length).toBeGreaterThan(0);
     }
   });
