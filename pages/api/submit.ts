@@ -4,6 +4,7 @@ import { submitRequestSchema } from "@/schemas/submitRequest.schema";
 import { normalizeFormInput } from "@/schemas/normalizeFormInput";
 import { normalizedInputSchema } from "@/schemas/normalizedInput.schema";
 import { verifyAndExtractRecaptcha } from "@/lib/auth";
+import { detectClientIP } from "@/lib/auth";
 import { upsertUserAndSubmission } from "@/lib/database";
 import { triggerN8n } from "@/lib/integrations";
 import { createLogger, redact } from "@/lib/logger";
@@ -13,12 +14,31 @@ setZodErrorMapFR();
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const startTime = Date.now();
   const logger = createLogger();
+  
+  // Secure IP detection with confidence assessment
+  const ipDetection = detectClientIP(req);
+  
   logger.info("API request started", { 
     method: req.method,
     path: req.url,
     userAgent: req.headers['user-agent'],
-    ip: redact(req.headers['x-forwarded-for'] as string || req.socket.remoteAddress || "unknown"),
+    ip: redact(ipDetection.ip),
+    ipSource: ipDetection.source,
+    ipConfidence: ipDetection.confidence,
+    ipCandidateCount: ipDetection.allCandidates.length
   });
+  
+  // Log security warning for low confidence IP detection
+  if (ipDetection.confidence === 'low') {
+    logger.warn("Low confidence IP detection - potential spoofing", {
+      ip: redact(ipDetection.ip),
+      source: ipDetection.source,
+      allCandidates: ipDetection.allCandidates.map(c => ({ 
+        ip: redact(c.ip), 
+        source: c.source 
+      }))
+    });
+  }
 
   // Ajouter le runId aux headers de réponse pour le tracing
   res.setHeader('X-Run-ID', logger.getRunId());
@@ -66,13 +86,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // Vérification reCAPTCHA serveur
   let recaptchaMeta;
   try {
-    const recaptcha = await verifyAndExtractRecaptcha(parsed.data.recaptchaToken, req.headers["x-forwarded-for"] as string | undefined);
+    // Use the secure IP detection result instead of raw header
+    const recaptcha = await verifyAndExtractRecaptcha(
+      parsed.data.recaptchaToken, 
+      ipDetection.confidence !== 'low' ? ipDetection.ip : undefined
+    );
     if (!recaptcha.ok) {
-      logger.error('reCAPTCHA verification failed', { error: recaptcha.error });
+      logger.error('reCAPTCHA verification failed', { 
+        error: recaptcha.error,
+        ip: redact(ipDetection.ip),
+        ipConfidence: ipDetection.confidence
+      });
       return res.status(403).json({ error: recaptcha.error });
     }
     recaptchaMeta = recaptcha.meta;
-    logger.info('reCAPTCHA verification successful', { score: recaptcha.meta?.score });
+    logger.info('reCAPTCHA verification successful', { 
+      score: recaptcha.meta?.score,
+      ipConfidence: ipDetection.confidence
+    });
   } catch (err) {
     logger.error('reCAPTCHA verification error', { error: err });
     return res.status(500).json({ error: "Erreur lors de la vérification reCAPTCHA." });
