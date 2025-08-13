@@ -23,7 +23,7 @@ export function normalizeFormInput(form: any): unknown {
     diet: mapValue(dietMap, form.diet_type),
     proteinPreferences: mapArrayUnique(proteinPreferenceMap, form.protein_preference || []),
     equipmentAvailable: mapArrayUnique(equipmentMap, form.equipment || []),
-    cookingLevel: mapValue(cookingLevelMap, form.cooking_level),
+    cookingLevel: mapValue(cookingLevelMap, form.cooking_level) ?? "beginner",
     numRecipes: form.nbRecipes,
     numServings: form.nbPortions,
     favoriteFoods: form.favourite_food?.trim(),
