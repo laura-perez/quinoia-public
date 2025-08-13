@@ -115,7 +115,6 @@ describe("normalizedInputSchema integration", () => {
       const errors = formatZodErrors(err);
       const allFieldErrors = Object.values(errors.fieldErrors).flat();
       // Log pour audit si besoin
-      // console.log(errors.fieldErrors);
       expect(allFieldErrors.length).toBeGreaterThan(0);
     }
   });

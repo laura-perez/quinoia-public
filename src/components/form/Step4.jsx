@@ -101,9 +101,6 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
         },
       };
 
-      if (process.env.NODE_ENV === "development") {
-        console.log("Submitting menu form with data:", submissionData);
-      }
 
       // Submit to our API
       const response = await fetch("/api/submit", {
@@ -127,7 +124,6 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
 
       setSubmitted(true);
     } catch (err) {
-      console.error(err);
       setError(err.message || "Une erreur est survenue. Merci de réessayer.");
     } finally {
       setIsSubmitting(false);

@@ -1,6 +1,7 @@
 // Helper: verify and extract reCAPTCHA metadata for API
 export async function verifyAndExtractRecaptcha(token: string, ip?: string) {
   const result = await verifyRecaptcha(token, ip);
+
   if (!result.success || (result.score !== undefined && result.score < 0.5)) {
     return { ok: false, error: "Échec de la vérification reCAPTCHA. Veuillez réessayer." };
   }
