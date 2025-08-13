@@ -4,7 +4,6 @@ import ProgressBar from "./form-components/ProgressBar";
 import TextInput from "./form-components/TextInput";
 import FormError from "./form-components/FormError";
 import ConsentCheckbox from "./form-components/ConsentCheckbox";
-import submitMenuForm from "../../lib/submitMenuForm";
 
 const PRIMARY_GOAL_OPTIONS = [
   { label: "Gagner du temps", value: "saveTime" },
@@ -84,20 +83,52 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
     setIsSubmitting(true);
     setError("");
     setErrors({});
+    
     try {
-      const dataToSend = {
-        formData,
-        agreed: formState.agreed,
-        recaptchaToken: "token",
+      // Get reCAPTCHA token
+      const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+      if (!siteKey) throw new Error("reCAPTCHA site key is not defined");
+      
+      const token = await window.grecaptcha.execute(siteKey, { action: "submit_form" });
+      
+      // Prepare submission data
+      const submissionData = {
+        recaptchaToken: token,
+        form: {
+          ...formData,
+          email: formState.email,
+          consent: formState.agreed,
+        },
       };
+
       if (process.env.NODE_ENV === "development") {
-        console.log("Submitting menu form with data:", dataToSend);
+        console.log("Submitting menu form with data:", submissionData);
       }
-      await submitMenuForm(formData, formState.agreed);
+
+      // Submit to our API
+      const response = await fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(submissionData),
+      });
+      
+      if (!response.ok) {
+        let errorMessage = "Une erreur est survenue. Merci de réessayer.";
+        try {
+          const errorData = await response.json();
+          if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+        } catch {
+          // Use default error message if JSON parsing fails
+        }
+        throw new Error(errorMessage);
+      }
+
       setSubmitted(true);
     } catch (err) {
       console.error(err);
-      setError("Une erreur est survenue. Merci de réessayer.");
+      setError(err.message || "Une erreur est survenue. Merci de réessayer.");
     } finally {
       setIsSubmitting(false);
     }

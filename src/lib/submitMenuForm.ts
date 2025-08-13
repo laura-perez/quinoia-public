@@ -23,7 +23,7 @@ export default async function SubmitMenuForm({
     consent: agreed,
   });
 
-  const response = await fetch("https://your-n8n-instance.example/webhook/menu", {
+  const response = await fetch("/api/submit", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body,

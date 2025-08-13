@@ -30,7 +30,7 @@ function makeForm(overrides: Partial<any> = {}) {
       highIntensity: false,
     },
     allergies: "",
-    agreed: true,
+    consent: true,
     email: "jean@example.com",
     ...overrides,
   };

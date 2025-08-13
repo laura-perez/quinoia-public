@@ -36,6 +36,6 @@ export function normalizeFormInput(form: any): unknown {
     allergens: extractAllergens(form.allergies || ""),
     locale: "fr-FR",
     unitSystem: "metric",
-    consent: !!form.agreed,
+    consent: !!form.consent,
   };
 }
