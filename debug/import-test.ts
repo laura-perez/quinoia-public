@@ -38,8 +38,8 @@ describe('Import Resolution Test', () => {
   it('should be able to import zodErrorMap', async () => {
     // Try dynamic import without extension
     try {
-      const module = await import('../../schemas/zodErrorMap.fr');
-      expect(module.setZodErrorMapFR).toBeDefined();
+      const zodModule = await import('../../schemas/zodErrorMap.fr');
+      expect(zodModule.setZodErrorMapFR).toBeDefined();
     } catch (e) {
       console.error('Dynamic import failed:', e);
       throw e;

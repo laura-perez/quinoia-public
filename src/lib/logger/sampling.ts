@@ -1,6 +1,6 @@
 // Debug log sampling utilities
 import crypto from 'crypto';
-import { getLoggerConfig } from './config.js';
+import { getLoggerConfig } from './config';
 
 /**
  * Sampling strategy interface

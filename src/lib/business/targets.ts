@@ -1,12 +1,12 @@
 import type { NormalizedInput } from "@/schemas";
 import type { Targets } from "@/schemas";
 
+import { clampActivityFactor } from "@/lib/constants/activityFactor";
 import {
   MEAL_SHARE,
   TOLERANCE,
   PROTEIN_FLOOR,
   HIGH_PROTEIN_BONUS,
-  clampActivityFactor,
   BMR_FORMULA,
   GENDER_MALE,
 } from "@/lib/constants/nutrition";
