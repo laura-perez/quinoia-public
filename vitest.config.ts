@@ -17,4 +17,10 @@ export default defineConfig({
     exclude: ["node_modules", "dist", ".next", "src/tests/e2e/*.{spec,test}.{js,ts,jsx,tsx}"],
   },
   plugins: [tsconfigPaths()],
+  resolve: {
+    alias: {
+      "@": "./src",
+    },
+    extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.fr.ts'],
+  },
 });
