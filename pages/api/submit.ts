@@ -3,6 +3,10 @@ import { setZodErrorMapFR, formatZodErrors } from "@/schemas/zodErrorMap.fr";
 import { submitRequestSchema } from "@/schemas/submitRequest.schema";
 import { normalizeFormInput } from "@/schemas/normalizeFormInput";
 import { normalizedInputSchema } from "@/schemas/normalizedInput.schema";
+import { verifyAndExtractRecaptcha } from "@/lib/recaptcha";
+import { upsertUserAndSubmission } from "@/lib/supabaseServer";
+import { triggerN8n } from "@/lib/n8n";
+
 
 setZodErrorMapFR();
 
@@ -30,9 +34,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ errors: formatZodErrors(norm.error) });
   }
 
-  // TODO: Vérification reCAPTCHA serveur
-  // TODO: Upsert DB
-  // TODO: n8n trigger
+  // Vérification reCAPTCHA serveur
+  let recaptchaMeta;
+  try {
+    const recaptcha = await verifyAndExtractRecaptcha(parsed.data.recaptchaToken, req.headers["x-forwarded-for"] as string | undefined);
+    if (!recaptcha.ok) {
+      return res.status(403).json({ error: recaptcha.error });
+    }
+    recaptchaMeta = recaptcha.meta;
+  } catch (err) {
+    return res.status(500).json({ error: "Erreur lors de la vérification reCAPTCHA." });
+  }
 
-  return res.status(202).json({ ok: true });
+  // Upsert user and submission
+  let submissionId;
+  try {
+    submissionId = await upsertUserAndSubmission({
+      email: norm.data.email,
+      normalizedInput: norm.data,
+      recaptchaMeta,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Erreur lors de l'enregistrement en base de données.", details: String(err) });
+  }
+
+  // Trigger n8n workflow
+  let n8nResult;
+  try {
+    n8nResult = await triggerN8n({
+      submissionId,
+      input: norm.data,
+    });
+  } catch (err) {
+    return res.status(502).json({ error: "Erreur lors du traitement n8n.", details: String(err) });
+  }
+
+  return res.status(200).json({ ok: true, submissionId, resultBundle: n8nResult });
 }
