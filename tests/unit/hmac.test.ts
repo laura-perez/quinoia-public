@@ -1,5 +1,18 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import * as hmac from "../../src/lib/hmac";
+
+// Set all required env vars before importing hmac
+const REQUIRED_ENV = {
+  RECAPTCHA_SECRET_KEY: "test",
+  SUPABASE_URL: "test",
+  SUPABASE_SERVICE_KEY: "test",
+  N8N_WEBHOOK_URL: "test",
+  N8N_WEBHOOK_SECRET: "test-secret",
+  HMAC_SECRET: "test",
+  APP_BASE_URL: "http://localhost",
+};
+Object.assign(process.env, REQUIRED_ENV);
+
+let hmac: typeof import("../../src/lib/hmac");
 
 const TEST_SECRET = "test-secret";
 const TEST_BODY = '{"ok":true}';
@@ -7,9 +20,10 @@ const TEST_BODY = '{"ok":true}';
 let originalEnv: NodeJS.ProcessEnv;
 
 describe("hmac", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     originalEnv = { ...process.env };
-    process.env.N8N_WEBHOOK_SECRET = TEST_SECRET;
+    Object.assign(process.env, REQUIRED_ENV);
+    hmac = await import("../../src/lib/hmac");
   });
 
   afterEach(() => {

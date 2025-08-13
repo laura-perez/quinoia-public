@@ -32,6 +32,7 @@ export default function Step1({ formData, updateFormData, goToNext }) {
 
   // Validate all required fields and physical activity group
   const handleSubmit = () => {
+    // Use camelCase keys for validation and error reporting
     const requiredFields = ["name", "age", "gender", "height_cm", "weight_kg"];
     const newErrors = {};
     for (const field of requiredFields) {

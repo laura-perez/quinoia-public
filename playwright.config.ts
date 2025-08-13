@@ -1,5 +1,8 @@
 import { defineConfig } from "@playwright/test";
 
+// Support @ alias for src in Playwright tests
+require('module-alias/register');
+
 export default defineConfig({
   testDir: "tests/e2e",
   retries: 0,
