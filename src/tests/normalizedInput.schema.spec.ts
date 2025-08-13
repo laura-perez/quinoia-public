@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { normalizedInputSchema } from "../src/schemas/normalizedInput.schema";
-import { normalizeFormInput } from "../src/schemas/normalizeFormInput";
-import { setZodErrorMapFR, formatZodErrors } from "../src/schemas/zodErrorMap.fr";
+import { normalizedInputSchema } from "../schemas/normalizedInput.schema";
+import { normalizeFormInput } from "../schemas/normalizeFormInput";
+import { setZodErrorMapFR, formatZodErrors } from "../schemas/zodErrorMap.fr";
 
 setZodErrorMapFR();
 
