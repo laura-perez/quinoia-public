@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 describe('Logger Basic Tests', () => {
   it('should import logger functions', async () => {
     // Import dynamique pour diagnostiquer
-    const loggerModule = await import('../logger');
+    const loggerModule = await import('../../lib/logger');
     console.log('Logger module exports:', Object.keys(loggerModule));
     
     expect(loggerModule.createLogger).toBeDefined();
@@ -14,7 +14,7 @@ describe('Logger Basic Tests', () => {
   });
 
   it('should create logger instance', async () => {
-    const { createLogger } = await import('../logger');
+    const { createLogger } = await import('../../lib/logger');
     const logger = createLogger();
     
     expect(logger).toBeDefined();
@@ -23,7 +23,7 @@ describe('Logger Basic Tests', () => {
   });
 
   it('should redact simple strings', async () => {
-    const { redact } = await import('../logger');
+    const { redact } = await import('../../lib/logger');
     
     const email = 'user@example.com';
     const redacted = redact(email);

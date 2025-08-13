@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createLogger, redact, LoggerFactory } from '../logger';
+import { createLogger, redact, LoggerFactory } from '../../lib/logger';
 
 // Mock console methods to capture output
 const mockConsoleLog = vi.fn();
