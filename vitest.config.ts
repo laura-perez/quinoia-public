@@ -4,7 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   test: {
     environment: "happy-dom",
-    setupFiles: ["./tests/setupTests.ts"],
+  setupFiles: ["./src/tests/setupTests.ts"],
     coverage: {
       provider: "v8",
       reporter: ["text", "lcov"],

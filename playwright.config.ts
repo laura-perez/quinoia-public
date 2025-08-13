@@ -4,7 +4,7 @@ import { defineConfig } from "@playwright/test";
 require('module-alias/register');
 
 export default defineConfig({
-  testDir: "tests/e2e",
+  testDir: "src/tests/e2e",
   retries: 0,
   workers: 1,
   reporter: "list",
