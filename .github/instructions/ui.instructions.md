@@ -6,7 +6,7 @@ applyTo: "src/components/**/*.{jsx,ts}"
 
 ## Form (4 steps)
 
-- **Step 1 — Profil**: email, firstName, age (16–100), gender, heightCm (100–250), weightKg (40–150), consent (required), reCAPTCHA widget.
+- **Step 1 — Profil**: email, firstName, age (16–100), gender, height_cm (100–250), weight_kg (40–150), consent (required), reCAPTCHA widget.
 - **Step 2 — Objectifs**: `primaryGoal` (radio: saveTime|eatHealthier|weightLoss), `secondaryFocus` (switch: highProtein).
 - **Step 3 — Activité** (Option B): `deskJob` (yes/no), `dailySteps` (<5k|5-8k|>8k), `sessionsPerWeek` (0|1-2|3-4|≥5), `highIntensity` (yes/no).
 - **Step 4 — Préférences**: `diet`, `proteinPreferences[]` (locked EN values, FR labels), `equipmentAvailable[]` (locked EN), `cookingLevel`, `numRecipes` (2–7), `numServings` (1–4), `favoriteFoods`, `dislikedFoods`, `batchMode`.

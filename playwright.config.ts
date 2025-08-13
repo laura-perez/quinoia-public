@@ -1,11 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
 // Support @ alias for src in Playwright tests
-import path from "path";
-import { register } from "module-alias";
-register({
-  '@': path.join(__dirname, 'src'),
-});
+require('module-alias/register');
 
 export default defineConfig({
   testDir: "tests/e2e",

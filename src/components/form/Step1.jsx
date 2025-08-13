@@ -33,7 +33,7 @@ export default function Step1({ formData, updateFormData, goToNext }) {
   // Validate all required fields and physical activity group
   const handleSubmit = () => {
     // Use camelCase keys for validation and error reporting
-    const requiredFields = ["name", "age", "gender", "heightCm", "weightKg"];
+    const requiredFields = ["name", "age", "gender", "height_cm", "weight_kg"];
     const newErrors = {};
     for (const field of requiredFields) {
       if (!formData[field] || formData[field].toString().trim() === "") {
@@ -94,20 +94,20 @@ export default function Step1({ formData, updateFormData, goToNext }) {
         <div className="flex flex-col sm:flex-row gap-4">
           <TextInput
             label="Taille (cm)"
-            name="heightCm"
+            name="height_cm"
             type="number"
-            value={formData.heightCm}
+            value={formData.height_cm}
             onChange={handleChange}
-            error={errors.heightCm}
+            error={errors.height_cm}
             placeholder="cm"
           />
           <TextInput
             label="Poids (kg)"
-            name="weightKg"
+            name="weight_kg"
             type="number"
-            value={formData.weightKg}
+            value={formData.weight_kg}
             onChange={handleChange}
-            error={errors.weightKg}
+            error={errors.weight_kg}
             placeholder="kg"
           />
         </div>
