@@ -14,7 +14,7 @@ export default defineConfig({
       "@": "./src",
     },
     include: ["src/**/*.{test,spec}.{js,ts,jsx,tsx}", "tests/**/*.{test,spec}.{js,ts,jsx,tsx}"],
-    exclude: ["node_modules", "dist", ".next"],
+  exclude: ["node_modules", "dist", ".next", "src/tests/e2e/*.{spec,test}.{js,ts,jsx,tsx}"],
   },
   plugins: [tsconfigPaths()],
 });

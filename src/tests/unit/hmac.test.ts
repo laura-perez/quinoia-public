@@ -12,7 +12,7 @@ const REQUIRED_ENV = {
 };
 Object.assign(process.env, REQUIRED_ENV);
 
-let hmac: typeof import("../../src/lib/hmac");
+let hmac: typeof import("../../lib/hmac");
 
 const TEST_SECRET = "test-secret";
 const TEST_BODY = '{"ok":true}';
@@ -23,7 +23,7 @@ describe("hmac", () => {
   beforeEach(async () => {
     originalEnv = { ...process.env };
     Object.assign(process.env, REQUIRED_ENV);
-    hmac = await import("../../src/lib/hmac");
+  hmac = await import("../../lib/hmac");
   });
 
   afterEach(() => {
