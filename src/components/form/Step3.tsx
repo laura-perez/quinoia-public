@@ -31,23 +31,47 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev, em
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
+  // Type-safe helper to get array values from formData
+  const getFormArrayValue = (fieldName: string): string[] => {
+    const value = formData[fieldName as keyof typeof formData];
+    if (Array.isArray(value)) {
+      return value;
+    }
+    return [];
+  };
+
   // Handle checkbox group changes (for arrays)
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = e.target;
-    const current = (formData as any)[name] || [];
+    const current = getFormArrayValue(name);
     const updated = checked ? [...current, value] : current.filter((v: string) => v !== value);
     updateFormData({ [name]: updated });
   };
 
+  // Type-safe helper to get form field value
+  const getFormFieldValue = (fieldName: keyof typeof formData): string | undefined => {
+    const value = formData[fieldName];
+    if (typeof value === 'string') {
+      return value;
+    }
+    if (typeof value === 'number') {
+      return String(value);
+    }
+    return undefined;
+  };
+
   // Validate required fields and proceed to next step if valid
   const handleSubmit = () => {
-    const requiredFields = ["cooking_level", "nbRecipes", "nbPortions"];
-    const newErrors = {};
+    const requiredFields = ["cooking_level", "nbRecipes", "nbPortions"] as const;
+    const newErrors: FormErrors = {};
+    
     for (const field of requiredFields) {
-      if (!formData[field] || formData[field].toString().trim() === "") {
+      const value = getFormFieldValue(field);
+      if (!value || value.trim() === "") {
         newErrors[field] = "Ce champ est requis";
       }
     }
+    
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
