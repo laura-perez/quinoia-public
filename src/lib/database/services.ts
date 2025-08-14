@@ -1,22 +1,18 @@
 import { usersRepository, submissionsRepository } from "./repositories";
 import { createLogger, redact } from "../logger";
 import type { CreateSubmissionInput } from "./types";
+import type { UpsertUserAndSubmissionParams } from "@/schemas";
 
 /**
  * Service layer function that combines user upsert and submission creation
  * This maintains the existing API while using the new repository pattern
  */
-export async function upsertUserAndSubmission({ 
-  email, 
-  normalizedInput, 
-  recaptchaMeta, 
-  rawFormData 
-}: {
-  email: string;
-  normalizedInput: any;
-  recaptchaMeta: any;
-  rawFormData: any;
-}): Promise<string> {
+export async function upsertUserAndSubmission({
+  email,
+  normalizedInput,
+  recaptchaMeta,
+  rawFormData
+}: UpsertUserAndSubmissionParams): Promise<string> {
   const logger = createLogger();
   logger.info('Starting database upsert', { email: redact(email) });
   
@@ -41,8 +37,8 @@ export async function upsertUserAndSubmission({
     equipmentAvailable: normalizedInput.equipmentAvailable,
     numRecipes: normalizedInput.numRecipes,
     numServings: normalizedInput.numServings,
-    dislikedFoods: normalizedInput.dislikedFoods,
-    favoriteFoods: normalizedInput.favoriteFoods,
+    dislikedFoods: normalizedInput.dislikedFoods || null,
+    favoriteFoods: normalizedInput.favoriteFoods || null,
     cookingLevel: normalizedInput.cookingLevel,
     locale: normalizedInput.locale,
     unitSystem: normalizedInput.unitSystem,
