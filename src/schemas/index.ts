@@ -14,3 +14,4 @@ export { setZodErrorMapFR } from "./zodErrorMap.fr";
 
 export { normalizeFormInput } from "./normalizeFormInput";
 export * from "./mappers";
+export * from "./api.types";

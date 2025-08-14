@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import RadioGroup from "./form-components/RadioGroup";
 import ProgressBar from "./form-components/ProgressBar";
 import TextInput from "./form-components/TextInput";
+import type { FormStepProps, PhysicalActivity, FormErrors, PhysicalActivityErrors } from "./types";
 
 // Initial state for the physical activity group
-const INITIAL_PHYSICAL_ACTIVITY = {
+const INITIAL_PHYSICAL_ACTIVITY: PhysicalActivity = {
   deskJob: null,
   dailySteps: null,
   sessionsPerWeek: null,
@@ -16,16 +17,16 @@ const GENDER_OPTIONS = ["Femme", "Homme", "Pas précisé"];
 /**
  * Step 1: User profile and physical activity form.
  */
-export default function Step1({ formData, updateFormData, goToNext }) {
+export default function Step1({ formData, updateFormData, goToNext, goToPrev, email, isLast }: FormStepProps) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<FormErrors>({});
   const pa = formData.physicalActivity ?? INITIAL_PHYSICAL_ACTIVITY;
 
   // Handle text/radio input changes
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateFormData({ [e.target.name]: e.target.value });
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
@@ -34,14 +35,14 @@ export default function Step1({ formData, updateFormData, goToNext }) {
   const handleSubmit = () => {
     // Use camelCase keys for validation and error reporting
     const requiredFields = ["name", "age", "gender", "height_cm", "weight_kg"];
-    const newErrors = {};
+    const newErrors: FormErrors = {};
     for (const field of requiredFields) {
-      if (!formData[field] || formData[field].toString().trim() === "") {
-        newErrors[field] = "Ce champ est requis";
+      if (!formData[field as keyof FormData] || formData[field as keyof FormData]?.toString().trim() === "") {
+        newErrors[field as keyof FormErrors] = "Ce champ est requis";
       }
     }
     // Validate physical activity fields
-    const paErrors = {};
+    const paErrors: PhysicalActivityErrors = {};
     if (pa.deskJob === null) paErrors.deskJob = "Ce champ est requis";
     if (pa.dailySteps === null) paErrors.dailySteps = "Ce champ est requis";
     if (pa.sessionsPerWeek === null) paErrors.sessionsPerWeek = "Ce champ est requis";

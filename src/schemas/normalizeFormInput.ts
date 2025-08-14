@@ -8,34 +8,37 @@ import {
   mapArrayUnique,
   extractAllergens,
 } from "./mappers";
+import type { RawFormData } from "./api.types";
 
 /**
  * Transforme le payload du formulaire (clés/valeurs FR) en un objet prêt pour NormalizedInput.
  */
-export function normalizeFormInput(form: any): unknown {
+export function normalizeFormInput(form: unknown): unknown {
+  // Type guard - in a real app, we'd validate this properly
+  const f = form as any;
   return {
-    email: form.email,
-    firstName: form.name?.trim(),
-    age: form.age,
-    gender: mapValue(genderMap, form.gender) ?? "unspecified",
-    heightCm: form.height_cm,
-    weightKg: form.weight_kg,
-    diet: mapValue(dietMap, form.diet_type),
-    proteinPreferences: mapArrayUnique(proteinPreferenceMap, form.protein_preference || []),
-    equipmentAvailable: mapArrayUnique(equipmentMap, form.equipment || []),
-    cookingLevel: mapValue(cookingLevelMap, form.cooking_level) ?? "beginner",
-    numRecipes: form.nbRecipes,
-    numServings: form.nbPortions,
-    favoriteFoods: form.favourite_food?.trim(),
-    dislikedFoods: form.disliked_food?.trim(),
-    batchMode: !!form.batch,
-    primaryGoal: form.primaryGoal,
-    secondaryFocus: form.secondaryFocus ?? null,
-    activity: { ...form.physicalActivity },
-    allergiesText: form.allergies?.trim() || undefined,
-    allergens: extractAllergens(form.allergies || ""),
+    email: f.email,
+    firstName: f.name?.trim(),
+    age: f.age,
+    gender: mapValue(genderMap, f.gender) ?? "unspecified",
+    heightCm: f.height_cm,
+    weightKg: f.weight_kg,
+    diet: mapValue(dietMap, f.diet_type),
+    proteinPreferences: mapArrayUnique(proteinPreferenceMap, f.protein_preference || []),
+    equipmentAvailable: mapArrayUnique(equipmentMap, f.equipment || []),
+    cookingLevel: mapValue(cookingLevelMap, f.cooking_level) ?? "beginner",
+    numRecipes: f.nbRecipes,
+    numServings: f.nbPortions,
+    favoriteFoods: f.favourite_food?.trim(),
+    dislikedFoods: f.disliked_food?.trim(),
+    batchMode: !!f.batch,
+    primaryGoal: f.primaryGoal,
+    secondaryFocus: f.secondaryFocus ?? null,
+    activity: { ...f.physicalActivity },
+    allergiesText: f.allergies?.trim() || undefined,
+    allergens: extractAllergens(f.allergies || ""),
     locale: "fr-FR",
     unitSystem: "metric",
-    consent: !!form.consent,
+    consent: !!f.consent,
   };
 }

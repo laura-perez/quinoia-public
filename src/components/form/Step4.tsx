@@ -5,7 +5,17 @@ import TextInput from "./form-components/TextInput";
 import FormError from "./form-components/FormError";
 import ConsentCheckbox from "./form-components/ConsentCheckbox";
 import { createEnvironmentLogger } from "@/lib/logger";
-import { getRecaptchaSiteKey } from "@/lib/config";
+import { getRecaptchaSiteKey } from "@/lib/config/clientEnv";
+import { FormStepProps, FormErrors } from "./types";
+
+// Extend Window interface for reCAPTCHA
+declare global {
+  interface Window {
+    grecaptcha: {
+      execute: (siteKey: string, options: { action: string }) => Promise<string>;
+    };
+  }
+}
 
 const PRIMARY_GOAL_OPTIONS = [
   { label: "Gagner du temps", value: "saveTime" },
@@ -13,7 +23,7 @@ const PRIMARY_GOAL_OPTIONS = [
   { label: "Perdre du poids", value: "weightLoss" },
 ];
 
-export default function Step4({ formData, updateFormData, goToPrev }) {
+export default function Step4({ formData, updateFormData, goToPrev, email, isLast }: FormStepProps) {
   // Initialize logger for this component (stable reference)
   const logger = React.useMemo(() => createEnvironmentLogger(), []);
   
@@ -30,26 +40,26 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<FormErrors>({});
 
   // Centralized change handler
-  const handleFieldChange = useCallback((name, value) => {
+  const handleFieldChange = useCallback((name: string, value: string | boolean) => {
     setFormState((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: undefined }));
   }, []);
 
   // Memoized handlers for form fields
   const handleEmailChange = useCallback(
-    (e) => handleFieldChange("email", e.target.value),
+    (e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange("email", e.target.value),
     [handleFieldChange]
   );
   const handleConsentChange = useCallback(
-    (e) => handleFieldChange("agreed", e.target.checked),
+    (e: React.ChangeEvent<HTMLInputElement>) => handleFieldChange("agreed", e.target.checked),
     [handleFieldChange]
   );
 
   const handlePrimaryGoalChange = useCallback(
-    (e) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       const selected = PRIMARY_GOAL_OPTIONS.find((opt) => opt.label === e.target.value);
       updateFormData({ primaryGoal: selected ? selected.value : "" });
       setErrors((prev) => ({ ...prev, primaryGoal: undefined }));
@@ -58,7 +68,7 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
   );
 
   const handleSecondaryFocusChange = useCallback(
-    (e) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = e.target.value === "Oui" ? "highProtein" : null;
       updateFormData({ secondaryFocus: val });
     },
@@ -67,7 +77,7 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
 
   // Validation
   const validate = useCallback(() => {
-    const newErrors = {};
+    const newErrors: FormErrors = {};
     if (!formData.primaryGoal || formData.primaryGoal === "") {
       newErrors.primaryGoal = "Merci de sélectionner un objectif principal.";
     }
@@ -76,7 +86,7 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
     }
     if (!formState.email) {
       setError("Merci de renseigner ton adresse email.");
-      newErrors.email = true;
+      newErrors.email = "Adresse email requise";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
