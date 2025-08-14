@@ -124,7 +124,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   } catch (err) {
     logger.error('Database upsert failed', { error: err });
-    return res.status(500).json({ error: "Erreur lors de l'enregistrement en base de données.", details: String(err) });
+    return res.status(500).json({ error: "Erreur lors de l'enregistrement en base de données." });
   }
 
   // Trigger n8n workflow
