@@ -14,10 +14,8 @@ setZodErrorMapFR();
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const startTime = Date.now();
   const logger = createLogger();
-  
   // Secure IP detection with confidence assessment
   const ipDetection = detectClientIP(req);
-  
   logger.info("API request started", { 
     method: req.method,
     path: req.url,
