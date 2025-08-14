@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import RadioGroup from "./form-components/RadioGroup";
 import ProgressBar from "./form-components/ProgressBar";
 import CheckboxGroup from "./form-components/CheckboxGroup";
+import { FormStepProps, FormErrors } from "./types";
 
 // Cooking level options
 const COOKING_LEVELS = [
@@ -17,24 +18,24 @@ const EQUIPMENT_OPTIONS = ["Four", "Mixeur/Blender", "Thermomix", "Air Fryer"];
 const RECIPE_COUNTS = [2, 3, 4, 5, 6, 7];
 const PORTION_COUNTS = [1, 2, 3, "4+"];
 
-export default function Step3({ formData, updateFormData, goToNext, goToPrev }) {
+export default function Step3({ formData, updateFormData, goToNext, goToPrev, email, isLast }: FormStepProps) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<FormErrors>({});
 
   // Handle text and radio input changes
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     updateFormData({ [e.target.name]: e.target.value });
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
   // Handle checkbox group changes (for arrays)
-  const handleCheckboxChange = (e) => {
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = e.target;
-    const current = formData[name] || [];
-    const updated = checked ? [...current, value] : current.filter((v) => v !== value);
+    const current = (formData as any)[name] || [];
+    const updated = checked ? [...current, value] : current.filter((v: string) => v !== value);
     updateFormData({ [name]: updated });
   };
 

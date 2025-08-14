@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import RadioGroup from "./form-components/RadioGroup";
 import ProgressBar from "./form-components/ProgressBar";
 import CheckboxGroup from "./form-components/CheckboxGroup";
 import TextInput from "./form-components/TextInput";
+import type { FormStepProps, FormErrors } from "./types";
 
 const DIET_OPTIONS = ["Omnivore", "Flexitarien", "Végétarien", "Vegan"];
 const PROTEIN_OPTIONS = [
@@ -19,15 +20,15 @@ const PROTEIN_OPTIONS = [
 /**
  * Step 2: Dietary preferences and restrictions.
  */
-export default function Step2({ formData, updateFormData, goToNext, goToPrev }) {
+export default function Step2({ formData, updateFormData, goToNext, goToPrev, email, isLast }: FormStepProps) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<FormErrors>({});
 
   // Handle text/radio input changes
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     updateFormData({ [e.target.name]: e.target.value });
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
@@ -42,7 +43,7 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
 
   // Validate required fields
   const handleSubmit = () => {
-    const newErrors = {};
+    const newErrors: FormErrors = {};
     if (!formData.diet_type || formData.diet_type.trim() === "") {
       newErrors.diet_type = "Ce champ est requis";
     }
@@ -70,7 +71,7 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev }) 
           options={DIET_OPTIONS}
           value={formData.diet_type || ""}
           onChange={handleChange}
-          error={errors.diet_type}
+          error={errors.diet_type as string}
           label="Quel est ton type d’alimentation ?"
           optionClassName="flex-1 text-center font-medium"
         />
