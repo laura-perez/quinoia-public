@@ -5,6 +5,7 @@ import TextInput from "./form-components/TextInput";
 import FormError from "./form-components/FormError";
 import ConsentCheckbox from "./form-components/ConsentCheckbox";
 import { createEnvironmentLogger } from "@/lib/logger";
+import { getRecaptchaSiteKey } from "@/lib/config";
 
 const PRIMARY_GOAL_OPTIONS = [
   { label: "Gagner du temps", value: "saveTime" },
@@ -89,14 +90,16 @@ export default function Step4({ formData, updateFormData, goToPrev }) {
     setErrors({});
     
     try {
-      // Get reCAPTCHA token
-      const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-      if (!siteKey) {
+      // Get reCAPTCHA token with validated site key
+      let siteKey;
+      try {
+        siteKey = getRecaptchaSiteKey();
+      } catch (configError) {
         logger.error('reCAPTCHA configuration error', {
-          error: 'Site key not defined in environment variables',
+          error: configError.message,
           environment: process.env.NODE_ENV
         });
-        throw new Error("reCAPTCHA site key is not defined");
+        throw new Error("Configuration reCAPTCHA invalide");
       }
       
       if (!window.grecaptcha) {

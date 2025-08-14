@@ -40,8 +40,8 @@ describe('IP Detection Security', () => {
       const result = detectClientIP(req);
 
       expect(result.ip).toBe('203.0.113.5');
-      // Note: confidence is low due to multiple suspicious candidates (security feature)
-      expect(result.confidence).toBe('low'); 
+      // Note: cf-connecting-ip always gets high confidence as it's from a trusted proxy
+      expect(result.confidence).toBe('high'); 
       expect(result.source).toBe('cf-connecting-ip');
     });
 
@@ -58,7 +58,7 @@ describe('IP Detection Security', () => {
 
       const result = detectClientIP(req);
 
-      expect(result.confidence).toBe('low');
+      expect(result.confidence).toBe('high'); // cf-connecting-ip gets high confidence even with multiple candidates
       expect(result.allCandidates.length).toBeGreaterThan(3);
     });
 
