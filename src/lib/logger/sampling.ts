@@ -26,7 +26,7 @@ export class HashBasedSamplingStrategy implements SamplingStrategy {
 
     // Create deterministic hash from identifier
     const hash = crypto.createHash('md5').update(identifier).digest('hex');
-    const hashValue = parseInt(hash.substr(0, 8), 16);
+    const hashValue = parseInt(hash.substring(0, 8), 16);
     const normalized = hashValue / 0xffffffff;
     
     return normalized < this.sampleRate;
