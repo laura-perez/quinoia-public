@@ -5,7 +5,7 @@
  * IMPORTANT: Module server-only - ne jamais importer côté client
  */
 
-import { getServiceClient } from '@/lib/database/client'
+import { getServiceClient } from '@/lib/supabase/client'
 import type { RecentRecipe, ExclusionLists, RecencyAndExclusion } from '@/types/recency'
 
 // Sécurité : empêcher l'import côté client (sauf en tests)

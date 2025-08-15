@@ -5,7 +5,7 @@ import { normalizeFormInput } from "@/schemas/normalizeFormInput";
 import { normalizedInputSchema } from "@/schemas/normalizedInput.schema";
 import { verifyAndExtractRecaptcha } from "@/lib/auth";
 import { detectClientIP } from "@/lib/auth";
-import { upsertUserAndSubmission } from "@/lib/database";
+import { upsertUserAndSubmission } from "@/lib/supabase";
 import { triggerN8n } from "@/lib/integrations";
 import { createLogger, redact } from "@/lib/logger";
 import { buildN8nPayload } from "@/lib/business/buildN8nPayload";

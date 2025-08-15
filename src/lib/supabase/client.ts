@@ -3,7 +3,7 @@ import { env, assertServerEnv } from "../config";
 
 // Prevent import on the client side
 if (typeof window !== "undefined") {
-  throw new Error("lib/database/client.ts must never be imported on the client side");
+  throw new Error("lib/supabase/client.ts must never be imported on the client side");
 }
 
 /**
