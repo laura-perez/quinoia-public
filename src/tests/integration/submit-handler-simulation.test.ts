@@ -44,6 +44,7 @@ async function createSubmitHandler() {
 
   const mockUpsertUserAndSubmission = vi.fn().mockResolvedValue({
     submissionId: 'test_submission_uuid_123',
+    userId: 'test_user_uuid_456'
   });
 
   const mockTriggerN8n = vi.fn().mockResolvedValue({
@@ -125,7 +126,10 @@ async function createSubmitHandler() {
 
       // Store in database
       const dbResult = await mockUpsertUserAndSubmission(norm.data);
-      logger.info('User and submission upserted', { submissionId: dbResult.submissionId });
+      logger.info('User and submission upserted', { 
+        submissionId: dbResult.submissionId,
+        userId: dbResult.userId 
+      });
 
       // Trigger n8n workflow
       const n8nResult = await mockTriggerN8n({

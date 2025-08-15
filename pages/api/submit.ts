@@ -8,6 +8,7 @@ import { detectClientIP } from "@/lib/auth";
 import { upsertUserAndSubmission } from "@/lib/database";
 import { triggerN8n } from "@/lib/integrations";
 import { createLogger, redact } from "@/lib/logger";
+import { buildN8nPayload } from "@/lib/business/buildN8nPayload";
 
 setZodErrorMapFR();
 
@@ -108,16 +109,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   // Upsert user and submission
-  let submissionId;
+  let submissionResult;
   try {
-    submissionId = await upsertUserAndSubmission({
+    submissionResult = await upsertUserAndSubmission({
       email: norm.data.email,
       normalizedInput: norm.data,
       recaptchaMeta,
       rawFormData: parsed.data.form,
     });
     logger.info('Database upsert successful', { 
-      submissionId,
+      submissionId: submissionResult.submissionId,
+      userId: submissionResult.userId,
       email: redact(norm.data.email)
     });
   } catch (err) {
@@ -125,29 +127,54 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Erreur lors de l'enregistrement en base de données." });
   }
 
+  // Build n8n payload using our new function
+  let n8nPayload;
+  try {
+    n8nPayload = await buildN8nPayload(
+      norm.data,
+      submissionResult.userId,
+      submissionResult.submissionId
+    );
+    logger.info('n8n payload built successfully', { 
+      submissionId: submissionResult.submissionId,
+      userId: submissionResult.userId,
+      payloadSize: JSON.stringify(n8nPayload).length
+    });
+  } catch (err) {
+    logger.error('n8n payload build failed', { 
+      error: err, 
+      submissionId: submissionResult.submissionId 
+    });
+    return res.status(500).json({ error: "Erreur lors de la construction du payload n8n." });
+  }
+
   // Trigger n8n workflow
   let n8nResult;
   try {
-    n8nResult = await triggerN8n({
-      submissionId,
-      input: norm.data,
-    });
+    n8nResult = await triggerN8n(n8nPayload);
     logger.info('n8n workflow triggered successfully', { 
-      submissionId,
+      submissionId: submissionResult.submissionId,
       n8nExecutionId: n8nResult?.executionId 
     });
   } catch (err) {
-    logger.error('n8n workflow failed', { error: err, submissionId });
+    logger.error('n8n workflow failed', { 
+      error: err, 
+      submissionId: submissionResult.submissionId 
+    });
     return res.status(502).json({ error: "Erreur lors du traitement n8n.", details: String(err) });
   }
 
   const totalTime = Date.now() - startTime;
   
   logger.info('API request completed successfully', {
-    submissionId,
+    submissionId: submissionResult.submissionId,
     duration: totalTime,
     email: redact(norm.data.email)
   });
   
-  return res.status(200).json({ ok: true, submissionId, resultBundle: n8nResult });
+  return res.status(200).json({ 
+    ok: true, 
+    submissionId: submissionResult.submissionId, 
+    resultBundle: n8nResult 
+  });
 }

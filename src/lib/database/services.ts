@@ -12,7 +12,7 @@ export async function upsertUserAndSubmission({
   normalizedInput,
   recaptchaMeta,
   rawFormData
-}: UpsertUserAndSubmissionParams): Promise<string> {
+}: UpsertUserAndSubmissionParams): Promise<{ submissionId: string; userId: string }> {
   const logger = createLogger();
   logger.info('Starting database upsert', { email: redact(email) });
   
@@ -62,5 +62,8 @@ export async function upsertUserAndSubmission({
     email: redact(email)
   });
   
-  return submission.id;
+  return {
+    submissionId: submission.id,
+    userId: user.id
+  };
 }
