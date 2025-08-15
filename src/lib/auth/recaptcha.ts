@@ -5,6 +5,26 @@ import { createLogger, redact } from "../logger";
 export async function verifyAndExtractRecaptcha(token: string, ip?: string) {
   const logger = createLogger();
   
+  // Bypass pour le développement local
+  const testTokens = ['bypass-local', 'test-token', 'test_token_valid', 'postman-test'];
+  if (process.env.NODE_ENV === 'development' && testTokens.includes(token)) {
+    logger.info('reCAPTCHA bypass activated for local development', { 
+      token: token,
+      environment: process.env.NODE_ENV 
+    });
+    return {
+      ok: true,
+      meta: {
+        score: 0.9,
+        action: 'submit',
+        success: true,
+        challengeTs: new Date().toISOString(),
+        hostname: 'localhost',
+        challenge_ts: new Date().toISOString(),
+      },
+    };
+  }
+  
   logger.info('Starting reCAPTCHA verification', { 
     hasToken: Boolean(token),
     ip: ip ? redact(ip) : undefined

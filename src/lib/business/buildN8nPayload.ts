@@ -5,7 +5,7 @@
 
 import { z } from 'zod'
 import { computeActivityFactor, computeTargets, computeWindow } from './index'
-import { getRecencyAndExclusion } from '@/lib/supabase/recency'
+import { getUserRecencyFromView } from '@/lib/supabase/recency'
 import { apiToN8nPayloadSchema } from '@/schemas/apiToN8nPayload.schema'
 import type { NormalizedInput } from '@/schemas/normalizedInput.schema'
 import { CONTRACT_VERSION } from '@/config/contracts'
@@ -40,21 +40,11 @@ export async function buildN8nPayload(
     normalizedInput.secondaryFocus
   )
   
-  // 4. Récupération des listes récence/exclusion (parallèle)
-  const { recentRecipes, exclusionLists } = await getRecencyAndExclusion(userId)
+  // 4. Récupération des données de récence depuis la vue userRecency
+  const recencyData = await getUserRecencyFromView(userId)
   
-  // 5. Séparation des recettes récentes par fenêtre temporelle
-  const now = new Date()
-  const strictCutoff = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000) // 14 jours
-  const softCutoff = new Date(now.getTime() - 21 * 24 * 60 * 60 * 1000) // 21 jours
-  
-  const recentStrict = recentRecipes
-    .filter(r => r.consumedAt >= strictCutoff)
-    .map(r => r.recipeId)
-  
-  const recentSoft = recentRecipes
-    .filter(r => r.consumedAt >= softCutoff && r.consumedAt < strictCutoff)
-    .map(r => r.recipeId)
+  // 5. Les exclusions d'ingrédients proviennent du formulaire
+  const excludeIngredientIds = normalizedInput.dislikedFoods || []
   
   // 6. Assemblage du payload final
   const payload: ApiToN8nPayload = {
@@ -92,9 +82,9 @@ export async function buildN8nPayload(
     },
     
     recency: {
-      excludeRecipeIds: exclusionLists.excludedRecipes,
-      recentStrict,
-      recentSoft
+      excludeRecipeIds: recencyData.excludeRecipeIds,
+      recentStrict: recencyData.recentStrict,
+      recentSoft: recencyData.recentSoft
     },
     
     trace: {

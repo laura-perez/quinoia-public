@@ -6,7 +6,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { buildN8nPayload } from '@/lib/business/buildN8nPayload'
 import type { NormalizedInput } from '@/schemas/normalizedInput.schema'
 import { CONTRACT_VERSION } from '@/config/contracts'
-import { getRecencyAndExclusion } from '@/lib/supabase/recency'
+import { getUserRecencyFromView } from '@/lib/supabase/recency'
 
 // Mock des fonctions business
 vi.mock('@/lib/business/activityFactor', () => ({
@@ -40,7 +40,7 @@ vi.mock('@/lib/business/windowCalculation', () => ({
 
 // Mock des fonctions Supabase
 vi.mock('@/lib/supabase/recency', () => ({
-  getRecencyAndExclusion: vi.fn()
+  getUserRecencyFromView: vi.fn()
 }))
 
 // Mock pour crypto.randomUUID avec importOriginal et UUID valide
@@ -98,17 +98,11 @@ describe('Construction payload n8n - Tests unitaires', () => {
     vi.useFakeTimers()
     vi.setSystemTime(new Date('2025-08-15T12:00:00Z'))
 
-    // Configuration par défaut du mock récence
-    vi.mocked(getRecencyAndExclusion).mockResolvedValue({
-      recentRecipes: [
-        { recipeId: 'recipe1', consumedAt: new Date('2025-08-10T12:00:00Z') }, // 5 jours (strict)
-        { recipeId: 'recipe2', consumedAt: new Date('2025-08-05T12:00:00Z') }, // 10 jours (strict)  
-        { recipeId: 'recipe3', consumedAt: new Date('2025-07-30T12:00:00Z') }  // 16 jours (soft)
-      ],
-      exclusionLists: {
-        excludedIngredients: ['gluten', 'dairy'],
-        excludedRecipes: ['recipe_excluded1', 'recipe_excluded2']
-      }
+    // Configuration par défaut du mock récence - format de la nouvelle fonction
+    vi.mocked(getUserRecencyFromView).mockResolvedValue({
+      excludeRecipeIds: ['recipe_excluded1', 'recipe_excluded2'],
+      recentStrict: ['recipe1', 'recipe2'],
+      recentSoft: ['recipe3']
     })
   })
 
@@ -179,12 +173,10 @@ describe('Construction payload n8n - Tests unitaires', () => {
 
     it('devrait construire un payload sans utilisateur', async () => {
       // Mock pour payload sans données utilisateur
-      vi.mocked(getRecencyAndExclusion).mockResolvedValue({
-        recentRecipes: [],
-        exclusionLists: {
-          excludedIngredients: [],
-          excludedRecipes: []
-        }
+      vi.mocked(getUserRecencyFromView).mockResolvedValue({
+        excludeRecipeIds: [],
+        recentStrict: [],
+        recentSoft: []
       })
 
       const result = await buildN8nPayload(mockNormalizedInput)
@@ -225,22 +217,18 @@ describe('Construction payload n8n - Tests unitaires', () => {
     })
 
     it('devrait séparer correctement les recettes par fenêtre temporelle', async () => {
-      // Mock avec dates spécifiques pour tester les seuils
-      vi.mocked(getRecencyAndExclusion).mockResolvedValue({
-        recentRecipes: [
-          { recipeId: 'recent_5d', consumedAt: new Date('2025-08-10T12:00:00Z') }, // 5 jours -> strict
-          { recipeId: 'recent_14d', consumedAt: new Date('2025-08-01T12:00:00Z') }, // 14 jours -> strict  
-          { recipeId: 'recent_15d', consumedAt: new Date('2025-07-31T12:00:00Z') }, // 15 jours -> soft
-          { recipeId: 'recent_21d', consumedAt: new Date('2025-07-25T12:00:00Z') }, // 21 jours -> soft
-          { recipeId: 'too_old', consumedAt: new Date('2025-07-20T12:00:00Z') }     // 26 jours -> ignoré
-        ],
-        exclusionLists: { excludedIngredients: [], excludedRecipes: [] }
+      // Mock avec dates spécifiques pour tester les seuils - avec la nouvelle structure
+      vi.mocked(getUserRecencyFromView).mockResolvedValue({
+        excludeRecipeIds: ['recipe_21d', 'recipe_15d'], // <= 21 jours
+        recentStrict: ['recent_5d', 'recent_14d'],      // <= 14 jours
+        recentSoft: ['recent_15d', 'recent_21d']        // 14-21 jours
       })
 
       const result = await buildN8nPayload(mockNormalizedInput, 'user123')
 
       expect(result.recency.recentStrict).toEqual(['recent_5d', 'recent_14d'])
       expect(result.recency.recentSoft).toEqual(['recent_15d', 'recent_21d'])
+      expect(result.recency.excludeRecipeIds).toEqual(['recipe_21d', 'recipe_15d'])
     })
 
     it('devrait valider le payload final contre le schema Zod', async () => {

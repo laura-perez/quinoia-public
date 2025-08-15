@@ -3,5 +3,5 @@ export { default as SubmitMenuForm } from './submitMenuForm';
 export { computeTargets } from './targets';
 export { computeWindow } from './windowCalculation';
 export type { WindowCalculationResult } from './windowCalculation';
-export { buildN8nPayload } from './buildN8nPayload';
-export type { ApiToN8nPayload } from './buildN8nPayload';
+// Note: buildN8nPayload n'est pas exporté ici car il est server-only (importe recency.ts)
+// Import direct: import { buildN8nPayload } from '@/lib/business/buildN8nPayload'

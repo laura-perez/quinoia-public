@@ -13,6 +13,76 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'test') {
   throw new Error('lib/supabase/recency.ts must never be imported on the client side')
 }
 
+/**
+ * Interface pour les données de récence depuis la vue userRecency
+ */
+interface UserRecencyData {
+  excludeRecipeIds: string[]
+  recentStrict: string[]
+  recentSoft: string[]
+}
+
+/**
+ * Récupère les données de récence depuis la vue SQL userRecency
+ * @param userId - ID utilisateur (optionnel)
+ * @returns Objet avec les trois listes de recettes ou tableaux vides
+ */
+export async function getUserRecencyFromView(userId?: string): Promise<UserRecencyData> {
+  // Si pas d'utilisateur, retourner tableaux vides
+  if (!userId) {
+    return {
+      excludeRecipeIds: [],
+      recentStrict: [],
+      recentSoft: []
+    }
+  }
+
+  try {
+    const supabase = getServiceClient()
+    
+    const { data, error } = await supabase
+      .from("userRecency")
+      .select('"excludeRecipeIds", "recentStrict", "recentSoft"')
+      .eq("userId", userId)
+      .maybeSingle()
+
+    if (error) {
+      console.error('Erreur récupération userRecency:', error)
+      // Fallback gracieux
+      return {
+        excludeRecipeIds: [],
+        recentStrict: [],
+        recentSoft: []
+      }
+    }
+
+    // Si pas de données (nouvel utilisateur), retourner tableaux vides
+    if (!data) {
+      return {
+        excludeRecipeIds: [],
+        recentStrict: [],
+        recentSoft: []
+      }
+    }
+
+    // Nettoyer les données (enlever les nulls des array_agg)
+    return {
+      excludeRecipeIds: (data.excludeRecipeIds || []).filter(Boolean),
+      recentStrict: (data.recentStrict || []).filter(Boolean),
+      recentSoft: (data.recentSoft || []).filter(Boolean)
+    }
+
+  } catch (err) {
+    console.error('Erreur getUserRecencyFromView:', err)
+    // Fallback gracieux
+    return {
+      excludeRecipeIds: [],
+      recentStrict: [],
+      recentSoft: []
+    }
+  }
+}
+
 // Configuration par défaut pour la récence
 const DEFAULT_RECENCY_DAYS = 7
 

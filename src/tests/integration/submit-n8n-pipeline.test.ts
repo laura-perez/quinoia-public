@@ -11,26 +11,21 @@ import type { NormalizedInput } from '@/schemas/normalizedInput.schema'
 
 // Mock des fonctions externes
 vi.mock('@/lib/supabase/recency', () => ({
-  getRecencyAndExclusion: vi.fn().mockImplementation((userId) => {
+  getUserRecencyFromView: vi.fn().mockImplementation((userId) => {
     if (!userId) {
       // Sans userId, retourner des listes vides
       return Promise.resolve({
-        recentRecipes: [],
-        exclusionLists: {
-          excludedRecipes: []
-        }
+        excludeRecipeIds: [],
+        recentStrict: [],
+        recentSoft: []
       })
     }
     
-    // Avec userId, retourner des données de test
+    // Avec userId, retourner des données de test conformes à la vue SQL
     return Promise.resolve({
-      recentRecipes: [
-        { recipeId: 'recipe_1', consumedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) }, // 10 jours
-        { recipeId: 'recipe_2', consumedAt: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000) }, // 16 jours
-      ],
-      exclusionLists: {
-        excludedRecipes: ['excluded_recipe_1', 'excluded_recipe_2']
-      }
+      excludeRecipeIds: ['excluded_recipe_1', 'excluded_recipe_2'],
+      recentStrict: ['recipe_1'], // <= 14 jours (10 jours dans le mock)
+      recentSoft: ['recipe_2']    // 14-21 jours (16 jours dans le mock)
     })
   })
 }))
