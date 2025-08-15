@@ -10,6 +10,9 @@ import { apiToN8nPayloadSchema } from '@/schemas/apiToN8nPayload.schema'
 import type { NormalizedInput } from '@/schemas/normalizedInput.schema'
 import { CONTRACT_VERSION } from '@/config/contracts'
 import { randomUUID } from 'crypto'
+import { createLogger } from '@/lib/logger'
+
+const logger = createLogger()
 
 // Type pour le payload final
 export type ApiToN8nPayload = z.infer<typeof apiToN8nPayloadSchema>
@@ -98,7 +101,7 @@ export async function buildN8nPayload(
   try {
     return apiToN8nPayloadSchema.parse(payload)
   } catch (error) {
-    console.error('Erreur validation payload n8n:', error)
+    logger.error('Erreur validation payload n8n:', error)
     throw new Error(`Payload invalide: ${error instanceof z.ZodError ? error.issues.map(i => i.message).join(', ') : 'erreur inconnue'}`)
   }
 }

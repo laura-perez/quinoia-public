@@ -6,7 +6,10 @@
  */
 
 import { getServiceClient } from '@/lib/supabase/client'
+import { createLogger } from '@/lib/logger'
 import type { RecentRecipe, ExclusionLists, RecencyAndExclusion } from '@/types/recency'
+
+const logger = createLogger()
 
 // Sécurité : empêcher l'import côté client (sauf en tests)
 if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'test') {
@@ -47,7 +50,7 @@ export async function getUserRecencyFromView(userId?: string): Promise<UserRecen
       .maybeSingle()
 
     if (error) {
-      console.error('Erreur récupération userRecency:', error)
+      logger.error('Erreur récupération userRecency:', error)
       // Fallback gracieux
       return {
         excludeRecipeIds: [],
@@ -73,7 +76,7 @@ export async function getUserRecencyFromView(userId?: string): Promise<UserRecen
     }
 
   } catch (err) {
-    console.error('Erreur getUserRecencyFromView:', err)
+    logger.error('Erreur getUserRecencyFromView:', err)
     // Fallback gracieux
     return {
       excludeRecipeIds: [],
@@ -114,7 +117,7 @@ export async function getRecentRecipes(
       .order('consumed_at', { ascending: false })
 
     if (error) {
-      console.error('Erreur récupération récence:', error)
+      logger.error('Erreur récupération récence:', error)
       return [] // Fallback gracieux
     }
 
@@ -124,7 +127,7 @@ export async function getRecentRecipes(
     })) ?? []
 
   } catch (error) {
-    console.error('Erreur inattendue récupération récence:', error)
+    logger.error('Erreur inattendue récupération récence:', error)
     return [] // Fallback gracieux
   }
 }
@@ -165,7 +168,7 @@ export async function getExclusionLists(userId?: string): Promise<ExclusionLists
     const excludedRecipes = recipesResult.data?.map(row => row.recipe_id) ?? []
 
     if (ingredientsResult.error || recipesResult.error) {
-      console.error('Erreur récupération exclusions:', {
+      logger.error('Erreur récupération exclusions:', {
         ingredients: ingredientsResult.error,
         recipes: recipesResult.error
       })
@@ -178,7 +181,7 @@ export async function getExclusionLists(userId?: string): Promise<ExclusionLists
     }
 
   } catch (error) {
-    console.error('Erreur inattendue récupération exclusions:', error)
+    logger.error('Erreur inattendue récupération exclusions:', error)
     return {
       excludedIngredients: [],
       excludedRecipes: []

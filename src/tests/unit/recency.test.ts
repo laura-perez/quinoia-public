@@ -3,6 +3,19 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+
+// Mock du logger avec vi.hoisted pour garantir l'ordre
+const mockLogger = vi.hoisted(() => ({
+  error: vi.fn(),
+  warn: vi.fn(),
+  info: vi.fn(),
+  debug: vi.fn()
+}))
+
+vi.mock('@/lib/logger', () => ({
+  createLogger: vi.fn(() => mockLogger)
+}))
+
 import { getRecentRecipes, getExclusionLists, getRecencyAndExclusion } from '@/lib/supabase/recency'
 
 // Mock de la fonction getServiceClient avec une approche simplifiée
@@ -23,6 +36,11 @@ Object.defineProperty(global, 'window', {
 describe('Récence et exclusion - Tests unitaires', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // Reset du mock logger
+    mockLogger.error.mockClear()
+    mockLogger.warn.mockClear()
+    mockLogger.info.mockClear()
+    mockLogger.debug.mockClear()
   })
 
   afterEach(() => {
@@ -82,14 +100,10 @@ describe('Récence et exclusion - Tests unitaires', () => {
       const mockSelect = vi.fn().mockReturnValue({ eq: mockEq })
       mockSupabaseClient.from.mockReturnValue({ select: mockSelect })
 
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-
       const result = await getRecentRecipes('user123', 7)
 
       expect(result).toEqual([])
-      expect(consoleSpy).toHaveBeenCalledWith('Erreur récupération récence:', mockError)
-      
-      consoleSpy.mockRestore()
+      expect(mockLogger.error).toHaveBeenCalledWith('Erreur récupération récence:', mockError)
     })
 
     it('devrait gérer les exceptions inattendues', async () => {
@@ -97,14 +111,10 @@ describe('Récence et exclusion - Tests unitaires', () => {
         throw new Error('Unexpected error')
       })
 
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-
       const result = await getRecentRecipes('user123', 7)
 
       expect(result).toEqual([])
-      expect(consoleSpy).toHaveBeenCalledWith('Erreur inattendue récupération récence:', expect.any(Error))
-      
-      consoleSpy.mockRestore()
+      expect(mockLogger.error).toHaveBeenCalledWith('Erreur inattendue récupération récence:', expect.any(Error))
     })
   })
 
