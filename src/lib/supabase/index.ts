@@ -11,3 +11,4 @@ export * from './client';
 export * from './services';
 export * from './constants';
 export * from './recency';
+export * from './rlsOperations';
