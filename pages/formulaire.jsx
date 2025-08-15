@@ -1,45 +1,45 @@
-import { useEffect, useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
-import Navbar from "../components/ui/Navbar"
-import Step1 from "../components/form/Step1"
-import Step2 from "../components/form/Step2"
-import Step3 from "../components/form/Step3"
-import Step4 from "../components/form/Step4"
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import Navbar from "../src/components/ui/Navbar";
+import Step1 from "../src/components/form/Step1";
+import Step2 from "../src/components/form/Step2";
+import Step3 from "../src/components/form/Step3";
+import Step4 from "../src/components/form/Step4";
 
 const steps = [
   { id: 1, component: Step1 },
   { id: 2, component: Step2 },
   { id: 3, component: Step3 },
   { id: 4, component: Step4 },
-]
+];
 
 export default function Formulaire() {
-  const [currentStep, setCurrentStep] = useState(0)
-  const [formData, setFormData] = useState({})
-  const [email, setEmail] = useState("")
+  const [currentStep, setCurrentStep] = useState(0);
+  const [formData, setFormData] = useState({});
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
-    const storedEmail = sessionStorage.getItem("quinoia_email")
+    const storedEmail = sessionStorage.getItem("quinoia_email");
     if (storedEmail) {
-      setEmail(storedEmail)
-      setFormData((prev) => ({ ...prev, email: storedEmail }))
+      setEmail(storedEmail);
+      setFormData((prev) => ({ ...prev, email: storedEmail }));
     }
-  }, [])
+  }, []);
 
   const goToNext = () => {
-    if (currentStep < steps.length - 1) setCurrentStep((prev) => prev + 1)
-  }
+    if (currentStep < steps.length - 1) setCurrentStep((prev) => prev + 1);
+  };
 
   const goToPrev = () => {
-    if (currentStep > 0) setCurrentStep((prev) => prev - 1)
-  }
+    if (currentStep > 0) setCurrentStep((prev) => prev - 1);
+  };
 
   const updateFormData = (newData) => {
-    setFormData((prev) => ({ ...prev, ...newData }))
-  }
+    setFormData((prev) => ({ ...prev, ...newData }));
+  };
 
-  const CurrentComponent = steps[currentStep].component
- return (
+  const CurrentComponent = steps[currentStep].component;
+  return (
     <>
       <Navbar />
 
@@ -66,5 +66,5 @@ export default function Formulaire() {
         </div>
       </main>
     </>
-  )
+  );
 }

@@ -1,4 +1,12 @@
 {
   "extends": "next/core-web-vitals",
-  "rules": { "react/no-unescaped-entities": 0 }
+  "rules": { "react/no-unescaped-entities": 0 },
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [["@", "./src"]],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  }
 }

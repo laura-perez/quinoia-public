@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Head from "next/head";
-import "../styles/globals.css";
+import "../src/styles/globals.css";
 import { AnimatePresence, LazyMotion, domAnimation } from "framer-motion";
 
 export default function App({ Component, pageProps }) {

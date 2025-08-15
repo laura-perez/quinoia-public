@@ -30,3 +30,16 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# temporary files
+*.tmp
+*.temp
+*~
+.DS_Store
+
+# test results (playwright)
+/test-results/
+/test-output/
+
+# debug folders
+/debug/
