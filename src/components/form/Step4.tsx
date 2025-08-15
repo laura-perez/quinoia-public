@@ -140,6 +140,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         },
       };
 
+      console.log("Submitting form data:", submissionData);
 
       // Submit to our API
       const response = await fetch("/api/submit", {

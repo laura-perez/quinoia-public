@@ -7,10 +7,9 @@ import { z } from "zod";
 const clientEnvSchema = z.object({
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z
     .string()
-    .optional()
-    .refine((val) => val && val.length > 0, "reCAPTCHA site key is required")
-    .refine((val) => !val || /^6L[a-zA-Z0-9_-]{40}$/.test(val), "Invalid reCAPTCHA site key format")
-    .transform((val) => val!), // Non-null assertion since we validated above
+    .min(1, "reCAPTCHA site key is required")
+    .refine((val) => val.startsWith("6L"), "Invalid reCAPTCHA site key format - must start with '6L'")
+    .refine((val) => val.length === 40, "Invalid reCAPTCHA site key format - must be 40 characters long"),
 });
 
 /**
