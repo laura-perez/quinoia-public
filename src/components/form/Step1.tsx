@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import RadioGroup from "./form-components/RadioGroup";
 import ProgressBar from "./form-components/ProgressBar";
 import TextInput from "./form-components/TextInput";
-import type { FormStepProps, PhysicalActivity, FormErrors, PhysicalActivityErrors } from "./types";
+import type { FormStepProps, PhysicalActivity, PhysicalActivityErrors } from "./types";
+import { VALIDATION_MESSAGES, FORM_LABELS, FORM_PLACEHOLDERS } from "../../lib/constants/ui";
+import { useFormStep, useFormValidation, useFormHandlers } from "./hooks";
 
 // Initial state for the physical activity group
 const INITIAL_PHYSICAL_ACTIVITY: PhysicalActivity = {
@@ -18,42 +20,41 @@ const GENDER_OPTIONS = ["Femme", "Homme", "Pas précisé"];
  * Step 1: User profile and physical activity form.
  */
 export default function Step1({ formData, updateFormData, goToNext, goToPrev, email, isLast }: FormStepProps) {
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
-
-  const [errors, setErrors] = useState<FormErrors>({});
+  const { errors, clearFieldError, setValidationErrors } = useFormStep();
+  const { validateRequiredFields, hasValidationErrors } = useFormValidation();
+  const { handleInputChange, createBooleanRadioHandler } = useFormHandlers(updateFormData, clearFieldError);
+  
   const pa = formData.physicalActivity ?? INITIAL_PHYSICAL_ACTIVITY;
 
-  // Handle text/radio input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateFormData({ [e.target.name]: e.target.value });
-    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+  // Physical activity boolean handlers
+  const handleDeskJobChange = createBooleanRadioHandler('deskJob');
+  const handleHighIntensityChange = createBooleanRadioHandler('highIntensity');
+
+  // Validate physical activity fields
+  const validatePhysicalActivity = (): PhysicalActivityErrors | null => {
+    const paErrors: PhysicalActivityErrors = {};
+    if (pa.deskJob === null) paErrors.deskJob = VALIDATION_MESSAGES.REQUIRED_FIELD;
+    if (pa.dailySteps === null) paErrors.dailySteps = VALIDATION_MESSAGES.REQUIRED_FIELD;
+    if (pa.sessionsPerWeek === null) paErrors.sessionsPerWeek = VALIDATION_MESSAGES.REQUIRED_FIELD;
+    
+    return Object.keys(paErrors).length > 0 ? paErrors : null;
   };
 
-  // Validate all required fields and physical activity group
+  // Main submit handler
   const handleSubmit = () => {
-    // Use camelCase keys for validation and error reporting
-    const requiredFields = ["name", "age", "gender", "heightCm", "weightKg"] as const;
-    const newErrors: FormErrors = {};
-    for (const field of requiredFields) {
-      const fieldValue = formData[field];
-      if (!fieldValue || fieldValue.toString().trim() === "") {
-        newErrors[field] = "Ce champ est requis";
-      }
+    const basicErrors = validateRequiredFields(formData as Record<string, unknown>, ['name', 'age', 'gender', 'heightCm', 'weightKg']);
+    const paErrors = validatePhysicalActivity();
+    
+    const allErrors = { ...basicErrors };
+    if (paErrors) {
+      allErrors.physicalActivity = paErrors;
     }
-    // Validate physical activity fields
-    const paErrors: PhysicalActivityErrors = {};
-    if (pa.deskJob === null) paErrors.deskJob = "Ce champ est requis";
-    if (pa.dailySteps === null) paErrors.dailySteps = "Ce champ est requis";
-    if (pa.sessionsPerWeek === null) paErrors.sessionsPerWeek = "Ce champ est requis";
-    if (Object.keys(paErrors).length > 0) {
-      newErrors.physicalActivity = paErrors;
-    }
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    
+    if (hasValidationErrors(allErrors)) {
+      setValidationErrors(allErrors);
       return;
     }
+    
     goToNext();
   };
 
@@ -71,16 +72,16 @@ export default function Step1({ formData, updateFormData, goToNext, goToPrev, em
           label="Comment t'appelles-tu ?"
           name="name"
           value={formData.name || ""}
-          onChange={handleChange}
+          onChange={handleInputChange}
           error={errors.name}
           placeholder="Prénom"
         />
         <TextInput
-          label="Quel est ton âge ?"
+          label={FORM_LABELS.AGE}
           name="age"
           type="number"
           value={formData.age || ""}
-          onChange={handleChange}
+          onChange={handleInputChange}
           error={errors.age}
           placeholder="Âge"
         />
@@ -88,29 +89,29 @@ export default function Step1({ formData, updateFormData, goToNext, goToPrev, em
           name="gender"
           options={GENDER_OPTIONS}
           value={formData.gender || ""}
-          onChange={handleChange}
+          onChange={handleInputChange}
           error={errors.gender}
-          label="Quel est ton genre ?"
+          label={FORM_LABELS.GENDER}
           optionClassName="flex-1 text-center font-medium"
         />
         <div className="flex flex-col sm:flex-row gap-4">
           <TextInput
-            label="Taille (cm)"
+            label={FORM_LABELS.HEIGHT}
             name="heightCm"
             type="number"
             value={formData.heightCm || ""}
-            onChange={handleChange}
+            onChange={handleInputChange}
             error={errors.heightCm}
-            placeholder="cm"
+            placeholder={FORM_PLACEHOLDERS.HEIGHT}
           />
           <TextInput
-            label="Poids (kg)"
+            label={FORM_LABELS.WEIGHT}
             name="weightKg"
             type="number"
             value={formData.weightKg || ""}
-            onChange={handleChange}
+            onChange={handleInputChange}
             error={errors.weightKg}
-            placeholder="kg"
+            placeholder={FORM_PLACEHOLDERS.WEIGHT}
           />
         </div>
         {/* Activité physique */}

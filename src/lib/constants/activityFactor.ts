@@ -1,4 +1,5 @@
 // Activity factor business constants
+import { roundToPrecision } from './ui';
 
 export const STEP_INCREMENTS = {
   "<5k": 0.0,
@@ -20,5 +21,5 @@ export const CLAMP_MIN = 1.35;
 export const CLAMP_MAX = 1.7;
 
 export function clampActivityFactor(factor: number): number {
-  return Math.max(CLAMP_MIN, Math.min(CLAMP_MAX, Math.round(factor * 100) / 100));
+  return Math.max(CLAMP_MIN, Math.min(CLAMP_MAX, roundToPrecision(factor)));
 }

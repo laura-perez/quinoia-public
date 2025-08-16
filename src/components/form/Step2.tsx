@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import RadioGroup from "./form-components/RadioGroup";
 import ProgressBar from "./form-components/ProgressBar";
 import CheckboxGroup from "./form-components/CheckboxGroup";
 import TextInput from "./form-components/TextInput";
-import type { FormStepProps, FormErrors } from "./types";
+import type { FormStepProps } from "./types";
+import { FORM_LABELS, FORM_PLACEHOLDERS } from "../../lib/constants/ui";
+import { useFormStep, useFormValidation, useFormHandlers } from "./hooks";
 
 const DIET_OPTIONS = ["Omnivore", "Flexitarien", "Végétarien", "Vegan"];
 const PROTEIN_OPTIONS = [
@@ -21,46 +23,25 @@ const PROTEIN_OPTIONS = [
  * Step 2: Dietary preferences and restrictions.
  */
 export default function Step2({ formData, updateFormData, goToNext, goToPrev, email, isLast }: FormStepProps) {
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  const { errors, clearFieldError, setValidationErrors } = useFormStep();
+  const { validateRequiredFields, hasValidationErrors } = useFormValidation();
+  const { handleInputChange, createCheckboxArrayHandler } = useFormHandlers(updateFormData, clearFieldError);
 
-  const [errors, setErrors] = useState<FormErrors>({});
+  // Checkbox handler for protein preferences
+  const handleCheckbox = createCheckboxArrayHandler(
+    'proteinPreferences',
+    () => formData.proteinPreferences || []
+  );
 
-  // Handle text/radio input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    updateFormData({ [e.target.name]: e.target.value });
-    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
-  };
-
-  // Handle checkbox group changes - type-safe array handling
-  const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked } = e.target;
-    
-    // Type-safe handling for array fields
-    const getArrayValue = (fieldName: string): string[] => {
-      if (fieldName === 'proteinPreferences') {
-        return formData.proteinPreferences || [];
-      }
-      // Add other array fields as needed
-      return [];
-    };
-    
-    const current = getArrayValue(name);
-    const updated = checked ? [...current, value] : current.filter((v: string) => v !== value);
-    updateFormData({ [name]: updated });
-  };
-
-  // Validate required fields
+  // Validate and submit
   const handleSubmit = () => {
-    const newErrors: FormErrors = {};
-    if (!formData.dietType || formData.dietType.trim() === "") {
-      newErrors.dietType = "Ce champ est requis";
-    }
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    const validationErrors = validateRequiredFields(formData as Record<string, unknown>, ['dietType']);
+    
+    if (hasValidationErrors(validationErrors)) {
+      setValidationErrors(validationErrors);
       return;
     }
+    
     goToNext();
   };
 
@@ -80,9 +61,9 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev, em
           name="dietType"
           options={DIET_OPTIONS}
           value={formData.dietType || ""}
-          onChange={handleChange}
+          onChange={handleInputChange}
           error={errors.dietType as string}
-          label="Quel est ton type d'alimentation ?"
+          label={FORM_LABELS.DIET_TYPE}
           optionClassName="flex-1 text-center font-medium"
         />
 
@@ -92,34 +73,34 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev, em
           options={PROTEIN_OPTIONS}
           values={formData.proteinPreferences || []}
           onChange={handleCheckbox}
-          label="Quels types de protéines aimes-tu consommer ?"
+          label={FORM_LABELS.PROTEIN_PREFERENCES}
         />
 
         {/* Allergies */}
         <TextInput
-          label="As-tu des allergies ou intolérances ?"
+          label={FORM_LABELS.ALLERGIES}
           name="allergens"
           value={formData.allergens || ""}
-          onChange={handleChange}
-          placeholder="Ex : lactose, noix, gluten..."
+          onChange={handleInputChange}
+          placeholder={FORM_PLACEHOLDERS.ALLERGIES}
         />
 
         {/* Disliked foods */}
         <TextInput
-          label="Des aliments que tu n'aimes pas ?"
+          label={FORM_LABELS.DISLIKED_FOODS}
           name="dislikedFoods"
           value={formData.dislikedFoods || ""}
-          onChange={handleChange}
-          placeholder="Ex : tofu, lentilles, fenouil…"
+          onChange={handleInputChange}
+          placeholder={FORM_PLACEHOLDERS.DISLIKED_FOODS}
         />
 
         {/* Favorite foods */}
         <TextInput
-          label="À l'inverse, des aliments que tu adores ?"
+          label={FORM_LABELS.FAVORITE_FOODS}
           name="favoriteFoods"
           value={formData.favoriteFoods || ""}
-          onChange={handleChange}
-          placeholder="Ex : tomates, poulet, pâtes…"
+          onChange={handleInputChange}
+          placeholder={FORM_PLACEHOLDERS.FAVORITE_FOODS}
         />
       </div>
 

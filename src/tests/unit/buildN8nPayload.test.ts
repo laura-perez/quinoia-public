@@ -259,7 +259,7 @@ describe('Construction payload n8n - Tests unitaires', () => {
 
       await expect(buildN8nPayload(mockNormalizedInput, 'user123'))
         .rejects
-        .toThrow(/Payload invalide/)
+        .toThrow(/Payload n8n validation failed/)
     })
   })
 })

@@ -7,6 +7,7 @@ import ConsentCheckbox from "./form-components/ConsentCheckbox";
 import { createEnvironmentLogger } from "@/lib/logger";
 import { getRecaptchaSiteKey } from "@/lib/config/clientEnv";
 import { FormStepProps, FormErrors } from "./types";
+import { VALIDATION_MESSAGES, FORM_LABELS, FORM_PLACEHOLDERS, scrollToTop } from "../../lib/constants/ui";
 
 // Extend Window interface for reCAPTCHA
 declare global {
@@ -28,7 +29,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
   const logger = React.useMemo(() => createEnvironmentLogger(), []);
   
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToTop();
   }, []);
 
   // Centralized form state
@@ -92,45 +93,78 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
     return Object.keys(newErrors).length === 0;
   }, [formData.primaryGoal, formState.agreed, formState.email]);
 
-  // Submit
+  // Extract reCAPTCHA token generation
+  const getRecaptchaToken = useCallback(async (): Promise<string> => {
+    let siteKey;
+    try {
+      siteKey = getRecaptchaSiteKey();
+    } catch (configError) {
+      logger.error('reCAPTCHA configuration error', {
+        error: configError instanceof Error ? configError.message : String(configError),
+        environment: process.env.NODE_ENV
+      });
+      throw new Error("Configuration reCAPTCHA invalide");
+    }
+    
+    if (!window.grecaptcha) {
+      logger.error('reCAPTCHA runtime error', {
+        error: 'reCAPTCHA script not loaded',
+        userAgent: navigator.userAgent,
+        url: window.location.href
+      });
+      throw new Error("reCAPTCHA is not available");
+    }
+    
+    const token = await window.grecaptcha.execute(siteKey, { action: "submit_form" });
+    if (!token) {
+      logger.error('reCAPTCHA token generation failed', {
+        siteKey: siteKey.slice(0, 10) + '...',
+        action: 'submit_form'
+      });
+      throw new Error("Failed to generate security token");
+    }
+    
+    return token;
+  }, [logger]);
+
+  // Extract API submission logic
+  const submitToApi = useCallback(async (submissionData: any): Promise<void> => {
+    const response = await fetch("/api/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(submissionData),
+    });
+    
+    if (!response.ok) {
+      let errorMessage = "Une erreur est survenue. Merci de réessayer.";
+      try {
+        const errorData = await response.json();
+        if (errorData.error) {
+          errorMessage = errorData.error;
+        }
+      } catch (parseError) {
+        logger.error('API response parsing failed', {
+          parseError: parseError instanceof Error ? parseError.message : String(parseError),
+          responseStatus: response.status,
+          responseStatusText: response.statusText,
+          url: response.url
+        });
+      }
+      throw new Error(errorMessage);
+    }
+  }, [logger]);
+
+  // Main submit handler - now focused and concise
   const handleSubmit = useCallback(async () => {
     if (!validate()) return;
+    
     setIsSubmitting(true);
     setError("");
     setErrors({});
     
     try {
-      // Get reCAPTCHA token with validated site key
-      let siteKey;
-      try {
-        siteKey = getRecaptchaSiteKey();
-      } catch (configError) {
-        logger.error('reCAPTCHA configuration error', {
-          error: configError instanceof Error ? configError.message : String(configError),
-          environment: process.env.NODE_ENV
-        });
-        throw new Error("Configuration reCAPTCHA invalide");
-      }
+      const token = await getRecaptchaToken();
       
-      if (!window.grecaptcha) {
-        logger.error('reCAPTCHA runtime error', {
-          error: 'reCAPTCHA script not loaded',
-          userAgent: navigator.userAgent,
-          url: window.location.href
-        });
-        throw new Error("reCAPTCHA is not available");
-      }
-      
-      const token = await window.grecaptcha.execute(siteKey, { action: "submit_form" });
-      if (!token) {
-        logger.error('reCAPTCHA token generation failed', {
-          siteKey: siteKey.slice(0, 10) + '...',
-          action: 'submit_form'
-        });
-        throw new Error("Failed to generate security token");
-      }
-      
-      // Prepare submission data
       const submissionData = {
         recaptchaToken: token,
         form: {
@@ -140,34 +174,13 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         },
       };
 
-      console.log("Submitting form data:", submissionData);
-
-      // Submit to our API
-      const response = await fetch("/api/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(submissionData),
+      logger.debug('Form submission initiated', {
+        hasToken: !!token,
+        hasEmail: !!formState.email,
+        hasConsent: formState.agreed,
+        formDataKeys: Object.keys(formData)
       });
-      
-      if (!response.ok) {
-        let errorMessage = "Une erreur est survenue. Merci de réessayer.";
-        try {
-          const errorData = await response.json();
-          if (errorData.error) {
-            errorMessage = errorData.error;
-          }
-        } catch (parseError) {
-          // Log JSON parsing error for debugging while using default message for user
-          logger.error('API response parsing failed', {
-            parseError: parseError instanceof Error ? parseError.message : String(parseError),
-            responseStatus: response.status,
-            responseStatusText: response.statusText,
-            url: response.url
-          });
-        }
-        throw new Error(errorMessage);
-      }
-
+      await submitToApi(submissionData);
       setSubmitted(true);
     } catch (err) {
       logger.error('Form submission failed', {
@@ -181,7 +194,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
     } finally {
       setIsSubmitting(false);
     }
-  }, [validate, formData, formState, logger]);
+  }, [validate, getRecaptchaToken, submitToApi, formData, formState, logger]);
 
   return (
     <div>
@@ -214,7 +227,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
               }
               onChange={handlePrimaryGoalChange}
               error={errors && errors.primaryGoal}
-              label="Quel est ton objectif principal avec ce menu ?"
+              label={FORM_LABELS.PRIMARY_GOAL}
               optionClassName="text-sm"
             />
             <div className="mt-4">

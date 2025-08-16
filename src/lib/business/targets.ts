@@ -11,6 +11,20 @@ import {
   GENDER_MALE,
 } from "@/lib/constants/nutrition";
 
+/**
+ * Calcule le BMR (Basal Metabolic Rate) selon la formule Mifflin-St Jeor
+ * 
+ * @param gender - Genre ('male' ou autre)
+ * @param weightKg - Poids en kilogrammes
+ * @param heightCm - Taille en centimètres
+ * @param age - Âge en années
+ * @returns BMR en kcal/jour (arrondi)
+ * 
+ * @description
+ * Formule Mifflin-St Jeor:
+ * - Hommes: 10 × poids(kg) + 6.25 × taille(cm) - 5 × âge + 5
+ * - Femmes: 10 × poids(kg) + 6.25 × taille(cm) - 5 × âge - 161
+ */
 function computeBMR(gender: string, weightKg: number, heightCm: number, age: number): number {
   return Math.round(
     gender === GENDER_MALE
@@ -19,10 +33,28 @@ function computeBMR(gender: string, weightKg: number, heightCm: number, age: num
   );
 }
 
+/**
+ * Calcule le TDEE (Total Daily Energy Expenditure)
+ * 
+ * @param bmr - Basal Metabolic Rate en kcal/jour
+ * @param af - Facteur d'activité (Activity Factor)
+ * @returns TDEE en kcal/jour (arrondi)
+ */
 function computeTDEE(bmr: number, af: number): number {
   return Math.round(bmr * af);
 }
 
+/**
+ * Calcule l'objectif calorique quotidien selon l'objectif principal
+ * 
+ * @param primaryGoal - Objectif principal ('weightLoss', 'saveTime', 'eatHealthier')
+ * @param tdee - TDEE en kcal/jour
+ * @returns Objectif quotidien avec tolérance associée
+ * 
+ * @description
+ * - Perte de poids: -15% du TDEE (déficit calorique)
+ * - Autres objectifs: maintien du TDEE
+ */
 function computeDailyTarget(
   primaryGoal: string,
   tdee: number
@@ -50,6 +82,34 @@ function computeProteinFloor(primaryGoal: string, secondaryFocus: string | null)
   return floor;
 }
 
+/**
+ * Calcule tous les objectifs énergétiques et protéiques
+ * 
+ * Point d'entrée principal pour les calculs métaboliques de Quinoïa
+ * 
+ * @param input - Données utilisateur normalisées
+ * @param activityFactor - Facteur d'activité calculé
+ * @returns Objet complet avec tous les objectifs nutritionnels
+ * 
+ * @example
+ * ```typescript
+ * const targets = computeTargets(userInput, 1.5);
+ * console.log(targets.bmr);              // 1650 kcal (BMR)
+ * console.log(targets.tdee);             // 2475 kcal (TDEE)
+ * console.log(targets.dailyEnergyTarget); // 2475 kcal (maintien) ou 2104 kcal (perte)
+ * console.log(targets.mealEnergyTarget);  // ~866 kcal (35% du quotidien)
+ * console.log(targets.proteinFloor);      // 25-35g selon objectif
+ * ```
+ * 
+ * @description
+ * Pipeline de calcul:
+ * 1. BMR (Mifflin-St Jeor) selon genre/poids/taille/âge
+ * 2. TDEE = BMR × facteur d'activité
+ * 3. Objectif quotidien selon primaryGoal (-15% si perte de poids)
+ * 4. Répartition repas (35% du quotidien)
+ * 5. Fenêtre de tolérance selon objectif
+ * 6. Seuil protéique avec bonus si focus protéines
+ */
 export function computeTargets(input: NormalizedInput, activityFactor: number): Targets {
   const af = clampActivityFactor(activityFactor);
   const { age, gender, heightCm, weightKg, primaryGoal, secondaryFocus } = input;
