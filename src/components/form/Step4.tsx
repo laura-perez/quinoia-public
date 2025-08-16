@@ -106,7 +106,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         siteKey = getRecaptchaSiteKey();
       } catch (configError) {
         logger.error('reCAPTCHA configuration error', {
-          error: configError.message,
+          error: configError instanceof Error ? configError.message : String(configError),
           environment: process.env.NODE_ENV
         });
         throw new Error("Configuration reCAPTCHA invalide");
@@ -159,7 +159,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         } catch (parseError) {
           // Log JSON parsing error for debugging while using default message for user
           logger.error('API response parsing failed', {
-            parseError: parseError.message,
+            parseError: parseError instanceof Error ? parseError.message : String(parseError),
             responseStatus: response.status,
             responseStatusText: response.statusText,
             url: response.url
@@ -171,13 +171,13 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
       setSubmitted(true);
     } catch (err) {
       logger.error('Form submission failed', {
-        error: err.message || 'Unknown error',
-        stack: err.stack,
+        error: err instanceof Error ? err.message : 'Unknown error',
+        stack: err instanceof Error ? err.stack : undefined,
         formDataKeys: Object.keys(formData),
         hasEmail: !!formState.email,
         hasConsent: formState.agreed
       });
-      setError(err.message || "Une erreur est survenue. Merci de réessayer.");
+      setError(err instanceof Error ? err.message : "Une erreur est survenue. Merci de réessayer.");
     } finally {
       setIsSubmitting(false);
     }

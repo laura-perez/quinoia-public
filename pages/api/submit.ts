@@ -9,6 +9,7 @@ import { upsertUserAndSubmission } from "@/lib/supabase";
 import { triggerN8n } from "@/lib/integrations";
 import { createLogger, redact } from "@/lib/logger";
 import { buildN8nPayload } from "@/lib/business/buildN8nPayload";
+import type { RecaptchaMetadata } from "@/schemas/api.types";
 
 setZodErrorMapFR();
 
@@ -83,7 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   });
 
   // Vérification reCAPTCHA serveur
-  let recaptchaMeta;
+  let recaptchaMeta: RecaptchaMetadata;
   try {
     // Use the secure IP detection result instead of raw header
     const recaptcha = await verifyAndExtractRecaptcha(
@@ -98,7 +99,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
       return res.status(403).json({ error: recaptcha.error });
     }
-    recaptchaMeta = recaptcha.meta;
+    recaptchaMeta = recaptcha.meta!;
     logger.info('reCAPTCHA verification successful', { 
       score: recaptcha.meta?.score,
       ipConfidence: ipDetection.confidence

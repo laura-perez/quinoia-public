@@ -103,7 +103,7 @@ describe('Récence et exclusion - Tests unitaires', () => {
       const result = await getRecentRecipes('user123', 7)
 
       expect(result).toEqual([])
-      expect(mockLogger.error).toHaveBeenCalledWith('Erreur récupération récence:', mockError)
+      expect(mockLogger.error).toHaveBeenCalledWith('Erreur récupération récence:', { error: mockError })
     })
 
     it('devrait gérer les exceptions inattendues', async () => {
@@ -114,7 +114,7 @@ describe('Récence et exclusion - Tests unitaires', () => {
       const result = await getRecentRecipes('user123', 7)
 
       expect(result).toEqual([])
-      expect(mockLogger.error).toHaveBeenCalledWith('Erreur inattendue récupération récence:', expect.any(Error))
+      expect(mockLogger.error).toHaveBeenCalledWith('Erreur inattendue récupération récence:', { error: expect.any(Error) })
     })
   })
 

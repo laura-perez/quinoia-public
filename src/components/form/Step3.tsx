@@ -137,7 +137,7 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev, em
           options={["Oui", "Non"]}
           value={formData.batch === true ? "Oui" : formData.batch === false ? "Non" : ""}
           onChange={(e) => {
-            const val = e.target.value === "Oui" ? true : e.target.value === "Non" ? false : null;
+            const val = e.target.value === "Oui" ? true : e.target.value === "Non" ? false : undefined;
             updateFormData({ batch: val });
           }}
           optionClassName="flex-1 text-center font-medium"

@@ -206,59 +206,66 @@ export class LoggerFactory {
    * Create a standard logger with default configuration
    */
   static standard(runId?: string): Logger {
-    return new LoggerBuilder()
-      .withRunId(runId)
-      .build();
+    const builder = new LoggerBuilder();
+    if (runId) {
+      builder.withRunId(runId);
+    }
+    return builder.build();
   }
 
   /**
    * Create a production-optimized logger
    */
   static production(runId?: string): Logger {
-    return new LoggerBuilder()
-      .withRunId(runId)
-      .forEnvironment('production')
-      .build();
+    const builder = new LoggerBuilder();
+    if (runId) {
+      builder.withRunId(runId);
+    }
+    return builder.forEnvironment('production').build();
   }
 
   /**
    * Create a development logger with full debugging
    */
   static development(runId?: string): Logger {
-    return new LoggerBuilder()
-      .withRunId(runId)
-      .forEnvironment('development')
-      .build();
+    const builder = new LoggerBuilder();
+    if (runId) {
+      builder.withRunId(runId);
+    }
+    return builder.forEnvironment('development').build();
   }
 
   /**
    * Create a test logger with controlled output
    */
   static test(runId?: string): Logger {
-    return new LoggerBuilder()
-      .withRunId(runId)
-      .forEnvironment('test')
-      .build();
+    const builder = new LoggerBuilder();
+    if (runId) {
+      builder.withRunId(runId);
+    }
+    return builder.forEnvironment('test').build();
   }
 
   /**
    * Create a high-performance logger for intensive operations
    */
   static highPerformance(runId?: string): Logger {
-    return new LoggerBuilder()
-      .withRunId(runId)
-      .forHighPerformance()
-      .build();
+    const builder = new LoggerBuilder();
+    if (runId) {
+      builder.withRunId(runId);
+    }
+    return builder.forHighPerformance().build();
   }
 
   /**
    * Create a debugging logger with maximum verbosity
    */
   static debugging(runId?: string): Logger {
-    return new LoggerBuilder()
-      .withRunId(runId)
-      .forDebugging()
-      .build();
+    const builder = new LoggerBuilder();
+    if (runId) {
+      builder.withRunId(runId);
+    }
+    return builder.forDebugging().build();
   }
 }
 

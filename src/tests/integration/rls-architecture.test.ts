@@ -73,7 +73,7 @@ describe('RLS Architecture Integration', () => {
         recentStrict: [],
         recentSoft: []
       })
-      expect(mockLogger.error).toHaveBeenCalledWith('Erreur récupération userRecency:', mockError)
+      expect(mockLogger.error).toHaveBeenCalledWith('Erreur récupération userRecency:', { error: mockError })
     })
 
     it('should return empty arrays for undefined userId', async () => {

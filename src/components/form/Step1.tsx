@@ -37,8 +37,9 @@ export default function Step1({ formData, updateFormData, goToNext, goToPrev, em
     const requiredFields = ["name", "age", "gender", "height_cm", "weight_kg"];
     const newErrors: FormErrors = {};
     for (const field of requiredFields) {
-      if (!formData[field as keyof FormData] || formData[field as keyof FormData]?.toString().trim() === "") {
-        newErrors[field as keyof FormErrors] = "Ce champ est requis";
+      const fieldValue = (formData as any)[field];
+      if (!fieldValue || fieldValue.toString().trim() === "") {
+        (newErrors as any)[field] = "Ce champ est requis";
       }
     }
     // Validate physical activity fields
@@ -69,7 +70,7 @@ export default function Step1({ formData, updateFormData, goToNext, goToPrev, em
         <TextInput
           label="Comment t'appelles-tu ?"
           name="name"
-          value={formData.name}
+          value={formData.name || ""}
           onChange={handleChange}
           error={errors.name}
           placeholder="Prénom"
@@ -78,7 +79,7 @@ export default function Step1({ formData, updateFormData, goToNext, goToPrev, em
           label="Quel est ton âge ?"
           name="age"
           type="number"
-          value={formData.age}
+          value={formData.age || ""}
           onChange={handleChange}
           error={errors.age}
           placeholder="Âge"
@@ -86,7 +87,7 @@ export default function Step1({ formData, updateFormData, goToNext, goToPrev, em
         <RadioGroup
           name="gender"
           options={GENDER_OPTIONS}
-          value={formData.gender}
+          value={formData.gender || ""}
           onChange={handleChange}
           error={errors.gender}
           label="Quel est ton genre ?"
@@ -97,7 +98,7 @@ export default function Step1({ formData, updateFormData, goToNext, goToPrev, em
             label="Taille (cm)"
             name="height_cm"
             type="number"
-            value={formData.height_cm}
+            value={formData.height_cm || ""}
             onChange={handleChange}
             error={errors.height_cm}
             placeholder="cm"
@@ -106,7 +107,7 @@ export default function Step1({ formData, updateFormData, goToNext, goToPrev, em
             label="Poids (kg)"
             name="weight_kg"
             type="number"
-            value={formData.weight_kg}
+            value={formData.weight_kg || ""}
             onChange={handleChange}
             error={errors.weight_kg}
             placeholder="kg"

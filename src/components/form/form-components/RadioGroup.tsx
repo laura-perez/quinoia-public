@@ -5,11 +5,11 @@ interface RadioGroupProps {
   options: Array<string | number>;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  error?: string;
+  error?: string | undefined;
   label: string;
-  className?: string;
-  optionClassName?: string;
-  ariaDescribedBy?: string;
+  className?: string | undefined;
+  optionClassName?: string | undefined;
+  ariaDescribedBy?: string | undefined;
 }
 
 const RadioGroup: React.FC<RadioGroupProps> = ({

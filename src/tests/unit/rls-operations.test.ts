@@ -74,7 +74,7 @@ describe('RLS Operations', () => {
       const result = await getUserWithRLS('user123')
 
       expect(result).toBeNull()
-      expect(mockLogger.error).toHaveBeenCalledWith('Error fetching user with RLS:', mockError)
+      expect(mockLogger.error).toHaveBeenCalledWith('Error fetching user with RLS:', { error: mockError })
     })
 
     it('should handle unexpected errors', async () => {
@@ -85,7 +85,7 @@ describe('RLS Operations', () => {
       const result = await getUserWithRLS('user123')
 
       expect(result).toBeNull()
-      expect(mockLogger.error).toHaveBeenCalledWith('Unexpected error in getUserWithRLS:', expect.any(Error))
+      expect(mockLogger.error).toHaveBeenCalledWith('Unexpected error in getUserWithRLS:', { error: expect.any(Error) })
     })
   })
 
@@ -125,7 +125,7 @@ describe('RLS Operations', () => {
       const result = await getUserSubmissionsWithRLS('user123')
 
       expect(result).toEqual([])
-      expect(mockLogger.error).toHaveBeenCalledWith('Error fetching submissions with RLS:', mockError)
+      expect(mockLogger.error).toHaveBeenCalledWith('Error fetching submissions with RLS:', { error: mockError })
     })
   })
 

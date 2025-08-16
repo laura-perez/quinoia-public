@@ -34,13 +34,13 @@ export async function getUserWithRLS(userId: string) {
       .maybeSingle()
 
     if (error) {
-      logger.error('Error fetching user with RLS:', error)
+      logger.error('Error fetching user with RLS:', { error })
       return null
     }
 
     return data
   } catch (err) {
-    logger.error('Unexpected error in getUserWithRLS:', err)
+    logger.error('Unexpected error in getUserWithRLS:', { error: err })
     return null
   }
 }
@@ -62,13 +62,13 @@ export async function getUserSubmissionsWithRLS(userId: string) {
       .order('created_at', { ascending: false })
 
     if (error) {
-      logger.error('Error fetching submissions with RLS:', error)
+      logger.error('Error fetching submissions with RLS:', { error })
       return []
     }
 
     return data || []
   } catch (err) {
-    logger.error('Unexpected error in getUserSubmissionsWithRLS:', err)
+    logger.error('Unexpected error in getUserSubmissionsWithRLS:', { error: err })
     return []
   }
 }
@@ -90,13 +90,13 @@ export async function getUserMenuResultsWithRLS(userId: string) {
       .order('created_at', { ascending: false })
 
     if (error) {
-      logger.error('Error fetching menu results with RLS:', error)
+      logger.error('Error fetching menu results with RLS:', { error })
       return []
     }
 
     return data || []
   } catch (err) {
-    logger.error('Unexpected error in getUserMenuResultsWithRLS:', err)
+    logger.error('Unexpected error in getUserMenuResultsWithRLS:', { error: err })
     return []
   }
 }

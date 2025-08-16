@@ -50,7 +50,7 @@ export async function getUserRecencyFromView(userId?: string): Promise<UserRecen
       .maybeSingle()
 
     if (error) {
-      logger.error('Erreur récupération userRecency:', error)
+      logger.error('Erreur récupération userRecency:', { error })
       // Fallback gracieux
       return {
         excludeRecipeIds: [],
@@ -76,7 +76,7 @@ export async function getUserRecencyFromView(userId?: string): Promise<UserRecen
     }
 
   } catch (err) {
-    logger.error('Erreur getUserRecencyFromView:', err)
+    logger.error('Erreur getUserRecencyFromView:', { error: err })
     // Fallback gracieux
     return {
       excludeRecipeIds: [],
@@ -117,7 +117,7 @@ export async function getRecentRecipes(
       .order('consumed_at', { ascending: false })
 
     if (error) {
-      logger.error('Erreur récupération récence:', error)
+      logger.error('Erreur récupération récence:', { error })
       return [] // Fallback gracieux
     }
 
@@ -127,7 +127,7 @@ export async function getRecentRecipes(
     })) ?? []
 
   } catch (error) {
-    logger.error('Erreur inattendue récupération récence:', error)
+    logger.error('Erreur inattendue récupération récence:', { error })
     return [] // Fallback gracieux
   }
 }
@@ -181,7 +181,7 @@ export async function getExclusionLists(userId?: string): Promise<ExclusionLists
     }
 
   } catch (error) {
-    logger.error('Erreur inattendue récupération exclusions:', error)
+    logger.error('Erreur inattendue récupération exclusions:', { error })
     return {
       excludedIngredients: [],
       excludedRecipes: []

@@ -49,10 +49,12 @@ export async function verifyAndExtractRecaptcha(token: string, ip?: string) {
   return {
     ok: true,
     meta: {
-      score: result.score,
-      action: result.action,
-      challengeTs: result.challengeTs,
-      hostname: result.hostname,
+      score: result.score || 0,
+      success: result.success,
+      action: result.action || 'unknown',
+      challengeTs: result.challengeTs || new Date().toISOString(),
+      hostname: result.hostname || 'unknown',
+      challenge_ts: result.challengeTs || new Date().toISOString(),
     },
   };
 }

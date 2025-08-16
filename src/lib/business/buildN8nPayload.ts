@@ -101,7 +101,7 @@ export async function buildN8nPayload(
   try {
     return apiToN8nPayloadSchema.parse(payload)
   } catch (error) {
-    logger.error('Erreur validation payload n8n:', error)
+    logger.error('Erreur validation payload n8n:', { error })
     throw new Error(`Payload invalide: ${error instanceof z.ZodError ? error.issues.map(i => i.message).join(', ') : 'erreur inconnue'}`)
   }
 }

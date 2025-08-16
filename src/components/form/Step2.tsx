@@ -34,10 +34,10 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev, em
   };
 
   // Handle checkbox group changes
-  const handleCheckbox = (e) => {
+  const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = e.target;
-    const current = formData[name] || [];
-    const updated = checked ? [...current, value] : current.filter((v) => v !== value);
+    const current = (formData as any)[name] || [];
+    const updated = checked ? [...current, value] : current.filter((v: any) => v !== value);
     updateFormData({ [name]: updated });
   };
 
