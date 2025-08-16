@@ -7,9 +7,7 @@ import { z } from "zod";
 const clientEnvSchema = z.object({
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z
     .string()
-    .min(1, "reCAPTCHA site key is required")
-    .refine((val) => val.startsWith("6L"), "Invalid reCAPTCHA site key format - must start with '6L'")
-    .refine((val) => val.length === 40, "Invalid reCAPTCHA site key format - must be 40 characters long"),
+    .min(1, "reCAPTCHA site key is required"),
 });
 
 /**
@@ -38,5 +36,12 @@ export function getClientEnv() {
  */
 export function getRecaptchaSiteKey(): string {
   const clientEnv = getClientEnv();
-  return clientEnv.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  const siteKey = clientEnv.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  
+  // Basic validation for reCAPTCHA site key format
+  if (!siteKey.startsWith('6L') || siteKey.length !== 40) {
+    throw new Error(`Invalid reCAPTCHA site key format: expected format 6L... with 40 characters, got ${siteKey.length} characters`);
+  }
+  
+  return siteKey;
 }

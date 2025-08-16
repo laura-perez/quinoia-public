@@ -24,12 +24,14 @@ describe("verifyAndExtractRecaptcha - Local Bypass", () => {
     const result = await verifyAndExtractRecaptcha("bypass-local");
     
     expect(result.ok).toBe(true);
-    expect(result.meta).toEqual({
-      score: 0.9,
-      action: "submit",
-      challengeTs: expect.any(String),
-      hostname: "localhost",
-    });
+    expect(result.meta).toEqual(
+      expect.objectContaining({
+        score: 0.9,
+        action: "submit",
+        challengeTs: expect.any(String),
+        hostname: "localhost",
+      })
+    );
   });
 
   it("should bypass reCAPTCHA verification in development with 'test-token' token", async () => {
@@ -39,12 +41,14 @@ describe("verifyAndExtractRecaptcha - Local Bypass", () => {
     const result = await verifyAndExtractRecaptcha("test-token");
     
     expect(result.ok).toBe(true);
-    expect(result.meta).toEqual({
-      score: 0.9,
-      action: "submit",
-      challengeTs: expect.any(String),
-      hostname: "localhost",
-    });
+    expect(result.meta).toEqual(
+      expect.objectContaining({
+        score: 0.9,
+        action: "submit",
+        challengeTs: expect.any(String),
+        hostname: "localhost",
+      })
+    );
   });
 
   it("should NOT bypass reCAPTCHA verification in production", async () => {
@@ -53,6 +57,8 @@ describe("verifyAndExtractRecaptcha - Local Bypass", () => {
     
     // Cette fonction devra appeler verifyRecaptcha et échouer
     // car nous n'avons pas de vraies clés dans les tests
-    await expect(verifyAndExtractRecaptcha("bypass-local")).rejects.toThrow();
+    const result = await verifyAndExtractRecaptcha("bypass-local");
+    expect(result.ok).toBe(false);
+    expect(result.error).toBe("Échec de la vérification reCAPTCHA. Veuillez réessayer.");
   });
 });

@@ -9,6 +9,7 @@ QuinOIA collecte vos préférences alimentaires via un formulaire multi-étapes 
 ## 🏗️ Architecture Technique
 
 ### Stack Principal
+
 - **Frontend**: Next.js 15.4.5 avec React 18.2.0
 - **Styling**: Tailwind CSS avec animations Framer Motion
 - **Backend**: API Routes Next.js
@@ -19,6 +20,7 @@ QuinOIA collecte vos préférences alimentaires via un formulaire multi-étapes 
 - **Authentification**: reCAPTCHA v3
 
 ### Architecture de Sécurité
+
 - **Row Level Security (RLS)** : Architecture dual-client Supabase
   - Client `anon` pour opérations RLS-aware (filtrage automatique)
   - Client `service_role` pour opérations admin (contournement RLS)
@@ -29,19 +31,23 @@ QuinOIA collecte vos préférences alimentaires via un formulaire multi-étapes 
 ## 🚀 Installation
 
 ### Prérequis
+
 ```bash
 Node.js >= 18
 npm >= 8
 ```
 
 ### Configuration
+
 1. **Cloner le repository**
+
 ```bash
 git clone https://github.com/laura-perez/quinoia.git
 cd quinoia
 ```
 
 2. **Installer les dépendances**
+
 ```bash
 npm install
 ```
@@ -49,6 +55,7 @@ npm install
 3. **Configuration environnement**
 
 Créer `.env.local` avec :
+
 ```bash
 # Base URLs
 APP_BASE_URL=http://localhost:3000
@@ -75,6 +82,7 @@ UPSTASH_REDIS_REST_TOKEN=xxx
 4. **Base de données Supabase**
 
 Créer les tables avec politiques RLS :
+
 ```sql
 -- Table users avec RLS
 CREATE TABLE users (
@@ -95,6 +103,7 @@ ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ## 🔧 Développement
 
 ### Commandes essentielles
+
 ```bash
 # Serveur développement
 npm run dev
@@ -116,6 +125,7 @@ npm run lint
 ```
 
 ### Structure du projet
+
 ```
 ├── pages/              # Routes et API endpoints
 │   ├── api/           # API Routes (submit, test-recaptcha)
@@ -143,6 +153,7 @@ npm run lint
 ## 🧪 Tests
 
 ### Tests unitaires
+
 ```bash
 # Tous les tests
 npx vitest run
@@ -155,6 +166,7 @@ npm run test:coverage
 ```
 
 ### Tests E2E
+
 ```bash
 # Tous les tests E2E
 npx playwright test
@@ -164,6 +176,7 @@ npx playwright test --ui
 ```
 
 ### Tests d'intégration
+
 - Pipeline complet `/api/submit`
 - Architecture RLS Supabase
 - Génération payload n8n
@@ -172,6 +185,7 @@ npx playwright test --ui
 ## 📊 Pipeline de Données
 
 ### Flux utilisateur
+
 1. **Formulaire** → Collecte préférences (4 étapes)
 2. **Validation** → Zod + reCAPTCHA
 3. **Base données** → Supabase avec RLS
@@ -179,6 +193,7 @@ npx playwright test --ui
 5. **Livraison** → Email avec menu personnalisé
 
 ### Calculs métier
+
 - **BMR (Basal Metabolic Rate)** : Formule Mifflin-St Jeor
 - **TDEE (Total Daily Energy Expenditure)** : BMR × facteur d'activité
 - **Targets nutritionnels** : Protéines, lipides, glucides optimisés
@@ -187,6 +202,7 @@ npx playwright test --ui
 ## 🔒 Sécurité
 
 ### Mesures implémentées
+
 - **RLS Supabase** : Isolation données utilisateur
 - **Rate Limiting** : Protection contre abus
 - **HMAC Signatures** : Intégrité webhooks n8n
@@ -196,10 +212,11 @@ npx playwright test --ui
 - **Structured Logging** : Audit et monitoring
 
 ### Architecture sécurisée
+
 ```typescript
 // ✅ Côté serveur - Séparation des rôles
-const anonClient = getAnonClient()     // RLS actif
-const serviceClient = getServiceClient() // RLS contourné
+const anonClient = getAnonClient(); // RLS actif
+const serviceClient = getServiceClient(); // RLS contourné
 
 // ❌ Côté client - Aucun client DB direct
 // Toute communication via API routes sécurisées
@@ -208,6 +225,7 @@ const serviceClient = getServiceClient() // RLS contourné
 ## 📈 Performance
 
 ### Optimisations
+
 - **Bundle splitting** : Code splitting par route
 - **Image optimization** : Next.js Image component
 - **API response caching** : Cache stratégique
@@ -215,6 +233,7 @@ const serviceClient = getServiceClient() // RLS contourné
 - **Rate limiting** : Protection ressources
 
 ### Monitoring
+
 - Structured logging avec niveaux contextuels
 - Performance tracking des API routes
 - Métriques base de données
@@ -223,6 +242,7 @@ const serviceClient = getServiceClient() // RLS contourné
 ## 🚢 Déploiement
 
 ### Variables production requises
+
 ```bash
 # Copier et adapter .env.local
 APP_BASE_URL=https://yourdomain.com
@@ -234,6 +254,7 @@ N8N_WEBHOOK_URL=https://your-n8n.app/webhook/menu
 ```
 
 ### Build et déploiement
+
 ```bash
 # Build optimisé
 npm run build
@@ -248,6 +269,7 @@ npm run test && npx playwright test
 ## 🤝 Contribution
 
 ### Workflow de développement
+
 1. **Branch** depuis `develop`
 2. **Conventional Commits** pour messages
 3. **Tests** obligatoires (unit + E2E)
@@ -255,6 +277,7 @@ npm run test && npx playwright test
 5. **PR Review** vers `develop`
 
 ### Standards code
+
 - **TypeScript strict mode**
 - **ESLint + Prettier** configuration
 - **Tests coverage** > 80%
@@ -270,6 +293,7 @@ Projet privé - Tous droits réservés
 ### Problèmes courants
 
 **Erreur environnement**
+
 ```bash
 # Vérifier configuration
 npm run build
@@ -277,6 +301,7 @@ npm run build
 ```
 
 **Tests échouent**
+
 ```bash
 # Variables test manquantes
 cp .env.local .env.test
@@ -284,12 +309,14 @@ cp .env.local .env.test
 ```
 
 **API n8n timeout**
+
 ```bash
 # Vérifier webhook n8n actif
 # Logs structurés pour debugging
 ```
 
 ### Documentation
+
 - [Architecture RLS](./docs/RLS_ARCHITECTURE.md)
 - [Guide Migration](./docs/RLS_MIGRATION.md)
 - [Specs MVP](./SPECS_MVP_QUINOIA.md)
