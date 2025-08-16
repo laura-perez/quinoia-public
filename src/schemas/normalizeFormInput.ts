@@ -11,32 +11,66 @@ import {
 import type { RawFormData } from "./api.types";
 
 /**
- * Transforme le payload du formulaire (clés/valeurs FR) en un objet prêt pour NormalizedInput.
+ * Type for the output of normalizeFormInput function
  */
-export function normalizeFormInput(form: unknown): unknown {
-  // Type guard - in a real app, we'd validate this properly
-  const f = form as any;
+export interface NormalizedFormOutput {
+  email: string;
+  firstName?: string;
+  age: number;
+  gender: string;
+  heightCm: number;
+  weightKg: number;
+  diet: string;
+  proteinPreferences: string[];
+  equipmentAvailable: string[];
+  cookingLevel: string;
+  numRecipes: number;
+  numServings: number;
+  favoriteFoods?: string;
+  dislikedFoods?: string;
+  batchMode: boolean;
+  primaryGoal: string;
+  secondaryFocus: string | null;
+  activity: {
+    deskJob: boolean;
+    dailySteps: string;
+    sessionsPerWeek: string;
+    highIntensity: boolean;
+  };
+  allergiesText?: string;
+  allergens: string[];
+  locale: string;
+  unitSystem: string;
+  consent: boolean;
+}
+
+/**
+ * Transforms form payload (camelCase) into normalized input object.
+ */
+export function normalizeFormInput(form: unknown): NormalizedFormOutput {
+  // Type guard - in production, validate with Zod schema
+  const f = form as RawFormData;
   return {
     email: f.email,
     firstName: f.name?.trim(),
     age: f.age,
     gender: mapValue(genderMap, f.gender) ?? "unspecified",
-    heightCm: f.height_cm,
-    weightKg: f.weight_kg,
-    diet: mapValue(dietMap, f.diet_type),
-    proteinPreferences: mapArrayUnique(proteinPreferenceMap, f.protein_preference || []),
-    equipmentAvailable: mapArrayUnique(equipmentMap, f.equipment || []),
-    cookingLevel: mapValue(cookingLevelMap, f.cooking_level) ?? "beginner",
-    numRecipes: f.nbRecipes,
-    numServings: f.nbPortions,
-    favoriteFoods: f.favourite_food?.trim(),
-    dislikedFoods: f.disliked_food?.trim(),
-    batchMode: !!f.batch,
+    heightCm: f.heightCm,
+    weightKg: f.weightKg,
+    diet: mapValue(dietMap, f.dietType) ?? "omnivore",
+    proteinPreferences: mapArrayUnique(proteinPreferenceMap, f.proteinPreferences || []),
+    equipmentAvailable: mapArrayUnique(equipmentMap, f.equipmentAvailable || []),
+    cookingLevel: mapValue(cookingLevelMap, f.cookingLevel) ?? "beginner",
+    numRecipes: f.numRecipes,
+    numServings: f.numServings,
+    favoriteFoods: f.favoriteFoods?.trim(),
+    dislikedFoods: f.dislikedFoods?.trim(),
+    batchMode: !!f.batchMode,
     primaryGoal: f.primaryGoal,
     secondaryFocus: f.secondaryFocus ?? null,
     activity: { ...f.physicalActivity },
-    allergiesText: f.allergies?.trim() || undefined,
-    allergens: extractAllergens(f.allergies || ""),
+    allergiesText: f.allergens?.trim() || undefined,
+    allergens: [...extractAllergens(f.allergens || "")],
     locale: "fr-FR",
     unitSystem: "metric",
     consent: !!f.consent,

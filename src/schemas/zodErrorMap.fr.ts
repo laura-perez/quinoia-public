@@ -61,12 +61,24 @@ export function setZodErrorMapFR(): void {
 }
 
 export function formatZodErrors(error: ZodError) {
-  if (typeof (error as any).flatten === "function") return (error as any).flatten();
+  // ZodError has a flatten method for formatting errors
+  if ('flatten' in error && typeof error.flatten === "function") {
+    return error.flatten();
+  }
+  
   const fieldErrors: Record<string, string[]> = {};
   const formErrors: string[] = [];
-  for (const i of (error as any).issues ?? []) {
-    const key = (Array.isArray(i.path) && i.path.length ? i.path.join(".") : "") as string;
-    (key ? (fieldErrors[key] ||= []) : formErrors).push(i.message || "Valeur invalide.");
+  
+  for (const issue of error.issues) {
+    const key = Array.isArray(issue.path) && issue.path.length ? issue.path.join(".") : "";
+    const message = issue.message || "Valeur invalide.";
+    
+    if (key) {
+      fieldErrors[key] = fieldErrors[key] || [];
+      fieldErrors[key].push(message);
+    } else {
+      formErrors.push(message);
+    }
   }
   return { fieldErrors, formErrors };
 }

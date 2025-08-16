@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { normalizedInputSchema } from "../schemas/normalizedInput.schema";
-import { normalizeFormInput } from "../schemas/normalizeFormInput";
+import { normalizeFormInput, type NormalizedFormOutput } from "../schemas/normalizeFormInput";
 import { setZodErrorMapFR, formatZodErrors } from "../schemas/zodErrorMap.fr";
 
 setZodErrorMapFR();
@@ -10,17 +10,17 @@ function makeForm(overrides: Partial<any> = {}) {
     name: "Jean",
     age: 28,
     gender: "Homme",
-    height_cm: 180,
-    weight_kg: 75,
-    diet_type: "Omnivore",
-    protein_preference: ["Bœuf", "Boeuf", "Poisson", "poisson"],
-    equipment: ["Four", "Four", "Mixeur/Blender"],
-    cooking_level: "Intermédiaire : Je suis à l’aise, mais pas un chef non plus",
-    nbRecipes: 4,
-    nbPortions: 2,
-    favourite_food: "pâtes, pizza",
-    disliked_food: "chou, navet",
-    batch: true,
+    heightCm: 180,
+    weightKg: 75,
+    dietType: "Omnivore",
+    proteinPreferences: ["Bœuf", "Boeuf", "Poisson", "poisson"],
+    equipmentAvailable: ["Four", "Four", "Mixeur/Blender"],
+    cookingLevel: "Intermédiaire : Je suis à l'aise, mais pas un chef non plus",
+    numRecipes: 4,
+    numServings: 2,
+    favoriteFoods: "pâtes, pizza",
+    dislikedFoods: "chou, navet",
+    batchMode: true,
     primaryGoal: "saveTime",
     secondaryFocus: null,
     physicalActivity: {
@@ -55,8 +55,8 @@ describe("normalizedInputSchema integration", () => {
     }
   });
 
-  it("nbRecipes=1 → error min", () => {
-    const form = makeForm({ nbRecipes: 1 });
+  it("numRecipes=1 → error min", () => {
+    const form = makeForm({ numRecipes: 1 });
     const candidate = normalizeFormInput(form);
     try {
       normalizedInputSchema.parse(candidate);
@@ -67,8 +67,8 @@ describe("normalizedInputSchema integration", () => {
     }
   });
 
-  it("nbRecipes=8 → error max", () => {
-    const form = makeForm({ nbRecipes: 8 });
+  it("numRecipes=8 → error max", () => {
+    const form = makeForm({ numRecipes: 8 });
     const candidate = normalizeFormInput(form);
     try {
       normalizedInputSchema.parse(candidate);
@@ -81,20 +81,20 @@ describe("normalizedInputSchema integration", () => {
 
   it('gender="Autre" → unspecified', () => {
     const form = makeForm({ gender: "Autre" });
-    const candidate = normalizeFormInput(form) as any;
+    const candidate: NormalizedFormOutput = normalizeFormInput(form);
     expect(candidate.gender).toBe("unspecified");
     expect(() => normalizedInputSchema.parse(candidate)).not.toThrow();
   });
 
-  it("protein_preference avec doublons et accents → dédup + map correct", () => {
-    const form = makeForm({ protein_preference: ["Bœuf", "Boeuf", "Poisson", "poisson"] });
-    const candidate = normalizeFormInput(form) as any;
+  it("proteinPreferences avec doublons et accents → dédup + map correct", () => {
+    const form = makeForm({ proteinPreferences: ["Bœuf", "Boeuf", "Poisson", "poisson"] });
+    const candidate: NormalizedFormOutput = normalizeFormInput(form);
     expect(candidate.proteinPreferences).toEqual(["Beef", "Fish"]);
   });
 
-  it("equipment avec doublons → dédup", () => {
-    const form = makeForm({ equipment: ["Four", "Four", "Mixeur/Blender"] });
-    const candidate = normalizeFormInput(form) as any;
+  it("equipmentAvailable avec doublons → dédup", () => {
+    const form = makeForm({ equipmentAvailable: ["Four", "Four", "Mixeur/Blender"] });
+    const candidate: NormalizedFormOutput = normalizeFormInput(form);
     expect(candidate.equipmentAvailable).toEqual(["Oven", "Blender"]);
   });
 
@@ -119,15 +119,15 @@ describe("normalizedInputSchema integration", () => {
     }
   });
 
-  it('allergies "lait, gluten, œufs" → allergens contient ["Milk","Gluten","Eggs"]', () => {
-    const form = makeForm({ allergies: "lait, gluten, œufs" });
-    const candidate = normalizeFormInput(form) as any;
+  it('allergens "lait, gluten, œufs" → allergens contient ["Milk","Gluten","Eggs"]', () => {
+    const form = makeForm({ allergens: "lait, gluten, œufs" });
+    const candidate: NormalizedFormOutput = normalizeFormInput(form);
     expect(candidate.allergens).toEqual(["Milk", "Gluten", "Eggs"]);
   });
 
   it("clé inconnue sneaky:x dans le candidat avant parse → .strict() la rejette", () => {
     const form = makeForm();
-    const base = normalizeFormInput(form) as any;
+    const base: NormalizedFormOutput = normalizeFormInput(form);
     const candidate = { ...base, sneaky: "x" };
     try {
       normalizedInputSchema.parse(candidate);

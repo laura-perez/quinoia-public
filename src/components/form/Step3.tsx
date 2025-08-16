@@ -62,7 +62,7 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev, em
 
   // Validate required fields and proceed to next step if valid
   const handleSubmit = () => {
-    const requiredFields = ["cooking_level", "nbRecipes", "nbPortions"] as const;
+    const requiredFields = ["cookingLevel", "numRecipes", "numServings"] as const;
     const newErrors: FormErrors = {};
     
     for (const field of requiredFields) {
@@ -93,52 +93,52 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev, em
       <div className="space-y-6">
         {/* Cooking level radio group */}
         <RadioGroup
-          name="cooking_level"
+          name="cookingLevel"
           options={COOKING_LEVELS}
-          value={formData.cooking_level || ""}
+          value={formData.cookingLevel || ""}
           onChange={handleInputChange}
-          error={errors.cooking_level}
+          error={errors.cookingLevel}
           label="Quel est ton niveau en cuisine ?"
         />
 
         {/* Equipment checkbox group */}
         <CheckboxGroup
-          name="equipment"
+          name="equipmentAvailable"
           options={EQUIPMENT_OPTIONS}
-          values={formData.equipment || []}
+          values={formData.equipmentAvailable || []}
           onChange={handleCheckboxChange}
           label="Quels équipements de cuisine as-tu ?"
         />
 
         {/* Number of recipes radio group */}
         <RadioGroup
-          name="nbRecipes"
+          name="numRecipes"
           options={RECIPE_COUNTS}
-          value={formData.nbRecipes || ""}
+          value={formData.numRecipes || ""}
           onChange={handleInputChange}
-          error={errors.nbRecipes}
+          error={errors.numRecipes}
           label="Combien de recettes veux tu cette semaine ?"
         />
 
         {/* Number of portions radio group */}
         <RadioGroup
-          name="nbPortions"
+          name="numServings"
           options={PORTION_COUNTS}
-          value={formData.nbPortions || ""}
+          value={formData.numServings || ""}
           onChange={handleInputChange}
-          error={errors.nbPortions}
+          error={errors.numServings}
           label="Combien de portions par recette ?"
         />
 
         {/* Batch cooking radio group */}
         <RadioGroup
-          name="batch"
+          name="batchMode"
           label="Souhaites-tu recevoir des conseils en batch cooking ?"
           options={["Oui", "Non"]}
-          value={formData.batch === true ? "Oui" : formData.batch === false ? "Non" : ""}
+          value={formData.batchMode === true ? "Oui" : formData.batchMode === false ? "Non" : ""}
           onChange={(e) => {
             const val = e.target.value === "Oui" ? true : e.target.value === "Non" ? false : undefined;
-            updateFormData({ batch: val });
+            updateFormData({ batchMode: val });
           }}
           optionClassName="flex-1 text-center font-medium"
         />

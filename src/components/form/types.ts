@@ -14,46 +14,33 @@ export interface PhysicalActivity {
  * Form data structure shared across all steps
  */
 export interface FormData {
-  // Step 1
+  // Step 1 - Personal Information
   name?: string;
   email?: string;
   age?: string;
   gender?: string;
-  height?: string;
-  height_cm?: string; // Support both formats
-  weight?: string;
-  weight_kg?: string; // Support both formats
+  heightCm?: string;
+  weightKg?: string;
   physicalActivity?: PhysicalActivity;
   
-  // Step 2
-  diet?: string;
-  diet_type?: string; // Support both formats
-  allergens?: string[];
-  allergies?: string; // Support both formats
+  // Step 2 - Dietary Preferences
+  dietType?: string;
+  allergens?: string; // Text input for allergies
   proteinPreferences?: string[];
-  protein_preference?: string[]; // Support both formats
   dislikedFoods?: string;
-  disliked_food?: string; // Support both formats
-  favourite_food?: string; // Support alternate format
-  
-  // Step 3
-  cooking_level?: string; // User's cooking skill level
-  equipmentAvailable?: string[];
-  equipment?: string[]; // Support both formats
-  numRecipes?: string;
-  num_recipes?: string; // Support both formats
-  nbRecipes?: string; // French naming convention
-  numServings?: string;
-  num_servings?: string; // Support both formats
-  nbPortions?: string; // French naming convention
   favoriteFoods?: string;
-  favorite_foods?: string; // Support both formats
-  batch?: boolean; // Batch cooking preference
   
-  // Step 4
-  primaryGoal?: string; // Main user objective
-  secondaryFocus?: string | null; // Secondary focus area
-  note?: string; // User notes
+  // Step 3 - Cooking Preferences
+  cookingLevel?: string;
+  equipmentAvailable?: string[];
+  numRecipes?: string;
+  numServings?: string;
+  batchMode?: boolean;
+  
+  // Step 4 - Goals and Consent
+  primaryGoal?: string;
+  secondaryFocus?: string | null;
+  note?: string;
   consent?: boolean;
 }
 
@@ -84,27 +71,34 @@ export interface PhysicalActivityErrors {
  * Validation errors structure
  */
 export interface FormErrors {
+  // Step 1 errors
   name?: string;
   email?: string;
   age?: string;
   gender?: string;
-  height?: string;
-  height_cm?: string;
-  weight?: string;
-  weight_kg?: string;
-  diet_type?: string;
-  cooking_level?: string;
-  equipment?: string;
-  nbRecipes?: string;
-  nbPortions?: string;
-  batch?: string;
-  num_recipes?: string;
-  num_servings?: string;
-  favorite_foods?: string;
+  heightCm?: string;
+  weightKg?: string;
+  physicalActivity?: PhysicalActivityErrors;
+  
+  // Step 2 errors
+  dietType?: string;
+  allergens?: string;
+  proteinPreferences?: string;
+  dislikedFoods?: string;
+  favoriteFoods?: string;
+  
+  // Step 3 errors
+  cookingLevel?: string;
+  equipmentAvailable?: string;
+  numRecipes?: string;
+  numServings?: string;
+  batchMode?: string;
+  
+  // Step 4 errors
   primaryGoal?: string;
   secondaryFocus?: string;
   note?: string;
   consent?: string;
-  physicalActivity?: PhysicalActivityErrors;
+  
   [key: string]: string | PhysicalActivityErrors | undefined;
 }

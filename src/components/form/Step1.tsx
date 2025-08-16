@@ -34,12 +34,12 @@ export default function Step1({ formData, updateFormData, goToNext, goToPrev, em
   // Validate all required fields and physical activity group
   const handleSubmit = () => {
     // Use camelCase keys for validation and error reporting
-    const requiredFields = ["name", "age", "gender", "height_cm", "weight_kg"];
+    const requiredFields = ["name", "age", "gender", "heightCm", "weightKg"] as const;
     const newErrors: FormErrors = {};
     for (const field of requiredFields) {
-      const fieldValue = (formData as any)[field];
+      const fieldValue = formData[field];
       if (!fieldValue || fieldValue.toString().trim() === "") {
-        (newErrors as any)[field] = "Ce champ est requis";
+        newErrors[field] = "Ce champ est requis";
       }
     }
     // Validate physical activity fields
@@ -96,20 +96,20 @@ export default function Step1({ formData, updateFormData, goToNext, goToPrev, em
         <div className="flex flex-col sm:flex-row gap-4">
           <TextInput
             label="Taille (cm)"
-            name="height_cm"
+            name="heightCm"
             type="number"
-            value={formData.height_cm || ""}
+            value={formData.heightCm || ""}
             onChange={handleChange}
-            error={errors.height_cm}
+            error={errors.heightCm}
             placeholder="cm"
           />
           <TextInput
             label="Poids (kg)"
-            name="weight_kg"
+            name="weightKg"
             type="number"
-            value={formData.weight_kg || ""}
+            value={formData.weightKg || ""}
             onChange={handleChange}
-            error={errors.weight_kg}
+            error={errors.weightKg}
             placeholder="kg"
           />
         </div>

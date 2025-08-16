@@ -2,21 +2,29 @@ import { useInView } from "framer-motion";
 import { cloneElement, useRef } from "react";
 import React from "react";
 
+interface LayoutEffectProps {
+  children: React.ReactElement;
+  className?: string;
+  isInviewState: { trueState?: string; falseState?: string };
+}
+
 const LayoutEffect = ({
   children,
   className,
   isInviewState: { trueState = "", falseState = "" },
-}: {
-  children: React.ReactElement;
-  className?: string;
-  isInviewState: { trueState?: string; falseState?: string };
-}) => {
-  const ref = useRef<Element>(null);
-  const isInView = useInView(ref as any, { once: true });
+}: LayoutEffectProps) => {
+  const ref = useRef<Element | null>(null);
+  const isInView = useInView(ref as React.RefObject<Element>, { once: true });
 
-  return cloneElement(children as any, {
+  // Type-safe props extraction
+  const childProps = children.props as { className?: string };
+  const existingClassName = childProps.className || "";
+  const newClassName = `${existingClassName} ${className || ""} ${isInView ? trueState : falseState}`;
+
+  // Use type assertion for cloneElement - this is acceptable for complex React patterns
+  return cloneElement(children, {
     ref,
-    className: `${(children as any).props.className || ""} ${className || ""} ${isInView ? trueState : falseState}`,
+    className: newClassName,
   } as any);
 };
 

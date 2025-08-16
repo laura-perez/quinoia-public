@@ -33,19 +33,29 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev, em
     setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
-  // Handle checkbox group changes
+  // Handle checkbox group changes - type-safe array handling
   const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = e.target;
-    const current = (formData as any)[name] || [];
-    const updated = checked ? [...current, value] : current.filter((v: any) => v !== value);
+    
+    // Type-safe handling for array fields
+    const getArrayValue = (fieldName: string): string[] => {
+      if (fieldName === 'proteinPreferences') {
+        return formData.proteinPreferences || [];
+      }
+      // Add other array fields as needed
+      return [];
+    };
+    
+    const current = getArrayValue(name);
+    const updated = checked ? [...current, value] : current.filter((v: string) => v !== value);
     updateFormData({ [name]: updated });
   };
 
   // Validate required fields
   const handleSubmit = () => {
     const newErrors: FormErrors = {};
-    if (!formData.diet_type || formData.diet_type.trim() === "") {
-      newErrors.diet_type = "Ce champ est requis";
+    if (!formData.dietType || formData.dietType.trim() === "") {
+      newErrors.dietType = "Ce champ est requis";
     }
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -67,20 +77,20 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev, em
       <div className="space-y-6">
         {/* Diet type radio group */}
         <RadioGroup
-          name="diet_type"
+          name="dietType"
           options={DIET_OPTIONS}
-          value={formData.diet_type || ""}
+          value={formData.dietType || ""}
           onChange={handleChange}
-          error={errors.diet_type as string}
-          label="Quel est ton type d’alimentation ?"
+          error={errors.dietType as string}
+          label="Quel est ton type d'alimentation ?"
           optionClassName="flex-1 text-center font-medium"
         />
 
         {/* Protein preferences checkbox group */}
         <CheckboxGroup
-          name="protein_preference"
+          name="proteinPreferences"
           options={PROTEIN_OPTIONS}
-          values={formData.protein_preference || []}
+          values={formData.proteinPreferences || []}
           onChange={handleCheckbox}
           label="Quels types de protéines aimes-tu consommer ?"
         />
@@ -88,8 +98,8 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev, em
         {/* Allergies */}
         <TextInput
           label="As-tu des allergies ou intolérances ?"
-          name="allergies"
-          value={formData.allergies || ""}
+          name="allergens"
+          value={formData.allergens || ""}
           onChange={handleChange}
           placeholder="Ex : lactose, noix, gluten..."
         />
@@ -97,8 +107,8 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev, em
         {/* Disliked foods */}
         <TextInput
           label="Des aliments que tu n'aimes pas ?"
-          name="disliked_food"
-          value={formData.disliked_food || ""}
+          name="dislikedFoods"
+          value={formData.dislikedFoods || ""}
           onChange={handleChange}
           placeholder="Ex : tofu, lentilles, fenouil…"
         />
@@ -106,8 +116,8 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev, em
         {/* Favorite foods */}
         <TextInput
           label="À l'inverse, des aliments que tu adores ?"
-          name="favourite_food"
-          value={formData.favourite_food || ""}
+          name="favoriteFoods"
+          value={formData.favoriteFoods || ""}
           onChange={handleChange}
           placeholder="Ex : tomates, poulet, pâtes…"
         />
