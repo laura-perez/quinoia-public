@@ -16,7 +16,10 @@ export default defineConfig({
       "@/lib": path.resolve(__dirname, "./src/lib"),
       "@/schemas": path.resolve(__dirname, "./src/schemas"),
     },
-    include: ["src/**/*.{test,spec}.{js,ts,jsx,tsx}", "tests/**/*.{test,spec}.{js,ts,jsx,tsx}"],
+  // We intentionally scope tests to the dedicated src/tests directory only.
+  // A former root-level tests/ directory caused duplicate & empty suite collection.
+  // If additional locations are ever required, add them explicitly instead of broad src globs.
+  include: ["src/tests/**/*.{test,spec}.{js,ts,jsx,tsx}"],
     exclude: ["node_modules", "dist", ".next", "src/tests/e2e/*.{spec,test}.{js,ts,jsx,tsx}"],
   },
   plugins: [tsconfigPaths()],
