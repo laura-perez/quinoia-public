@@ -142,7 +142,7 @@
 **Classification**: diet, protein_category, cooking_level
 **Features**: equipment_required[], batch_friendly
 **Contenu**: ingredients (JSONB), instructions[]
-**Matching**: favorite_foods_tags[], disliked_foods_tags[]
+**Tagging**: tags[] (for user preference matching via ingredients/tags)
 **Qualité**: cooking_tip, gpt_auto_evaluation, status
 
 ### Index Performance (Sub-seconde)
