@@ -1,6 +1,6 @@
 import { createLogger } from '@/lib/logger';
 import { getServiceClient } from '@/lib/supabase/client';
-import type { Recipe, SelectionContext, ScoredRecipe, RecipeSelectionResult } from './types';
+import type { Recipe, SelectionContext, ScoredRecipe, RecipeSelectionResult } from '@/types/recipes';
 
 const logger = createLogger();
 
@@ -181,13 +181,13 @@ function scoreRecipes(
       scoreBreakdown.batchBonus = 0.5;
     }
     
-    // 5. Favorite foods bonus (+1 per match)
-    const recipeText = `${recipe.title_fr} ${recipe.favorite_foods_tags.join(' ')}`.toLowerCase();
+    // 5. Favorite foods bonus (+1 per match with ingredients/tags/title)
+    const recipeText = `${recipe.title_fr} ${recipe.tags.join(' ')} ${recipe.ingredients.map(i => i.nom).join(' ')}`.toLowerCase();
     scoreBreakdown.favoriteBonus = favoriteWords.reduce((sum, word) => 
       recipeText.includes(word) ? sum + 1 : sum, 0
     );
     
-    // 6. Disliked foods penalty (-3 per match)  
+    // 6. Disliked foods penalty (-3 per match with ingredients/tags/title)  
     scoreBreakdown.dislikedPenalty = -3 * dislikedWords.reduce((sum, word) =>
       recipeText.includes(word) ? sum + 1 : sum, 0
     );

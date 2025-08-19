@@ -2148,6 +2148,979 @@
       "cuisine_type": "française",
       "servings_base": 2,
       "cooking_tip": "Ajoutez des cornichons émincés et un trait de jus de citron pour une version façon salade tiède ‘bistrot’."
+    },
+    {
+      "title_fr": "Orzo au four façon ratatouille et mozzarella",
+      "diet": "vegetarian",
+      "protein_category": "Dairy",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 20,
+      "calories_per_serving": 494,
+      "protein_g_per_serving": 22,
+      "carbs_g_per_serving": 70,
+      "fat_g_per_serving": 14,
+      "equipment_required": [
+        "Four"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose"
+      ],
+      "tags": [
+        "été",
+        "méditerranéen",
+        "français"
+      ],
+      "ingredients": [
+        {
+          "nom": "Pâtes Orzo",
+          "quantite": 320,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate concassée",
+          "quantite": 800,
+          "unite": "g"
+        },
+        {
+          "nom": "Courgette",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Aubergine",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron rouge",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Mozzarella",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "Herbes de Provence",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Eau",
+          "quantite": 500,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 200°C (chaleur tournante).",
+        "Couper courgette, aubergine et poivron en dés de 2 cm. Émincer l’oignon, hacher l’ail. Déchirer la mozzarella en morceaux.",
+        "Dans un grand plat allant au four, mélanger pâtes, tomate concassée, eau, huile d’olive, herbes de Provence, oignon, ail et tous les légumes. Bien remuer pour répartir le liquide.",
+        "Couvrir hermétiquement de papier aluminium et enfourner 20 minutes.",
+        "Retirer l’alu, mélanger, parsemer de mozzarella et remettre 8 minutes pour gratiner. Laisser reposer 3 minutes.",
+        "Goûter et ajuster sel/poivre/herbes."
+      ],
+      "servings_base": 4,
+      "image_filename": "Orzo_au_four_facon_ratatouille_et_mozzarella.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Si les aubergines ne sont pas de saison, remplace-les par des dés de courgette supplémentaires ou par un mélange de légumes surgelés grillés."
+    },
+    {
+      "title_fr": "Riz au four aux légumes d'été, pois chiches et œufs cocotte",
+      "diet": "vegetarian",
+      "protein_category": "Eggs",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 15,
+      "calories_per_serving": 526,
+      "protein_g_per_serving": 25,
+      "carbs_g_per_serving": 75,
+      "fat_g_per_serving": 14,
+      "equipment_required": [
+        "Four"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "œufs"
+      ],
+      "tags": [
+        "été",
+        "méditerranéen",
+        "français"
+      ],
+      "ingredients": [
+        {
+          "nom": "Riz basmati",
+          "quantite": 280,
+          "unite": "g"
+        },
+        {
+          "nom": "Pois chiches en conserve",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate concassée",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Courgette",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron rouge",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Œuf",
+          "quantite": 8,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 20,
+          "unite": "ml"
+        },
+        {
+          "nom": "Paprika doux",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Eau",
+          "quantite": 600,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 200°C (chaleur tournante).",
+        "Couper la courgette et le poivron en dés. Émincer l’oignon et hacher l’ail.",
+        "Dans un grand plat, mélanger riz, pois chiches égouttés, tomate concassée, légumes, ail, oignon, huile d’olive et paprika et sel. Couvrir d'eau à niveau.",
+        "Couvrir d’aluminium et cuire 25 minutes.",
+        "Retirer l’alu, creuser 8 petits nids, casser un œuf dans chacun et remettre au four 7 à 9 minutes, jusqu’au blanc pris.",
+        "Goûter le riz et ajuster sel/poivre/herbes."
+      ],
+      "servings_base": 4,
+      "image_filename": "Riz_au_four_aux_legumes_d_ete_pois_chiches_et_oeufs_cocotte.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Si le riz n’est pas encore tendre, ajouter 50–100 ml d’eau chaude et prolonger la cuisson de 5 minutes avant d’ajouter les œufs."
+    },
+    {
+      "title_fr": "Tacos croustillants poulet + pois chiches (air fryer), salsa tomate",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 518,
+      "protein_g_per_serving": 34,
+      "carbs_g_per_serving": 56,
+      "fat_g_per_serving": 20,
+      "equipment_required": [
+        "Air fryer"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose"
+      ],
+      "tags": [
+        "protéiné",
+        "été",
+        "mexicain"
+      ],
+      "ingredients": [
+        {
+          "nom": "Blanc de poulet",
+          "quantite": 360,
+          "unite": "g"
+        },
+        {
+          "nom": "Pois chiches cuits",
+          "quantite": 240,
+          "unite": "g"
+        },
+        {
+          "nom": "Tortilla de blé",
+          "quantite": 8,
+          "unite": "piece"
+        },
+        {
+          "nom": "Tomate",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon rouge",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Laitue",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Emmental râpé",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Épices mexicaines",
+          "quantite": 15,
+          "unite": "ml"
+        },
+        {
+          "nom": "Citron vert",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 70,
+          "unite": "ml"
+        },
+        {
+          "nom": "Yaourt nature",
+          "quantite": 120,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Préchauffer l’air fryer à 200°C. Couper le poulet en lanières.",
+        "Mélanger poulet et pois chiches avec les épices et 50 ml d’huile. Étaler dans le panier et cuire 12 à 14 minutes à 200°C en secouant à mi-cuisson.",
+        "Mélanger la tomate en dés, l’oignon haché, le jus du citron vert et 20 ml d’huile pour une salsa rapide.",
+        "Réchauffer les tortillas 1 à 2 minutes à 180°C.",
+        "Garnir chaque tortilla de mélange croustillant, salsa, laitue et un peu d’emmental. Ajouter une cuillerée de yaourt.",
+        "Goûter et ajuster l’assaisonnement."
+      ],
+      "servings_base": 4,
+      "image_filename": "Tacos_croustillants_poulet_pois_chiches_air_fryer_salsa_tomate.png",
+      "cuisine_type": "mexicain",
+      "cooking_tip": "Bien sécher les pois chiches avant cuisson pour un effet ultra croustillant."
+    },
+    {
+      "title_fr": "Tofu BBQ croustillant (air fryer), patate douce et haricots verts",
+      "diet": "vegan",
+      "protein_category": "Tofu",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 550,
+      "protein_g_per_serving": 24,
+      "carbs_g_per_serving": 52,
+      "fat_g_per_serving": 27,
+      "equipment_required": [
+        "Air fryer",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "soja"
+      ],
+      "tags": [
+        "été",
+        "français"
+      ],
+      "ingredients": [
+        {
+          "nom": "Tofu ferme",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Patate douce",
+          "quantite": 500,
+          "unite": "g"
+        },
+        {
+          "nom": "Haricots verts",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Concentré de tomate",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "Vinaigre de cidre",
+          "quantite": 20,
+          "unite": "ml"
+        },
+        {
+          "nom": "Sucre",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Paprika fumé",
+          "quantite": 4,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Huile de tournesol",
+          "quantite": 30,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Préchauffer l’air fryer à 200°C. Couper la patate douce en cubes de 2 cm, mélanger avec 15 ml d’huile et 2 g de paprika fumé. Cuire 18 minutes à 200°C en secouant à mi-cuisson.",
+        "Porter une casserole d’eau à ébullition et cuire les haricots verts 6 à 7 minutes, égoutter.",
+        "Couper le tofu en cubes de 2 cm. Mélanger concentré de tomate, vinaigre, sucre, ail pressé, 15 ml d’huile et 2 g de paprika.",
+        "Enrober le tofu de sauce, ajouter au panier et cuire 12 minutes à 200°C en secouant à mi-cuisson.",
+        "Servir le tofu croustillant avec patate douce et haricots verts. Goûter et ajuster l’assaisonnement."
+      ],
+      "servings_base": 2,
+      "image_filename": "Tofu_BBQ_croustillant_air_fryer_patate_douce_et_haricots_verts.png",
+      "cuisine_type": "français",
+      "cooking_tip": "Égoutter le tofu 10 minutes sous un poids pour un résultat plus ferme et croustillant."
+    },
+    {
+      "title_fr": "Salade de bœuf grillé, quinoa, maïs et poivron",
+      "diet": "omnivore",
+      "protein_category": "Beef",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 500,
+      "protein_g_per_serving": 42,
+      "carbs_g_per_serving": 45,
+      "fat_g_per_serving": 16,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [],
+      "tags": [
+        "protéiné",
+        "été",
+        "mexicain"
+      ],
+      "ingredients": [
+        {
+          "nom": "Bœuf rumsteak",
+          "quantite": 600,
+          "unite": "g"
+        },
+        {
+          "nom": "Quinoa",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Maïs en conserve",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron rouge",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Coriandre",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Citron vert",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Cumin",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 40,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Rincer le quinoa et le cuire 12–14 min dans une casserole d’eau bouillante salée. Égoutter et refroidir.",
+        "Émincer l’oignon, couper poivron et tomate en dés. Égoutter le maïs.",
+        "Chauffer une poêle avec 20 ml d’huile à feu vif. Saisir le bœuf en lanières 3–4 min pour rosé ou plus selon goût. Ajouter le cumin et le jus de citron vert 30 s hors du feu.",
+        "Assembler quinoa, maïs, poivron, tomate et oignon dans un grand saladier. Ajouter 20 ml d’huile restante et la coriandre ciselée.",
+        "Ajouter le bœuf tiède, mélanger délicatement.",
+        "Goûter et ajuster sel/poivre/herbes."
+      ],
+      "servings_base": 4,
+      "image_filename": "Salade_de_boeuf_grille_quinoa_mais_et_poivron.png",
+      "cuisine_type": "mexicain",
+      "cooking_tip": "Tu peux remplacer le bœuf par de la dinde émincée pour une version plus économique."
+    },
+    {
+      "title_fr": "Rösti de patate douce, tomates rôties, feta et œufs au plat",
+      "diet": "vegetarian",
+      "protein_category": "Eggs",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 860,
+      "protein_g_per_serving": 34,
+      "carbs_g_per_serving": 62,
+      "fat_g_per_serving": 52,
+      "equipment_required": [
+        "Poêle",
+        "Four"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "lactose",
+        "œufs"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Patate douce",
+          "quantite": 600,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate cerise",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon rouge",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Feta",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Emmental râpé",
+          "quantite": 60,
+          "unite": "g"
+        },
+        {
+          "nom": "Œuf",
+          "quantite": 4,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 40,
+          "unite": "ml"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 1,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Origan",
+          "quantite": 2,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 210°C. Mélanger les tomates cerises entières avec 10 ml d’huile et l’origan, étaler sur une plaque et rôtir 12 minutes.",
+        "Râper la patate douce, émincer l’oignon et hacher l’ail. Presser la patate douce râpée entre les mains pour retirer l’excès d’eau.",
+        "Chauffer 15 ml d’huile dans une poêle à feu moyen. Étaler la moitié du mélange patate/oignon/ail en galette, cuire 4 minutes par face jusqu’à doré. Répéter avec le reste, ajouter un filet d’huile si besoin.",
+        "Dans la même poêle chaude avec 5 ml d’huile, cuire les œufs au plat 2 à 3 minutes à feu moyen (blanc pris, jaune coulant).",
+        "Servir les rösti avec les tomates rôties, émietter la feta et parsemer d’emmental. Goûter et ajuster assaisonnement."
+      ],
+      "servings_base": 2,
+      "image_filename": "Rosti_de_patate_douce_tomates_roties_feta_et_oeufs_au_plat.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Pour une croûte bien croustillante, tasse la galette avec une spatule pendant la cuisson et évite de la déplacer trop tôt. Hors saison, remplace les tomates fraîches par des tomates cerises surgelées."
+    },
+    {
+      "title_fr": "Patates rôties, brocoli et sauce cheddar, œufs mollets",
+      "diet": "vegetarian",
+      "protein_category": "Dairy",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 28,
+      "calories_per_serving": 860,
+      "protein_g_per_serving": 32,
+      "carbs_g_per_serving": 70,
+      "fat_g_per_serving": 50,
+      "equipment_required": [
+        "Four",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose",
+        "œufs"
+      ],
+      "tags": [
+        "protéiné",
+        "français",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Pomme de terre",
+          "quantite": 600,
+          "unite": "g"
+        },
+        {
+          "nom": "Brocoli",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Cheddar râpé",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Lait",
+          "quantite": 300,
+          "unite": "ml"
+        },
+        {
+          "nom": "Beurre",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "Farine",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "Œuf",
+          "quantite": 4,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 20,
+          "unite": "ml"
+        },
+        {
+          "nom": "Paprika",
+          "quantite": 4,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 210°C. Couper les pommes de terre en quartiers, mélanger avec l’huile et le paprika, rôtir 20 à 22 minutes.",
+        "Détailler le brocoli en petits bouquets. Les plonger 3 minutes dans une casserole d’eau bouillante salée, égoutter.",
+        "Préparer la sauce: faire fondre le beurre à feu moyen, ajouter la farine 1 minute en fouettant, verser le lait progressivement 3 à 4 minutes jusqu’à nappant. Ajouter le cheddar, fondre 1 minute.",
+        "Cuire les œufs 6 minutes dans l’eau bouillante pour des œufs mollets, passer sous l’eau froide et écaler.",
+        "Servir les patates rôties avec le brocoli, napper de sauce cheddar et déposer les œufs coupés. Goûter et ajuster assaisonnement."
+      ],
+      "servings_base": 2,
+      "image_filename": "Patates_roties_brocoli_et_sauce_cheddar_oeufs_mollets.png",
+      "cuisine_type": "français",
+      "cooking_tip": "Pour gagner du temps, commence la sauce pendant que les pommes de terre rôtissent. Remplace le brocoli par des fleurettes surgelées en dehors de la saison."
+    },
+    {
+      "title_fr": "Poulet shawarma minute, riz basmati et salade concombre-yaourt",
+      "diet": "omnivore",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 560,
+      "protein_g_per_serving": 38,
+      "carbs_g_per_serving": 70,
+      "fat_g_per_serving": 14,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "lactose",
+        "gluten",
+        "œufs"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Blanc de poulet",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Riz basmati",
+          "quantite": 160,
+          "unite": "g"
+        },
+        {
+          "nom": "Concombre",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Yaourt grec 0–2%",
+          "quantite": 160,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 1,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 20,
+          "unite": "ml"
+        },
+        {
+          "nom": "Cumin moulu",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Paprika",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Coriandre moulue",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Curcuma",
+          "quantite": 2,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Rincer le riz et le cuire à feu doux dans une casserole d’eau bouillante (10–12 min). Égoutter, couvrir.",
+        "Couper le poulet en lamelles, mélanger avec 10 ml d’huile, cumin, paprika, coriandre et curcuma.",
+        "Poêler le poulet 6–7 min à feu moyen-vif jusqu’à cuisson complète.",
+        "Couper concombre et tomates en dés. Mélanger yaourt, ail râpé et un filet de jus de citron.",
+        "Servir riz, poulet et salade. Napper d’un peu de sauce yaourt et du reste d’huile si souhaité.",
+        "Goûter et ajuster l’assaisonnement."
+      ],
+      "servings_base": 2,
+      "image_filename": "Poulet_shawarma_minute_riz_basmati_et_salade_concombre_yaourt.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Ajoute quelques feuilles de menthe ou de persil dans la sauce yaourt pour une fraîcheur typique du Levant."
+    },
+    {
+      "title_fr": "Kefta express de bœuf, sauce tomate cumin et boulgour citronné",
+      "diet": "omnivore",
+      "protein_category": "Beef",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 560,
+      "protein_g_per_serving": 32,
+      "carbs_g_per_serving": 70,
+      "fat_g_per_serving": 17,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Bœuf haché 5%",
+          "quantite": 500,
+          "unite": "g"
+        },
+        {
+          "nom": "Boulgour",
+          "quantite": 280,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate concassée",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron rouge",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Persil",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Cumin moulu",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "Paprika doux",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Ras el hanout",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Cuire le boulgour 10–12 min dans une casserole d’eau bouillante. Égoutter, zester un peu de citron puis ajouter son jus et 10 ml d’huile.",
+        "Mélanger le bœuf avec la moitié du cumin, le paprika et la moitié de l’ail haché. Façonner 12 mini keftas.",
+        "Poêler les keftas 6–7 min à feu moyen-vif avec 10 ml d’huile. Réserver.",
+        "Dans la même poêle, ajouter le reste d’huile, l’oignon émincé, le poivron en lamelles et l’ail restant. Saisir 3–4 min.",
+        "Verser la tomate concassée, le reste de cumin, laisser frémir 5 min puis remettre les keftas 1 min.",
+        "Servir keftas et sauce sur le boulgour, parsemer de persil. Goûter et ajuster l’assaisonnement."
+      ],
+      "servings_base": 4,
+      "image_filename": "Kefta_express_de_boeuf_sauce_tomate_cumin_et_boulgour_citronne.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Pour des keftas plus moelleuses, ajoute 10 g de chapelure et 15 ml d’eau dans la viande avant de façonner."
+    },
+    {
+      "title_fr": "Œufs à la turque (cilbir) sur pilaf de boulgour et courgettes",
+      "diet": "vegetarian",
+      "protein_category": "Eggs",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 575,
+      "protein_g_per_serving": 24,
+      "carbs_g_per_serving": 70,
+      "fat_g_per_serving": 22,
+      "equipment_required": [
+        "Casserole",
+        "Poêle"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose",
+        "œufs"
+      ],
+      "tags": [
+        "méditerranéen",
+        "été",
+        "français"
+      ],
+      "ingredients": [
+        {
+          "nom": "Boulgour",
+          "quantite": 140,
+          "unite": "g"
+        },
+        {
+          "nom": "Courgette",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Œuf",
+          "quantite": 4,
+          "unite": "piece"
+        },
+        {
+          "nom": "Yaourt grec 0–2%",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 1,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Paprika doux",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Menthe",
+          "quantite": 6,
+          "unite": "feuille"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 20,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Cuire le boulgour 10–12 min. Égoutter et mélanger avec 10 ml d’huile.",
+        "Tailler la courgette en demi-rondelles et la poêler 6–7 min à feu moyen avec 10 ml d’huile.",
+        "Pocher les œufs 3–4 min dans une casserole d’eau frémissante vinaigrée, ou cuire au plat si tu préfères.",
+        "Mélanger le yaourt avec l’ail râpé et la menthe ciselée.",
+        "Servir le pilaf de boulgour, ajouter courgettes, yaourt et œufs, puis saupoudrer de paprika.",
+        "Goûter et ajuster l’assaisonnement."
+      ],
+      "servings_base": 2,
+      "image_filename": "Oeufs_a_la_turque_cilbir_sur_pilaf_de_boulgour_et_courgettes.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Un filet de jus de citron dans le yaourt réveille le plat et rappelle la fraîcheur des mezze."
+    },
+    {
+      "title_fr": "Mujaddara express (lentilles et riz) avec oignons dorés et salade tomate-concombre",
+      "diet": "vegan",
+      "protein_category": "Legumes",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 575,
+      "protein_g_per_serving": 22,
+      "carbs_g_per_serving": 90,
+      "fat_g_per_serving": 14,
+      "equipment_required": [
+        "Casserole",
+        "Poêle"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "méditerranéen",
+        "été",
+        "français"
+      ],
+      "ingredients": [
+        {
+          "nom": "Lentilles vertes sèches",
+          "quantite": 320,
+          "unite": "g"
+        },
+        {
+          "nom": "Riz basmati",
+          "quantite": 240,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Concombre",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Persil",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Cumin moulu",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Rincer lentilles et riz séparément. Cuire les lentilles 20–25 min et le riz 10–12 min dans des casseroles d’eau bouillante. Égoutter.",
+        "Émincer finement les oignons et les dorer 10–12 min à feu moyen avec l’huile dans une poêle.",
+        "Mélanger lentilles, riz, cumin et la moitié des oignons dorés.",
+        "Couper tomate et concombre en dés, ciseler le persil et assaisonner avec jus de citron.",
+        "Servir la mujaddara, coiffer du reste d’oignons et de la salade à côté.",
+        "Goûter et ajuster l’assaisonnement."
+      ],
+      "servings_base": 4,
+      "image_filename": "Mujaddara_express_lentilles_et_riz_oignons_dores_et_salade_tomate_concombre.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Rince bien les lentilles pour retirer l’amidon et obtenir des grains qui se tiennent, comme dans les bons mezze."
     }
   ]
 }

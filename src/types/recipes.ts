@@ -32,9 +32,10 @@ export const RecipeSchema = z.object({
   })),
   instructions: z.array(z.string()),
   
-  // Preference matching
-  favorite_foods_tags: z.array(z.string()),
-  disliked_foods_tags: z.array(z.string()),
+  // Recipe metadata
+  tags: z.array(z.string()).default([]),
+  cuisine_type: z.string().optional(),
+  image_filename: z.string().optional(),
   
   // Quality
   cooking_tip: z.string().optional(),
