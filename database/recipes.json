@@ -1,0 +1,2153 @@
+{
+  "recipes": [
+    {
+      "title_fr": "Quinoa bowl au bœuf sauté façon teriyaki",
+      "diet": "omnivore",
+      "protein_category": "Beef",
+      "cooking_level": "intermediate",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 600,
+      "protein_g_per_serving": 32,
+      "carbs_g_per_serving": 49,
+      "fat_g_per_serving": 15,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "soja",
+        "gluten"
+      ],
+      "tags": [
+        "exotique",
+        "protéiné",
+        "riche_légumes",
+        "familial"
+      ],
+      "ingredients": [
+        {
+          "nom": "Bœuf (type rumsteak)",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Quinoa",
+          "quantite": 240,
+          "unite": "g"
+        },
+        {
+          "nom": "Brocoli",
+          "quantite": 250,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron rouge",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 100,
+          "unite": "g"
+        },
+        {
+          "nom": "Sauce soja",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile de sésame",
+          "quantite": 15,
+          "unite": "g"
+        },
+        {
+          "nom": "Graines de sésame",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Poivre",
+          "quantite": 1,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Cuire le quinoa à feu doux et à découvert dans deux fois son volume d'eau salée environ 15 minutes à partir de l'ébullition (jusqu'à évaporation complète de l'eau).",
+        "Détailler le bœuf en fines lamelles. Couper le brocoli en petits bouquets et émincer le poivron et l’oignon.",
+        "Dans une poêle chaude avec un filet d’huile de sésame, faire sauter le bœuf 3 minutes, réserver.",
+        "Dans la même poêle, cuire les légumes avec l’ail haché 7 à 8 minutes. Ajouter la sauce soja et mélanger.",
+        "Assembler dans les bols : quinoa, légumes sautés, bœuf par-dessus, saupoudrer de graines de sésame."
+      ],
+      "image_filename": "Quinoa_bowl_au_boeuf_saute_facon_teriyaki.jpg",
+      "cuisine_type": "asiatique",
+      "servings_base": 4,
+      "cooking_tip": "Varier les légumes selon la saison (broccoli au printemps, chou-fleur en hiver)."
+    },
+    {
+      "title_fr": "Poulet rôti aux légumes de saison et riz complet",
+      "diet": "omnivore",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 520,
+      "protein_g_per_serving": 38,
+      "carbs_g_per_serving": 59,
+      "fat_g_per_serving": 15,
+      "equipment_required": [
+        "Four",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "protéiné",
+        "français",
+        "automne"
+      ],
+      "ingredients": [
+        {
+          "nom": "Blanc de poulet",
+          "quantite": 600,
+          "unite": "g"
+        },
+        {
+          "nom": "Carotte",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Brocoli",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Riz complet",
+          "quantite": 240,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 30,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 200°C.",
+        "Couper les carottes et le brocoli en morceaux. Émincer l’oignon.",
+        "Placer le poulet et les légumes sur une plaque, arroser avec l’huile d’olive, enfourner 20 minutes.",
+        "Pendant ce temps, cuire le riz complet dans une casserole d’eau bouillante (environ 20 minutes).",
+        "Répartir le riz, le poulet et les légumes dans 4 boîtes hermétiques."
+      ],
+      "image_filename": "Poulet_roti_aux_legumes_de_saison_et_riz_complet.jpg",
+      "cuisine_type": "française",
+      "servings_base": 4,
+      "cooking_tip": "Varier les légumes selon la saison (courgettes au printemps, chou-fleur en hiver)."
+    },
+    {
+      "title_fr": "Bœuf haché à la mexicaine et quinoa",
+      "diet": "omnivore",
+      "protein_category": "Beef",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 560,
+      "protein_g_per_serving": 34,
+      "carbs_g_per_serving": 53,
+      "fat_g_per_serving": 16,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [],
+      "tags": [
+        "protéiné",
+        "mexicain",
+        "hiver"
+      ],
+      "ingredients": [
+        {
+          "nom": "Bœuf haché 5%",
+          "quantite": 500,
+          "unite": "g"
+        },
+        {
+          "nom": "Quinoa",
+          "quantite": 240,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron rouge",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Maïs en conserve",
+          "quantite": 150,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate concassée",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "(Optionnel) Coriandre",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Epices mexicaines",
+          "quantite": 15,
+          "unite": "ml"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 15,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Cuire le quinoa à feu doux et à découvert dans deux fois son volume d'eau salée environ 15 minutes à partir de l'ébullition (jusqu'à évaporation complète de l'eau).",
+        "Dans une poêle chaude avec de l’huile d'olive, faire revenir l’oignon émincé et les poivrons jusqu'à ce qu'ils soient fondants.",
+        "Ajouter le bœuf haché et faire cuire jusqu'à coloration.",
+        "Ajouter les épices mexicaines.",
+        "Verser les tomates concassées et le maïs, mijoter 10 minutes.",
+        "Servir le bœuf mijoté avec le quinoa.",
+        "Parsemez de coriandre si vous aimez ça !"
+      ],
+      "image_filename": "Boeuf_hache_a_la_mexicaine_et_quinoa.jpg",
+      "cuisine_type": "autre",
+      "servings_base": 4,
+      "cooking_tip": "Ajouter des haricots rouges pour une version plus traditionnelle et riche en fibres."
+    },
+    {
+      "title_fr": "Salade de pois chiches, sardines et pâtes complètes",
+      "diet": "flexitarian",
+      "protein_category": "Fish",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 20,
+      "calories_per_serving": 490,
+      "protein_g_per_serving": 28,
+      "carbs_g_per_serving": 53,
+      "fat_g_per_serving": 16,
+      "equipment_required": [
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "poisson"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Pois chiches en conserve",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Sardines en conserve",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Pâtes complètes",
+          "quantite": 240,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate cerise",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Concombre",
+          "quantite": 150,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Cuire les pâtes dans une casserole d’eau bouillante (10 minutes), égoutter et refroidir.",
+        "Rincer les pois chiches.",
+        "Couper les tomates cerises et le concombre en morceaux.",
+        "Mélanger pâtes, pois chiches et légumes dans un saladier.",
+        "Servir avec les sardines à côté.",
+        "Arroser d’huile d’olive et de jus de citron, ou de l'huile des sardines pour les plus gourmands. Assaisonner et bien mélanger."
+      ],
+      "image_filename": "Salade_de_pois_chiches_sardines_et_pates_completes.jpg",
+      "cuisine_type": "méditerranéenne",
+      "servings_base": 4,
+      "cooking_tip": "Se conserve 3 jours au réfrigérateur, idéal pour emporter."
+    },
+    {
+      "title_fr": "Curry de lentilles corail et riz basmati",
+      "diet": "vegan",
+      "protein_category": "Legumes",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 510,
+      "protein_g_per_serving": 22,
+      "carbs_g_per_serving": 70,
+      "fat_g_per_serving": 6,
+      "equipment_required": [
+        "Casserole",
+        "Poêle"
+      ],
+      "batch_friendly": true,
+      "allergens": [],
+      "tags": [
+        "protéiné",
+        "asiatique",
+        "hiver"
+      ],
+      "ingredients": [
+        {
+          "nom": "Lentilles corail",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Riz basmati",
+          "quantite": 240,
+          "unite": "g"
+        },
+        {
+          "nom": "Carotte",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Courgette",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate concassée",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Lait de coco",
+          "quantite": 200,
+          "unite": "ml"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 15,
+          "unite": "ml"
+        },
+        {
+          "nom": "Curry en poudre",
+          "quantite": 15,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Cuire le riz basmati dans une casserole d’eau bouillante salée selon les instructions du paquet.",
+        "Dans une poêle chaude avec l’huile, faire revenir l’oignon émincé et les carottes (3 minutes).",
+        "Ajouter le curry et les courgettes en dés, cuire 5 minutes.",
+        "Ajouter les lentilles corail, les tomates concassées, le lait de coco.",
+        "Ajouter de l'eau à niveau, assaisonner, goûter et rectifier si nécessaire. Laisser mijoter avec un couvercle à feu doux 15 minutes.",
+        "Servir le curry avec le riz basmati."
+      ],
+      "image_filename": "Curry_de_lentilles_corail_et_riz_basmati.jpg",
+      "cuisine_type": "asiatique",
+      "servings_base": 4,
+      "cooking_tip": "Peut être préparé en grande quantité et congelé facilement."
+    },
+    {
+      "title_fr": "Tarte poulet courgette tomate façon provençale",
+      "diet": "omnivore",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 480,
+      "protein_g_per_serving": 23,
+      "carbs_g_per_serving": 32,
+      "fat_g_per_serving": 28,
+      "equipment_required": [
+        "Poêle",
+        "Four"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Pâte brisée",
+          "quantite": 230,
+          "unite": "g"
+        },
+        {
+          "nom": "Blanc de poulet",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Courgette",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 1,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Emmental râpé",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Herbes de Provence",
+          "quantite": 2,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "Salade verte",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 0.5,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 200°C. Étaler la pâte brisée dans un moule, piquer le fond à la fourchette.",
+        "Émincer l'oignon et l'ail. Couper la courgette et la tomate en fines lamelles.",
+        "Chauffer 1 càs d'huile d'olive dans une poêle à feu moyen. Saisir le blanc de poulet en dés 5 minutes jusqu'à légère coloration.",
+        "Ajouter l'oignon, l'ail et la courgette, cuire 5 minutes à feu moyen. Incorporer les herbes de Provence et assaisonner à votre goût.",
+        "Répartir le mélange sur la pâte, déposer les lamelles de tomate, parsemer d'emmental.",
+        "Enfourner 20 à 22 minutes jusqu'à dorure.",
+        "Pendant la cuisson, mélanger la salade verte avec un peu d'huile d'olive et de citron.",
+        "Servir une part de tarte avec la salade."
+      ],
+      "image_filename": "Tarte_poulet_courgette_tomate_facon_provencale.jpg",
+      "cuisine_type": "méditerranéenne",
+      "servings_base": 4,
+      "cooking_tip": "Ajoute un filet d'eau dans la poêle si les légumes accrochent pour limiter l'huile et garder la tarte légère."
+    },
+    {
+      "title_fr": "Tarte tomates oignons sardines et moutarde",
+      "diet": "omnivore",
+      "protein_category": "Fish",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 472,
+      "protein_g_per_serving": 21,
+      "carbs_g_per_serving": 32,
+      "fat_g_per_serving": 30,
+      "equipment_required": [
+        "Poêle",
+        "Four"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose",
+        "poisson"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Pâte brisée",
+          "quantite": 230,
+          "unite": "g"
+        },
+        {
+          "nom": "Sardine en conserve",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Moutarde",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "Fromage de chèvre frais",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 20,
+          "unite": "ml"
+        },
+        {
+          "nom": "Vinaigre balsamique",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "Salade verte",
+          "quantite": 120,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 200°C. Étaler la pâte brisée, piquer le fond, badigeonner de moutarde.",
+        "Émincer l'oignon, couper les tomates en fines rondelles. Égoutter les sardines.",
+        "Répartir l'oignon sur la pâte, ajouter les rondelles de tomate, les sardines émiettées. Émietter le fromage de chèvre frais par-dessus.",
+        "Enfourner 20 à 22 minutes jusqu'à ce que la pâte soit dorée.",
+        "Mélanger la salade verte avec l'huile d'olive et le vinaigre balsamique.",
+        "Servir une part de tarte avec la salade."
+      ],
+      "image_filename": "Tarte_tomates_oignons_sardines_et_moutarde.jpg",
+      "cuisine_type": "méditerranéenne",
+      "servings_base": 4,
+      "cooking_tip": "Égoutte bien les sardines pour éviter d'humidifier la pâte. Tu peux ajouter un trait de jus de citron au service."
+    },
+    {
+      "title_fr": "Quiche brocoli chèvre et œufs",
+      "diet": "vegetarian",
+      "protein_category": "Dairy",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 555,
+      "protein_g_per_serving": 21,
+      "carbs_g_per_serving": 40,
+      "fat_g_per_serving": 40,
+      "equipment_required": [
+        "Poêle",
+        "Four"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose",
+        "œufs"
+      ],
+      "tags": [
+        "protéiné",
+        "français",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Pâte brisée",
+          "quantite": 230,
+          "unite": "g"
+        },
+        {
+          "nom": "Brocoli",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Fromage de chèvre bûche",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Œuf",
+          "quantite": 4,
+          "unite": "piece"
+        },
+        {
+          "nom": "Lait",
+          "quantite": 200,
+          "unite": "ml"
+        },
+        {
+          "nom": "Emmental râpé",
+          "quantite": 60,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 20,
+          "unite": "ml"
+        },
+        {
+          "nom": "Salade verte",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Vinaigre balsamique",
+          "quantite": 10,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 200°C. Étaler la pâte brisée et piquer le fond.",
+        "Couper le brocoli en petits bouquets. Émincer l'oignon.",
+        "Chauffer 10 ml d'huile d'olive à feu moyen et faire revenir l'oignon et le brocoli 5 à 6 minutes pour les attendrir.",
+        "Battre les œufs avec le lait et assaisonner. Répartir brocoli et oignon sur la pâte. Ajouter le fromage de chèvre bûche en rondelles et parsemer d'emmental.",
+        "Verser l'appareil (œufs + lait) puis enfourner 20 à 22 minutes jusqu'à dorure.",
+        "Mélanger la salade verte et la tomate en quartiers avec 10 ml d'huile d'olive et le vinaigre balsamique.",
+        "Servir une part de quiche avec la salade."
+      ],
+      "image_filename": "Quiche_brocoli_chevre_et_oeufs.jpg",
+      "cuisine_type": "méditerranéenne",
+      "servings_base": 4,
+      "cooking_tip": "Précuire légèrement le brocoli garantit une quiche cuite en 20 minutes sans détremper la pâte."
+    },
+    {
+      "title_fr": "Boulettes de bœuf sauce poivron tomate, semoule de couscous et salade",
+      "diet": "omnivore",
+      "protein_category": "Beef",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 760,
+      "protein_g_per_serving": 38,
+      "carbs_g_per_serving": 73,
+      "fat_g_per_serving": 26,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Bœuf haché",
+          "quantite": 600,
+          "unite": "g"
+        },
+        {
+          "nom": "Chapelure",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Poivron",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate concassée en conserve",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Persil",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "Cumin",
+          "quantite": 2,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 35,
+          "unite": "ml"
+        },
+        {
+          "nom": "Semoule de couscous",
+          "quantite": 280,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Concombre",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Vinaigre balsamique",
+          "quantite": 10,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Mélanger le bœuf haché avec la chapelure, la moitié de l'oignon haché, le cumin et le sel. Former 16 boulettes.",
+        "Chauffer 20 ml d'huile d'olive dans une poêle à feu moyen et dorer les boulettes 6 à 8 minutes. Réserver.",
+        "Dans la même poêle, ajouter 15 ml d'huile d'olive, le reste d'oignon, l'ail, le poivron en lamelles, cuire 4 minutes.",
+        "Ajouter la tomate concassée en conserve, assaisonner. Remettre les boulettes et laisser mijoter. Parsemer de persil (et d'ail frais si vous aimez).",
+        "Verser la semoule de couscous dans un saladier. Ajouter un filet d'huile d'olive et du sel et mélanger.",
+        "Ajouter à la semoule une fois son volume d'eau bouillante. (Un verre de semoule pour un verre d'eau bouillante). Couvrir 5 minutes puis égrainer.",
+        "Couper la tomate et le concombre en dés, assaisonner avec le vinaigre balsamique et une pincée de sel.",
+        "Servir la semoule de couscous avec les boulettes en sauce et la salade de tomate concombre."
+      ],
+      "image_filename": "Boulettes_de_boeuf_sauce_poivron_tomate_semoule_de_couscous_et_salade.jpg",
+      "cuisine_type": "méditerranéenne",
+      "servings_base": 4,
+      "cooking_tip": "Ajoute 1 cuillère à café de concentré de tomate dans la viande si elle manque de tenue."
+    },
+    {
+      "title_fr": "Poulet basilic thaï, riz jasmin et œuf au plat",
+      "diet": "omnivore",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 700,
+      "protein_g_per_serving": 40,
+      "carbs_g_per_serving": 80,
+      "fat_g_per_serving": 23,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "œufs",
+        "soja"
+      ],
+      "tags": [
+        "protéiné",
+        "asiatique",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Blanc de poulet",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Riz jasmin",
+          "quantite": 170,
+          "unite": "g"
+        },
+        {
+          "nom": "Courgette",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron rouge",
+          "quantite": 150,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Basilic thaï",
+          "quantite": 15,
+          "unite": "g"
+        },
+        {
+          "nom": "Sauce soja",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile de tournesol",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "Œuf",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "Citron vert",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Rincer le riz jasmin puis le cuire à couvert dans une casserole avec 1,5 fois son volume d’eau. Compter 12 minutes à petits frémissements, puis couvrir hors du feu 5 minutes.",
+        "Tailler le blanc de poulet en lamelles fines. Émincer l’oignon, l’ail et le poivron. Couper la courgette en demi-lunes.",
+        "Chauffer une poêle à feu moyen-vif avec la moitié de l’huile. Saisir le poulet 4 minutes en remuant jusqu’à légère coloration. Retirer et réserver.",
+        "Dans la même poêle, ajouter l’oignon, l’ail, le poivron et la courgette. Cuire 5 à 6 minutes à feu moyen. Remettre le poulet, verser la sauce soja, mélanger 1 minute. Ajouter le basilic thaï hors du feu.",
+        "Dans une petite poêle chaude, ajouter le reste d’huile et cuire les œufs au plat 2 à 3 minutes (blanc pris, jaune coulant).",
+        "Goûter le sauté et rectifier l’assaisonnement (un filet de jus de citron vert, éventuellement une pincée de sel si besoin).",
+        "Dresser le riz, le poulet aux légumes et poser un œuf au plat sur chaque portion.",
+        "Servir immédiatement avec des quartiers de citron vert."
+      ],
+      "image_filename": "Poulet_basilic_thai_riz_jasmin_et_oeuf_au_plat.jpg",
+      "cuisine_type": "asiatique",
+      "servings_base": 2,
+      "cooking_tip": "Ajoute un piment rouge émincé avec les légumes si tu aimes les saveurs plus relevées."
+    },
+    {
+      "title_fr": "Cabillaud au gingembre, nouilles de riz et pak choï",
+      "diet": "omnivore",
+      "protein_category": "Fish",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 640,
+      "protein_g_per_serving": 32,
+      "carbs_g_per_serving": 90,
+      "fat_g_per_serving": 17,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "gluten",
+        "poisson",
+        "soja"
+      ],
+      "tags": [
+        "protéiné",
+        "asiatique",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Cabillaud",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Nouilles de riz",
+          "quantite": 180,
+          "unite": "g"
+        },
+        {
+          "nom": "Pak choï",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Carotte",
+          "quantite": 150,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Gingembre frais",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "Sauce soja",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile de sésame",
+          "quantite": 15,
+          "unite": "g"
+        },
+        {
+          "nom": "Graines de sésame",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Cuire les nouilles de riz selon le paquet (généralement 5 minutes dans l’eau bouillante). Égoutter et rincer rapidement.",
+        "Couper le pak choï en lanières, la carotte en bâtonnets, émincer l’oignon. Hacher l’ail et le gingembre.",
+        "Chauffer une poêle à feu moyen-vif avec la moitié de l’huile de sésame. Saisir le cabillaud 2 minutes par face. Retirer délicatement et réserver sous couvercle.",
+        "Ajouter le reste d’huile, puis l’oignon, l’ail, le gingembre et la carotte. Cuire 3 minutes, ajouter le pak choï et poursuivre 3 minutes.",
+        "Verser la sauce soja, ajouter les nouilles de riz, mélanger 1 minute à feu moyen pour bien enrober.",
+        "Reposer le cabillaud sur les nouilles, presser un peu de jus de citron. Goûter et ajuster l’assaisonnement.",
+        "Parsemer de graines de sésame et servir aussitôt."
+      ],
+      "image_filename": "Cabillaud_au_gingembre_nouilles_de_riz_et_pak_choi.jpg",
+      "cuisine_type": "asiatique",
+      "servings_base": 2,
+      "cooking_tip": "Tu peux remplacer le pak choï par des épinards, du chou vert ou du chou chinois."
+    },
+    {
+      "title_fr": "Riz sauté poulet edamame et carotte",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 680,
+      "protein_g_per_serving": 35,
+      "carbs_g_per_serving": 82,
+      "fat_g_per_serving": 20,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "soja"
+      ],
+      "tags": [
+        "protéiné",
+        "asiatique",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Blanc de poulet",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Riz basmati",
+          "quantite": 160,
+          "unite": "g"
+        },
+        {
+          "nom": "Edamame surgelé",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Carotte",
+          "quantite": 150,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Sauce soja",
+          "quantite": 25,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile de tournesol",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "Coriandre",
+          "quantite": 10,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Cuire le riz basmati dans une casserole d’eau bouillante salée 10 à 12 minutes. Égoutter et étaler sur une assiette pour le tiédir et l’assécher légèrement.",
+        "Couper le poulet en petits dés. Émincer l’oignon, hacher l’ail. Tailler la carotte en petits cubes.",
+        "Chauffer une poêle à feu moyen-vif avec la moitié de l’huile. Saisir le poulet 4 minutes. Réserver.",
+        "Dans la même poêle, ajouter l’oignon, l’ail et la carotte. Cuire 4 minutes. Ajouter les edamame (encore surgelés), cuire 2 minutes.",
+        "Ajouter le riz et le poulet, verser la sauce soja. Sauter 2 minutes à feu vif pour que le riz soit bien chaud et légèrement doré.",
+        "Goûter et ajuster en sauce soja si nécessaire. Éteindre le feu et ajouter la coriandre ciselée.",
+        "Servir immédiatement."
+      ],
+      "image_filename": "Riz_saute_poulet_edamame_et_carotte.jpg",
+      "cuisine_type": "asiatique",
+      "servings_base": 2,
+      "cooking_tip": "Le riz froid de la veille donne encore meilleur résultat pour un sauté aux grains bien séparés. Remplacer les edamame par des petits pois."
+    },
+    {
+      "title_fr": "Riz sauté aux œufs, petits pois et carotte",
+      "diet": "vegetarian",
+      "protein_category": "Eggs",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 20,
+      "calories_per_serving": 660,
+      "protein_g_per_serving": 25,
+      "carbs_g_per_serving": 98,
+      "fat_g_per_serving": 19,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "œufs",
+        "soja"
+      ],
+      "tags": [
+        "protéiné",
+        "asiatique",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Riz basmati",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Œuf",
+          "quantite": 4,
+          "unite": "piece"
+        },
+        {
+          "nom": "Petits pois",
+          "quantite": 160,
+          "unite": "g"
+        },
+        {
+          "nom": "Carotte",
+          "quantite": 150,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 1,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Sauce soja",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile de tournesol",
+          "quantite": 20,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Cuire le riz dans une casserole d’eau bouillante 10 à 12 minutes. Égoutter et laisser tiédir 5 minutes.",
+        "Battre les œufs dans un bol. Émincer l’oignon, hacher l’ail, couper la carotte en petits dés.",
+        "Chauffer la poêle à feu moyen avec la moitié de l’huile. Verser les œufs battus, cuire 1 à 2 minutes en remuant pour obtenir de gros morceaux d’omelette. Réserver.",
+        "Ajouter le reste d’huile, puis l’oignon, l’ail et la carotte. Cuire 3 minutes. Ajouter les petits pois et cuire 2 minutes.",
+        "Ajouter le riz et la sauce soja. Sauter 2 à 3 minutes à feu vif jusqu’à ce que le riz soit bien chaud.",
+        "Remettre l’omelette émiettée, mélanger 30 secondes. Goûter et rectifier l’assaisonnement.",
+        "Servir bien chaud."
+      ],
+      "image_filename": "Riz_saute_aux_oeufs_petits_pois_et_carotte.jpg",
+      "cuisine_type": "asiatique",
+      "servings_base": 2,
+      "cooking_tip": "Un filet d’huile de sésame en fin de cuisson apporte un parfum grillé très agréable."
+    },
+    {
+      "title_fr": "Tofu croustillant au sésame, brocoli et riz basmati",
+      "diet": "vegan",
+      "protein_category": "Tofu",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 710,
+      "protein_g_per_serving": 30,
+      "carbs_g_per_serving": 103,
+      "fat_g_per_serving": 20,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "soja"
+      ],
+      "tags": [
+        "protéiné",
+        "asiatique",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Tofu ferme",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Riz basmati",
+          "quantite": 160,
+          "unite": "g"
+        },
+        {
+          "nom": "Brocoli",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Sauce soja",
+          "quantite": 25,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile de tournesol",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "Fécule de maïs",
+          "quantite": 15,
+          "unite": "g"
+        },
+        {
+          "nom": "Graines de sésame",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Cuire le riz dans une casserole d’eau bouillante 10 à 12 minutes. Égoutter et garder au chaud.",
+        "Couper le tofu en cubes, les enrober de fécule de maïs. Émincer l’oignon, hacher l’ail. Détacher le brocoli en petits bouquets.",
+        "Chauffer la poêle à feu moyen-vif avec la moitié de l’huile. Dorer le tofu 6 à 7 minutes en le retournant. Réserver.",
+        "Dans la même poêle, ajouter l’oignon et l’ail 1 minute, puis le brocoli avec un petit fond d’eau. Cuire 4 à 5 minutes à feu moyen, juste croquant.",
+        "Remettre le tofu, verser la sauce soja et le jus d’un demi-citron. Mélanger 1 minute.",
+        "Goûter et ajuster (un peu plus de sauce soja ou de jus de citron au besoin).",
+        "Servir sur le riz, parsemer de graines de sésame."
+      ],
+      "image_filename": "Tofu_croustillant_au_sesame_brocoli_et_riz_basmati.jpg",
+      "cuisine_type": "asiatique",
+      "servings_base": 2,
+      "cooking_tip": "Pour encore plus croustillant, laisse le tofu égoutté 10 minutes entre deux feuilles d’essuie-tout avant cuisson."
+    },
+    {
+      "title_fr": "Filet de colin au four, courge butternut rôtie et riz complet",
+      "diet": "omnivore",
+      "protein_category": "Fish",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 550,
+      "protein_g_per_serving": 33,
+      "carbs_g_per_serving": 73,
+      "fat_g_per_serving": 14,
+      "equipment_required": [
+        "Four",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "poisson"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "automne"
+      ],
+      "ingredients": [
+        {
+          "nom": "Filet de colin",
+          "quantite": 600,
+          "unite": "g"
+        },
+        {
+          "nom": "Courge butternut",
+          "quantite": 600,
+          "unite": "g"
+        },
+        {
+          "nom": "Riz complet",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "Paprika",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Persil",
+          "quantite": 10,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 200°C. Peler et couper la courge en dés de 2 cm. Émincer l’oignon.",
+        "Mélanger la courge et l’oignon avec 1 càs d’huile d’olive, le paprika, une pincée de sel et de poivre. Étaler sur une plaque et enfourner 20 à 25 minutes, en remuant à mi-cuisson.",
+        "Rincer le riz complet, le cuire dans une casserole d’eau bouillante salée (environ 25 minutes) puis égoutter.",
+        "Assaisonner le colin avec sel, poivre, zeste et jus d’un demi-citron. Déposer sur la plaque avec la courge durant les 10 dernières minutes de cuisson, jusqu’à ce que le poisson s’effeuille facilement.",
+        "Servir le riz, ajouter la courge rôtie et le colin. Arroser du reste d’huile d’olive et du jus de citron. Parsemer de persil haché. Goûter et ajuster sel/poivre."
+      ],
+      "image_filename": "Filet_de_colin_au_four_courge_butternut_rotie_et_riz_complet.jpg",
+      "cuisine_type": "méditerranéenne",
+      "servings_base": 4,
+      "cooking_tip": "Pas de courge fraîche ? Utiliser des cubes de courge surgelés, directement au four, sans décongélation."
+    },
+    {
+      "title_fr": "Poulet citron-herbes, pâtes complètes, courgettes et tomates rôties",
+      "diet": "omnivore",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 780,
+      "protein_g_per_serving": 42,
+      "carbs_g_per_serving": 107,
+      "fat_g_per_serving": 20,
+      "equipment_required": [
+        "Poêle",
+        "Four",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "français",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Blanc de poulet",
+          "quantite": 600,
+          "unite": "g"
+        },
+        {
+          "nom": "Pâtes complètes",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Courgette",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate cerise",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 90,
+          "unite": "ml"
+        },
+        {
+          "nom": "Herbes de Provence",
+          "quantite": 15,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 210°C. Couper la courgette en demi-rondelles et les tomate cerise en deux. Mélanger avec 2 càs d'huile d'olive et les herbes de Provence. Étaler sur une plaque et enfourner 18-20 minutes.",
+        "Porter à ébullition une grande casserole d’eau salée et cuire les pâtes complètes selon le temps indiqué (généralement 9-11 minutes). Égoutter en gardant 2 càs d’eau de cuisson.",
+        "Pendant ce temps, émincer l’ail. Couper le blanc de poulet en lanières, saler et poivrer.",
+        "Chauffer une poêle à feu moyen-vif avec 2 càs d'huile d'olive. Saisir le poulet 6-7 minutes en remuant jusqu’à ce qu’il soit doré et cuit à cœur. Ajouter l’ail 30 secondes.",
+        "Presser le citron. Verser le jus dans la poêle avec 2 càs d'huile d'olive et 2 càs d’eau de cuisson des pâtes pour créer une petite sauce. Goûter et rectifier en sel/poivre.",
+        "Mélanger dans la poêle le poulet, les pâtes et les légumes rôtis. Servir bien chaud. Goûter une dernière fois et ajuster l’assaisonnement."
+      ],
+      "image_filename": "Poulet_citronherbes_pates_completes_courgettes_et_tomates_roties.jpg",
+      "cuisine_type": "méditerranéenne",
+      "servings_base": 4,
+      "cooking_tip": "Ajoute des copeaux de citron (zestes) sur le poulet en fin de cuisson pour un parfum plus marqué sans calories supplémentaires."
+    },
+    {
+      "title_fr": "Merlu poêlé, riz basmati, poivron et haricots verts",
+      "diet": "omnivore",
+      "protein_category": "Fish",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 760,
+      "protein_g_per_serving": 36,
+      "carbs_g_per_serving": 108,
+      "fat_g_per_serving": 21,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "poisson"
+      ],
+      "tags": [
+        "protéiné",
+        "français",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Filet de merlu",
+          "quantite": 700,
+          "unite": "g"
+        },
+        {
+          "nom": "Riz basmati",
+          "quantite": 440,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron rouge",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Haricots verts",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 90,
+          "unite": "ml"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Persil plat",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Rincer le riz basmati et le cuire à feu doux dans une grande casserole d’eau salée 10-12 minutes. Égoutter.",
+        "Équeuter les haricots verts (utiliser surgelés si besoin) et les cuire 6-8 minutes dans l’eau bouillante salée. Égoutter.",
+        "Émincer l’oignon, couper le poivron rouge en lanières, hacher l’ail.",
+        "Chauffer 3 càs d’huile d’olive dans une poêle à feu moyen. Faire revenir l’oignon, le poivron et l’ail 6-7 minutes. Saler, poivrer, réserver.",
+        "Essuyer la poêle, ajouter 3 càs d’huile d’olive, saisir le merlu salé et poivré 2-3 minutes par face à feu moyen-vif. Arroser de jus de citron.",
+        "Servir le riz, les légumes et le merlu. Parsemer de persil plat ciselé, goûter et ajuster l’assaisonnement."
+      ],
+      "image_filename": "Merlu_poele_riz_basmati_poivron_et_haricots_verts.jpg",
+      "cuisine_type": "française",
+      "servings_base": 4,
+      "cooking_tip": "Remplace le merlu par du cabillaud ou du colin selon les promos; surgelé de bonne qualité fonctionne très bien."
+    },
+    {
+      "title_fr": "Sardines express, pois chiches au citron et quinoa aux herbes",
+      "diet": "flexitarian",
+      "protein_category": "Fish",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 800,
+      "protein_g_per_serving": 38,
+      "carbs_g_per_serving": 113,
+      "fat_g_per_serving": 22,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "poisson"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Sardines en conserve",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Pois chiches en conserve",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Quinoa",
+          "quantite": 280,
+          "unite": "g"
+        },
+        {
+          "nom": "Courgette",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 60,
+          "unite": "ml"
+        },
+        {
+          "nom": "Cumin moulu",
+          "quantite": 5,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Rincer le quinoa et le cuire 12-14 minutes dans une casserole d’eau bouillante salée. Égoutter et couvrir.",
+        "Rincer et égoutter les pois chiches. Couper la courgette en demi-rondelles, la tomate en dés, émincer l’oignon et l’ail.",
+        "Chauffer 2 càs d’huile d’olive dans une poêle à feu moyen. Faire revenir oignon et courgette 5-6 minutes. Ajouter l’ail, le cumin, puis les pois chiches et la tomate. Saler, poivrer, cuire 3 minutes. Presser le citron dedans.",
+        "Égoutter légèrement les sardines. Dans une petite poêle, les chauffer 1-2 minutes avec 2 càs d’huile d’olive, sans les assécher.",
+        "Servir le quinoa, couvrir du mélange pois chiches-légumes, poser les sardines. Goûter et rectifier en sel/poivre."
+      ],
+      "image_filename": "Sardines_express_pois_chiches_au_citron_et_quinoa_aux_herbes.jpg",
+      "cuisine_type": "méditerranéenne",
+      "servings_base": 4,
+      "cooking_tip": "Ajoute des câpres hachées pour une touche salée-acide qui relève le plat sans effort."
+    },
+    {
+      "title_fr": "Shakshuka d'été aux poivrons, œufs et quinoa",
+      "diet": "vegetarian",
+      "protein_category": "Eggs",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 870,
+      "protein_g_per_serving": 40,
+      "carbs_g_per_serving": 124,
+      "fat_g_per_serving": 24,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "œufs"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Œuf",
+          "quantite": 12,
+          "unite": "piece"
+        },
+        {
+          "nom": "Quinoa",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Pois chiches en conserve",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron rouge",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate concassée",
+          "quantite": 800,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 3,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Paprika doux",
+          "quantite": 15,
+          "unite": "ml"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "Persil plat",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Cuire le quinoa 12-14 minutes dans une grande casserole d’eau bouillante salée. Égoutter et couvrir.",
+        "Émincer l’oignon et l’ail. Couper le poivron rouge en lanières.",
+        "Chauffer l’huile d’olive dans une poêle large à feu moyen. Faire revenir oignon et poivron 6-7 minutes. Ajouter l’ail et le paprika 30 secondes.",
+        "Verser la tomate concassée, saler et poivrer. Laisser mijoter 5 minutes à feu moyen.",
+        "Former 12 petits creux dans la sauce. Casser un œuf dans chaque. Couvrir et cuire 6-8 minutes à feu moyen-doux jusqu’au blanc pris et jaune encore coulant (ou plus selon goût).",
+        "Servir la shakshuka avec le quinoa. Parsemer de persil plat ciselé. Goûter et ajuster l’assaisonnement."
+      ],
+      "image_filename": "Shakshuka_dete_aux_poivrons_oeufs_et_quinoa.jpg",
+      "cuisine_type": "méditerranéenne",
+      "servings_base": 4,
+      "cooking_tip": "Un filet d’huile d’olive vierge extra sur chaque assiette avant de servir rend la sauce plus soyeuse."
+    },
+    {
+      "title_fr": "Tofu croustillant au four, riz complet, brocoli et edamame",
+      "diet": "vegan",
+      "protein_category": "Tofu",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 760,
+      "protein_g_per_serving": 43,
+      "carbs_g_per_serving": 103,
+      "fat_g_per_serving": 20,
+      "equipment_required": [
+        "Four",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "soja",
+        "gluten"
+      ],
+      "tags": [
+        "protéiné",
+        "asiatique",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Tofu ferme",
+          "quantite": 800,
+          "unite": "g"
+        },
+        {
+          "nom": "Riz complet",
+          "quantite": 320,
+          "unite": "g"
+        },
+        {
+          "nom": "Brocoli",
+          "quantite": 500,
+          "unite": "g"
+        },
+        {
+          "nom": "Fèves de soja edamame surgelées",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Sauce soja",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "Huile de sésame",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 15,
+          "unite": "ml"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Maïzena",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "Graines de sésame",
+          "quantite": 15,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 210°C. Porter à ébullition une grande casserole d’eau salée.",
+        "Rincer le riz complet et le cuire 20-25 minutes à feu doux. Égoutter.",
+        "Égoutter le tofu ferme, le couper en cubes de 2 cm. Mélanger avec la maïzena, la sauce soja et l’ail haché. Étaler sur une plaque huilée (1 càs d’huile d’olive) et enfourner 18-20 minutes, en retournant à mi-cuisson.",
+        "Détailler le brocoli en petits bouquets. Verser les fèves de soja edamame surgelées et le brocoli dans l’eau bouillante salée 4-5 minutes. Égoutter.",
+        "Mélanger le tofu croustillant avec l’huile de sésame. Saler et poivrer légèrement.",
+        "Servir le riz complet, ajouter brocoli et edamame, puis le tofu. Parsemer de graines de sésame. Goûter et ajuster l’assaisonnement."
+      ],
+      "image_filename": "Tofu_croustillant_au_four_riz_complet_brocoli_et_edamame.jpg",
+      "cuisine_type": "asiatique",
+      "servings_base": 4,
+      "cooking_tip": "Pour une version sans gluten, utilise une sauce soja certifiée sans gluten ou du tamari."
+    },
+    {
+      "title_fr": "Curry vert d’été aux émincés végétaux et riz basmati",
+      "diet": "vegan",
+      "protein_category": "Meat alternatives",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 580,
+      "protein_g_per_serving": 31,
+      "carbs_g_per_serving": 80,
+      "fat_g_per_serving": 15,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "soja"
+      ],
+      "tags": [
+        "protéiné",
+        "asiatique",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Émincés végétaux",
+          "quantite": 240,
+          "unite": "g"
+        },
+        {
+          "nom": "Riz basmati",
+          "quantite": 140,
+          "unite": "g"
+        },
+        {
+          "nom": "Courgette",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Lait de coco allégé",
+          "quantite": 200,
+          "unite": "ml"
+        },
+        {
+          "nom": "Pâte de curry vert",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Citron vert",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Rincer le riz basmati puis le cuire dans une casserole d’eau bouillante salée pendant 10 à 12 minutes. Égoutter et garder au chaud.",
+        "Pendant ce temps, couper la courgette et le poivron en lamelles, émincer l’oignon et hacher l’ail.",
+        "Chauffer une poêle à feu moyen-vif avec la moitié de l’huile. Saisir les émincés 4 à 5 minutes en remuant, jusqu’à légère coloration. Réserver.",
+        "Dans la même poêle, ajouter le reste d’huile, l’oignon, l’ail, la courgette et le poivron. Cuire 6 à 8 minutes jusqu’à ce que les légumes soient fondants.",
+        "Incorporer la pâte de curry vert puis le lait de coco allégé. Porter à frémissements 2 minutes.",
+        "Remettre les émincés, mélanger 1 minute. Goûter, saler et poivrer si besoin. Presser un peu de jus de citron vert.",
+        "Servir le curry avec le riz basmati. Parsemer de zeste de citron vert si vous aimez."
+      ],
+      "image_filename": "Curry_vert_dete_aux_eminces_vegetaux_et_riz_basmati.jpg",
+      "cuisine_type": "asiatique",
+      "servings_base": 2,
+      "cooking_tip": "Ajoutez quelques feuilles de basilic ou de coriandre au moment de servir pour une fraîcheur estivale."
+    },
+    {
+      "title_fr": "Pâtes complètes crémeuses aux courgettes et aiguillettes végétales",
+      "diet": "vegan",
+      "protein_category": "Meat alternatives",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 615,
+      "protein_g_per_serving": 38,
+      "carbs_g_per_serving": 81,
+      "fat_g_per_serving": 15,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "soja"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Aiguillettes végétales",
+          "quantite": 240,
+          "unite": "g"
+        },
+        {
+          "nom": "Pâtes complètes",
+          "quantite": 140,
+          "unite": "g"
+        },
+        {
+          "nom": "Courgette",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate cerise",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Crème de soja",
+          "quantite": 120,
+          "unite": "ml"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 10,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Cuire les pâtes complètes dans une casserole d’eau bouillante salée selon le temps indiqué (généralement 8 à 10 minutes). Prélever une louche d’eau de cuisson avant d’égoutter.",
+        "Couper la courgette en demi-rondelles, couper les tomates cerises en deux, hacher l’ail.",
+        "Chauffer une poêle à feu moyen-vif avec la moitié de l’huile. Saisir les aiguillettes végétales 4 minutes, réserver.",
+        "Dans la même poêle, ajouter le reste d’huile, la courgette et l’ail. Cuire 5 à 6 minutes. Ajouter les tomates 2 minutes.",
+        "Verser la crème de soja et un peu d’eau de cuisson des pâtes pour lier. Laisser épaissir 1 minute à feu moyen.",
+        "Ajouter les pâtes égouttées et les aiguillettes, mélanger 1 minute. Goûter, saler, poivrer et râper un peu de zeste de citron puis presser un filet de jus."
+      ],
+      "image_filename": "Pates_completes_cremeuses_aux_courgettes_et_aiguillettes_vegetales.jpg",
+      "cuisine_type": "méditerranéenne",
+      "servings_base": 2,
+      "cooking_tip": "Remplacez la courgette par de l’aubergine en dés grillée pour varier les textures."
+    },
+    {
+      "title_fr": "Chili express au haché végétal et quinoa",
+      "diet": "vegan",
+      "protein_category": "Meat alternatives",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 680,
+      "protein_g_per_serving": 33,
+      "carbs_g_per_serving": 96,
+      "fat_g_per_serving": 18,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "protéiné",
+        "mexicain",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Haché végétal",
+          "quantite": 260,
+          "unite": "g"
+        },
+        {
+          "nom": "Quinoa",
+          "quantite": 100,
+          "unite": "g"
+        },
+        {
+          "nom": "Haricots rouges en conserve",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Maïs en conserve",
+          "quantite": 100,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate concassée",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Épices mexicaines",
+          "quantite": 6,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 10,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Rincer le quinoa et le cuire dans deux fois son volume d’eau légèrement salée, 12 à 15 minutes à partir de l’ébullition. Égoutter.",
+        "Émincer l’oignon et hacher l’ail. Chauffer une poêle avec l’huile à feu moyen-vif, faire revenir l’oignon 2 minutes.",
+        "Ajouter le haché végétal et les épices mexicaines. Saisir 4 à 5 minutes en émiettant à la spatule.",
+        "Verser la tomate concassée, les haricots rouges rincés et le maïs égoutté. Laisser mijoter 8 à 10 minutes à feu moyen.",
+        "Goûter, saler et poivrer si nécessaire. Servir avec le quinoa."
+      ],
+      "image_filename": "Chili_express_au_hache_vegetal_et_quinoa.jpg",
+      "cuisine_type": "autre",
+      "servings_base": 2,
+      "cooking_tip": "Ajoutez un carré de chocolat noir dans la sauce pour une touche “mole” subtile."
+    },
+    {
+      "title_fr": "Tacos fajita aux émincés végétaux, poivrons et yaourt de soja",
+      "diet": "vegan",
+      "protein_category": "Meat alternatives",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 560,
+      "protein_g_per_serving": 32,
+      "carbs_g_per_serving": 76,
+      "fat_g_per_serving": 14,
+      "equipment_required": [
+        "Poêle"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "gluten",
+        "soja"
+      ],
+      "tags": [
+        "protéiné",
+        "mexicain",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Émincés végétaux",
+          "quantite": 240,
+          "unite": "g"
+        },
+        {
+          "nom": "Tortillas de blé",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Maïs en conserve",
+          "quantite": 100,
+          "unite": "g"
+        },
+        {
+          "nom": "Yaourt de soja",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Épices mexicaines",
+          "quantite": 6,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Citron vert",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Émincer l’oignon et le poivron. Chauffer une poêle à feu moyen-vif avec l’huile.",
+        "Saisir les émincés végétaux 4 minutes. Réserver.",
+        "Dans la même poêle, faire revenir oignon et poivron 5 à 6 minutes avec les épices mexicaines.",
+        "Remettre les émincés végétaux, mélanger 1 minute. Goûter, saler/poivrer si besoin.",
+        "Réchauffer rapidement les tortillas à sec en poêle 30 secondes de chaque côté.",
+        "Garnir les tortillas du mélange, ajouter le maïs, une cuillerée de yaourt de soja et un filet de jus de citron vert. Déguster immédiatement."
+      ],
+      "image_filename": "Tacos_fajita_aux_eminces_vegetaux_poivrons_et_yaourt_de_soja.jpg",
+      "cuisine_type": "asiatique",
+      "servings_base": 2,
+      "cooking_tip": "Ajoutez de la coriandre et un peu de piment frais si vous aimez le piquant."
+    },
+    {
+      "title_fr": "Salade tiède de pommes de terre, haricots verts, lentilles et lardons La Vie",
+      "diet": "vegan",
+      "protein_category": "Meat alternatives",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 540,
+      "protein_g_per_serving": 35,
+      "carbs_g_per_serving": 70,
+      "fat_g_per_serving": 13,
+      "equipment_required": [
+        "Casserole",
+        "Poêle",
+        "Four"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "soja"
+      ],
+      "tags": [
+        "protéiné",
+        "français",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Lentilles",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Lardons végétaux La Vie",
+          "quantite": 150,
+          "unite": "g"
+        },
+        {
+          "nom": "Pomme de terre",
+          "quantite": 500,
+          "unite": "g"
+        },
+        {
+          "nom": "Haricots verts",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon rouge",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Moutarde",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Vinaigre de cidre",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 15,
+          "unite": "g"
+        },
+        {
+          "nom": "Ciboulette",
+          "quantite": 5,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Cuire les pommes de terre en cubes 18 à 22 minutes à l’eau salée, OU 18 minutes à 190°C en Air fryer (ou 25 minutes au four) avec un filet d’huile. Elles doivent être fondantes.",
+        "Cuire les haricots verts 6 à 8 minutes dans une casserole d’eau bouillante salée, puis les rafraîchir sous l’eau froide.",
+        "Saisir les lardons La Vie 2 à 3 minutes dans une poêle avec un filet d'huile",
+        "Couper la tomate en quartiers et l’oignon rouge en fines lamelles.",
+        "Préparer la vinaigrette: fouetter moutarde, vinaigre et huile. Goûter, saler et poivrer.",
+        "Assembler dans un grand saladier: pommes de terre tièdes, haricots verts, tomate, oignon, lentilles et lardons. Verser la vinaigrette, mélanger délicatement. Parsemer de ciboulette."
+      ],
+      "image_filename": "Salade_tiede_de_pommes_de_terre_haricots_verts_lentilles_et_lardons_La_Vie.jpg",
+      "cuisine_type": "française",
+      "servings_base": 2,
+      "cooking_tip": "Ajoutez des cornichons émincés et un trait de jus de citron pour une version façon salade tiède ‘bistrot’."
+    }
+  ]
+}
