@@ -73,15 +73,16 @@ export async function sendRecipeMenu(
     };
 
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     logger.error('Email delivery failed', {
       userId: user.id,
       shareId: menuResult.shareId,
-      error: error.message
+      error: errorMessage
     });
 
     return {
       success: false,
-      error: error.message
+      error: errorMessage
     };
   }
 }

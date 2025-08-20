@@ -73,8 +73,11 @@ function stripAccents(str: string): string {
 
 export function mapValue<T extends Record<string, string>>(
   map: T,
-  input: string
+  input: string | undefined
 ): string | undefined {
+  if (!input || typeof input !== 'string') {
+    return undefined;
+  }
   const norm = stripAccents(input.trim().toLowerCase());
   for (const [k, v] of Object.entries(map)) {
     if (stripAccents(k.toLowerCase()) === norm) return v;

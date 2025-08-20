@@ -126,14 +126,15 @@ export async function saveMenuResult(input: MenuResultInput): Promise<{
     };
 
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     logger.error('Menu result save failed', {
-      error: error.message,
+      error: errorMessage,
       submissionId: input.submissionId
     });
 
     return {
       success: false,
-      error: `Save failed: ${error.message}`
+      error: `Save failed: ${errorMessage}`
     };
   }
 }
@@ -195,14 +196,15 @@ export async function getMenuResultByShareId(shareId: string): Promise<{
     };
 
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     logger.error('Menu result retrieval failed', {
-      error: error.message,
+      error: errorMessage,
       shareId
     });
 
     return {
       success: false,
-      error: `Retrieval failed: ${error.message}`
+      error: `Retrieval failed: ${errorMessage}`
     };
   }
 }
@@ -238,14 +240,15 @@ export async function deactivateMenuResult(shareId: string): Promise<{
     return { success: true };
 
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     logger.error('Menu result deactivation failed', {
-      error: error.message,
+      error: errorMessage,
       shareId
     });
 
     return {
       success: false,
-      error: `Deactivation failed: ${error.message}`
+      error: `Deactivation failed: ${errorMessage}`
     };
   }
 }

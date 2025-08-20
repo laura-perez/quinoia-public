@@ -14,7 +14,7 @@ const logger = createLogger();
 
 interface MenuPageProps {
   shareId: string;
-  resultBundle: {
+  resultBundle?: {
     version: string;
     generatedAt: string;
     meta: {
@@ -303,8 +303,7 @@ export const getServerSideProps: GetServerSideProps<MenuPageProps> = async (cont
     return {
       props: {
         shareId: '',
-        error: 'ID de menu invalide',
-        resultBundle: null
+        error: 'ID de menu invalide'
       }
     };
   }
@@ -326,7 +325,6 @@ export const getServerSideProps: GetServerSideProps<MenuPageProps> = async (cont
         props: {
           shareId,
           error: 'Menu non trouvé ou expiré',
-          resultBundle: null
         }
       };
     }
@@ -341,7 +339,6 @@ export const getServerSideProps: GetServerSideProps<MenuPageProps> = async (cont
         props: {
           shareId,
           error: 'Ce menu a expiré',
-          resultBundle: null
         }
       };
     }
@@ -356,7 +353,6 @@ export const getServerSideProps: GetServerSideProps<MenuPageProps> = async (cont
       props: {
         shareId,
         resultBundle: menuResult.resultBundle,
-        error: null
       }
     };
 
@@ -367,7 +363,6 @@ export const getServerSideProps: GetServerSideProps<MenuPageProps> = async (cont
       props: {
         shareId,
         error: 'Erreur lors du chargement du menu',
-        resultBundle: null
       }
     };
   }

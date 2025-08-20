@@ -128,11 +128,11 @@ async function applyHardFilters(
   return recipes.filter(recipe => {
     // Equipment check: recipe required ⊆ user available
     const hasRequiredEquipment = recipe.equipment_required.every(
-      eq => context.equipmentAvailable.includes(eq)
+      (eq: string) => context.equipmentAvailable.includes(eq)
     );
     
     // Cooking level check
-    const levelOrder = { beginner: 1, intermediate: 2, advanced: 3 };
+    const levelOrder: Record<string, number> = { beginner: 1, intermediate: 2, advanced: 3 };
     const hasSkillLevel = levelOrder[recipe.cooking_level] <= levelOrder[context.cookingLevel];
     
     // Protein category check: only allow user's preferences
@@ -273,7 +273,7 @@ function applyDiversitySelection(scoredRecipes: ScoredRecipe[], context: Selecti
  * Get diversity order based on diet type (from SPECS)
  */
 function getDiversityOrder(diet: string): string[] {
-  const orders = {
+  const orders: Record<string, string[]> = {
     omnivore: ["Beef", "Poultry", "Meat alternatives", "Fish", "Eggs", "Dairy", "Legumes", "Tofu"],
     flexitarian: ["Poultry", "Meat alternatives", "Fish", "Eggs", "Dairy", "Legumes", "Tofu", "Beef"],
     vegetarian: ["Meat alternatives", "Eggs", "Dairy", "Legumes", "Tofu"],

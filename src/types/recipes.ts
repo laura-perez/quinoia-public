@@ -39,7 +39,7 @@ export const RecipeSchema = z.object({
   
   // Quality
   cooking_tip: z.string().optional(),
-  gpt_auto_evaluation: z.record(z.unknown()).optional(),
+  gpt_auto_evaluation: z.record(z.string(), z.unknown()).optional(),
   
   status: z.enum(['active', 'draft', 'archived']).default('active')
 });

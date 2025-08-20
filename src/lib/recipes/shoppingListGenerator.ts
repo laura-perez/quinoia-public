@@ -11,10 +11,11 @@ const logger = createLogger();
 
 interface RecipeIngredient {
   nom: string;
-  quantite: number;
-  unite: string;
+  quantite?: number;
+  unite?: string;
   canonical_id?: string;
   canonical_name?: string;
+  section?: string;
 }
 
 interface Recipe {
@@ -196,8 +197,9 @@ export async function generateShoppingList(
     };
 
   } catch (error) {
-    logger.error('Shopping list generation failed', { error });
-    throw new Error(`Shopping list generation failed: ${error.message}`);
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    logger.error('Shopping list generation failed', { error: errorMessage });
+    throw new Error(`Shopping list generation failed: ${errorMessage}`);
   }
 }
 

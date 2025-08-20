@@ -207,7 +207,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       secondaryFocus: norm.data.secondaryFocus,
       numRecipes: norm.data.numRecipes,
       numServings: norm.data.numServings,
-      selectionStrategy: recipeResults.selectionStrategy,
+      selectionStrategy: recipeResults.scoringDetails.diversityStrategy,
       processingTimeMs: Date.now() - startTime
     },
     recipes: recipeResults.selectedRecipes,
