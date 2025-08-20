@@ -25,13 +25,13 @@ interface MenuPageProps {
     };
     recipes: Array<{
       id: string;
-      title_fr: string;
-      prep_time_minutes: number;
-      calories_per_serving: number;
-      protein_g_per_serving: number;
-      carbs_g_per_serving: number;
-      fat_g_per_serving: number;
-      cooking_level: string;
+      titleFr: string;
+      prepTimeMinutes: number;
+      caloriesPerServing: number;
+      proteinGPerServing: number;
+      carbsGPerServing: number;
+      fatGPerServing: number;
+      cookingLevel: string;
       ingredients: Array<{
         nom: string;
         quantite: number;
@@ -39,8 +39,8 @@ interface MenuPageProps {
         canonical_name?: string;
       }>;
       instructions: string[];
-      cooking_tip?: string;
-      cuisine_type?: string;
+      cookingTip?: string;
+      cuisineType?: string;
       tags: string[];
     }>;
     shoppingList: {
@@ -205,13 +205,13 @@ export default function MenuPage({ shareId, resultBundle, error }: MenuPageProps
                 {/* Recipe Header */}
                 <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 p-6">
                   <h3 className="text-xl font-bold text-white mb-2">
-                    {idx + 1}. {recipe.title_fr}
+                    {idx + 1}. {recipe.titleFr}
                   </h3>
                   <div className="flex flex-wrap gap-4 text-white text-sm">
-                    <span>⏱️ {recipe.prep_time_minutes} min</span>
-                    <span>🔥 {recipe.calories_per_serving} kcal</span>
-                    <span>💪 {recipe.protein_g_per_serving}g protéines</span>
-                    <span>👨‍🍳 {recipe.cooking_level}</span>
+                    <span>⏱️ {recipe.prepTimeMinutes} min</span>
+                    <span>🔥 {recipe.caloriesPerServing} kcal</span>
+                    <span>💪 {recipe.proteinGPerServing}g protéines</span>
+                    <span>👨‍🍳 {recipe.cookingLevel}</span>
                   </div>
                   {recipe.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-3">
@@ -262,10 +262,10 @@ export default function MenuPage({ shareId, resultBundle, error }: MenuPageProps
                   </div>
 
                   {/* Cooking Tip */}
-                  {recipe.cooking_tip && (
+                  {recipe.cookingTip && (
                     <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded">
                       <h5 className="font-medium text-blue-900 mb-1">💡 Conseil du chef</h5>
-                      <p className="text-blue-800 text-sm">{recipe.cooking_tip}</p>
+                      <p className="text-blue-800 text-sm">{recipe.cookingTip}</p>
                     </div>
                   )}
                 </div>

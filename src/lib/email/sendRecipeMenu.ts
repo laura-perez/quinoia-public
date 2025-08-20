@@ -19,10 +19,10 @@ interface MenuResult {
     version: string;
     recipes: Array<{
       id: string;
-      title_fr: string;
-      prep_time_minutes: number;
-      calories_per_serving: number;
-      protein_g_per_serving: number;
+      titleFr: string;
+      prepTimeMinutes: number;
+      caloriesPerServing: number;
+      proteinGPerServing: number;
     }>;
     shoppingList: {
       summary: {
@@ -128,12 +128,12 @@ function renderRecipeMenuEmail(data: {
         ${recipes.slice(0, 3).map(recipe => `
           <div style="border: 1px solid #EAEAEA; border-radius: 8px; padding: 20px; margin: 15px 0; background-color: #FDFBF8;">
             <h3 style="color: #414535; margin: 0 0 10px 0; font-size: 18px;">
-              ${recipe.title_fr}
+              ${recipe.titleFr}
             </h3>
             <p style="color: #8A8A8A; margin: 5px 0; font-size: 14px;">
-              ⏱️ ${recipe.prep_time_minutes} min | 
-              🔥 ${recipe.calories_per_serving} kcal | 
-              💪 ${recipe.protein_g_per_serving}g protéines
+              ⏱️ ${recipe.prepTimeMinutes} min | 
+              🔥 ${recipe.caloriesPerServing} kcal | 
+              💪 ${recipe.proteinGPerServing}g protéines
             </p>
           </div>
         `).join('')}

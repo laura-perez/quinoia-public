@@ -3,25 +3,25 @@ import { z } from 'zod';
 // Recipe types matching database schema
 export const RecipeSchema = z.object({
   id: z.string(),
-  title_fr: z.string(),
+  titleFr: z.string(),
   slug: z.string(),
-  servings_base: z.number().min(1).max(8),
-  prep_time_minutes: z.number().max(30),
+  servingsBase: z.number().min(1).max(8),
+  prepTimeMinutes: z.number().max(30),
   
   // Nutrition
-  calories_per_serving: z.number(),
-  protein_g_per_serving: z.number(),
-  carbs_g_per_serving: z.number(),
-  fat_g_per_serving: z.number(),
+  caloriesPerServing: z.number(),
+  proteinGPerServing: z.number(),
+  carbsGPerServing: z.number(),
+  fatGPerServing: z.number(),
   
   // Classification
   diet: z.enum(['omnivore', 'flexitarian', 'vegetarian', 'vegan']),
-  protein_category: z.enum(['Beef', 'Poultry', 'Fish', 'Eggs', 'Dairy', 'Tofu', 'Legumes', 'Meat alternatives']),
-  cooking_level: z.enum(['beginner', 'intermediate', 'advanced']),
+  proteinCategory: z.enum(['Beef', 'Poultry', 'Fish', 'Eggs', 'Dairy', 'Tofu', 'Legumes', 'Meat alternatives']),
+  cookingLevel: z.enum(['beginner', 'intermediate', 'advanced']),
   
   // Equipment and features
-  equipment_required: z.array(z.string()),
-  batch_friendly: z.boolean(),
+  equipmentRequired: z.array(z.string()),
+  batchFriendly: z.boolean(),
   
   // Content
   ingredients: z.array(z.object({
@@ -34,12 +34,12 @@ export const RecipeSchema = z.object({
   
   // Recipe metadata
   tags: z.array(z.string()).default([]),
-  cuisine_type: z.string().optional(),
-  image_filename: z.string().optional(),
+  cuisineType: z.string().optional(),
+  imageFilename: z.string().optional(),
   
   // Quality
-  cooking_tip: z.string().optional(),
-  gpt_auto_evaluation: z.record(z.string(), z.unknown()).optional(),
+  cookingTip: z.string().optional(),
+  gptAutoEvaluation: z.record(z.string(), z.unknown()).optional(),
   
   status: z.enum(['active', 'draft', 'archived']).default('active')
 });

@@ -1,6 +1,7 @@
 import { createLogger } from '@/lib/logger';
 import { getUserRecentRecipes } from '@/lib/supabase/repositories/userRecipeHistory';
 import { getFilteredRecipes } from '@/lib/supabase/repositories/recipes';
+import { mapValue, equipmentMap } from '@/schemas/mappers';
 import type { Recipe, SelectionContext, ScoredRecipe, RecipeSelectionResult } from '@/types/recipes';
 import type { RecentRecipesSplit } from '@/lib/supabase/repositories/userRecipeHistory';
 
@@ -37,6 +38,9 @@ export async function selectRecipes(context: SelectionContext): Promise<RecipeSe
       requested: context.numRecipes,
       userId: context.userId
     });
+    // If not enough recipes are found, we can try to relax some filters or use fallbacks
+    // TODO: send notification to warn of error, with context data for easy adding
+    // return, don't go further; // Placeholder for error handling
   }
   
   // 3. Score all filtered recipes
@@ -85,19 +89,26 @@ async function applyHardFilters(
     excludeRecipeIds: recentRecipes.strict // Exclude recent strict recipes (≤14 days)
   });
   
+  // Base equipment assumed to be available for everyone (in English to match user input after mapping)
+  const BASE_EQUIPMENT = ["Pan", "Pot"];
+  const userEquipmentWithBase = [...BASE_EQUIPMENT, ...context.equipmentAvailable];
+  
   // Additional filtering for equipment, cooking level, and protein preferences
   return recipes.filter(recipe => {
-    // Equipment check: recipe required ⊆ user available
-    const hasRequiredEquipment = recipe.equipment_required.every(
-      (eq: string) => context.equipmentAvailable.includes(eq)
+    // Equipment check: translate French equipment to English and compare
+    const hasRequiredEquipment = recipe.equipmentRequired.every(
+      (eq: string) => {
+        const mappedEquipment = mapValue(equipmentMap, eq) || eq;
+        return userEquipmentWithBase.includes(mappedEquipment);
+      }
     );
     
     // Cooking level check
     const levelOrder: Record<string, number> = { beginner: 1, intermediate: 2, advanced: 3 };
-    const hasSkillLevel = levelOrder[recipe.cooking_level] <= levelOrder[context.cookingLevel];
+    const hasSkillLevel = levelOrder[recipe.cookingLevel] <= levelOrder[context.cookingLevel];
     
     // Protein category check: only allow user's preferences
-    const isPreferredProtein = context.proteinPreferences.includes(recipe.protein_category);
+    const isPreferredProtein = context.proteinPreferences.includes(recipe.proteinCategory);
     
     return hasRequiredEquipment && hasSkillLevel && isPreferredProtein;
   });
@@ -126,24 +137,24 @@ function scoreRecipes(
     };
     
     // 1. Protein category preference: +3 if preferred, -2 if not
-    scoreBreakdown.proteinCategoryMatch = context.proteinPreferences.includes(recipe.protein_category) ? 3 : -2;
+    scoreBreakdown.proteinCategoryMatch = context.proteinPreferences.includes(recipe.proteinCategory) ? 3 : -2;
     
     // 2. Protein density bonus: +0.8 × (protein_g / 100_kcal)
-    const proteinDensity = (recipe.protein_g_per_serving / recipe.calories_per_serving) * 100;
+    const proteinDensity = (recipe.proteinGPerServing / recipe.caloriesPerServing) * 100;
     scoreBreakdown.proteinDensity = 0.8 * proteinDensity;
     
     // 3. Calorie proximity penalty
     const calorieCoeff = context.primaryGoal === 'weightLoss' ? 0.02 : 0.01;
-    const calorieDistance = Math.abs(recipe.calories_per_serving - context.mealTargetKcal);
+    const calorieDistance = Math.abs(recipe.caloriesPerServing - context.mealTargetKcal);
     scoreBreakdown.calorieProximity = -calorieCoeff * calorieDistance;
     
     // 4. Batch cooking bonus
-    if (context.batchMode && recipe.batch_friendly) {
+    if (context.batchMode && recipe.batchFriendly) {
       scoreBreakdown.batchBonus = 0.5;
     }
     
     // 5. Favorite foods bonus (+1 per match with ingredients/tags/title)
-    const recipeText = `${recipe.title_fr} ${recipe.tags.join(' ')} ${recipe.ingredients.map(i => i.nom).join(' ')}`.toLowerCase();
+    const recipeText = `${recipe.titleFr} ${recipe.tags.join(' ')} ${recipe.ingredients.map(i => i.nom).join(' ')}`.toLowerCase();
     scoreBreakdown.favoriteBonus = favoriteWords.reduce((sum, word) => 
       recipeText.includes(word) ? sum + 1 : sum, 0
     );
@@ -170,13 +181,13 @@ function scoreRecipes(
     if (b.score !== a.score) return b.score - a.score;
     
     // Tiebreaker 1: closer to calorie target
-    const aCalorieDist = Math.abs(a.calories_per_serving - context.mealTargetKcal);
-    const bCalorieDist = Math.abs(b.calories_per_serving - context.mealTargetKcal);
+    const aCalorieDist = Math.abs(a.caloriesPerServing - context.mealTargetKcal);
+    const bCalorieDist = Math.abs(b.caloriesPerServing - context.mealTargetKcal);
     if (aCalorieDist !== bCalorieDist) return aCalorieDist - bCalorieDist;
     
     // Tiebreaker 2: more protein
-    if (b.protein_g_per_serving !== a.protein_g_per_serving) {
-      return b.protein_g_per_serving - a.protein_g_per_serving;
+    if (b.proteinGPerServing !== a.proteinGPerServing) {
+      return b.proteinGPerServing - a.proteinGPerServing;
     }
     
     // Tiebreaker 3: ID ascending (deterministic)
@@ -197,7 +208,7 @@ function applyDiversitySelection(scoredRecipes: ScoredRecipe[], context: Selecti
     if (selected.length >= context.numRecipes) break;
     
     const candidate = scoredRecipes.find(r => 
-      r.protein_category === proteinCategory && !used.has(r.id)
+      r.proteinCategory === proteinCategory && !used.has(r.id)
     );
     
     if (candidate) {
@@ -214,7 +225,7 @@ function applyDiversitySelection(scoredRecipes: ScoredRecipe[], context: Selecti
     // Try to find next recipe following diversity order
     let nextRecipe = null;
     for (const proteinCategory of diversityOrder) {
-      nextRecipe = remaining.find(r => r.protein_category === proteinCategory);
+      nextRecipe = remaining.find(r => r.proteinCategory === proteinCategory);
       if (nextRecipe) break;
     }
     
@@ -252,8 +263,8 @@ function getDiversityStrategy(diet: string): string {
  * Calculate nutrition summary for selected recipes
  */
 function calculateNutritionSummary(recipes: ScoredRecipe[], numServings: number) {
-  const totalCalories = recipes.reduce((sum, r) => sum + r.calories_per_serving, 0) * numServings;
-  const totalProtein = recipes.reduce((sum, r) => sum + r.protein_g_per_serving, 0) * numServings;
+  const totalCalories = recipes.reduce((sum, r) => sum + r.caloriesPerServing, 0) * numServings;
+  const totalProtein = recipes.reduce((sum, r) => sum + r.proteinGPerServing, 0) * numServings;
   
   return {
     avgCalories: Math.round(totalCalories / recipes.length / numServings),

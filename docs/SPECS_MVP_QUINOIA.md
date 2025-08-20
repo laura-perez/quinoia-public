@@ -62,9 +62,9 @@
 ### Scoring (7 composants)
 
 - **Catégorie protéique**: +3 si préférée, -2 sinon
-- **Densité protéique**: +0.8 × (protein_g / 100_kcal)
+- **Densité protéique**: +0.8 × (proteinGPerServing / 100_kcal)
 - **Proximité calorique**: -0.02 × |kcal-target| (weightLoss), -0.01 (autres)
-- **Batch bonus**: +0.5 si batchMode ET recipe.batch_friendly
+- **Batch bonus**: +0.5 si batchMode ET recipe.batchFriendly
 - **Favoris**: +1 par mot trouvé dans titre/tags
 - **Détestés**: -3 par mot trouvé
 - **Récence souple**: -1.5 pour 14-21 jours (max 2 en fallback)
@@ -137,19 +137,19 @@
 
 ### Table Recipe (Core)
 
-**Identifiants**: id, title_fr, slug, servings_base [1-4], prep_time ≤30min
-**Nutrition**: calories, protein, carbs, fat (par portion)
-**Classification**: diet, protein_category, cooking_level
-**Features**: equipment_required[], batch_friendly
+**Identifiants**: id, titleFr, slug, servingsBase [1-4], prepTimeMinutes ≤30min
+**Nutrition**: caloriesPerServing, proteinGPerServing, carbsGPerServing, fatGPerServing (par portion)
+**Classification**: diet, proteinCategory, cookingLevel
+**Features**: equipmentRequired[], batchFriendly
 **Contenu**: ingredients (JSONB), instructions[]
 **Tagging**: tags[] (for user preference matching via ingredients/tags)
-**Qualité**: cooking_tip, gpt_auto_evaluation, status
+**Qualité**: cookingTip, gptAutoEvaluation, status
 
 ### Index Performance (Sub-seconde)
 
-- diet, protein_category, cooking_level
-- calories_per_serving, protein_g_per_serving
-- equipment_required (GIN), status, prep_time
+- diet, proteinCategory, cookingLevel
+- caloriesPerServing, proteinGPerServing
+- equipmentRequired (GIN), status, prepTimeMinutes
 
 ### Table Recency Tracking
 

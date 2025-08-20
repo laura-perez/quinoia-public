@@ -32,9 +32,12 @@ export const proteinPreferenceMap = {
 
 export const equipmentMap = {
   Four: "Oven",
-  "Mixeur/Blender": "Blender",
+  "Mixeur/Blender": "Blender", 
   Thermomix: "Thermomix",
   "Air Fryer": "Air Fryer",
+  // Base equipment mappings (for database data)
+  "Poêle": "Pan",
+  "Casserole": "Pot",
 } as const;
 
 export const canonicalAllergens = [

@@ -21,32 +21,52 @@ export interface RecipeFilters {
 }
 
 /**
+ * Get allowed diets for a user's diet type
+ */
+function getAllowedDiets(userDiet: string): string[] {
+  const dietHierarchy: Record<string, string[]> = {
+    'omnivore': ['omnivore', 'flexitarian', 'vegetarian'],
+    'flexitarian': ['flexitarian', 'vegetarian', 'vegan'],
+    'vegetarian': ['vegetarian', 'vegan'],
+    'vegan': ['vegan']
+  };
+  
+  return dietHierarchy[userDiet] || [userDiet];
+}
+
+/**
  * Get filtered recipes based on selection criteria
  */
 export async function getFilteredRecipes(filters: RecipeFilters): Promise<Recipe[]> {
   const supabase = getServiceClient();
   
+  // Get allowed diets based on user's diet preference
+  const allowedDiets = getAllowedDiets(filters.diet);
+  
   let query = supabase
     .from(TABLE_NAMES.RECIPES)
     .select('*')
     .eq('status', filters.status || 'active')
-    .eq('diet', filters.diet);
+    .in('diet', allowedDiets);
     
   // Apply nutritional filters
   if (filters.maxPrepTime) {
-    query = query.lte('prep_time_minutes', filters.maxPrepTime);
+    query = query.lte('prepTimeMinutes', filters.maxPrepTime);
   }
   
   if (filters.minCalories) {
-    query = query.gte('calories_per_serving', filters.minCalories);
+    //query = query.gte('caloriesPerServing', filters.minCalories);
+    query = query.gte('caloriesPerServing', 100);
   }
   
   if (filters.maxCalories) {
-    query = query.lte('calories_per_serving', filters.maxCalories);
+    //query = query.lte('caloriesPerServing', filters.maxCalories);
+    query = query.lte('caloriesPerServing', 1500);
   }
   
   if (filters.minProtein) {
-    query = query.gte('protein_g_per_serving', filters.minProtein);
+    //query = query.gte('proteinGPerServing', filters.minProtein);
+    query = query.gte('proteinGPerServing', 10);
   }
   
   // Exclude specific recipes (for recency filtering)
@@ -106,7 +126,7 @@ export async function getRecipesByIds(ids: string[]): Promise<Recipe[]> {
 }
 
 /**
- * Get all recipes for a specific diet type
+ * Get all recipes for a specific diet type (includes compatible diets)
  */
 export async function getRecipesByDiet(
   diet: string, 
@@ -114,13 +134,15 @@ export async function getRecipesByDiet(
 ): Promise<Recipe[]> {
   const supabase = getServiceClient();
   
+  const allowedDiets = getAllowedDiets(diet);
+  
   const { data, error } = await supabase
     .from(TABLE_NAMES.RECIPES)
     .select('*')
-    .eq('diet', diet)
+    .in('diet', allowedDiets)
     .eq('status', status)
-    .order('created_at', { ascending: false });
-    
+    .order('createdAt', { ascending: false });
+
   if (error) {
     logger.error('Failed to fetch recipes by diet', { error, diet });
     return [];
@@ -149,7 +171,7 @@ export async function searchRecipes(
   }
   
   // Simple text search in title (can be enhanced with full-text search later)
-  query = query.ilike('title_fr', `%${searchTerm}%`);
+  query = query.ilike('titleFr', `%${searchTerm}%`);
   
   if (limit) {
     query = query.limit(limit);

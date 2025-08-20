@@ -20,9 +20,9 @@ interface RecipeIngredient {
 
 interface Recipe {
   id: string;
-  title_fr: string;
+  titleFr: string;
   ingredients: RecipeIngredient[];
-  servings_base: number;
+  servingsBase: number;
 }
 
 interface ShoppingListItem {
@@ -219,13 +219,13 @@ function extractScaledIngredients(recipes: Recipe[], numServings: number) {
   }> = [];
 
   for (const recipe of recipes) {
-    const servingMultiplier = numServings / recipe.servings_base;
+    const servingMultiplier = numServings / recipe.servingsBase;
     
     for (const ingredient of recipe.ingredients) {
       if (ingredient.quantite && ingredient.quantite > 0) {
         scaledIngredients.push({
           recipe_id: recipe.id,
-          recipe_title: recipe.title_fr,
+          recipe_title: recipe.titleFr,
           nom: ingredient.nom,
           scaled_amount: ingredient.quantite * servingMultiplier,
           unite: ingredient.unite || 'g',

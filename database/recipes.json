@@ -3121,6 +3121,769 @@
       "image_filename": "Mujaddara_express_lentilles_et_riz_oignons_dores_et_salade_tomate_concombre.png",
       "cuisine_type": "méditerranéen",
       "cooking_tip": "Rince bien les lentilles pour retirer l’amidon et obtenir des grains qui se tiennent, comme dans les bons mezze."
+    },
+    {
+      "title_fr": "Salade de haricots et rumsteak poêlé",
+      "diet": "omnivore",
+      "protein_category": "Beef",
+      "cooking_level": "intermediate",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 520,
+      "protein_g_per_serving": 36,
+      "carbs_g_per_serving": 18,
+      "fat_g_per_serving": 30,
+      "equipment_required": [
+        "Pan",
+        "Pot"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose"
+      ],
+      "tags": [
+        "été",
+        "méditerranéen",
+        "protéiné"
+      ],
+      "ingredients": [
+        {
+          "nom": "haricots cannellini",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "rumsteak",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "poivron rouge",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "concombre",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "oignon rouge",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "persil frais",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "olives Kalamata",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "fromage feta",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "vinaigre de vin rouge",
+          "quantite": 40,
+          "unite": "ml"
+        },
+        {
+          "nom": "huile d'olive",
+          "quantite": 50,
+          "unite": "ml"
+        },
+        {
+          "nom": "miel",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "origan séché",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "gousse d'ail",
+          "quantite": 1,
+          "unite": "gousse"
+        },
+        {
+          "nom": "sel",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "poivre",
+          "quantite": 2,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Saisir le rumsteak dans une poêle chaude avec un peu d’huile, 2 à 3 minutes de chaque côté selon la cuisson désirée. Laisser reposer puis couper en tranches fines.",
+        "Préparer la vinaigrette en fouettant vinaigre, miel, ail haché, origan, sel et poivre, puis incorporer l’huile d’olive.",
+        "Mélanger les haricots, légumes, olives et persil dans un saladier.",
+        "Ajouter les tranches de rumsteak et la feta émiettée. Arroser de vinaigrette et mélanger délicatement."
+      ],
+      "servings_base": 4,
+      "image_filename": "salade_de_haricots_et_rumsteak_poele.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Sortir le steak du réfrigérateur 20 minutes avant cuisson pour qu’il soit tendre."
+    },
+    {
+      "title_fr": "Salade de haricots et poulet à l'ail",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 505,
+      "protein_g_per_serving": 34,
+      "carbs_g_per_serving": 19,
+      "fat_g_per_serving": 27,
+      "equipment_required": [
+        "Pan",
+        "Pot"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose"
+      ],
+      "tags": [
+        "été",
+        "méditerranéen",
+        "protéiné"
+      ],
+      "ingredients": [
+        {
+          "nom": "haricots cannellini",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "blancs de poulet",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "gousses d'ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "poivron jaune",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "concombre",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "oignon rouge",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "persil frais",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "olives Kalamata",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "fromage feta",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "vinaigre de vin rouge",
+          "quantite": 40,
+          "unite": "ml"
+        },
+        {
+          "nom": "huile d'olive",
+          "quantite": 50,
+          "unite": "ml"
+        },
+        {
+          "nom": "miel",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "origan séché",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "sel",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "poivre",
+          "quantite": 2,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Faire revenir le poulet coupé en morceaux dans une poêle avec un peu d’huile et l’ail émincé jusqu’à cuisson complète.",
+        "Préparer la vinaigrette avec vinaigre, miel, origan, sel, poivre et huile d’olive.",
+        "Mélanger haricots, légumes, olives et persil dans un saladier.",
+        "Ajouter le poulet et la feta émiettée, puis verser la vinaigrette. Mélanger avant de servir."
+      ],
+      "servings_base": 4,
+      "image_filename": "salade_de_haricots_et_poulet_poele_a_lail.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Cuire le poulet doucement pour garder la viande tendre et juteuse."
+    },
+    {
+      "title_fr": "Salade_de_haricots_et_sardines_a_lhuile",
+      "diet": "omnivore",
+      "protein_category": "Fish",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 20,
+      "calories_per_serving": 515,
+      "protein_g_per_serving": 32,
+      "carbs_g_per_serving": 17,
+      "fat_g_per_serving": 29,
+      "equipment_required": [
+        "Pot"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose",
+        "poisson"
+      ],
+      "tags": [
+        "été",
+        "méditerranéen",
+        "protéiné"
+      ],
+      "ingredients": [
+        {
+          "nom": "haricots cannellini",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "sardines en boîte à l’huile d’olive",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "poivron rouge",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "concombre",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "oignon rouge",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "persil frais",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "olives Kalamata",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "fromage feta",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "vinaigre de vin rouge",
+          "quantite": 40,
+          "unite": "ml"
+        },
+        {
+          "nom": "huile d'olive",
+          "quantite": 40,
+          "unite": "ml"
+        },
+        {
+          "nom": "miel",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "origan séché",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "sel",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "poivre",
+          "quantite": 2,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Égoutter les sardines en réservant un peu de leur huile. Retirer les arêtes si nécessaire.",
+        "Préparer la vinaigrette avec vinaigre, miel, origan, sel, poivre et l’huile d’olive.",
+        "Mélanger les haricots, légumes, olives et persil dans un saladier.",
+        "Ajouter les sardines et la feta émiettée, arroser de vinaigrette et mélanger délicatement."
+      ],
+      "servings_base": 4,
+      "image_filename": "salade_de_haricots_et_sardines_a_lhuile.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Choisir des sardines de bonne qualité améliore beaucoup le goût de la salade."
+    },
+    {
+      "title_fr": "Haricots beurre et rumsteak grillé",
+      "diet": "omnivore",
+      "protein_category": "Beef",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 15,
+      "calories_per_serving": 520,
+      "protein_g_per_serving": 46,
+      "carbs_g_per_serving": 26,
+      "fat_g_per_serving": 24,
+      "equipment_required": [
+        "Pot",
+        "Blender",
+        "Pan"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose"
+      ],
+      "tags": [
+        "protéiné",
+        "international"
+      ],
+      "ingredients": [
+        {
+          "nom": "huile d’olive",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "beurre",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "gousses d’ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "bouillon de légumes",
+          "quantite": 120,
+          "unite": "ml"
+        },
+        {
+          "nom": "levure nutritionnelle",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "tomates séchées",
+          "quantite": 40,
+          "unite": "g"
+        },
+        {
+          "nom": "haricots beurre (en boîte)",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "herbes fraîches",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "rumsteak",
+          "quantite": 250,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Mixer la moitié des haricots avec le bouillon et la levure nutritionnelle",
+        "Faire chauffer l’huile dans une poêle et saisir le rumsteak 3-4 min par face selon cuisson souhaitée ; laisser reposer",
+        "Dans une casserole, faire revenir l’ail avec un peu d’huile et ajouter le mélange haricots/bouillon",
+        "Incorporer les haricots restants, les tomates séchées et le beurre, mijoter 5 min",
+        "Servir le rumsteak tranché sur les haricots crémeux, parsemer d’herbes fraîches"
+      ],
+      "servings_base": 2,
+      "image_filename": "Haricots_beurre_Marry_Me_au_rumsteak.png",
+      "cuisine_type": "international",
+      "cooking_tip": "Laisser reposer la viande quelques minutes avant de la trancher pour garder le jus."
+    },
+    {
+      "title_fr": "Cuisses de dinde rôties & haricots beurre",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "intermediate",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 610,
+      "protein_g_per_serving": 55,
+      "carbs_g_per_serving": 28,
+      "fat_g_per_serving": 28,
+      "equipment_required": [
+        "Pot",
+        "Blender",
+        "Oven"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose"
+      ],
+      "tags": [
+        "protéiné",
+        "international"
+      ],
+      "ingredients": [
+        {
+          "nom": "cuisses de dinde",
+          "quantite": 500,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "beurre",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "gousses d’ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "bouillon de légumes",
+          "quantite": 120,
+          "unite": "ml"
+        },
+        {
+          "nom": "levure nutritionnelle",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "tomates séchées",
+          "quantite": 40,
+          "unite": "g"
+        },
+        {
+          "nom": "haricots beurre (en boîte)",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "herbes fraîches",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 200°C. Enduire les cuisses de dinde d’huile, sel, poivre, rôtir 40-45 min jusqu’à cuisson complète",
+        "Mixer la moitié des haricots avec le bouillon et la levure nutritionnelle",
+        "Dans une casserole, faire revenir l’ail dans un peu d’huile puis ajouter le mélange mixé",
+        "Incorporer les haricots restants, les tomates séchées et le beurre, laisser épaissir 5 min",
+        "Servir les cuisses de dinde rôties avec la base crémeuse de haricots, garnir d’herbes"
+      ],
+      "servings_base": 2,
+      "image_filename": "Haricots_beurre_Marry_Me_aux_cuisses_de_dinde.png",
+      "cuisine_type": "international",
+      "cooking_tip": "Badigeonner la dinde avec son jus de cuisson à mi-cuisson pour une peau croustillante."
+    },
+    {
+      "title_fr": "Filets de maquereaux et haricots beurre",
+      "diet": "flexitarian",
+      "protein_category": "Fish",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 10,
+      "calories_per_serving": 480,
+      "protein_g_per_serving": 38,
+      "carbs_g_per_serving": 24,
+      "fat_g_per_serving": 22,
+      "equipment_required": [
+        "Pot",
+        "Blender"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose",
+        "poisson"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen"
+      ],
+      "ingredients": [
+        {
+          "nom": "filets de maquereaux en boîte (huile ou moutarde)",
+          "quantite": 250,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "beurre",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "gousses d’ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "bouillon de légumes",
+          "quantite": 120,
+          "unite": "ml"
+        },
+        {
+          "nom": "levure nutritionnelle",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "tomates séchées",
+          "quantite": 40,
+          "unite": "g"
+        },
+        {
+          "nom": "haricots beurre (en boîte)",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "herbes fraîches",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Mixer la moitié des haricots avec le bouillon et la levure",
+        "Faire revenir l’ail dans l’huile, ajouter le mélange crémeux et laisser mijoter",
+        "Incorporer les haricots restants, tomates séchées et beurre, mijoter 3-4 min",
+        "Égoutter légèrement les filets de maquereaux et les déposer entiers ou émiettés sur la préparation",
+        "Servir chaud avec un filet de citron si souhaité"
+      ],
+      "servings_base": 2,
+      "image_filename": "Haricots_beurre_Marry_Me_aux_filets_de_maquereaux.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Utiliser les maquereaux à la moutarde pour un goût plus relevé."
+    },
+    {
+      "title_fr": "Poulet crémeux aux champignons et pâtes complètes",
+      "diet": "omnivore",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 620,
+      "protein_g_per_serving": 44,
+      "carbs_g_per_serving": 55,
+      "fat_g_per_serving": 22,
+      "equipment_required": [
+        "Pot",
+        "Pan"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose",
+        "gluten"
+      ],
+      "tags": [
+        "protéiné",
+        "international"
+      ],
+      "ingredients": [
+        {
+          "nom": "pâtes complètes",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "filets de poulet désossés",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "gousses d’ail",
+          "quantite": 3,
+          "unite": "piece"
+        },
+        {
+          "nom": "champignons de Paris",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "bouillon de volaille",
+          "quantite": 300,
+          "unite": "ml"
+        },
+        {
+          "nom": "fécule de maïs",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "fromage fouetté",
+          "quantite": 100,
+          "unite": "g"
+        },
+        {
+          "nom": "persil frais",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "sel",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "poivre",
+          "quantite": 2,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Cuire les pâtes dans une grande casserole d’eau salée jusqu’à al dente, réserver un peu d’eau de cuisson.",
+        "Chauffer 1 c. à s. d’huile dans une poêle, saisir le poulet 5 minutes de chaque côté, puis couvrir et réserver.",
+        "Dans la même poêle, ajouter le reste d’huile et faire revenir les champignons et l’ail jusqu’à légère coloration.",
+        "Verser le bouillon avec la fécule diluée, assaisonner et laisser épaissir.",
+        "Incorporer le fromage frais et fouetter jusqu’à sauce lisse.",
+        "Remettre le poulet dans la sauce, laisser mijoter quelques minutes.",
+        "Incorporer les pâtes cuites, ajouter un peu d’eau de cuisson si besoin pour ajuster la consistance.",
+        "Parsemer de persil et servir immédiatement."
+      ],
+      "servings_base": 2,
+      "image_filename": "Poulet_cremeux_aux_champignons_et_pates.png",
+      "cuisine_type": "française",
+      "cooking_tip": "Réserve une louche d’eau de cuisson des pâtes : l’amidon aide la sauce à bien enrober."
+    },
+    {
+      "title_fr": "Émincés végétaux crémeux aux champignons et pâtes complètes",
+      "diet": "vegan",
+      "protein_category": "Meat alternatives",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 720,
+      "protein_g_per_serving": 36,
+      "carbs_g_per_serving": 88,
+      "fat_g_per_serving": 20,
+      "equipment_required": [
+        "Pot",
+        "Pan"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "gluten",
+        "soja"
+      ],
+      "tags": [
+        "protéiné",
+        "international"
+      ],
+      "ingredients": [
+        {
+          "nom": "pâtes complètes",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "émincés végétaux",
+          "quantite": 250,
+          "unite": "g"
+        },
+        {
+          "nom": "gousses d’ail",
+          "quantite": 3,
+          "unite": "piece"
+        },
+        {
+          "nom": "champignons de Paris",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "bouillon de légumes",
+          "quantite": 300,
+          "unite": "ml"
+        },
+        {
+          "nom": "fécule de maïs",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "crème végétale",
+          "quantite": 120,
+          "unite": "ml"
+        },
+        {
+          "nom": "persil frais",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "sel",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "poivre",
+          "quantite": 2,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Cuire les pâtes dans une grande casserole d’eau salée jusqu’à al dente, réserver une louche d’eau de cuisson.",
+        "Dans une poêle, chauffer 1 c. à s. d’huile et saisir les émincés végétaux 3-4 minutes pour les dorer, réserver.",
+        "Ajouter le reste d’huile et faire revenir l’ail et les champignons 4-5 minutes.",
+        "Verser le bouillon avec la fécule diluée, laisser épaissir.",
+        "Incorporer la crème végétale, fouetter pour obtenir une sauce lisse.",
+        "Remettre les émincés végétaux dans la poêle, puis ajouter les pâtes. Mélanger, ajouter un peu d’eau de cuisson si la sauce est trop dense.",
+        "Assaisonner, parsemer de persil frais et servir chaud."
+      ],
+      "servings_base": 2,
+      "image_filename": "Eminces_vegetaux_cremeux_aux_champignons_et_pates.png",
+      "cuisine_type": "international",
+      "cooking_tip": "Prévoir une poêle large pour bien enrober les pâtes avec la sauce."
     }
   ]
 }
