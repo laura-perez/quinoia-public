@@ -5,6 +5,8 @@
 export const TABLE_NAMES = {
   USERS: 'user',
   SUBMISSIONS: 'submission',
+  RECIPES: 'recipe',
+  USER_RECIPE_HISTORY: 'userRecipeHistory',
 } as const;
 
 // Type for table names (useful for generic functions)

@@ -1,6 +1,8 @@
 import { createLogger } from '@/lib/logger';
-import { getServiceClient } from '@/lib/supabase/client';
+import { getUserRecentRecipes } from '@/lib/supabase/repositories/userRecipeHistory';
+import { getFilteredRecipes } from '@/lib/supabase/repositories/recipes';
 import type { Recipe, SelectionContext, ScoredRecipe, RecipeSelectionResult } from '@/types/recipes';
+import type { RecentRecipesSplit } from '@/lib/supabase/repositories/userRecipeHistory';
 
 const logger = createLogger();
 
@@ -64,67 +66,26 @@ export async function selectRecipes(context: SelectionContext): Promise<RecipeSe
   };
 }
 
-/**
- * Get user's recent recipe consumption for recency filtering
- */
-async function getUserRecentRecipes(userId: string) {
-  const supabase = getServiceClient();
-  const twentyOneDaysAgo = new Date();
-  twentyOneDaysAgo.setDate(twentyOneDaysAgo.getDate() - 21);
-  
-  const { data, error } = await supabase
-    .from('user_recipe_consumption')
-    .select('recipe_id, consumed_at')
-    .eq('user_id', userId)
-    .gte('consumed_at', twentyOneDaysAgo.toISOString())
-    .order('consumed_at', { ascending: false });
-    
-  if (error) {
-    logger.error('Failed to fetch user recent recipes', { error, userId });
-    return { strict: [], soft: [] };
-  }
-  
-  const fourteenDaysAgo = new Date();
-  fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
-  
-  const strict = data.filter(r => new Date(r.consumed_at) > fourteenDaysAgo).map(r => r.recipe_id);
-  const soft = data.filter(r => new Date(r.consumed_at) <= fourteenDaysAgo).map(r => r.recipe_id);
-  
-  return { strict, soft };
-}
 
 /**
  * Apply hard filters that cannot be compromised
  */
 async function applyHardFilters(
   context: SelectionContext, 
-  recentRecipes: { strict: string[], soft: string[] }
+  recentRecipes: RecentRecipesSplit
 ): Promise<Recipe[]> {
-  const supabase = getServiceClient();
+  // Get recipes using repository
+  const recipes = await getFilteredRecipes({
+    diet: context.diet,
+    status: 'active',
+    maxPrepTime: 30,
+    minCalories: context.mealMinKcal,
+    maxCalories: context.mealMaxKcal,
+    minProtein: context.proteinFloorG,
+    excludeRecipeIds: recentRecipes.strict // Exclude recent strict recipes (≤14 days)
+  });
   
-  let query = supabase
-    .from('recipe')
-    .select('*')
-    .eq('status', 'active')
-    .eq('diet', context.diet)
-    .lte('prep_time_minutes', 30)
-    .gte('calories_per_serving', context.mealMinKcal)
-    .lte('calories_per_serving', context.mealMaxKcal)
-    .gte('protein_g_per_serving', context.proteinFloorG);
-    
-  // Exclude recent strict recipes (≤14 days)
-  if (recentRecipes.strict.length > 0) {
-    query = query.not('id', 'in', `(${recentRecipes.strict.join(',')})`);
-  }
-  
-  const { data: recipes, error } = await query;
-  
-  if (error) {
-    logger.error('Failed to fetch recipes', { error });
-    throw new Error('Database query failed');
-  }
-  
-  // Additional filtering for equipment and cooking level
+  // Additional filtering for equipment, cooking level, and protein preferences
   return recipes.filter(recipe => {
     // Equipment check: recipe required ⊆ user available
     const hasRequiredEquipment = recipe.equipment_required.every(
@@ -148,7 +109,7 @@ async function applyHardFilters(
 function scoreRecipes(
   recipes: Recipe[], 
   context: SelectionContext,
-  recentRecipes: { strict: string[], soft: string[] }
+  recentRecipes: RecentRecipesSplit
 ): ScoredRecipe[] {
   const favoriteWords = context.favoriteFoods?.toLowerCase().split(/\s+/) || [];
   const dislikedWords = context.dislikedFoods?.toLowerCase().split(/\s+/) || [];
