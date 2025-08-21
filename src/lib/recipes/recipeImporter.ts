@@ -595,8 +595,10 @@ export async function moveSuccessfulRecipes(
 /**
  * Convert GPTRecipe back to raw format for JSON storage
  */
-function convertToRawRecipe(recipe: GPTRecipe): unknown {
-  const raw: any = {
+type RawRecipeJson = Record<string, any>;
+
+function convertToRawRecipe(recipe: GPTRecipe): RawRecipeJson {
+  const raw: RawRecipeJson = {
     title_fr: recipe.titleFr,
     diet: recipe.diet,
     protein_category: recipe.proteinCategory,

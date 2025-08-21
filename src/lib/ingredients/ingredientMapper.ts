@@ -65,7 +65,7 @@ export interface ApprovalDecision {
 }
 
 // Category and section mapping based on existing taxonomy
-const CATEGORY_KEYWORDS = {
+const CATEGORY_KEYWORDS: Record<string, string[]> = {
   'Féculents': ['riz', 'pâtes', 'quinoa', 'couscous', 'semoule', 'nouilles', 'orzo', 'pomme de terre', 'patate'],
   'Légumes': ['courgette', 'brocoli', 'carotte', 'tomate', 'poivron', 'oignon', 'épinards', 'concombre', 'courge'],
   'Protéines animales': ['poulet', 'bœuf', 'porc', 'agneau', 'canard', 'œuf', 'blanc de poulet'],
@@ -79,7 +79,7 @@ const CATEGORY_KEYWORDS = {
   'Conserves': ['concentré', 'passata', 'tomates pelées', 'tomates séchées']
 };
 
-const SECTION_MAPPING = {
+const SECTION_MAPPING: Record<string, string> = {
   'Féculents': 'sec',
   'Légumes': 'frais',
   'Protéines animales': 'boucherie',
@@ -93,7 +93,8 @@ const SECTION_MAPPING = {
   'Conserves': 'conserves'
 };
 
-const DEFAULT_UNITS = {
+// Default units mapped by category (use Record<string,string> so dynamic indexing is safe)
+const DEFAULT_UNITS: Record<string, string> = {
   'Féculents': 'g',
   'Légumes': 'g', 
   'Protéines animales': 'g',
@@ -106,6 +107,10 @@ const DEFAULT_UNITS = {
   'Condiments': 'ml',
   'Conserves': 'g'
 };
+
+function getDefaultUnit(category: string): string {
+  return DEFAULT_UNITS[category] ?? 'g';
+}
 
 /**
  * Analyze all recipes and identify unmapped ingredients
@@ -372,7 +377,7 @@ export async function applyApprovedIngredients(
       }
 
       // Create new canonical ingredient
-      const defaultUnit = DEFAULT_UNITS[finalCategory] || 'g';
+  const defaultUnit = getDefaultUnit(finalCategory);
       const { data: newCanonical, error: canonicalError } = await supabase
         .from('ingredientCanonical')
         .insert({
@@ -452,13 +457,15 @@ async function handleAliasMapping(
     const targetName = nameMatch[1];
     
     // Find existing canonical ingredient
-    const { data: existingIngredient } = await supabase
+    const { data: existingIngredientRaw } = await supabase
       .from('ingredientCanonical')
       .select('id, nameFr')
       .ilike('nameFr', targetName)
       .single();
 
-    if (!existingIngredient) {
+    let targetCanonical = existingIngredientRaw;
+
+    if (!targetCanonical) {
       // Create the target ingredient if it doesn't exist and modifications mention "create"
       if (modifications.toLowerCase().includes('create it if')) {
         const suggestion = suggestIngredientMapping(targetName);
@@ -468,7 +475,7 @@ async function handleAliasMapping(
             nameFr: targetName,
             category: suggestion.category,
             sectionCode: suggestion.sectionCode,
-            defaultUnit: DEFAULT_UNITS[suggestion.category] || 'g',
+            defaultUnit: getDefaultUnit(suggestion.category),
             commonAliases: [ingredient.originalName]
           })
           .select()
@@ -478,8 +485,7 @@ async function handleAliasMapping(
           results.errors.push(`Failed to create ${targetName}: ${error.message}`);
           return;
         }
-        
-        existingIngredient = newCanonical;
+        targetCanonical = newCanonical;
         logger.info(`Created new canonical ingredient: ${targetName}`);
       } else {
         results.errors.push(`Target ingredient "${targetName}" not found and not set to create`);
@@ -491,7 +497,7 @@ async function handleAliasMapping(
     await supabase
       .from('ingredientAlias')
       .insert({
-        canonicalId: existingIngredient.id,
+        canonicalId: targetCanonical.id,
         aliasName: ingredient.originalName,
         confidence: 0.9,
         source: 'auto_mapper'
@@ -502,7 +508,7 @@ async function handleAliasMapping(
       .from('recipeIngredient')
       .upsert({
         recipeId: ingredient.recipeId,
-        canonicalIngredientId: existingIngredient.id,
+        canonicalIngredientId: targetCanonical.id,
         originalName: ingredient.originalName,
         quantity: ingredient.quantity,
         unit: ingredient.unit
@@ -511,8 +517,8 @@ async function handleAliasMapping(
     results.created++;
     logger.info('Mapped as alias', {
       originalName: ingredient.originalName,
-      canonicalName: existingIngredient.nameFr,
-      canonicalId: existingIngredient.id
+      canonicalName: targetCanonical.nameFr,
+      canonicalId: targetCanonical.id
     });
 
   } catch (error) {
