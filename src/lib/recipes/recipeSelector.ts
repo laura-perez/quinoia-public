@@ -1,9 +1,14 @@
 import { createLogger } from '@/lib/logger';
-import { getUserRecentRecipes } from '@/lib/supabase/repositories/userRecipeHistory';
 import { getFilteredRecipes } from '@/lib/supabase/repositories/recipes';
+import { getUserRecencyFromView } from '@/lib/supabase/recency';
 import { mapValue, equipmentMap } from '@/schemas/mappers';
 import type { Recipe, SelectionContext, ScoredRecipe, RecipeSelectionResult } from '@/types/recipes';
-import type { RecentRecipesSplit } from '@/lib/supabase/repositories/userRecipeHistory';
+// Using recency view now instead of userRecipeHistory direct table reads
+interface RecencyViewData {
+  excludeRecipeIds: string[];
+  recentStrict: string[]; // recipes to hard-exclude (≤14/15 days)
+  recentSoft: string[];   // recipes to soft-penalize (15-21 days)
+}
 
 const logger = createLogger();
 
@@ -26,28 +31,38 @@ export async function selectRecipes(context: SelectionContext): Promise<RecipeSe
     diet: context.diet 
   });
 
-  // 1. Get user's recent recipes for recency filtering
-  const recentRecipes = await getUserRecentRecipes(context.userId);
-  
-  // 2. Apply hard filters
-  const filteredRecipes = await applyHardFilters(context, recentRecipes);
+  // 1. Get recency data from SQL view (unified source)
+  const recency: RecencyViewData = await getUserRecencyFromView(context.userId);
+
+  // 2. Apply hard filters (exclude strict + explicit exclusion list)
+  const filteredRecipes = await applyHardFilters(context, recency);
   
   if (filteredRecipes.length < context.numRecipes) {
-    logger.warn('Insufficient recipes after hard filtering', {
+    logger.error('Insufficient recipes after hard filtering', {
       available: filteredRecipes.length,
       requested: context.numRecipes,
-      userId: context.userId
+      userId: context.userId,
+      diet: context.diet,
+      proteinPreferences: context.proteinPreferences,
+      kcalRange: { min: context.mealMinKcal, max: context.mealMaxKcal },
+      proteinFloorG: context.proteinFloorG
     });
-    // If not enough recipes are found, we can try to relax some filters or use fallbacks
-    // TODO: send notification to warn of error, with context data for easy adding
-    // return, don't go further; // Placeholder for error handling
+    // TODO: Implement email notification to ops with above context + recency data
+    throw new Error(`Recipe selection aborted: only ${filteredRecipes.length} recipes available (< ${context.numRecipes} required)`);
   }
   
-  // 3. Score all filtered recipes
-  const scoredRecipes = scoreRecipes(filteredRecipes, context, recentRecipes);
+  // 3. Score all filtered recipes (soft list provides recency penalty)
+  const scoredRecipes = scoreRecipes(filteredRecipes, context, recency);
+
+  // 3b. Remove near-duplicates to improve variety
+  const dedupedScoredRecipes = filterNearDuplicates(scoredRecipes, {
+    rejectThreshold: 0.7,
+    softThreshold: 0.6, // future use (penalty zone) - currently only hard reject ≥ rejectThreshold
+    maxLossFraction: 0.4 // do not remove more than 40% of pool
+  });
   
   // 4. Apply diversity strategy and select final recipes
-  const selectedRecipes = applyDiversitySelection(scoredRecipes, context);
+  const selectedRecipes = applyDiversitySelection(dedupedScoredRecipes, context);
   
   // 5. Calculate nutrition summary
   const nutritionSummary = calculateNutritionSummary(selectedRecipes, context.numServings);
@@ -62,7 +77,7 @@ export async function selectRecipes(context: SelectionContext): Promise<RecipeSe
     selectedRecipes: selectedRecipes.map(r => ({ ...r, score: undefined, scoreBreakdown: undefined } as Recipe)),
     scoringDetails: {
       totalFiltered: filteredRecipes.length,
-      totalScored: scoredRecipes.length,
+  totalScored: scoredRecipes.length,
       diversityStrategy: getDiversityStrategy(context.diet),
       fallbacksUsed: [] // TODO: implement fallback tracking
     },
@@ -75,8 +90,8 @@ export async function selectRecipes(context: SelectionContext): Promise<RecipeSe
  * Apply hard filters that cannot be compromised
  */
 async function applyHardFilters(
-  context: SelectionContext, 
-  recentRecipes: RecentRecipesSplit
+  context: SelectionContext,
+  recency: RecencyViewData
 ): Promise<Recipe[]> {
   // Get recipes using repository
   const recipes = await getFilteredRecipes({
@@ -86,7 +101,8 @@ async function applyHardFilters(
     minCalories: context.mealMinKcal,
     maxCalories: context.mealMaxKcal,
     minProtein: context.proteinFloorG,
-    excludeRecipeIds: recentRecipes.strict // Exclude recent strict recipes (≤14 days)
+    // Exclude union of strict recent list + explicit exclusion list (deduped)
+    excludeRecipeIds: Array.from(new Set([...(recency.recentStrict || []), ...(recency.excludeRecipeIds || [])]))
   });
   
   // Base equipment assumed to be available for everyone (in English to match user input after mapping)
@@ -118,9 +134,9 @@ async function applyHardFilters(
  * Score recipes using the deterministic algorithm from SPECS
  */
 function scoreRecipes(
-  recipes: Recipe[], 
+  recipes: Recipe[],
   context: SelectionContext,
-  recentRecipes: RecentRecipesSplit
+  recency: RecencyViewData
 ): ScoredRecipe[] {
   const favoriteWords = context.favoriteFoods?.toLowerCase().split(/\s+/) || [];
   const dislikedWords = context.dislikedFoods?.toLowerCase().split(/\s+/) || [];
@@ -165,7 +181,7 @@ function scoreRecipes(
     );
     
     // 7. Recency penalty for soft recent recipes (-1.5)
-    if (recentRecipes.soft.includes(recipe.id)) {
+  if (recency.recentSoft.includes(recipe.id)) {
       scoreBreakdown.recencyPenalty = -1.5;
     }
     
@@ -272,4 +288,115 @@ function calculateNutritionSummary(recipes: ScoredRecipe[], numServings: number)
     totalCalories,
     totalProtein: Math.round(totalProtein * 10) / 10
   };
+}
+
+/**
+ * Near-duplicate filtering
+ * Removes lower-scoring recipes that are very similar to an already retained higher-scoring one.
+ */
+function filterNearDuplicates(
+  scored: ScoredRecipe[],
+  opts: { rejectThreshold: number; softThreshold: number; maxLossFraction: number }
+): ScoredRecipe[] {
+  const { rejectThreshold, maxLossFraction } = opts;
+  const kept: ScoredRecipe[] = [];
+  const removed: { a: string; b: string; sim: number }[] = [];
+
+  for (const recipe of scored) {
+    const isDuplicate = kept.some(existing => {
+      const sim = similarity(existing, recipe);
+      if (sim >= rejectThreshold) {
+        removed.push({ a: existing.titleFr, b: recipe.titleFr, sim: Math.round(sim * 100) / 100 });
+        return true;
+      }
+      return false;
+    });
+    if (!isDuplicate) kept.push(recipe);
+  }
+
+  // Safety: avoid over-filtering
+  if (kept.length < scored.length * (1 - maxLossFraction)) {
+    logger.warn('Duplicate filter reverted (would remove too many recipes)', {
+      original: scored.length,
+      kept: kept.length
+    });
+    return scored;
+  }
+
+  if (removed.length) {
+    logger.info('Near-duplicate recipes filtered', {
+      original: scored.length,
+      kept: kept.length,
+      removedPairs: removed.slice(0, 10) // cap log size
+    });
+  }
+  return kept;
+}
+
+// --- Similarity helpers ---
+function similarity(a: Recipe, b: Recipe): number {
+  const ingA = new Set(a.ingredients?.map(i => normalizeToken(i.nom)) || []);
+  const ingB = new Set(b.ingredients?.map(i => normalizeToken(i.nom)) || []);
+  const jaccardIng = jaccard(ingA, ingB);
+
+  const titleTokensA = tokenize(a.titleFr);
+  const titleTokensB = tokenize(b.titleFr);
+  const jaccardTitle = jaccard(new Set(titleTokensA), new Set(titleTokensB));
+
+  const baseMatch = baseToken(a.titleFr) === baseToken(b.titleFr) ? 1 : 0;
+  const proteinMatch = a.proteinCategory === b.proteinCategory ? 1 : 0;
+  const structural = (baseMatch && proteinMatch) ? 1 : 0;
+  const patternA = cookingPattern(titleTokensA);
+  const patternB = cookingPattern(titleTokensB);
+  const patternMatch = patternA && patternB && patternA === patternB ? 1 : 0;
+
+  // Important vegetable tokens (normalized without accents)
+  const importantVeg = ['carotte','carottes','brocoli','courgette','pois','petits','edamame','poivron','oignon'];
+  const sharedImportant = new Set(titleTokensA.filter(t => importantVeg.includes(t) && titleTokensB.includes(t)));
+
+  let score = 0.35 * jaccardIng + 0.25 * jaccardTitle + 0.25 * structural + 0.15 * patternMatch;
+
+  // Heuristic boost: same stir-fry rice pattern + at least one shared important veg -> raise similarity floor
+  if (patternMatch && patternA?.includes('riz-saute') && sharedImportant.size > 0) {
+    score = Math.max(score, 0.8);
+  }
+
+  return score;
+}
+
+function jaccard(a: Set<string>, b: Set<string>): number {
+  if (!a.size && !b.size) return 0;
+  let inter = 0;
+  for (const v of a) if (b.has(v)) inter++;
+  return inter / (a.size + b.size - inter || 1);
+}
+
+function tokenize(text: string): string[] {
+  return normalizeToken(text).split('-').filter(Boolean);
+}
+
+function normalizeToken(t: string): string {
+  return t
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\s/g, '-');
+}
+
+function baseToken(title: string): string {
+  const tokens = tokenize(title);
+  // Look for common cooking style words
+  const styles = ['saute', 'sauté', 'curry', 'bowl', 'gratin', 'wrap', 'salade', 'riz', 'pate', 'nouilles', 'quinoa'];
+  return tokens.find(t => styles.includes(t)) || tokens[0] || '';
+}
+
+function cookingPattern(tokens: string[]): string | null {
+  const hasRiz = tokens.includes('riz');
+  const hasSaute = tokens.includes('saute') || tokens.includes('sauté');
+  if (hasRiz && hasSaute) return 'riz-saute';
+  if (tokens.includes('curry')) return 'curry';
+  if (tokens.includes('bowl')) return 'bowl';
+  return null;
 }

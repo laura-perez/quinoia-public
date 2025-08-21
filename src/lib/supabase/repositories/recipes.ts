@@ -55,18 +55,15 @@ export async function getFilteredRecipes(filters: RecipeFilters): Promise<Recipe
   }
   
   if (filters.minCalories) {
-    //query = query.gte('caloriesPerServing', filters.minCalories);
-    query = query.gte('caloriesPerServing', 100);
+    query = query.gte('caloriesPerServing', filters.minCalories);
   }
   
   if (filters.maxCalories) {
-    //query = query.lte('caloriesPerServing', filters.maxCalories);
-    query = query.lte('caloriesPerServing', 1500);
+    query = query.lte('caloriesPerServing', filters.maxCalories);
   }
   
   if (filters.minProtein) {
-    //query = query.gte('proteinGPerServing', filters.minProtein);
-    query = query.gte('proteinGPerServing', 10);
+    query = query.gte('proteinGPerServing', filters.minProtein);
   }
   
   // Exclude specific recipes (for recency filtering)
