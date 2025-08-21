@@ -1,6 +1,6 @@
 /**
  * Recipe Import Script - Load recipes from recipes.json into v2.0 database
- * Run with: npx tsx scripts/import-recipes.ts
+ * Run with: npx tsx database/scripts/import-recipes.ts
  *
  * Note: When run outside Next.js, .env.local is NOT auto-loaded. We manually load
  * env files (priority: .env.recipe-import -> .env.local -> .env) before importing

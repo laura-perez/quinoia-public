@@ -53,6 +53,12 @@ interface MappedIngredient {
   confidence: number;
 }
 
+interface FailedRecipe {
+  recipe: GPTRecipe;
+  reason: string;
+  category: 'validation' | 'review' | 'database';
+}
+
 interface ImportResult {
   imported: number;
   skipped: number;
@@ -60,7 +66,7 @@ interface ImportResult {
   reviewRequired: string[];
   ingredientMappings: Map<string, CanonicalIngredient>;
   successfulRecipes: GPTRecipe[];
-  failedRecipes: GPTRecipe[];
+  failedRecipes: FailedRecipe[];
 }
 
 // ---------------- Raw (snake_case) recipe validation & mapping ---------------
@@ -393,7 +399,9 @@ export async function importGPTRecipes(gptRecipes: GPTRecipe[]): Promise<ImportR
 
       // 1. Validate nutrition plausibility
       if (!isNutritionPlausible(gptRecipe)) {
-        results.errors.push(`Implausible nutrition for "${gptRecipe.titleFr}"`);
+        const reason = `Implausible nutrition for "${gptRecipe.titleFr}"`;
+        results.errors.push(reason);
+        results.failedRecipes.push({ recipe: gptRecipe, reason, category: 'validation' });
         results.skipped++;
         continue;
       }
@@ -401,11 +409,16 @@ export async function importGPTRecipes(gptRecipes: GPTRecipe[]): Promise<ImportR
       // 2. Map ingredients to canonical taxonomy
       const mappedIngredients = await mapIngredientsToCanonical(gptRecipe.ingredients);
       
-      // Check if too many ingredients need review
+      // Check if ingredients need review
       const lowConfidenceCount = mappedIngredients.filter(ing => ing.confidence < 0.7).length;
-      if (lowConfidenceCount > 2) {
-        results.reviewRequired.push(`Recipe "${gptRecipe.titleFr}" has ${lowConfidenceCount} unmapped ingredients`);
-        // Don't mark as failed just for low confidence ingredients - still import but flag for review
+      const needsReview = lowConfidenceCount > 2;
+      
+      if (needsReview) {
+        const reason = `Recipe "${gptRecipe.titleFr}" has ${lowConfidenceCount} unmapped ingredients`;
+        results.reviewRequired.push(reason);
+        results.failedRecipes.push({ recipe: gptRecipe, reason, category: 'review' });
+        results.skipped++;
+        continue; // Skip importing this recipe
       }
 
       // 3. Prepare ingredients JSONB with canonical references
@@ -440,13 +453,15 @@ export async function importGPTRecipes(gptRecipes: GPTRecipe[]): Promise<ImportR
           cuisineType: gptRecipe.cuisineType,
           imageFilename: gptRecipe.imageFilename,
           cookingTip: gptRecipe.cookingTip,
-          status: lowConfidenceCount > 2 ? 'review_needed' : 'active'
+          status: 'active'
         })
         .select('id')
         .single();
 
       if (recipeError) {
-  results.errors.push(`Failed to insert recipe "${gptRecipe.titleFr}": ${recipeError.message}`);
+        const reason = `Failed to insert recipe "${gptRecipe.titleFr}": ${recipeError.message}`;
+        results.errors.push(reason);
+        results.failedRecipes.push({ recipe: gptRecipe, reason, category: 'database' });
         results.skipped++;
         continue;
       }
@@ -488,14 +503,16 @@ export async function importGPTRecipes(gptRecipes: GPTRecipe[]): Promise<ImportR
       const errorMessage = (error as Error).message;
       
       // Check if it's a duplicate recipe error
+      let reason: string;
       if (errorMessage.includes('duplicate key value') && errorMessage.includes('recipe_titleFr_unique')) {
         logger.warn('Recipe already exists, skipping', { title: gptRecipe.titleFr });
-        results.errors.push(`Recipe "${gptRecipe.titleFr}" already exists in database`);
+        reason = `Recipe "${gptRecipe.titleFr}" already exists in database`;
       } else {
-        results.errors.push(`Failed to import "${gptRecipe.titleFr}": ${errorMessage}`);
-        results.failedRecipes.push(gptRecipe);
+        reason = `Failed to import "${gptRecipe.titleFr}": ${errorMessage}`;
         logger.error('Recipe import failed', { title: gptRecipe.titleFr, error });
       }
+      results.errors.push(reason);
+      results.failedRecipes.push({ recipe: gptRecipe, reason, category: 'database' });
       results.skipped++;
     }
   }
@@ -512,12 +529,13 @@ export async function importGPTRecipes(gptRecipes: GPTRecipe[]): Promise<ImportR
 
 /**
  * Move successfully imported recipes from source to destination file
+ * Failed recipes remain in source with failure reasons as comments
  */
 export async function moveSuccessfulRecipes(
   sourceFile: string,
   destinationFile: string,
   successfulRecipes: GPTRecipe[],
-  failedRecipes: GPTRecipe[]
+  failedRecipes: FailedRecipe[]
 ): Promise<void> {
   const fs = require('fs');
   const path = require('path');
@@ -546,9 +564,16 @@ export async function moveSuccessfulRecipes(
       destinationFile 
     });
 
-    // Update source file with only failed recipes
+    // Update source file with only failed recipes and their failure reasons
     const sourceData = {
-      recipes: failedRecipes.map(recipe => convertToRawRecipe(recipe))
+      recipes: failedRecipes.map(failedItem => {
+        const rawRecipe = convertToRawRecipe(failedItem.recipe);
+        return {
+          ...rawRecipe,
+          _importFailureReason: failedItem.reason,
+          _importFailureCategory: failedItem.category
+        };
+      })
     };
     
     fs.writeFileSync(sourceFile, JSON.stringify(sourceData, null, 2), 'utf8');
