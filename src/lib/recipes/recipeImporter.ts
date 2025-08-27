@@ -36,6 +36,24 @@ interface GPTRecipe {
   cookingTip?: string;
 }
 
+// Database response types for ingredient matching
+interface IngredientCanonicalResponse {
+  nameFr: string;
+  category: string;
+}
+
+interface IngredientAliasResponse {
+  canonicalId: string;
+  confidence: number;
+  ingredientCanonical: IngredientCanonicalResponse[];
+}
+
+interface PartialMatchResponse {
+  id: string;
+  nameFr: string;
+  category: string;
+}
+
 interface CanonicalIngredient {
   id: string;
   nameFr: string;
@@ -73,8 +91,8 @@ interface ImportResult {
 const RawRecipeSchema = z.object({
   title_fr: z.string(),
   diet: z.enum(['omnivore', 'flexitarian', 'vegetarian', 'vegan']),
-  protein_category: z.string(),
-  cooking_level: z.string(),
+  protein_category: z.enum(['Beef', 'Poultry', 'Fish', 'Eggs', 'Dairy', 'Tofu', 'Legumes', 'Meat alternatives']),
+  cooking_level: z.enum(['beginner', 'intermediate', 'advanced']),
   prep_time_minutes: z.number().int().positive(),
   calories_per_serving: z.number().int().positive(),
   protein_g_per_serving: z.number().nonnegative(),
@@ -98,36 +116,32 @@ const RawRecipeSchema = z.object({
 
 type RawRecipe = z.infer<typeof RawRecipeSchema>;
 
-const RAW_TO_CAMEL_FIELD_MAP: Record<string, keyof GPTRecipe> = {
-  title_fr: 'titleFr',
-  protein_category: 'proteinCategory',
-  cooking_level: 'cookingLevel',
-  prep_time_minutes: 'prepTimeMinutes',
-  calories_per_serving: 'caloriesPerServing',
-  protein_g_per_serving: 'proteinGPerServing',
-  carbs_g_per_serving: 'carbsGPerServing',
-  fat_g_per_serving: 'fatGPerServing',
-  equipment_required: 'equipmentRequired',
-  batch_friendly: 'batchFriendly',
-  image_filename: 'imageFilename',
-  cuisine_type: 'cuisineType',
-  servings_base: 'servingsBase',
-  cooking_tip: 'cookingTip'
-};
-
 function transformRawRecipe(raw: unknown): GPTRecipe {
-  const parsed = RawRecipeSchema.parse(raw) as RawRecipe;
-  const base: any = {
+  const parsed = RawRecipeSchema.parse(raw);
+  
+  const transformedRecipe: GPTRecipe = {
+    titleFr: parsed.title_fr,
     diet: parsed.diet,
+    proteinCategory: parsed.protein_category,
+    cookingLevel: parsed.cooking_level,
+    prepTimeMinutes: parsed.prep_time_minutes,
+    caloriesPerServing: parsed.calories_per_serving,
+    proteinGPerServing: parsed.protein_g_per_serving,
+    carbsGPerServing: parsed.carbs_g_per_serving,
+    fatGPerServing: parsed.fat_g_per_serving,
+    equipmentRequired: parsed.equipment_required,
+    batchFriendly: parsed.batch_friendly,
+    allergens: parsed.allergens,
     tags: parsed.tags || [],
-    allergens: parsed.allergens || [],
     ingredients: parsed.ingredients,
-    instructions: parsed.instructions
+    instructions: parsed.instructions,
+    servingsBase: parsed.servings_base,
+    imageFilename: parsed.image_filename,
+    cuisineType: parsed.cuisine_type,
+    cookingTip: parsed.cooking_tip
   };
-  for (const [snake, camel] of Object.entries(RAW_TO_CAMEL_FIELD_MAP)) {
-    base[camel] = (parsed as any)[snake];
-  }
-  return base as GPTRecipe;
+  
+  return transformedRecipe;
 }
 
 /**
@@ -156,12 +170,11 @@ export async function matchIngredient(ingredientName: string): Promise<{
       .limit(1);
 
     if (exactMatch && exactMatch.length > 0) {
-      const match = exactMatch[0];
-      const canonical = (match as any).ingredientCanonical;
+      const match = exactMatch[0] as IngredientAliasResponse;
       return {
-        canonicalId: (match as any).canonicalId,
-        canonicalName: canonical?.nameFr,
-        confidence: (match as any).confidence,
+        canonicalId: match.canonicalId,
+        canonicalName: match.ingredientCanonical?.[0]?.nameFr,
+        confidence: match.confidence,
         needsReview: false
       };
     }
@@ -180,13 +193,12 @@ export async function matchIngredient(ingredientName: string): Promise<{
       .limit(1);
 
     if (fuzzyMatch && fuzzyMatch.length > 0) {
-      const match = fuzzyMatch[0];
-      const canonical = (match as any).ingredientCanonical;
+      const match = fuzzyMatch[0] as IngredientAliasResponse;
       return {
-        canonicalId: (match as any).canonicalId,
-        canonicalName: canonical?.nameFr,
-        confidence: Math.max(0.8, (match as any).confidence), // Fuzzy match penalty
-        needsReview: (match as any).confidence < 0.9
+        canonicalId: match.canonicalId,
+        canonicalName: match.ingredientCanonical?.[0]?.nameFr,
+        confidence: Math.max(0.8, match.confidence), // Fuzzy match penalty
+        needsReview: match.confidence < 0.9
       };
     }
 
@@ -197,8 +209,9 @@ export async function matchIngredient(ingredientName: string): Promise<{
       .or(`nameFr.ilike.%${ingredientName}%,nameFr.ilike.%${ingredientName.split(' ')[0]}%`);
 
     if (partialMatches && partialMatches.length > 0) {
+      const typedMatches = partialMatches as PartialMatchResponse[];
       // Score by text similarity (simple heuristic)
-      const bestMatch = partialMatches.reduce((best, current) => {
+      const bestMatch = typedMatches.reduce((best, current) => {
         const currentScore = calculateSimilarity(ingredientName, current.nameFr);
         const bestScore = calculateSimilarity(ingredientName, best.nameFr);
         return currentScore > bestScore ? current : best;
@@ -326,7 +339,7 @@ function isNutritionPlausible(recipe: GPTRecipe): boolean {
     carbsGPerServing,
     fatGPerServing,
     titleFr
-  } = recipe as any;
+  } = recipe;
 
   // Paramètres alignés partout (GPT + code). Pas d’options magiques.
   const KCAL_DELTA_MAX_PCT = 0.15; // 15% comme ton implémentation actuelle
