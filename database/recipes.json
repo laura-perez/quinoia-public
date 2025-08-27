@@ -2148,6 +2148,3737 @@
       "cuisine_type": "française",
       "servings_base": 2,
       "cooking_tip": "Ajoutez des cornichons émincés et un trait de jus de citron pour une version façon salade tiède ‘bistrot’."
+    },
+    {
+      "title_fr": "Orzo au four façon ratatouille et mozzarella",
+      "diet": "vegetarian",
+      "protein_category": "Dairy",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 20,
+      "calories_per_serving": 494,
+      "protein_g_per_serving": 22,
+      "carbs_g_per_serving": 70,
+      "fat_g_per_serving": 14,
+      "equipment_required": [
+        "Four"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose"
+      ],
+      "tags": [
+        "été",
+        "méditerranéen",
+        "français"
+      ],
+      "ingredients": [
+        {
+          "nom": "Pâtes Orzo",
+          "quantite": 320,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate concassée",
+          "quantite": 800,
+          "unite": "g"
+        },
+        {
+          "nom": "Courgette",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Aubergine",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron rouge",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Mozzarella",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "Herbes de Provence",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Eau",
+          "quantite": 500,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 200°C (chaleur tournante).",
+        "Couper courgette, aubergine et poivron en dés de 2 cm. Émincer l’oignon, hacher l’ail. Déchirer la mozzarella en morceaux.",
+        "Dans un grand plat allant au four, mélanger pâtes, tomate concassée, eau, huile d’olive, herbes de Provence, oignon, ail et tous les légumes. Bien remuer pour répartir le liquide.",
+        "Couvrir hermétiquement de papier aluminium et enfourner 20 minutes.",
+        "Retirer l’alu, mélanger, parsemer de mozzarella et remettre 8 minutes pour gratiner. Laisser reposer 3 minutes.",
+        "Goûter et ajuster sel/poivre/herbes."
+      ],
+      "servings_base": 4,
+      "image_filename": "Orzo_au_four_facon_ratatouille_et_mozzarella.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Si les aubergines ne sont pas de saison, remplace-les par des dés de courgette supplémentaires ou par un mélange de légumes surgelés grillés."
+    },
+    {
+      "title_fr": "Riz au four aux légumes d'été, pois chiches et œufs cocotte",
+      "diet": "vegetarian",
+      "protein_category": "Eggs",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 15,
+      "calories_per_serving": 526,
+      "protein_g_per_serving": 25,
+      "carbs_g_per_serving": 75,
+      "fat_g_per_serving": 14,
+      "equipment_required": [
+        "Four"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "œufs"
+      ],
+      "tags": [
+        "été",
+        "méditerranéen",
+        "français"
+      ],
+      "ingredients": [
+        {
+          "nom": "Riz basmati",
+          "quantite": 280,
+          "unite": "g"
+        },
+        {
+          "nom": "Pois chiches en conserve",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate concassée",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Courgette",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron rouge",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Œuf",
+          "quantite": 8,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 20,
+          "unite": "ml"
+        },
+        {
+          "nom": "Paprika doux",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Eau",
+          "quantite": 600,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 200°C (chaleur tournante).",
+        "Couper la courgette et le poivron en dés. Émincer l’oignon et hacher l’ail.",
+        "Dans un grand plat, mélanger riz, pois chiches égouttés, tomate concassée, légumes, ail, oignon, huile d’olive et paprika et sel. Couvrir d'eau à niveau.",
+        "Couvrir d’aluminium et cuire 25 minutes.",
+        "Retirer l’alu, creuser 8 petits nids, casser un œuf dans chacun et remettre au four 7 à 9 minutes, jusqu’au blanc pris.",
+        "Goûter le riz et ajuster sel/poivre/herbes."
+      ],
+      "servings_base": 4,
+      "image_filename": "Riz_au_four_aux_legumes_d_ete_pois_chiches_et_oeufs_cocotte.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Si le riz n’est pas encore tendre, ajouter 50–100 ml d’eau chaude et prolonger la cuisson de 5 minutes avant d’ajouter les œufs."
+    },
+    {
+      "title_fr": "Tacos croustillants poulet + pois chiches (air fryer), salsa tomate",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 518,
+      "protein_g_per_serving": 34,
+      "carbs_g_per_serving": 56,
+      "fat_g_per_serving": 20,
+      "equipment_required": [
+        "Air fryer"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose"
+      ],
+      "tags": [
+        "protéiné",
+        "été",
+        "mexicain"
+      ],
+      "ingredients": [
+        {
+          "nom": "Blanc de poulet",
+          "quantite": 360,
+          "unite": "g"
+        },
+        {
+          "nom": "Pois chiches cuits",
+          "quantite": 240,
+          "unite": "g"
+        },
+        {
+          "nom": "Tortilla de blé",
+          "quantite": 8,
+          "unite": "piece"
+        },
+        {
+          "nom": "Tomate",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon rouge",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Laitue",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Emmental râpé",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Épices mexicaines",
+          "quantite": 15,
+          "unite": "ml"
+        },
+        {
+          "nom": "Citron vert",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 70,
+          "unite": "ml"
+        },
+        {
+          "nom": "Yaourt nature",
+          "quantite": 120,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Préchauffer l’air fryer à 200°C. Couper le poulet en lanières.",
+        "Mélanger poulet et pois chiches avec les épices et 50 ml d’huile. Étaler dans le panier et cuire 12 à 14 minutes à 200°C en secouant à mi-cuisson.",
+        "Mélanger la tomate en dés, l’oignon haché, le jus du citron vert et 20 ml d’huile pour une salsa rapide.",
+        "Réchauffer les tortillas 1 à 2 minutes à 180°C.",
+        "Garnir chaque tortilla de mélange croustillant, salsa, laitue et un peu d’emmental. Ajouter une cuillerée de yaourt.",
+        "Goûter et ajuster l’assaisonnement."
+      ],
+      "servings_base": 4,
+      "image_filename": "Tacos_croustillants_poulet_pois_chiches_air_fryer_salsa_tomate.png",
+      "cuisine_type": "mexicain",
+      "cooking_tip": "Bien sécher les pois chiches avant cuisson pour un effet ultra croustillant."
+    },
+    {
+      "title_fr": "Tofu BBQ croustillant (air fryer), patate douce et haricots verts",
+      "diet": "vegan",
+      "protein_category": "Tofu",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 550,
+      "protein_g_per_serving": 24,
+      "carbs_g_per_serving": 52,
+      "fat_g_per_serving": 27,
+      "equipment_required": [
+        "Air fryer",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "soja"
+      ],
+      "tags": [
+        "été",
+        "français"
+      ],
+      "ingredients": [
+        {
+          "nom": "Tofu ferme",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Patate douce",
+          "quantite": 500,
+          "unite": "g"
+        },
+        {
+          "nom": "Haricots verts",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Concentré de tomate",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "Vinaigre de cidre",
+          "quantite": 20,
+          "unite": "ml"
+        },
+        {
+          "nom": "Sucre",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Paprika fumé",
+          "quantite": 4,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Huile de tournesol",
+          "quantite": 30,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Préchauffer l’air fryer à 200°C. Couper la patate douce en cubes de 2 cm, mélanger avec 15 ml d’huile et 2 g de paprika fumé. Cuire 18 minutes à 200°C en secouant à mi-cuisson.",
+        "Porter une casserole d’eau à ébullition et cuire les haricots verts 6 à 7 minutes, égoutter.",
+        "Couper le tofu en cubes de 2 cm. Mélanger concentré de tomate, vinaigre, sucre, ail pressé, 15 ml d’huile et 2 g de paprika.",
+        "Enrober le tofu de sauce, ajouter au panier et cuire 12 minutes à 200°C en secouant à mi-cuisson.",
+        "Servir le tofu croustillant avec patate douce et haricots verts. Goûter et ajuster l’assaisonnement."
+      ],
+      "servings_base": 2,
+      "image_filename": "Tofu_BBQ_croustillant_air_fryer_patate_douce_et_haricots_verts.png",
+      "cuisine_type": "français",
+      "cooking_tip": "Égoutter le tofu 10 minutes sous un poids pour un résultat plus ferme et croustillant."
+    },
+    {
+      "title_fr": "Salade de bœuf grillé, quinoa, maïs et poivron",
+      "diet": "omnivore",
+      "protein_category": "Beef",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 500,
+      "protein_g_per_serving": 42,
+      "carbs_g_per_serving": 45,
+      "fat_g_per_serving": 16,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [],
+      "tags": [
+        "protéiné",
+        "été",
+        "mexicain"
+      ],
+      "ingredients": [
+        {
+          "nom": "Bœuf rumsteak",
+          "quantite": 600,
+          "unite": "g"
+        },
+        {
+          "nom": "Quinoa",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Maïs en conserve",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron rouge",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Coriandre",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Citron vert",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Cumin",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 40,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Rincer le quinoa et le cuire 12–14 min dans une casserole d’eau bouillante salée. Égoutter et refroidir.",
+        "Émincer l’oignon, couper poivron et tomate en dés. Égoutter le maïs.",
+        "Chauffer une poêle avec 20 ml d’huile à feu vif. Saisir le bœuf en lanières 3–4 min pour rosé ou plus selon goût. Ajouter le cumin et le jus de citron vert 30 s hors du feu.",
+        "Assembler quinoa, maïs, poivron, tomate et oignon dans un grand saladier. Ajouter 20 ml d’huile restante et la coriandre ciselée.",
+        "Ajouter le bœuf tiède, mélanger délicatement.",
+        "Goûter et ajuster sel/poivre/herbes."
+      ],
+      "servings_base": 4,
+      "image_filename": "Salade_de_boeuf_grille_quinoa_mais_et_poivron.png",
+      "cuisine_type": "mexicain",
+      "cooking_tip": "Tu peux remplacer le bœuf par de la dinde émincée pour une version plus économique."
+    },
+    {
+      "title_fr": "Rösti de patate douce, tomates rôties, feta et œufs au plat",
+      "diet": "vegetarian",
+      "protein_category": "Eggs",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 860,
+      "protein_g_per_serving": 34,
+      "carbs_g_per_serving": 62,
+      "fat_g_per_serving": 52,
+      "equipment_required": [
+        "Poêle",
+        "Four"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "lactose",
+        "œufs"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Patate douce",
+          "quantite": 600,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate cerise",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon rouge",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Feta",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Emmental râpé",
+          "quantite": 60,
+          "unite": "g"
+        },
+        {
+          "nom": "Œuf",
+          "quantite": 4,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 40,
+          "unite": "ml"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 1,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Origan",
+          "quantite": 2,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 210°C. Mélanger les tomates cerises entières avec 10 ml d’huile et l’origan, étaler sur une plaque et rôtir 12 minutes.",
+        "Râper la patate douce, émincer l’oignon et hacher l’ail. Presser la patate douce râpée entre les mains pour retirer l’excès d’eau.",
+        "Chauffer 15 ml d’huile dans une poêle à feu moyen. Étaler la moitié du mélange patate/oignon/ail en galette, cuire 4 minutes par face jusqu’à doré. Répéter avec le reste, ajouter un filet d’huile si besoin.",
+        "Dans la même poêle chaude avec 5 ml d’huile, cuire les œufs au plat 2 à 3 minutes à feu moyen (blanc pris, jaune coulant).",
+        "Servir les rösti avec les tomates rôties, émietter la feta et parsemer d’emmental. Goûter et ajuster assaisonnement."
+      ],
+      "servings_base": 2,
+      "image_filename": "Rosti_de_patate_douce_tomates_roties_feta_et_oeufs_au_plat.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Pour une croûte bien croustillante, tasse la galette avec une spatule pendant la cuisson et évite de la déplacer trop tôt. Hors saison, remplace les tomates fraîches par des tomates cerises surgelées."
+    },
+    {
+      "title_fr": "Patates rôties, brocoli et sauce cheddar, œufs mollets",
+      "diet": "vegetarian",
+      "protein_category": "Dairy",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 28,
+      "calories_per_serving": 860,
+      "protein_g_per_serving": 32,
+      "carbs_g_per_serving": 70,
+      "fat_g_per_serving": 50,
+      "equipment_required": [
+        "Four",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose",
+        "œufs"
+      ],
+      "tags": [
+        "protéiné",
+        "français",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Pomme de terre",
+          "quantite": 600,
+          "unite": "g"
+        },
+        {
+          "nom": "Brocoli",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Cheddar râpé",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "Lait",
+          "quantite": 300,
+          "unite": "ml"
+        },
+        {
+          "nom": "Beurre",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "Farine",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "Œuf",
+          "quantite": 4,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 20,
+          "unite": "ml"
+        },
+        {
+          "nom": "Paprika",
+          "quantite": 4,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 210°C. Couper les pommes de terre en quartiers, mélanger avec l’huile et le paprika, rôtir 20 à 22 minutes.",
+        "Détailler le brocoli en petits bouquets. Les plonger 3 minutes dans une casserole d’eau bouillante salée, égoutter.",
+        "Préparer la sauce: faire fondre le beurre à feu moyen, ajouter la farine 1 minute en fouettant, verser le lait progressivement 3 à 4 minutes jusqu’à nappant. Ajouter le cheddar, fondre 1 minute.",
+        "Cuire les œufs 6 minutes dans l’eau bouillante pour des œufs mollets, passer sous l’eau froide et écaler.",
+        "Servir les patates rôties avec le brocoli, napper de sauce cheddar et déposer les œufs coupés. Goûter et ajuster assaisonnement."
+      ],
+      "servings_base": 2,
+      "image_filename": "Patates_roties_brocoli_et_sauce_cheddar_oeufs_mollets.png",
+      "cuisine_type": "français",
+      "cooking_tip": "Pour gagner du temps, commence la sauce pendant que les pommes de terre rôtissent. Remplace le brocoli par des fleurettes surgelées en dehors de la saison."
+    },
+    {
+      "title_fr": "Poulet shawarma minute, riz basmati et salade concombre-yaourt",
+      "diet": "omnivore",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 560,
+      "protein_g_per_serving": 38,
+      "carbs_g_per_serving": 70,
+      "fat_g_per_serving": 14,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "lactose",
+        "gluten",
+        "œufs"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Blanc de poulet",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Riz basmati",
+          "quantite": 160,
+          "unite": "g"
+        },
+        {
+          "nom": "Concombre",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Yaourt grec 0–2%",
+          "quantite": 160,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 1,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 20,
+          "unite": "ml"
+        },
+        {
+          "nom": "Cumin moulu",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Paprika",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Coriandre moulue",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Curcuma",
+          "quantite": 2,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Rincer le riz et le cuire à feu doux dans une casserole d’eau bouillante (10–12 min). Égoutter, couvrir.",
+        "Couper le poulet en lamelles, mélanger avec 10 ml d’huile, cumin, paprika, coriandre et curcuma.",
+        "Poêler le poulet 6–7 min à feu moyen-vif jusqu’à cuisson complète.",
+        "Couper concombre et tomates en dés. Mélanger yaourt, ail râpé et un filet de jus de citron.",
+        "Servir riz, poulet et salade. Napper d’un peu de sauce yaourt et du reste d’huile si souhaité.",
+        "Goûter et ajuster l’assaisonnement."
+      ],
+      "servings_base": 2,
+      "image_filename": "Poulet_shawarma_minute_riz_basmati_et_salade_concombre_yaourt.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Ajoute quelques feuilles de menthe ou de persil dans la sauce yaourt pour une fraîcheur typique du Levant."
+    },
+    {
+      "title_fr": "Kefta express de bœuf, sauce tomate cumin et boulgour citronné",
+      "diet": "omnivore",
+      "protein_category": "Beef",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 560,
+      "protein_g_per_serving": 32,
+      "carbs_g_per_serving": 70,
+      "fat_g_per_serving": 17,
+      "equipment_required": [
+        "Poêle",
+        "Casserole"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen",
+        "été"
+      ],
+      "ingredients": [
+        {
+          "nom": "Bœuf haché 5%",
+          "quantite": 500,
+          "unite": "g"
+        },
+        {
+          "nom": "Boulgour",
+          "quantite": 280,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate concassée",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Poivron rouge",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Persil",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Cumin moulu",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "Paprika doux",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Ras el hanout",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Cuire le boulgour 10–12 min dans une casserole d’eau bouillante. Égoutter, zester un peu de citron puis ajouter son jus et 10 ml d’huile.",
+        "Mélanger le bœuf avec la moitié du cumin, le paprika et la moitié de l’ail haché. Façonner 12 mini keftas.",
+        "Poêler les keftas 6–7 min à feu moyen-vif avec 10 ml d’huile. Réserver.",
+        "Dans la même poêle, ajouter le reste d’huile, l’oignon émincé, le poivron en lamelles et l’ail restant. Saisir 3–4 min.",
+        "Verser la tomate concassée, le reste de cumin, laisser frémir 5 min puis remettre les keftas 1 min.",
+        "Servir keftas et sauce sur le boulgour, parsemer de persil. Goûter et ajuster l’assaisonnement."
+      ],
+      "servings_base": 4,
+      "image_filename": "Kefta_express_de_boeuf_sauce_tomate_cumin_et_boulgour_citronne.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Pour des keftas plus moelleuses, ajoute 10 g de chapelure et 15 ml d’eau dans la viande avant de façonner."
+    },
+    {
+      "title_fr": "Œufs à la turque (cilbir) sur pilaf de boulgour et courgettes",
+      "diet": "vegetarian",
+      "protein_category": "Eggs",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 575,
+      "protein_g_per_serving": 24,
+      "carbs_g_per_serving": 70,
+      "fat_g_per_serving": 22,
+      "equipment_required": [
+        "Casserole",
+        "Poêle"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose",
+        "œufs"
+      ],
+      "tags": [
+        "méditerranéen",
+        "été",
+        "français"
+      ],
+      "ingredients": [
+        {
+          "nom": "Boulgour",
+          "quantite": 140,
+          "unite": "g"
+        },
+        {
+          "nom": "Courgette",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Œuf",
+          "quantite": 4,
+          "unite": "piece"
+        },
+        {
+          "nom": "Yaourt grec 0–2%",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 1,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Paprika doux",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "Menthe",
+          "quantite": 6,
+          "unite": "feuille"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 20,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Cuire le boulgour 10–12 min. Égoutter et mélanger avec 10 ml d’huile.",
+        "Tailler la courgette en demi-rondelles et la poêler 6–7 min à feu moyen avec 10 ml d’huile.",
+        "Pocher les œufs 3–4 min dans une casserole d’eau frémissante vinaigrée, ou cuire au plat si tu préfères.",
+        "Mélanger le yaourt avec l’ail râpé et la menthe ciselée.",
+        "Servir le pilaf de boulgour, ajouter courgettes, yaourt et œufs, puis saupoudrer de paprika.",
+        "Goûter et ajuster l’assaisonnement."
+      ],
+      "servings_base": 2,
+      "image_filename": "Oeufs_a_la_turque_cilbir_sur_pilaf_de_boulgour_et_courgettes.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Un filet de jus de citron dans le yaourt réveille le plat et rappelle la fraîcheur des mezze."
+    },
+    {
+      "title_fr": "Mujaddara express (lentilles et riz) avec oignons dorés et salade tomate-concombre",
+      "diet": "vegan",
+      "protein_category": "Legumes",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 575,
+      "protein_g_per_serving": 22,
+      "carbs_g_per_serving": 90,
+      "fat_g_per_serving": 14,
+      "equipment_required": [
+        "Casserole",
+        "Poêle"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "méditerranéen",
+        "été",
+        "français"
+      ],
+      "ingredients": [
+        {
+          "nom": "Lentilles vertes sèches",
+          "quantite": 320,
+          "unite": "g"
+        },
+        {
+          "nom": "Riz basmati",
+          "quantite": 240,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Concombre",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Persil",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Cumin moulu",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "Huile d'olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "Citron",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Rincer lentilles et riz séparément. Cuire les lentilles 20–25 min et le riz 10–12 min dans des casseroles d’eau bouillante. Égoutter.",
+        "Émincer finement les oignons et les dorer 10–12 min à feu moyen avec l’huile dans une poêle.",
+        "Mélanger lentilles, riz, cumin et la moitié des oignons dorés.",
+        "Couper tomate et concombre en dés, ciseler le persil et assaisonner avec jus de citron.",
+        "Servir la mujaddara, coiffer du reste d’oignons et de la salade à côté.",
+        "Goûter et ajuster l’assaisonnement."
+      ],
+      "servings_base": 4,
+      "image_filename": "Mujaddara_express_lentilles_et_riz_oignons_dores_et_salade_tomate_concombre.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Rince bien les lentilles pour retirer l’amidon et obtenir des grains qui se tiennent, comme dans les bons mezze."
+    },
+    {
+      "title_fr": "Salade de haricots et rumsteak poêlé",
+      "diet": "omnivore",
+      "protein_category": "Beef",
+      "cooking_level": "intermediate",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 520,
+      "protein_g_per_serving": 36,
+      "carbs_g_per_serving": 18,
+      "fat_g_per_serving": 30,
+      "equipment_required": [
+        "Pan",
+        "Pot"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose"
+      ],
+      "tags": [
+        "été",
+        "méditerranéen",
+        "protéiné"
+      ],
+      "ingredients": [
+        {
+          "nom": "haricots cannellini",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "rumsteak",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "poivron rouge",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "concombre",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "oignon rouge",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "persil frais",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "olives Kalamata",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "fromage feta",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "vinaigre de vin rouge",
+          "quantite": 40,
+          "unite": "ml"
+        },
+        {
+          "nom": "huile d'olive",
+          "quantite": 50,
+          "unite": "ml"
+        },
+        {
+          "nom": "miel",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "origan séché",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "gousse d'ail",
+          "quantite": 1,
+          "unite": "gousse"
+        },
+        {
+          "nom": "sel",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "poivre",
+          "quantite": 2,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Saisir le rumsteak dans une poêle chaude avec un peu d’huile, 2 à 3 minutes de chaque côté selon la cuisson désirée. Laisser reposer puis couper en tranches fines.",
+        "Préparer la vinaigrette en fouettant vinaigre, miel, ail haché, origan, sel et poivre, puis incorporer l’huile d’olive.",
+        "Mélanger les haricots, légumes, olives et persil dans un saladier.",
+        "Ajouter les tranches de rumsteak et la feta émiettée. Arroser de vinaigrette et mélanger délicatement."
+      ],
+      "servings_base": 4,
+      "image_filename": "salade_de_haricots_et_rumsteak_poele.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Sortir le steak du réfrigérateur 20 minutes avant cuisson pour qu’il soit tendre."
+    },
+    {
+      "title_fr": "Salade de haricots et poulet à l'ail",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 505,
+      "protein_g_per_serving": 34,
+      "carbs_g_per_serving": 19,
+      "fat_g_per_serving": 27,
+      "equipment_required": [
+        "Pan",
+        "Pot"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose"
+      ],
+      "tags": [
+        "été",
+        "méditerranéen",
+        "protéiné"
+      ],
+      "ingredients": [
+        {
+          "nom": "haricots cannellini",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "blancs de poulet",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "gousses d'ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "poivron jaune",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "concombre",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "oignon rouge",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "persil frais",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "olives Kalamata",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "fromage feta",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "vinaigre de vin rouge",
+          "quantite": 40,
+          "unite": "ml"
+        },
+        {
+          "nom": "huile d'olive",
+          "quantite": 50,
+          "unite": "ml"
+        },
+        {
+          "nom": "miel",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "origan séché",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "sel",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "poivre",
+          "quantite": 2,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Faire revenir le poulet coupé en morceaux dans une poêle avec un peu d’huile et l’ail émincé jusqu’à cuisson complète.",
+        "Préparer la vinaigrette avec vinaigre, miel, origan, sel, poivre et huile d’olive.",
+        "Mélanger haricots, légumes, olives et persil dans un saladier.",
+        "Ajouter le poulet et la feta émiettée, puis verser la vinaigrette. Mélanger avant de servir."
+      ],
+      "servings_base": 4,
+      "image_filename": "salade_de_haricots_et_poulet_poele_a_lail.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Cuire le poulet doucement pour garder la viande tendre et juteuse."
+    },
+    {
+      "title_fr": "Salade_de_haricots_et_sardines_a_lhuile",
+      "diet": "omnivore",
+      "protein_category": "Fish",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 20,
+      "calories_per_serving": 515,
+      "protein_g_per_serving": 32,
+      "carbs_g_per_serving": 17,
+      "fat_g_per_serving": 29,
+      "equipment_required": [
+        "Pot"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose",
+        "poisson"
+      ],
+      "tags": [
+        "été",
+        "méditerranéen",
+        "protéiné"
+      ],
+      "ingredients": [
+        {
+          "nom": "haricots cannellini",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "sardines en boîte à l’huile d’olive",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "poivron rouge",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "concombre",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "oignon rouge",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "persil frais",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "olives Kalamata",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "fromage feta",
+          "quantite": 120,
+          "unite": "g"
+        },
+        {
+          "nom": "vinaigre de vin rouge",
+          "quantite": 40,
+          "unite": "ml"
+        },
+        {
+          "nom": "huile d'olive",
+          "quantite": 40,
+          "unite": "ml"
+        },
+        {
+          "nom": "miel",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "origan séché",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "sel",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "poivre",
+          "quantite": 2,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Égoutter les sardines en réservant un peu de leur huile. Retirer les arêtes si nécessaire.",
+        "Préparer la vinaigrette avec vinaigre, miel, origan, sel, poivre et l’huile d’olive.",
+        "Mélanger les haricots, légumes, olives et persil dans un saladier.",
+        "Ajouter les sardines et la feta émiettée, arroser de vinaigrette et mélanger délicatement."
+      ],
+      "servings_base": 4,
+      "image_filename": "salade_de_haricots_et_sardines_a_lhuile.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Choisir des sardines de bonne qualité améliore beaucoup le goût de la salade."
+    },
+    {
+      "title_fr": "Haricots beurre et rumsteak grillé",
+      "diet": "omnivore",
+      "protein_category": "Beef",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 15,
+      "calories_per_serving": 520,
+      "protein_g_per_serving": 46,
+      "carbs_g_per_serving": 26,
+      "fat_g_per_serving": 24,
+      "equipment_required": [
+        "Pot",
+        "Blender",
+        "Pan"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose"
+      ],
+      "tags": [
+        "protéiné",
+        "international"
+      ],
+      "ingredients": [
+        {
+          "nom": "huile d’olive",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "beurre",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "gousses d’ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "bouillon de légumes",
+          "quantite": 120,
+          "unite": "ml"
+        },
+        {
+          "nom": "levure nutritionnelle",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "tomates séchées",
+          "quantite": 40,
+          "unite": "g"
+        },
+        {
+          "nom": "haricots beurre (en boîte)",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "herbes fraîches",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "rumsteak",
+          "quantite": 250,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Mixer la moitié des haricots avec le bouillon et la levure nutritionnelle",
+        "Faire chauffer l’huile dans une poêle et saisir le rumsteak 3-4 min par face selon cuisson souhaitée ; laisser reposer",
+        "Dans une casserole, faire revenir l’ail avec un peu d’huile et ajouter le mélange haricots/bouillon",
+        "Incorporer les haricots restants, les tomates séchées et le beurre, mijoter 5 min",
+        "Servir le rumsteak tranché sur les haricots crémeux, parsemer d’herbes fraîches"
+      ],
+      "servings_base": 2,
+      "image_filename": "Haricots_beurre_Marry_Me_au_rumsteak.png",
+      "cuisine_type": "international",
+      "cooking_tip": "Laisser reposer la viande quelques minutes avant de la trancher pour garder le jus."
+    },
+    {
+      "title_fr": "Cuisses de dinde rôties & haricots beurre",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "intermediate",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 610,
+      "protein_g_per_serving": 55,
+      "carbs_g_per_serving": 28,
+      "fat_g_per_serving": 28,
+      "equipment_required": [
+        "Pot",
+        "Blender",
+        "Oven"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose"
+      ],
+      "tags": [
+        "protéiné",
+        "international"
+      ],
+      "ingredients": [
+        {
+          "nom": "cuisses de dinde",
+          "quantite": 500,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "beurre",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "gousses d’ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "bouillon de légumes",
+          "quantite": 120,
+          "unite": "ml"
+        },
+        {
+          "nom": "levure nutritionnelle",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "tomates séchées",
+          "quantite": 40,
+          "unite": "g"
+        },
+        {
+          "nom": "haricots beurre (en boîte)",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "herbes fraîches",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 200°C. Enduire les cuisses de dinde d’huile, sel, poivre, rôtir 40-45 min jusqu’à cuisson complète",
+        "Mixer la moitié des haricots avec le bouillon et la levure nutritionnelle",
+        "Dans une casserole, faire revenir l’ail dans un peu d’huile puis ajouter le mélange mixé",
+        "Incorporer les haricots restants, les tomates séchées et le beurre, laisser épaissir 5 min",
+        "Servir les cuisses de dinde rôties avec la base crémeuse de haricots, garnir d’herbes"
+      ],
+      "servings_base": 2,
+      "image_filename": "Haricots_beurre_Marry_Me_aux_cuisses_de_dinde.png",
+      "cuisine_type": "international",
+      "cooking_tip": "Badigeonner la dinde avec son jus de cuisson à mi-cuisson pour une peau croustillante."
+    },
+    {
+      "title_fr": "Filets de maquereaux et haricots beurre",
+      "diet": "flexitarian",
+      "protein_category": "Fish",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 10,
+      "calories_per_serving": 480,
+      "protein_g_per_serving": 38,
+      "carbs_g_per_serving": 24,
+      "fat_g_per_serving": 22,
+      "equipment_required": [
+        "Pot",
+        "Blender"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose",
+        "poisson"
+      ],
+      "tags": [
+        "protéiné",
+        "méditerranéen"
+      ],
+      "ingredients": [
+        {
+          "nom": "filets de maquereaux en boîte (huile ou moutarde)",
+          "quantite": 250,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "beurre",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "gousses d’ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "bouillon de légumes",
+          "quantite": 120,
+          "unite": "ml"
+        },
+        {
+          "nom": "levure nutritionnelle",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "tomates séchées",
+          "quantite": 40,
+          "unite": "g"
+        },
+        {
+          "nom": "haricots beurre (en boîte)",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "herbes fraîches",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Mixer la moitié des haricots avec le bouillon et la levure",
+        "Faire revenir l’ail dans l’huile, ajouter le mélange crémeux et laisser mijoter",
+        "Incorporer les haricots restants, tomates séchées et beurre, mijoter 3-4 min",
+        "Égoutter légèrement les filets de maquereaux et les déposer entiers ou émiettés sur la préparation",
+        "Servir chaud avec un filet de citron si souhaité"
+      ],
+      "servings_base": 2,
+      "image_filename": "Haricots_beurre_Marry_Me_aux_filets_de_maquereaux.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Utiliser les maquereaux à la moutarde pour un goût plus relevé."
+    },
+    {
+      "title_fr": "Poulet crémeux aux champignons et pâtes complètes",
+      "diet": "omnivore",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 620,
+      "protein_g_per_serving": 44,
+      "carbs_g_per_serving": 55,
+      "fat_g_per_serving": 22,
+      "equipment_required": [
+        "Pot",
+        "Pan"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose",
+        "gluten"
+      ],
+      "tags": [
+        "protéiné",
+        "international"
+      ],
+      "ingredients": [
+        {
+          "nom": "pâtes complètes",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "filets de poulet désossés",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "gousses d’ail",
+          "quantite": 3,
+          "unite": "piece"
+        },
+        {
+          "nom": "champignons de Paris",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "bouillon de volaille",
+          "quantite": 300,
+          "unite": "ml"
+        },
+        {
+          "nom": "fécule de maïs",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "fromage fouetté",
+          "quantite": 100,
+          "unite": "g"
+        },
+        {
+          "nom": "persil frais",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "sel",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "poivre",
+          "quantite": 2,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Cuire les pâtes dans une grande casserole d’eau salée jusqu’à al dente, réserver un peu d’eau de cuisson.",
+        "Chauffer 1 c. à s. d’huile dans une poêle, saisir le poulet 5 minutes de chaque côté, puis couvrir et réserver.",
+        "Dans la même poêle, ajouter le reste d’huile et faire revenir les champignons et l’ail jusqu’à légère coloration.",
+        "Verser le bouillon avec la fécule diluée, assaisonner et laisser épaissir.",
+        "Incorporer le fromage frais et fouetter jusqu’à sauce lisse.",
+        "Remettre le poulet dans la sauce, laisser mijoter quelques minutes.",
+        "Incorporer les pâtes cuites, ajouter un peu d’eau de cuisson si besoin pour ajuster la consistance.",
+        "Parsemer de persil et servir immédiatement."
+      ],
+      "servings_base": 2,
+      "image_filename": "Poulet_cremeux_aux_champignons_et_pates.png",
+      "cuisine_type": "française",
+      "cooking_tip": "Réserve une louche d’eau de cuisson des pâtes : l’amidon aide la sauce à bien enrober."
+    },
+    {
+      "title_fr": "Émincés végétaux crémeux aux champignons et pâtes complètes",
+      "diet": "vegan",
+      "protein_category": "Meat alternatives",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 720,
+      "protein_g_per_serving": 36,
+      "carbs_g_per_serving": 88,
+      "fat_g_per_serving": 20,
+      "equipment_required": [
+        "Pot",
+        "Pan"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "gluten",
+        "soja"
+      ],
+      "tags": [
+        "protéiné",
+        "international"
+      ],
+      "ingredients": [
+        {
+          "nom": "pâtes complètes",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "émincés végétaux",
+          "quantite": 250,
+          "unite": "g"
+        },
+        {
+          "nom": "gousses d’ail",
+          "quantite": 3,
+          "unite": "piece"
+        },
+        {
+          "nom": "champignons de Paris",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "bouillon de légumes",
+          "quantite": 300,
+          "unite": "ml"
+        },
+        {
+          "nom": "fécule de maïs",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "crème végétale",
+          "quantite": 120,
+          "unite": "ml"
+        },
+        {
+          "nom": "persil frais",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "sel",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "poivre",
+          "quantite": 2,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Cuire les pâtes dans une grande casserole d’eau salée jusqu’à al dente, réserver une louche d’eau de cuisson.",
+        "Dans une poêle, chauffer 1 c. à s. d’huile et saisir les émincés végétaux 3-4 minutes pour les dorer, réserver.",
+        "Ajouter le reste d’huile et faire revenir l’ail et les champignons 4-5 minutes.",
+        "Verser le bouillon avec la fécule diluée, laisser épaissir.",
+        "Incorporer la crème végétale, fouetter pour obtenir une sauce lisse.",
+        "Remettre les émincés végétaux dans la poêle, puis ajouter les pâtes. Mélanger, ajouter un peu d’eau de cuisson si la sauce est trop dense.",
+        "Assaisonner, parsemer de persil frais et servir chaud."
+      ],
+      "servings_base": 2,
+      "image_filename": "Eminces_vegetaux_cremeux_aux_champignons_et_pates.png",
+      "cuisine_type": "international",
+      "cooking_tip": "Prévoir une poêle large pour bien enrober les pâtes avec la sauce."
+    },
+    {
+      "title_fr": "Courgettes farcies avec quinoa",
+      "diet": "vegetarian",
+      "protein_category": "Meat alternatives",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 470,
+      "protein_g_per_serving": 27,
+      "carbs_g_per_serving": 38,
+      "fat_g_per_serving": 19,
+      "equipment_required": [
+        "Oven",
+        "Pan",
+        "Pot"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "lactose",
+        "soja"
+      ],
+      "tags": [
+        "été",
+        "français",
+        "rapide"
+      ],
+      "ingredients": [
+        {
+          "nom": "courgette",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "saucisses végétales",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "ail",
+          "quantite": 1,
+          "unite": "gousse"
+        },
+        {
+          "nom": "tomates concassées",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "emmental râpé",
+          "quantite": 40,
+          "unite": "g"
+        },
+        {
+          "nom": "mozzarella râpée",
+          "quantite": 40,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "quinoa",
+          "quantite": 60,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Couper les courgettes en deux et retirer la chair.",
+        "Saler, poivrer et badigeonner d’huile d’olive. Enfourner 20 minutes à 180°C.",
+        "Pendant ce temps, faire revenir l’oignon et l’ail dans une poêle. Ajouter la chair de courgette.",
+        "Incorporer les saucisses végétales coupées en morceaux. Laisser mijoter avec la sauce tomate une dizaine de minutes.",
+        "Cuire le quinoa dans une casserole avec l’eau et une pincée de sel selon les instruction du paquet, jusqu’à absorption complète.",
+        "Remplir les coques de courgettes cuites avec la farce.",
+        "Parsemer de fromage râpé et enfourner à nouveau 10 minutes.",
+        "Servir chaud, accompagné du quinoa."
+      ],
+      "servings_base": 2,
+      "image_filename": "courgettes_farcies_avec_quinoa.png",
+      "cuisine_type": "français",
+      "cooking_tip": "Rince bien le quinoa avant cuisson pour retirer son amertume naturelle."
+    },
+    {
+      "title_fr": "Courgettes farcies au bœuf avec quinoa",
+      "diet": "omnivore",
+      "protein_category": "Beef",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 540,
+      "protein_g_per_serving": 34,
+      "carbs_g_per_serving": 32,
+      "fat_g_per_serving": 28,
+      "equipment_required": [
+        "Oven",
+        "Pan",
+        "Pot"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "lactose"
+      ],
+      "tags": [
+        "été",
+        "français",
+        "protéiné"
+      ],
+      "ingredients": [
+        {
+          "nom": "courgette",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "bœuf haché",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "ail",
+          "quantite": 1,
+          "unite": "gousse"
+        },
+        {
+          "nom": "tomates concassées",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "emmental râpé",
+          "quantite": 40,
+          "unite": "g"
+        },
+        {
+          "nom": "mozzarella râpée",
+          "quantite": 40,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "quinoa",
+          "quantite": 60,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Couper les courgettes en deux et retirer la chair.",
+        "Saler, poivrer et badigeonner d’huile d’olive. Enfourner 20 minutes à 180°C.",
+        "Pendant ce temps, faire revenir l’oignon et l’ail dans une poêle. Ajouter la chair de courgette.",
+        "Incorporer le bœuf haché et cuire 8 à 10 minutes en émiettant la viande. Ajouter la sauce tomate et laisser mijoter une dizaine de minutes.",
+        "Cuire le quinoa dans une casserole avec l’eau et une pincée de sel selon les instruction du paquet, jusqu’à absorption complète.",
+        "Remplir les coques de courgettes cuites avec la farce.",
+        "Parsemer de fromage râpé et enfourner à nouveau 10 minutes.",
+        "Servir chaud, accompagné du quinoa."
+      ],
+      "servings_base": 2,
+      "image_filename": "courgettes_farcies_avec_quinoa.png",
+      "cuisine_type": "français",
+      "cooking_tip": "Pour plus de gourmandise, ajoute un peu d’herbes de Provence dans la farce."
+    },
+    {
+      "title_fr": "Pâtes crémeuses aux tomates confites et burrata",
+      "diet": "vegetarian",
+      "protein_category": "Dairy",
+      "cooking_level": "intermediate",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 650,
+      "protein_g_per_serving": 22,
+      "carbs_g_per_serving": 65,
+      "fat_g_per_serving": 30,
+      "equipment_required": [
+        "Pot",
+        "Pan"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose",
+        "œufs"
+      ],
+      "tags": [
+        "printemps",
+        "italien",
+        "végétarien",
+        "crémeux"
+      ],
+      "ingredients": [
+        {
+          "nom": "pâtes conchiglioni",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "tomates cerises",
+          "quantite": 260,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "herbes de provence",
+          "quantite": 2,
+          "unite": "g"
+        },
+        {
+          "nom": "oignon",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "bouillon cube",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "miel",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "concentré de tomate",
+          "quantite": 1,
+          "unite": "g"
+        },
+        {
+          "nom": "ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "crème liquide",
+          "quantite": 150,
+          "unite": "ml"
+        },
+        {
+          "nom": "parmesan",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "basilic",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "burrata",
+          "quantite": 1,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Cuire les pâtes selon les indications du paquet, réserver une louche d’eau de cuisson.",
+        "Couper les tomates cerises en deux, émincer le demi-oignon et les faire revenir dans une poêle avec un filet d’huile d’olive.",
+        "Ajouter les tomates, l’origan, le thym, l’oignon, le bouillon, le miel, le concentré de tomate, l’eau et l’ail. Mélanger et cuire environ 10 minutes.",
+        "Quand les tomates ont réduit, ajouter la crème, les pâtes cuites, le parmesan, l’eau de cuisson et le basilic.",
+        "Bien mélanger, servir avec la burrata, un peu de poivre et un filet d’huile d’olive."
+      ],
+      "servings_base": 2,
+      "image_filename": "pates_cremeuses_aux_tomates_confites_et_burrata.png",
+      "cuisine_type": "italien",
+      "cooking_tip": "Réserver un peu d’eau de cuisson permet d’obtenir une sauce plus onctueuse qui enrobe mieux les pâtes."
+    },
+    {
+      "title_fr": "Lasagnes d'été",
+      "diet": "vegetarian",
+      "protein_category": "Dairy",
+      "cooking_level": "intermediate",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 520,
+      "protein_g_per_serving": 22,
+      "carbs_g_per_serving": 48,
+      "fat_g_per_serving": 26,
+      "equipment_required": [
+        "Pot",
+        "Pan"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose",
+        "œufs",
+        "fruits_à_coque"
+      ],
+      "tags": [
+        "été",
+        "végétarien",
+        "méditerranéen",
+        "français"
+      ],
+      "ingredients": [
+        {
+          "nom": "feuilles de lasagne",
+          "quantite": 5,
+          "unite": "piece"
+        },
+        {
+          "nom": "courgettes",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "beurre",
+          "quantite": 15,
+          "unite": "g"
+        },
+        {
+          "nom": "ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "poudre d’oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "tomates cerises",
+          "quantite": 350,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "miel",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "basilic",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "ricotta",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "pignons de pin",
+          "quantite": 50,
+          "unite": "g"
+        },
+        {
+          "nom": "parmesan râpé",
+          "quantite": 50,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Couper les courgettes en petits morceaux et les faire griller dans une poêle avec le beurre, l’ail et la poudre d’oignon à feu fort pendant environ 10 minutes.",
+        "Couper les tomates cerises en deux et les mélanger avec le basilic ciselé, l’huile d’olive et le miel.",
+        "Cuire les feuilles de lasagnes 10 minutes dans une casserole d’eau bouillante.",
+        "Fouetter la ricotta avec une pincée de sel et un filet d’huile d’olive.",
+        "Garnir les feuilles de lasagne cuites avec la ricotta, les disposer dans une assiette avec les courgettes grillées, les tomates, le parmesan et les pignons de pin grillés.",
+        "Monter les couches dans une assiette ou dans un plat selon préférence et servir."
+      ],
+      "servings_base": 2,
+      "image_filename": "lasagnes_d_ete.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Faites griller légèrement les pignons de pin avant de les ajouter pour un goût plus intense."
+    },
+    {
+      "title_fr": "Lasagnes d'été au poulet",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 650,
+      "protein_g_per_serving": 38,
+      "carbs_g_per_serving": 50,
+      "fat_g_per_serving": 30,
+      "equipment_required": [
+        "Pot",
+        "Pan"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose",
+        "œufs",
+        "fruits_à_coque"
+      ],
+      "tags": [
+        "été",
+        "protéiné",
+        "méditerranéen",
+        "français"
+      ],
+      "ingredients": [
+        {
+          "nom": "feuilles de lasagne",
+          "quantite": 5,
+          "unite": "piece"
+        },
+        {
+          "nom": "courgettes",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "beurre",
+          "quantite": 15,
+          "unite": "g"
+        },
+        {
+          "nom": "ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "poudre d’oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "tomates cerises",
+          "quantite": 350,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "miel",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "basilic",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "ricotta",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "pignons de pin",
+          "quantite": 50,
+          "unite": "g"
+        },
+        {
+          "nom": "parmesan râpé",
+          "quantite": 50,
+          "unite": "g"
+        },
+        {
+          "nom": "blanc de poulet",
+          "quantite": 250,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Couper les courgettes en petits morceaux et les faire griller dans une poêle avec le beurre, l’ail et la poudre d’oignon à feu fort pendant environ 10 minutes.",
+        "Couper le poulet en morceaux et le saisir dans une poêle avec un peu d’huile d’olive jusqu’à ce qu’il soit bien cuit et doré.",
+        "Couper les tomates cerises en deux et les mélanger avec le basilic ciselé, l’huile d’olive et le miel.",
+        "Cuire les feuilles de lasagnes 10 minutes dans une casserole d’eau bouillante.",
+        "Fouetter la ricotta avec une pincée de sel et un filet d’huile d’olive.",
+        "Garnir les feuilles de lasagne cuites avec la ricotta, puis ajouter les courgettes grillées, le poulet, les tomates, le parmesan et les pignons de pin grillés.",
+        "Monter les couches dans une assiette ou dans un plat selon préférence et servir."
+      ],
+      "servings_base": 2,
+      "image_filename": "lasagnes_d_ete.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Ajoutez un filet de jus de citron sur le poulet après cuisson pour relever les saveurs et équilibrer le miel."
+    },
+    {
+      "title_fr": "Gnocchis croustillants & Tzatziki",
+      "diet": "vegetarian",
+      "protein_category": "Dairy",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 639,
+      "protein_g_per_serving": 21,
+      "carbs_g_per_serving": 66,
+      "fat_g_per_serving": 24,
+      "equipment_required": [
+        "Oven",
+        "Pan"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten",
+        "lactose",
+        "œufs"
+      ],
+      "tags": [
+        "été",
+        "méditerranéen",
+        "végétarien",
+        "rapide"
+      ],
+      "ingredients": [
+        {
+          "nom": "gnocchis",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "paprika",
+          "quantite": 2,
+          "unite": "g"
+        },
+        {
+          "nom": "ail en poudre",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "parmesan",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "fromage frais",
+          "quantite": 150,
+          "unite": "g"
+        },
+        {
+          "nom": "yaourt grec",
+          "quantite": 150,
+          "unite": "g"
+        },
+        {
+          "nom": "concombre",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "herbes fraîches",
+          "quantite": 8,
+          "unite": "g"
+        },
+        {
+          "nom": "citron",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "miel",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "moutarde",
+          "quantite": 1,
+          "unite": "cac"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 190°C.",
+        "Mélanger les gnocchis avec le paprika, l’ail, le parmesan et l’huile d’olive.",
+        "Étaler sur une plaque de cuisson et enfourner 20 minutes en remuant à mi-cuisson.",
+        "Pour le tzatziki : mélanger le fromage frais avec le yaourt.",
+        "Égoutter le concombre râpé avec un peu de sel pendant 10 min puis l’ajouter.",
+        "Incorporer les herbes fraîches, le zeste de citron, le miel, l’huile et la moutarde.",
+        "Servir les gnocchis croustillants avec le tzatziki en accompagnement."
+      ],
+      "servings_base": 2,
+      "image_filename": "Gnocchis_croustillants_Tzatziki.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Pour des gnocchis encore plus croustillants, les badigeonner légèrement d’huile avant cuisson et utiliser du papier sulfurisé."
+    },
+    {
+      "title_fr": "One-pot pizza Tex-Mex au poulet",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 580,
+      "protein_g_per_serving": 50,
+      "carbs_g_per_serving": 34,
+      "fat_g_per_serving": 23,
+      "equipment_required": [
+        "Four",
+        "Poêle"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "lactose",
+        "gluten"
+      ],
+      "tags": [
+        "protéiné",
+        "mexicain",
+        "été",
+        "rapide"
+      ],
+      "ingredients": [
+        {
+          "nom": "Poulet",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate concassée",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Cheddar",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Mélange mexicain",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "Tortilla de blé",
+          "quantite": 4,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Émincer l’oignon.",
+        "Couper le poulet en petits morceaux.",
+        "Préchauffer le four à 200°C.",
+        "Cuire le poulet avec l’oignon et le mélange mexicain dans une poêle pendant quelques minutes.",
+        "Dans un plat adapté au four, disposer les tortillas au fond pour former une base.",
+        "Étaler les tomates concassées sur les tortillas.",
+        "Ajouter le poulet cuisiné par-dessus.",
+        "Parsemer de cheddar.",
+        "Cuire au four 12–15 minutes à 200°C puis gratiner à 250°C pendant 3–4 minutes."
+      ],
+      "servings_base": 2,
+      "image_filename": "One-pot_pizza_facon_Tex-Mex_poulet.png",
+      "cuisine_type": "mexicain",
+      "cooking_tip": "Pour un goût encore plus relevé, ajoute quelques rondelles de jalapeños avant de gratiner."
+    },
+    {
+      "title_fr": "One-pot pizza Tex-Mex haché végétal",
+      "diet": "vegetarian",
+      "protein_category": "Meat alternatives",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 510,
+      "protein_g_per_serving": 35,
+      "carbs_g_per_serving": 36,
+      "fat_g_per_serving": 19,
+      "equipment_required": [
+        "Four",
+        "Poêle"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "lactose",
+        "gluten"
+      ],
+      "tags": [
+        "protéiné",
+        "mexicain",
+        "été",
+        "rapide",
+        "végétarien"
+      ],
+      "ingredients": [
+        {
+          "nom": "Haché végétal",
+          "quantite": 250,
+          "unite": "g"
+        },
+        {
+          "nom": "Tomate concassée",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Cheddar",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "Mélange mexicain",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "Tortilla de blé",
+          "quantite": 4,
+          "unite": "piece"
+        }
+      ],
+      "instructions": [
+        "Émincer l’oignon.",
+        "Préchauffer le four à 200°C.",
+        "Cuire le haché végétal avec l’oignon et le mélange mexicain dans une poêle pendant quelques minutes.",
+        "Dans un plat adapté au four, disposer les tortillas au fond pour former une base.",
+        "Étaler les tomates concassées sur les tortillas.",
+        "Ajouter le haché végétal cuisiné par-dessus.",
+        "Parsemer de cheddar.",
+        "Cuire au four 12–15 minutes à 200°C puis gratiner à 250°C pendant 3–4 minutes."
+      ],
+      "servings_base": 2,
+      "image_filename": "One-pot_pizza_facon_Tex-Mex_vegetarien.png",
+      "cuisine_type": "mexicain",
+      "cooking_tip": "Tu peux remplacer le cheddar par un fromage râpé végétal pour une version 100% vegan."
+    },
+    {
+      "title_fr": "Sticky Mongolian Beef",
+      "diet": "omnivore",
+      "protein_category": "Beef",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 20,
+      "calories_per_serving": 466,
+      "protein_g_per_serving": 37,
+      "carbs_g_per_serving": 41,
+      "fat_g_per_serving": 17,
+      "equipment_required": [
+        "Pan"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "asiatique",
+        "protéiné",
+        "hiver"
+      ],
+      "ingredients": [
+        {
+          "nom": "steak de boeuf maigre",
+          "quantite": 250,
+          "unite": "g"
+        },
+        {
+          "nom": "maïzena",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d'olive",
+          "quantite": 15,
+          "unite": "ml"
+        },
+        {
+          "nom": "sauce soja réduite en sel",
+          "quantite": 60,
+          "unite": "ml"
+        },
+        {
+          "nom": "sirop d'agave",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "gingembre en poudre",
+          "quantite": 2,
+          "unite": "g"
+        },
+        {
+          "nom": "ail en poudre",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "riz blanc",
+          "quantite": 150,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Couper le boeuf en fines lamelles et l'enrober de maïzena dans une boîte fermée.",
+        "Faire chauffer l'huile d'olive dans une poêle à feu vif, ajouter le boeuf et cuire 3 à 4 minutes en remuant. Retirer et réserver.",
+        "Dans la même poêle, baisser le feu, ajouter la sauce soja, 30 ml d'eau, le sirop d'agave, le gingembre et l'ail en poudre. Fouetter et laisser bouillir 2 à 3 minutes.",
+        "Remettre le boeuf, mélanger et laisser épaissir 2 à 3 minutes supplémentaires.",
+        "Cuire le riz blanc dans une casserole d’eau bouillante salée jusqu’à ce qu’il soit tendre, puis égoutter.",
+        "Servir le boeuf chaud avec le riz blanc et garnir de piment, graines de sésame ou oignons verts."
+      ],
+      "servings_base": 2,
+      "image_filename": "Sticky_Mongolian_Beef.png",
+      "cuisine_type": "asiatique",
+      "cooking_tip": "Bien secouer le boeuf avec la maïzena pour obtenir un enrobage uniforme et une belle caramélisation."
+    },
+    {
+      "title_fr": "One-pan Poulet à l’ail et riz",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "intermediate",
+      "prep_time_minutes": 10,
+      "calories_per_serving": 520,
+      "protein_g_per_serving": 34,
+      "carbs_g_per_serving": 44,
+      "fat_g_per_serving": 22,
+      "equipment_required": [
+        "Pan"
+      ],
+      "batch_friendly": true,
+      "allergens": [],
+      "tags": [
+        "méditerranéen",
+        "protéiné"
+      ],
+      "ingredients": [
+        {
+          "nom": "poudre d’oignon",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "poudre d’ail",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "paprika doux",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "thym",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 60,
+          "unite": "ml"
+        },
+        {
+          "nom": "cuisses de poulet désossées",
+          "quantite": 4,
+          "unite": "piece"
+        },
+        {
+          "nom": "oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "ail frais haché",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "riz jasmin",
+          "quantite": 240,
+          "unite": "ml"
+        },
+        {
+          "nom": "bouillon de volaille",
+          "quantite": 360,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Combiner les épices et l’huile, enrober les cuisses de poulet et les cuire dans une poêle épaisse 6–8 min jusqu’à coloration.",
+        "Déglacer avec 60 ml d’eau, ajouter oignon et ail, cuire 1–2 min.",
+        "Ajouter riz et bouillon, porter à ébullition, réduire à feu doux et remettre le poulet côté peau au-dessus; couvrir et cuire 15 min.",
+        "Retirer du feu, laisser reposer couvert 10 min.",
+        "Servir chaud, éventuellement accompagné d’une salade verte."
+      ],
+      "servings_base": 4,
+      "image_filename": "One-pan_Poulet_a_l_ail_et_riz.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Laisser reposer le riz et le poulet couvert améliore la texture en permettant l’absorption totale du liquide."
+    },
+    {
+      "title_fr": "Poulet satay au curry panang et beurre de cacahuètes",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 348,
+      "protein_g_per_serving": 54,
+      "carbs_g_per_serving": 15,
+      "fat_g_per_serving": 8,
+      "equipment_required": [
+        "Pan"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "soja",
+        "fruits_à_coque"
+      ],
+      "tags": [
+        "asiatique",
+        "été",
+        "recette_rapide",
+        "protéiné"
+      ],
+      "ingredients": [
+        {
+          "nom": "hauts de cuisses de poulet",
+          "quantite": 800,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 45,
+          "unite": "ml"
+        },
+        {
+          "nom": "sauce soja",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "mirin",
+          "quantite": 15,
+          "unite": "ml"
+        },
+        {
+          "nom": "pâte de curry panang",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "beurre de cacahuètes",
+          "quantite": 45,
+          "unite": "ml"
+        },
+        {
+          "nom": "miel",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "lait de coco",
+          "quantite": 200,
+          "unite": "ml"
+        },
+        {
+          "nom": "riz",
+          "quantite": 150,
+          "unite": "g"
+        },
+        {
+          "nom": "cacahuètes",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "piment",
+          "quantite": 2,
+          "unite": "g"
+        },
+        {
+          "nom": "coriandre",
+          "quantite": 5,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Chauffe une sauteuse à feu vif avec l’huile d’olive, fais revenir le poulet jusqu’à ce qu’il soit bien doré.",
+        "Déglace avec la sauce soja et le mirin, gratte bien les sucs puis baisse le feu.",
+        "Ajoute la pâte de curry, le beurre de cacahuètes et le miel, puis verse le lait de coco. Mélange et laisse épaissir à feu moyen.",
+        "Remets le poulet dans la sauce, mélange bien et sers avec du riz. Ajoute des cacahuètes, du piment et de la coriandre."
+      ],
+      "servings_base": 4,
+      "image_filename": "poulet_satay_au_curry_panang_et_beurre_de_cacahuetes.png",
+      "cuisine_type": "asiatique",
+      "cooking_tip": "Pour plus de saveur, marine le poulet avec un peu de sauce soja et curry avant cuisson."
+    },
+    {
+      "title_fr": "Poulet satay panang",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 454,
+      "protein_g_per_serving": 58.9,
+      "carbs_g_per_serving": 33.8,
+      "fat_g_per_serving": 9.2,
+      "equipment_required": [
+        "Pan"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "soja",
+        "fruits_à_coque"
+      ],
+      "tags": [
+        "asiatique",
+        "été",
+        "recette_rapide",
+        "protéiné"
+      ],
+      "ingredients": [
+        {
+          "nom": "poulet",
+          "quantite": 800,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 45,
+          "unite": "ml"
+        },
+        {
+          "nom": "sauce soja",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "mirin",
+          "quantite": 15,
+          "unite": "ml"
+        },
+        {
+          "nom": "pâte de curry panang",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "beurre de cacahuètes",
+          "quantite": 45,
+          "unite": "ml"
+        },
+        {
+          "nom": "miel",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "lait de coco",
+          "quantite": 200,
+          "unite": "ml"
+        },
+        {
+          "nom": "nouilles de blé",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "cacahuètes",
+          "quantite": 10,
+          "unite": "g"
+        },
+        {
+          "nom": "piment",
+          "quantite": 2,
+          "unite": "g"
+        },
+        {
+          "nom": "coriandre",
+          "quantite": 5,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Chauffe une sauteuse à feu vif avec l’huile d’olive, fais revenir le poulet jusqu’à ce qu’il soit bien doré.",
+        "Déglace avec la sauce soja et le mirin, gratte bien les sucs puis baisse le feu.",
+        "Ajoute la pâte de curry, le beurre de cacahuètes et le miel, puis verse le lait de coco. Mélange et laisse épaissir à feu moyen.",
+        "Remets le poulet dans la sauce, mélange bien et sers avec les nouilles de blé. Ajoute des cacahuètes, du piment et de la coriandre."
+      ],
+      "servings_base": 4,
+      "image_filename": "poulet_satay_panang.png",
+      "cuisine_type": "asiatique",
+      "cooking_tip": "Pour plus de saveur, marine le poulet avec un peu de sauce soja et curry avant cuisson."
+    },
+    {
+      "title_fr": "Rumsteak sauce au poivre et pommes de terre",
+      "diet": "omnivore",
+      "protein_category": "Beef",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 610,
+      "protein_g_per_serving": 55,
+      "carbs_g_per_serving": 40,
+      "fat_g_per_serving": 20,
+      "equipment_required": [
+        "Pan",
+        "Air fryer"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose"
+      ],
+      "tags": [
+        "français",
+        "protéiné",
+        "rapide",
+        "bistro"
+      ],
+      "ingredients": [
+        {
+          "nom": "rumsteak de bœuf",
+          "quantite": 215,
+          "unite": "g"
+        },
+        {
+          "nom": "pommes de terre farineuses",
+          "quantite": 350,
+          "unite": "g"
+        },
+        {
+          "nom": "crème allégée 7%",
+          "quantite": 100,
+          "unite": "ml"
+        },
+        {
+          "nom": "beurre allégé",
+          "quantite": 5,
+          "unite": "g"
+        },
+        {
+          "nom": "échalote",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "bouillon de bœuf",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "moutarde de Dijon",
+          "quantite": 5,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Préchauffez l’Air fryer à 200°C. Coupez les pommes de terre en demi-rondelles et cuisez-les environ 20 minutes ou jusqu’à ce qu’elles soient tendres.",
+        "Pendant ce temps, assaisonnez le rumsteak avec du sel.",
+        "Pendant ce temps, faites chauffer une poêle antiadhésive à feu moyen-vif avec un peu de spray cuisson.",
+        "Pendant ce temps, saisissez le rumsteak 2-3 minutes de chaque côté.",
+        "Pendant ce temps, retirez la viande et réservez-la dans une assiette couverte de papier aluminium.",
+        "Pendant ce temps, dans la même poêle, faites fondre le beurre allégé à feu moyen.",
+        "Pendant ce temps, ajoutez l’échalote hachée et laissez revenir jusqu’à ce qu’elle soit translucide.",
+        "Pendant ce temps, ajoutez le poivre concassé et faites-le chauffer 1 minute pour libérer les arômes.",
+        "Pendant ce temps, versez le bouillon de bœuf dilué et laissez réduire de moitié.",
+        "Pendant ce temps, incorporez la crème allégée et mélangez, laissez mijoter à feu doux jusqu’à épaississement.",
+        "Pendant ce temps, ajoutez la moutarde de Dijon si désiré et rectifiez l’assaisonnement."
+      ],
+      "servings_base": 2,
+      "image_filename": "rumsteak_sauce_au_poivre_et_pommes_de_terre.png",
+      "cuisine_type": "français",
+      "cooking_tip": "Servez immédiatement le rumsteak pour préserver son jus."
+    },
+    {
+      "title_fr": "Blanc de poulet sauce au poivre et pommes de terre",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 25,
+      "calories_per_serving": 560,
+      "protein_g_per_serving": 58,
+      "carbs_g_per_serving": 40,
+      "fat_g_per_serving": 14,
+      "equipment_required": [
+        "Pan",
+        "Air fryer"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose"
+      ],
+      "tags": [
+        "français",
+        "protéiné",
+        "rapide",
+        "bistro"
+      ],
+      "ingredients": [
+        {
+          "nom": "blanc de poulet",
+          "quantite": 215,
+          "unite": "g"
+        },
+        {
+          "nom": "pommes de terre farineuses",
+          "quantite": 350,
+          "unite": "g"
+        },
+        {
+          "nom": "poivre noir concassé",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "crème allégée 7%",
+          "quantite": 100,
+          "unite": "ml"
+        },
+        {
+          "nom": "beurre allégé",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "échalote",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "bouillon de volaille",
+          "quantite": 0.5,
+          "unite": "piece"
+        },
+        {
+          "nom": "moutarde de Dijon",
+          "quantite": 5,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [
+        "Préchauffez l’Air fryer à 200°C. Coupez les pommes de terre en demi-rondelles et cuisez-les environ 20 minutes ou jusqu’à ce qu’elles soient tendres.",
+        "Pendant ce temps, assaisonnez le poulet avec du sel.",
+        "Pendant ce temps, faites chauffer une poêle antiadhésive à feu moyen-vif avec un peu de spray cuisson.",
+        "Pendant ce temps, saisissez les blancs de poulet 3-4 minutes de chaque côté, selon l’épaisseur.",
+        "Pendant ce temps, retirez la viande et réservez-la dans une assiette couverte de papier aluminium.",
+        "Pendant ce temps, dans la même poêle, faites fondre le beurre allégé à feu moyen.",
+        "Pendant ce temps, ajoutez l’échalote hachée et laissez revenir jusqu’à ce qu’elle soit translucide.",
+        "Pendant ce temps, ajoutez le poivre concassé et faites-le chauffer 1 minute pour libérer les arômes.",
+        "Pendant ce temps, versez le bouillon de volaille dilué et laissez réduire de moitié.",
+        "Pendant ce temps, incorporez la crème allégée et mélangez, laissez mijoter à feu doux jusqu’à épaississement.",
+        "Pendant ce temps, ajoutez la moutarde de Dijon si désiré et rectifiez l’assaisonnement."
+      ],
+      "servings_base": 2,
+      "image_filename": "blanc_de_poulet_sauce_au_poivre_et_pommes_de_terre.png",
+      "cuisine_type": "français",
+      "cooking_tip": "Ne surcuisez pas le poulet pour éviter qu’il ne devienne sec."
+    },
+    {
+      "title_fr": "Mafé de poulet aux patates douces et riz noir",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "intermediate",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 845,
+      "protein_g_per_serving": 60,
+      "carbs_g_per_serving": 77.4,
+      "fat_g_per_serving": 32.9,
+      "equipment_required": [
+        "Pan",
+        "Pot"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "fruits_à_coque"
+      ],
+      "tags": [
+        "hiver",
+        "protéiné",
+        "ouest-africain"
+      ],
+      "ingredients": [
+        {
+          "nom": "Hauts de cuisse de poulet",
+          "quantite": 1000,
+          "unite": "g"
+        },
+        {
+          "nom": "Patates douces",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Épinards",
+          "quantite": 100,
+          "unite": "g"
+        },
+        {
+          "nom": "Beurre de cacahuètes",
+          "quantite": 40,
+          "unite": "g"
+        },
+        {
+          "nom": "Pulpe de tomate",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "Concentré de tomate",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "Oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "Gingembre",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Bouillon de volaille",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "Huile d’olive",
+          "quantite": 20,
+          "unite": "ml"
+        },
+        {
+          "nom": "Riz noir",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "Piment",
+          "quantite": 2,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Dans une sauteuse à feu vif, faire dorer les hauts de cuisse 2 à 3 minutes de chaque côté puis réserver.",
+        "Faire revenir l’oignon, l’ail et le gingembre jusqu’à ce qu’ils colorent.",
+        "Verser la pulpe de tomate et gratter les sucs au fond de la sauteuse.",
+        "Incorporer le concentré de tomate, le beurre de cacahuètes dilué dans 200 ml d’eau, le bouillon et le piment. Bien mélanger.",
+        "Ajouter les patates douces et les épinards. Laisser mijoter jusqu’à ce que les patates soient mi-fermes.",
+        "Remettre le poulet et laisser mijoter à couvert jusqu’à ce que patates et poulet soient fondants.",
+        "Servir avec un peu de riz noir cuit (environ 50 g par portion)."
+      ],
+      "servings_base": 4,
+      "image_filename": "mafe_de_poulet_aux_patates_douces_et_riz_noir.png",
+      "cuisine_type": "africain",
+      "cooking_tip": "Mélanger le beurre de cacahuètes en poudre avec un peu d’eau avant de l’incorporer pour obtenir une sauce homogène."
+    },
+    {
+      "title_fr": "Bol mediterraneen aux boulettes de poulet",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 10,
+      "calories_per_serving": 570,
+      "protein_g_per_serving": 48,
+      "carbs_g_per_serving": 49,
+      "fat_g_per_serving": 22,
+      "equipment_required": [
+        "Oven",
+        "Pan",
+        "Blender"
+      ],
+      "batch_friendly": false,
+      "allergens": [],
+      "tags": [
+        "été",
+        "méditerranéen",
+        "protéiné"
+      ],
+      "ingredients": [
+        {
+          "nom": "courgette",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "pois chiche",
+          "quantite": 265,
+          "unite": "g"
+        },
+        {
+          "nom": "tomate",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d'olive",
+          "quantite": 15,
+          "unite": "ml"
+        },
+        {
+          "nom": "paprika fumé",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "ail semoule",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "thym séché",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "cumin",
+          "quantite": 2.5,
+          "unite": "ml"
+        },
+        {
+          "nom": "filet de poulet",
+          "quantite": 275,
+          "unite": "g"
+        },
+        {
+          "nom": "concentré de tomate",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "huile neutre",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "olive",
+          "quantite": 9,
+          "unite": "piece"
+        },
+        {
+          "nom": "menthe fraîche",
+          "quantite": 2,
+          "unite": "feuille"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 190 °C.",
+        "Couper les courgettes en rondelles.",
+        "Égoutter et rincer les pois chiches.",
+        "Mélanger courgettes et pois chiches avec huile d'olive, paprika, ail, thym, sel.",
+        "Cuire au four 12 à 13 minutes.",
+        "Ajouter les tomates coupées avec un peu d'huile, d'épices et de sel.",
+        "Cuire 12 à 13 minutes supplémentaires.",
+        "Mixer le poulet avec le concentré de tomate, ail, paprika, sel et poivre jusqu’à obtenir une farce homogène.",
+        "Former 8 à 10 boulettes avec les mains humidifiées.",
+        "Chauffer l’huile neutre dans une poêle, saisir les boulettes 1 min de chaque côté, puis cuire à feu doux couvert 7 à 8 min.",
+        "Ajouter les olives tranchées et la menthe fraîche.",
+        "Assembler les légumes rôtis et les boulettes dans un bol."
+      ],
+      "servings_base": 2,
+      "image_filename": "Bol_mediterraneen_aux_boulettes_de_poulet.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Cuire les boulettes d’abord à feu moyen-vif pour les dorer, puis à feu doux et couvert pour qu’elles restent fondantes à l’intérieur"
+    },
+    {
+      "title_fr": "Tarte rustique aux tomates cerises",
+      "diet": "vegetarian",
+      "protein_category": "Dairy",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 20,
+      "calories_per_serving": 585,
+      "protein_g_per_serving": 20.2,
+      "carbs_g_per_serving": 32.5,
+      "fat_g_per_serving": 41.6,
+      "equipment_required": [
+        "Oven"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "œufs",
+        "lactose",
+        "gluten"
+      ],
+      "tags": [
+        "été",
+        "fromage",
+        "tarte rustique",
+        "recette estivale"
+      ],
+      "ingredients": [
+        {
+          "nom": "pâte brisée",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "tomates cerises",
+          "quantite": 600,
+          "unite": "g"
+        },
+        {
+          "nom": "oignon",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "ail",
+          "quantite": 2,
+          "unite": "gousse"
+        },
+        {
+          "nom": "thym frais",
+          "quantite": 2,
+          "unite": "feuille"
+        },
+        {
+          "nom": "fromage à pâte dure",
+          "quantite": 100,
+          "unite": "g"
+        },
+        {
+          "nom": "moutarde forte",
+          "quantite": 15,
+          "unite": "ml"
+        },
+        {
+          "nom": "burrata",
+          "quantite": 250,
+          "unite": "g"
+        },
+        {
+          "nom": "salade verte",
+          "quantite": 100,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Préchauffe le four à 195 °C (chaleur traditionnelle, sole-voûte).",
+        "Coupe les tomates en deux. Dans un saladier, mélange avec l’ail pressé, le thym, une pincée de sel et l’huile d’olive. Laisse dégorger 15 minutes.",
+        "Râpe le fromage à pâte dure. Émince finement l’oignon.",
+        "Étale la pâte brisée en un cercle d’environ 30 cm, pose-la sur une plaque couverte de papier cuisson, étale la moutarde en laissant 3–4 cm de bord.",
+        "Répartis l’oignon émincé, puis le fromage râpé.",
+        "Égoutte les tomates et dispose-les par-dessus.",
+        "Replie les bords de la pâte et enfourne dans le bas du four pour environ 35 minutes.",
+        "À la sortie du four, dépose la burrata (1/2 par portion) au centre de la tarte.",
+        "Sers la tarte chaude ou tiède, accompagnée de salade verte."
+      ],
+      "servings_base": 4,
+      "image_filename": "Tarte_rustique_aux_tomates_cerises.png",
+      "cuisine_type": "français",
+      "cooking_tip": "Égoutter les tomates suffisamment pour éviter que la pâte ne détrempe."
+    },
+    {
+      "title_fr": "Salade de courgettes et pois chiches, tomates séchées et feta",
+      "diet": "vegetarian",
+      "protein_category": "Legumes",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 10,
+      "calories_per_serving": 650,
+      "protein_g_per_serving": 25.2,
+      "carbs_g_per_serving": 65.7,
+      "fat_g_per_serving": 36.8,
+      "equipment_required": [
+        "Oven",
+        "Pan"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "lactose"
+      ],
+      "tags": [
+        "été",
+        "végétarien",
+        "sans gluten"
+      ],
+      "ingredients": [
+        {
+          "nom": "courgette",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "pois chiches",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d’olive",
+          "quantite": 30,
+          "unite": "ml"
+        },
+        {
+          "nom": "paprika fumé",
+          "quantite": 5,
+          "unite": "ml"
+        },
+        {
+          "nom": "thym séché",
+          "quantite": 10,
+          "unite": "ml"
+        },
+        {
+          "nom": "tomates séchées",
+          "quantite": 80,
+          "unite": "g"
+        },
+        {
+          "nom": "pignons de pin",
+          "quantite": 30,
+          "unite": "g"
+        },
+        {
+          "nom": "mesclun",
+          "quantite": 4,
+          "unite": "piece"
+        },
+        {
+          "nom": "feta",
+          "quantite": 60,
+          "unite": "g"
+        },
+        {
+          "nom": "basilic frais",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "vinaigre balsamique",
+          "quantite": 7.5,
+          "unite": "ml"
+        }
+      ],
+      "instructions": [],
+      "servings_base": 2,
+      "image_filename": "Salade_de_courgettes_et_pois_chiches_tomates_sechees_et_feta.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Faites griller les pignons à sec puis retirez-les de la poêle pour éviter qu’ils brûlent."
+    },
+    {
+      "title_fr": "Test Recipe Valid Nutrition",
+      "diet": "omnivore",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 20,
+      "calories_per_serving": 390,
+      "protein_g_per_serving": 30,
+      "carbs_g_per_serving": 45,
+      "fat_g_per_serving": 8,
+      "equipment_required": [
+        "Pan"
+      ],
+      "batch_friendly": true,
+      "allergens": [],
+      "tags": [
+        "test"
+      ],
+      "ingredients": [
+        {
+          "nom": "blanc de poulet",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "riz basmati",
+          "quantite": 100,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Cook the chicken",
+        "Add rice"
+      ],
+      "servings_base": 2,
+      "cooking_tip": "A simple test recipe"
+    },
+    {
+      "title_fr": "Gratin de poulet au pesto",
+      "diet": "flexitarian",
+      "protein_category": "Poultry",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 484,
+      "protein_g_per_serving": 51,
+      "carbs_g_per_serving": 47.2,
+      "fat_g_per_serving": 8.9,
+      "equipment_required": [
+        "Oven",
+        "Pot"
+      ],
+      "batch_friendly": true,
+      "allergens": [
+        "lactose"
+      ],
+      "tags": [
+        "protéiné",
+        "été",
+        "méditerranéen"
+      ],
+      "ingredients": [
+        {
+          "nom": "Riz long",
+          "quantite": 150,
+          "unite": "g"
+        },
+        {
+          "nom": "blancs de poulet",
+          "quantite": 667,
+          "unite": "g"
+        },
+        {
+          "nom": "pesto vert",
+          "quantite": 67,
+          "unite": "g"
+        },
+        {
+          "nom": "yaourt grec",
+          "quantite": 213,
+          "unite": "g"
+        },
+        {
+          "nom": "épinards hachés",
+          "quantite": 100,
+          "unite": "g"
+        },
+        {
+          "nom": "oignon rouge",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "bouillon de poulet",
+          "quantite": 300,
+          "unite": "ml"
+        },
+        {
+          "nom": "tomates séchées",
+          "quantite": 100,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Préchauffer le four à 180°C.",
+        "Découper les blancs de poulet en dés et émincer l’oignon rouge.",
+        "Dans un grand plat allant au four, mélanger le riz, le poulet, le pesto, le yaourt grec, les épinards, l’oignon, le bouillon de poulet et les tomates séchées.",
+        "Bien remuer pour que les ingrédients soient répartis uniformément.",
+        "Couvrir le plat avec de l’aluminium et enfourner pendant environ 60 minutes.",
+        "Retirer l’aluminium et poursuivre la cuisson encore 15 à 30 minutes jusqu’à ce que le riz soit cuit et le dessus légèrement doré.",
+        "Sortir du four, goûter et ajuster l’assaisonnement avant de servir."
+      ],
+      "servings_base": 4,
+      "image_filename": "gratin_de_poulet_au_pesto.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Couvrir avec de l’aluminium pendant la première heure évite que le plat se dessèche."
+    },
+    {
+      "title_fr": "Curry Korma vegan patate douce et pois chiches",
+      "diet": "vegan",
+      "protein_category": "Legumes",
+      "cooking_level": "intermediate",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 691,
+      "protein_g_per_serving": 26,
+      "carbs_g_per_serving": 81,
+      "fat_g_per_serving": 26,
+      "equipment_required": [
+        "Pot",
+        "Pan"
+      ],
+      "batch_friendly": true,
+      "allergens": [],
+      "tags": [
+        "hiver",
+        "protéiné"
+      ],
+      "ingredients": [
+        {
+          "nom": "tofu ferme",
+          "quantite": 250,
+          "unite": "g"
+        },
+        {
+          "nom": "pois chiches",
+          "quantite": 400,
+          "unite": "g"
+        },
+        {
+          "nom": "oignon",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "courgette",
+          "quantite": 2,
+          "unite": "piece"
+        },
+        {
+          "nom": "pâte de curry Korma",
+          "quantite": 60,
+          "unite": "g"
+        },
+        {
+          "nom": "bouillon de légumes",
+          "quantite": 400,
+          "unite": "ml"
+        },
+        {
+          "nom": "lait de coco",
+          "quantite": 200,
+          "unite": "g"
+        },
+        {
+          "nom": "huile neutre",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "coriandre fraîche",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "riz basmati",
+          "quantite": 250,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Faire revenir les oignons dans une cocotte avec l’huile.",
+        "Ajouter les courgettes en morceaux et les faire revenir 5 minutes.",
+        "Incorporer la pâte de curry Korma et faire revenir brièvement pour libérer les arômes.",
+        "Ajouter le tofu coupé en cubes, les pois chiches, bouillon et le lait de coco.",
+        "Rectifier l’assaisonnement et cuire 20minutes à couvert à feux doux.",
+        "Pendant ce temps, cuire le riz basmati selon les instructions du paquet.",
+        "Servir chaud avec le riz basmati et de la coriandre fraîche."
+      ],
+      "servings_base": 4,
+      "image_filename": "curry_korma_vegan_patate_douce_pois_chiches.png",
+      "cuisine_type": "asiatique",
+      "cooking_tip": "Les pois chiches rôtis au four avant d’être ajoutés au curry donnent une texture plus croquante et une saveur grillée."
+    },
+    {
+      "title_fr": "galettes de pommes de terre brocolis et oeuf mollet",
+      "diet": "vegetarian",
+      "protein_category": "Eggs",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 10,
+      "calories_per_serving": 615,
+      "protein_g_per_serving": 28,
+      "carbs_g_per_serving": 51,
+      "fat_g_per_serving": 35,
+      "equipment_required": [
+        "Oven",
+        "Pan",
+        "Pot"
+      ],
+      "batch_friendly": false,
+      "allergens": [
+        "œufs",
+        "lactose",
+        "gluten"
+      ],
+      "tags": [
+        "printemps",
+        "végétarien"
+      ],
+      "ingredients": [
+        {
+          "nom": "brocolis nains",
+          "quantite": 300,
+          "unite": "g"
+        },
+        {
+          "nom": "huile d'olive",
+          "quantite": 15,
+          "unite": "ml"
+        },
+        {
+          "nom": "pommes de terre",
+          "quantite": 350,
+          "unite": "g"
+        },
+        {
+          "nom": "fécule de maïs",
+          "quantite": 20,
+          "unite": "g"
+        },
+        {
+          "nom": "œufs",
+          "quantite": 4,
+          "unite": "piece"
+        },
+        {
+          "nom": "huile neutre",
+          "quantite": 20,
+          "unite": "ml"
+        },
+        {
+          "nom": "Fromage Comté",
+          "quantite": 35,
+          "unite": "g"
+        },
+        {
+          "nom": "piment en flocons",
+          "quantite": 2,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Préchauffez le four à 200 °C, chaleur classique.",
+        "Sur une plaque, mélangez les brocolis nains avec huile d’olive, sel et poivre, puis enfournez environ 15 min.",
+        "Râpez les pommes de terre, pressez pour enlever le liquide, puis dans un bol mélangez-les avec 2 œufs, la fécule, sel et poivre.",
+        "Chauffez une poêle à feu moyen-vif avec un fond d’huile neutre, formez 4 tas, aplatissez-les et faites cuire environ 5 min de chaque côté jusqu’à ce qu’ils soient dorés.",
+        "Pendant ce temps, portez une casserole d’eau à ébullition, plongez-y les 2 autres œufs pour 6 min 30, puis mettez-les dans de l’eau froide avant d’écaler.",
+        "Dressez : galettes, brocolis et œuf mollet coupé en deux. Faites des copeaux de comté avec un économe, ajoutez-les, salez, poivrez, ajoutez piment si vous voulez, puis servez."
+      ],
+      "servings_base": 2,
+      "image_filename": "galettes_de_pommes_de_terre_brocolis_et_oeuf_mollet.png",
+      "cuisine_type": "international",
+      "cooking_tip": "Pour des galettes bien croustillantes, utilisez une poêle bien chaude et une épaisseur d’huile d’environ 3-4 mm."
+    },
+    {
+      "title_fr": "One pot orzo merguez végétales",
+      "diet": "vegan",
+      "protein_category": "Meat alternatives",
+      "cooking_level": "beginner",
+      "prep_time_minutes": 30,
+      "calories_per_serving": 655,
+      "protein_g_per_serving": 30,
+      "carbs_g_per_serving": 71,
+      "fat_g_per_serving": 25,
+      "equipment_required": [
+        "Oven"
+      ],
+      "batch_friendly": true,
+      "allergens": [],
+      "tags": [
+        "été",
+        "rapide",
+        "méditerranéen"
+      ],
+      "ingredients": [
+        {
+          "nom": "orzo",
+          "quantite": 150,
+          "unite": "g"
+        },
+        {
+          "nom": "poivron jaune",
+          "quantite": 1,
+          "unite": "piece"
+        },
+        {
+          "nom": "merguez végétales",
+          "quantite": 4,
+          "unite": "piece"
+        },
+        {
+          "nom": "épinards",
+          "quantite": 100,
+          "unite": "g"
+        },
+        {
+          "nom": "crème végétale",
+          "quantite": 100,
+          "unite": "ml"
+        },
+        {
+          "nom": "bouillon de légumes",
+          "quantite": 400,
+          "unite": "ml"
+        },
+        {
+          "nom": "parmesan végétal",
+          "quantite": 40,
+          "unite": "g"
+        }
+      ],
+      "instructions": [
+        "Préchauffe le four à 200°C.",
+        "Coupe le poivron et les merguez végétales en morceaux.",
+        "Dans un plat allant au four, mélange l’orzo, le poivron, les merguez végétales, les épinards, la crème végétale et le bouillon de légumes.",
+        "Couvre légèrement et enfourne pendant 35 minutes à 200°C.",
+        "Sors le plat du four, ajoute le parmesan végétal et mélange avant de servir."
+      ],
+      "servings_base": 2,
+      "image_filename": "one_pot_orzo_merguez_vegetales.png",
+      "cuisine_type": "méditerranéen",
+      "cooking_tip": "Ajoute un peu de piment si tu veux retrouver le piquant du chorizo d’origine."
     }
   ]
 }

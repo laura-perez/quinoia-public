@@ -6,9 +6,12 @@ import { normalizedInputSchema } from "@/schemas/normalizedInput.schema";
 import { verifyAndExtractRecaptcha } from "@/lib/auth";
 import { detectClientIP } from "@/lib/auth";
 import { upsertUserAndSubmission } from "@/lib/supabase";
-import { triggerN8n } from "@/lib/integrations";
 import { createLogger, redact } from "@/lib/logger";
 import { buildN8nPayload } from "@/lib/business/buildN8nPayload";
+import { selectRecipes } from "@/lib/recipes/recipeSelector";
+import { generateShoppingList } from "@/lib/recipes/shoppingListGenerator";
+import { sendRecipeMenu } from "@/lib/email/sendRecipeMenu";
+import { saveMenuResult } from "@/lib/supabase/menuResults";
 import type { RecaptchaMetadata } from "@/schemas/api.types";
 
 setZodErrorMapFR();
@@ -128,54 +131,137 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Erreur lors de l'enregistrement en base de données." });
   }
 
-  // Build n8n payload using our new function
-  let n8nPayload;
+  // V2.0: Native recipe selection replacing n8n workflow
+  let recipeResults;
   try {
-    n8nPayload = await buildN8nPayload(
+    // Build selection context from normalized input
+    const n8nPayload = await buildN8nPayload(
       norm.data,
       submissionResult.userId,
       submissionResult.submissionId
     );
-    logger.info('n8n payload built successfully', { 
+    
+    const selectionContext = {
+      userId: submissionResult.userId,
+      diet: norm.data.diet,
+      proteinPreferences: norm.data.proteinPreferences,
+      equipmentAvailable: norm.data.equipmentAvailable || [],
+      cookingLevel: norm.data.cookingLevel,
+      numRecipes: norm.data.numRecipes,
+      numServings: norm.data.numServings,
+      batchMode: norm.data.batchMode,
+      favoriteFoods: norm.data.favoriteFoods,
+      dislikedFoods: norm.data.dislikedFoods,
+      mealTargetKcal: n8nPayload.window.mealTargetKcal,
+      mealMinKcal: n8nPayload.window.mealMinKcal,
+      mealMaxKcal: n8nPayload.window.mealMaxKcal,
+      proteinFloorG: n8nPayload.window.proteinFloorG,
+      primaryGoal: norm.data.primaryGoal,
+    };
+
+    // Native recipe selection (replaces n8n)
+    recipeResults = await selectRecipes(selectionContext);
+    
+    logger.info('Native recipe selection completed', { 
       submissionId: submissionResult.submissionId,
       userId: submissionResult.userId,
-      payloadSize: JSON.stringify(n8nPayload).length
+      selectedCount: recipeResults.selectedRecipes.length,
+      fallbacksUsed: recipeResults.scoringDetails.fallbacksUsed
     });
   } catch (err) {
-    logger.error('n8n payload build failed', { 
+    logger.error('Recipe selection failed', { 
       error: err, 
       submissionId: submissionResult.submissionId 
     });
-    return res.status(500).json({ error: "Erreur lors de la construction du payload n8n." });
+    return res.status(500).json({ error: "Erreur lors de la sélection des recettes." });
   }
 
-  // Trigger n8n workflow
-  let n8nResult;
+  // Generate intelligent shopping list
+  let shoppingList;
   try {
-    n8nResult = await triggerN8n(n8nPayload);
-    logger.info('n8n workflow triggered successfully', { 
+    shoppingList = await generateShoppingList(
+      recipeResults.selectedRecipes,
+      norm.data.numServings
+    );
+    
+    logger.info('Shopping list generated successfully', { 
       submissionId: submissionResult.submissionId,
-      n8nExecutionId: n8nResult?.executionId 
+      totalItems: shoppingList.summary.totalItems,
+      aggregationRatio: `${Math.round((recipeResults.selectedRecipes.reduce((sum, r) => sum + r.ingredients.length, 0) - shoppingList.summary.totalItems) / recipeResults.selectedRecipes.reduce((sum, r) => sum + r.ingredients.length, 0) * 100)}%`,
+      unmappedIngredients: shoppingList.summary.unmappedIngredients
     });
   } catch (err) {
-    logger.error('n8n workflow failed', { 
+    logger.error('Shopping list generation failed', { 
       error: err, 
       submissionId: submissionResult.submissionId 
     });
-    return res.status(502).json({ error: "Erreur lors du traitement n8n.", details: String(err) });
+    return res.status(500).json({ error: "Erreur lors de la génération de la liste de courses." });
+  }
+
+  // Create result bundle (compatible with existing format)
+  const resultBundle = {
+    version: "v2.0_native",
+    generatedAt: new Date().toISOString(),
+    meta: {
+      primaryGoal: norm.data.primaryGoal,
+      secondaryFocus: norm.data.secondaryFocus,
+      numRecipes: norm.data.numRecipes,
+      numServings: norm.data.numServings,
+      selectionStrategy: recipeResults.scoringDetails.diversityStrategy,
+      processingTimeMs: Date.now() - startTime
+    },
+    recipes: recipeResults.selectedRecipes,
+    shoppingList: shoppingList,
+    nutritionSummary: recipeResults.nutritionSummary,
+    scoringDetails: recipeResults.scoringDetails
+  };
+
+  // Save menu result with shareId generation
+  let menuResult;
+  try {
+    const saveResult = await saveMenuResult({
+      submissionId: submissionResult.submissionId,
+      userId: submissionResult.userId,
+      resultBundle,
+      numRecipes: norm.data.numRecipes,
+      numServings: norm.data.numServings
+    });
+
+    if (!saveResult.success) {
+      throw new Error(saveResult.error || 'Failed to save menu result');
+    }
+
+    menuResult = saveResult.menuResult!;
+    
+    logger.info('Menu result saved successfully', {
+      submissionId: submissionResult.submissionId,
+      shareId: menuResult.shareId,
+      menuResultId: menuResult.id
+    });
+  } catch (err) {
+    logger.error('Menu result save failed', { 
+      error: err, 
+      submissionId: submissionResult.submissionId 
+    });
+    return res.status(500).json({ error: "Erreur lors de la sauvegarde du menu." });
   }
 
   const totalTime = Date.now() - startTime;
   
-  logger.info('API request completed successfully', {
+  logger.info('API request completed successfully (v2.0 native)', {
     submissionId: submissionResult.submissionId,
     duration: totalTime,
-    email: redact(norm.data.email)
+    email: redact(norm.data.email),
+    recipesSelected: recipeResults.selectedRecipes.length,
+    shoppingItemsGenerated: shoppingList.summary.totalItems,
+    version: "v2.0_native"
   });
   
   return res.status(200).json({ 
     ok: true, 
     submissionId: submissionResult.submissionId, 
-    resultBundle: n8nResult 
+    shareId: menuResult.shareId,
+    shareUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'https://quinoia.fr'}/menu/${menuResult.shareId}`,
+    resultBundle: resultBundle 
   });
 }

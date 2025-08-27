@@ -1,65 +1,50 @@
--- Recipe catalog tables for fast launch
--- Add to existing schema
+-- Legacy snake_case script converted to camelCase schema references.
+-- Prefer using create-base-and-v2-tables-fixed.sql for authoritative schema.
 
-CREATE TABLE public.recipe (
+CREATE TABLE IF NOT EXISTS public."recipe" (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  title_fr TEXT NOT NULL,
+  "titleFr" TEXT NOT NULL,
   slug TEXT UNIQUE NOT NULL,
-  servings_base INTEGER NOT NULL CHECK (servings_base >= 1 AND servings_base <= 8),
-  prep_time_minutes INTEGER NOT NULL CHECK (prep_time_minutes <= 30),
-  
+  "servingsBase" INTEGER NOT NULL CHECK ("servingsBase" >= 1 AND "servingsBase" <= 8),
+  "prepTimeMinutes" INTEGER NOT NULL CHECK ("prepTimeMinutes" <= 30),
+
   -- Nutrition per serving
-  calories_per_serving INTEGER NOT NULL,
-  protein_g_per_serving NUMERIC(5,2) NOT NULL,
-  carbs_g_per_serving NUMERIC(5,2) NOT NULL,
-  fat_g_per_serving NUMERIC(5,2) NOT NULL,
-  
-  -- Classification for scoring algorithm
-  diet TEXT NOT NULL CHECK (diet IN ('omnivore', 'flexitarian', 'vegetarian', 'vegan')),
-  protein_category TEXT NOT NULL CHECK (protein_category IN ('Beef', 'Poultry', 'Fish', 'Eggs', 'Dairy', 'Tofu', 'Legumes', 'Meat alternatives')),
-  cooking_level TEXT NOT NULL CHECK (cooking_level IN ('beginner', 'intermediate', 'advanced')),
-  
-  -- Equipment and preferences
-  equipment_required TEXT[] NOT NULL DEFAULT '{}',
-  batch_friendly BOOLEAN NOT NULL DEFAULT false,
-  
-  -- Ingredients as JSONB for flexibility
+  "caloriesPerServing" INTEGER NOT NULL,
+  "proteinGPerServing" NUMERIC(5,2) NOT NULL,
+  "carbsGPerServing" NUMERIC(5,2) NOT NULL,
+  "fatGPerServing" NUMERIC(5,2) NOT NULL,
+
+  diet TEXT NOT NULL CHECK (diet IN ('omnivore','flexitarian','vegetarian','vegan')),
+  "proteinCategory" TEXT NOT NULL CHECK ("proteinCategory" IN ('Beef','Poultry','Fish','Eggs','Dairy','Tofu','Legumes','Meat alternatives')),
+  "cookingLevel" TEXT NOT NULL CHECK ("cookingLevel" IN ('beginner','intermediate','advanced')),
+
+  "equipmentRequired" TEXT[] NOT NULL DEFAULT '{}',
+  "batchFriendly" BOOLEAN NOT NULL DEFAULT false,
   ingredients JSONB NOT NULL,
   instructions TEXT[] NOT NULL,
-  
-  -- Preference matching
-  favorite_foods_tags TEXT[] NOT NULL DEFAULT '{}',
-  disliked_foods_tags TEXT[] NOT NULL DEFAULT '{}',
-  
-  -- Quality metadata
-  gpt_auto_evaluation JSONB,
-  cooking_tip TEXT,
-  
-  -- Admin
-  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'draft', 'archived')),
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+  "gptAutoEvaluation" JSONB,
+  "cookingTip" TEXT,
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active','draft','archived')),
+  "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
--- Indexes for fast filtering and scoring
-CREATE INDEX idx_recipe_diet ON public.recipe(diet);
-CREATE INDEX idx_recipe_protein_category ON public.recipe(protein_category);
-CREATE INDEX idx_recipe_cooking_level ON public.recipe(cooking_level);
-CREATE INDEX idx_recipe_calories ON public.recipe(calories_per_serving);
-CREATE INDEX idx_recipe_protein ON public.recipe(protein_g_per_serving);
-CREATE INDEX idx_recipe_equipment ON public.recipe USING GIN(equipment_required);
-CREATE INDEX idx_recipe_status ON public.recipe(status);
+CREATE INDEX IF NOT EXISTS idx_recipe_diet_legacy ON public."recipe"(diet);
+CREATE INDEX IF NOT EXISTS idx_recipe_proteinCategory_legacy ON public."recipe"("proteinCategory");
+CREATE INDEX IF NOT EXISTS idx_recipe_cookingLevel_legacy ON public."recipe"("cookingLevel");
+CREATE INDEX IF NOT EXISTS idx_recipe_caloriesPerServing_legacy ON public."recipe"("caloriesPerServing");
+CREATE INDEX IF NOT EXISTS idx_recipe_proteinGPerServing_legacy ON public."recipe"("proteinGPerServing");
+CREATE INDEX IF NOT EXISTS idx_recipe_equipmentRequired_legacy ON public."recipe" USING GIN("equipmentRequired");
+CREATE INDEX IF NOT EXISTS idx_recipe_status_legacy ON public."recipe"(status);
 
--- User recipe history for recency tracking
-CREATE TABLE public.user_recipe_consumption (
+CREATE TABLE IF NOT EXISTS public."userRecipeHistory" (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES public.user(id),
-  recipe_id UUID NOT NULL REFERENCES public.recipe(id),
-  consumed_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-  menu_result_id UUID REFERENCES public.menuResult(id),
-  
-  UNIQUE(user_id, recipe_id, consumed_at)
+  "userId" UUID NOT NULL REFERENCES public."user"(id) ON DELETE CASCADE,
+  "recipeId" UUID NOT NULL REFERENCES public."recipe"(id) ON DELETE CASCADE,
+  "menuResultId" UUID REFERENCES public."menuResult"(id) ON DELETE SET NULL,
+  "consumedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  UNIQUE("userId","recipeId","consumedAt")
 );
 
-CREATE INDEX idx_user_recipe_consumption_user_date ON public.user_recipe_consumption(user_id, consumed_at DESC);
-CREATE INDEX idx_user_recipe_consumption_recipe ON public.user_recipe_consumption(recipe_id);
+CREATE INDEX IF NOT EXISTS idx_userRecipeHistory_user_date_legacy ON public."userRecipeHistory"("userId","consumedAt" DESC);
+CREATE INDEX IF NOT EXISTS idx_userRecipeHistory_recipe_legacy ON public."userRecipeHistory"("recipeId");
