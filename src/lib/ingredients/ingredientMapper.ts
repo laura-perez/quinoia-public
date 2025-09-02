@@ -143,12 +143,14 @@ export async function analyzeUnmappedIngredients(): Promise<AnalysisResult> {
     throw new Error(`Failed to fetch canonical ingredients: ${canonicalError.message}`);
   }
 
-  const { data: aliases, error: aliasError } = await supabase
-    .from('ingredientAlias')
-    .select('aliasName, canonicalId, normalizedForm');
-
-  if (aliasError) {
-    throw new Error(`Failed to fetch ingredient aliases: ${aliasError.message}`);
+  let aliases: any[] | null = null;
+  try {
+    const { data, error } = await supabase
+      .from('ingredientAlias')
+      .select('aliasName, canonicalId, normalizedForm');
+    if (!error) aliases = data as any[];
+  } catch (_) {
+    // ingredientAlias table might be dropped; proceed without it
   }
 
   // Create lookup maps
@@ -345,27 +347,21 @@ export async function applyApprovedIngredients(
         logger.info(`Duplicate found - using existing ingredient: ${finalName}`);
         
         // Create alias and update recipe mapping using existing ingredient
-        if (ingredient.originalName.toLowerCase() !== finalName.toLowerCase()) {
-          await supabase
-            .from('ingredientAlias')
-            .insert({
-              canonicalId: existingIngredient.id,
-              aliasName: ingredient.originalName,
-              confidence: 0.9,
-              source: 'gpt_mapping'
-            });
-        }
+        // Optional: create alias if table exists; ignore if dropped
+        try {
+          if (ingredient.originalName.toLowerCase() !== finalName.toLowerCase()) {
+            await supabase
+              .from('ingredientAlias')
+              .insert({
+                canonicalId: existingIngredient.id,
+                aliasName: ingredient.originalName,
+                confidence: 0.9,
+                source: 'gpt_mapping'
+              });
+          }
+        } catch (_) { /* no-op */ }
 
-        // Update recipe ingredient mapping
-        await supabase
-          .from('recipeIngredient')
-          .upsert({
-            recipeId: ingredient.recipeId,
-            canonicalIngredientId: existingIngredient.id,
-            originalName: ingredient.originalName,
-            quantity: ingredient.quantity,
-            unit: ingredient.unit
-          });
+        // Junction table deprecated; JSON is authoritative
 
         results.created++;
         logger.info('Used existing ingredient', {
@@ -395,28 +391,21 @@ export async function applyApprovedIngredients(
         continue;
       }
 
-      // Create alias for original name if different from canonical
-      if (ingredient.originalName.toLowerCase() !== finalName.toLowerCase()) {
-        await supabase
-          .from('ingredientAlias')
-          .insert({
-            canonicalId: newCanonical.id,
-            aliasName: ingredient.originalName,
-            confidence: 0.9,
-            source: 'gpt_mapping'
-          });
-      }
+      // Optional alias insert; ignore errors if alias table is dropped
+      try {
+        if (ingredient.originalName.toLowerCase() !== finalName.toLowerCase()) {
+          await supabase
+            .from('ingredientAlias')
+            .insert({
+              canonicalId: newCanonical.id,
+              aliasName: ingredient.originalName,
+              confidence: 0.9,
+              source: 'gpt_mapping'
+            });
+        }
+      } catch (_) { /* no-op */ }
 
-      // Update recipe ingredient mapping
-      await supabase
-        .from('recipeIngredient')
-        .upsert({
-          recipeId: ingredient.recipeId,
-          canonicalIngredientId: newCanonical.id,
-          originalName: ingredient.originalName,
-          quantity: ingredient.quantity,
-          unit: ingredient.unit
-        });
+      // Junction table deprecated; JSON is authoritative
 
       results.created++;
       
@@ -494,25 +483,18 @@ async function handleAliasMapping(
     }
 
     // Create alias
-    await supabase
-      .from('ingredientAlias')
-      .insert({
-        canonicalId: targetCanonical.id,
-        aliasName: ingredient.originalName,
-        confidence: 0.9,
-  source: 'gpt_mapping'
-      });
+    try {
+      await supabase
+        .from('ingredientAlias')
+        .insert({
+          canonicalId: targetCanonical.id,
+          aliasName: ingredient.originalName,
+          confidence: 0.9,
+          source: 'gpt_mapping'
+        });
+    } catch (_) { /* no-op */ }
 
-    // Update recipe ingredient mapping
-    await supabase
-      .from('recipeIngredient')
-      .upsert({
-        recipeId: ingredient.recipeId,
-        canonicalIngredientId: targetCanonical.id,
-        originalName: ingredient.originalName,
-        quantity: ingredient.quantity,
-        unit: ingredient.unit
-      });
+    // Junction table deprecated; JSON is authoritative
 
     results.created++;
     logger.info('Mapped as alias', {

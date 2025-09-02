@@ -8,6 +8,7 @@ export const TABLE_NAMES = {
   RECIPES: 'recipe',
   USER_RECIPE_HISTORY: 'userRecipeHistory',
   INGREDIENT_CANONICAL: 'ingredientCanonical',
+  // Deprecated: may be removed after JSON-as-source migration
   INGREDIENT_ALIAS: 'ingredientAlias',
   RECIPE_INGREDIENT: 'recipeIngredient',
 } as const;
