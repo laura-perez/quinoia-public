@@ -157,71 +157,100 @@ export async function matchIngredient(ingredientName: string): Promise<{
   const supabase = getServiceClient();
   
   try {
-    // Step 1: Try exact alias match (highest confidence)
-    const { data: exactMatch } = await supabase
-      .from('ingredientAlias')
-      .select(`
-        canonicalId:canonicalId,
-        confidence,
-        ingredientCanonical:ingredientCanonical!inner(nameFr:nameFr, category)
-      `)
-      .eq('aliasName', ingredientName)
-      .order('confidence', { ascending: false })
-      .limit(1);
+    // Step 1: Try alias table if present (highest confidence). If table is dropped, skip gracefully.
+    try {
+      const { data: exactMatch, error: exactErr } = await supabase
+        .from('ingredientAlias')
+        .select(`
+          canonicalId:canonicalId,
+          confidence,
+          ingredientCanonical:ingredientCanonical!inner(nameFr:nameFr, category)
+        `)
+        .eq('aliasName', ingredientName)
+        .order('confidence', { ascending: false })
+        .limit(1);
 
-    if (exactMatch && exactMatch.length > 0) {
-      const match = exactMatch[0] as IngredientAliasResponse;
+      if (!exactErr && exactMatch && exactMatch.length > 0) {
+        const match = exactMatch[0] as IngredientAliasResponse;
+        return {
+          canonicalId: match.canonicalId,
+          canonicalName: match.ingredientCanonical?.[0]?.nameFr,
+          confidence: match.confidence,
+          needsReview: false
+        };
+      }
+
+      const normalized = normalizeIngredientName(ingredientName);
+      const { data: fuzzyMatch, error: fuzzyErr } = await supabase
+        .from('ingredientAlias')
+        .select(`
+          canonicalId:canonicalId,
+          confidence,
+          ingredientCanonical:ingredientCanonical!inner(nameFr:nameFr, category)
+        `)
+        .eq('normalizedForm', normalized)
+        .order('confidence', { ascending: false })
+        .limit(1);
+
+      if (!fuzzyErr && fuzzyMatch && fuzzyMatch.length > 0) {
+        const match = fuzzyMatch[0] as IngredientAliasResponse;
+        return {
+          canonicalId: match.canonicalId,
+          canonicalName: match.ingredientCanonical?.[0]?.nameFr,
+          confidence: Math.max(0.8, match.confidence), // Fuzzy match penalty
+          needsReview: match.confidence < 0.9
+        };
+      }
+    } catch (_) {
+      // ingredientAlias table likely dropped; fall through to canonical-based matching
+    }
+
+    // Step 2: Canonical lookup using nameFr and commonAliases
+    // Fetch a small candidate set using ilike on nameFr, then refine with normalization and aliases in memory
+    const { data: candidatesByName } = await supabase
+      .from('ingredientCanonical')
+      .select('id, nameFr:nameFr, category, commonAliases')
+      .or(`nameFr.ilike.%${ingredientName}%,nameFr.ilike.%${ingredientName.split(' ')[0]}%`);
+
+    const normalized = normalizeIngredientName(ingredientName);
+    const allCandidates = (candidatesByName as (PartialMatchResponse & { commonAliases?: string[] })[]) || [];
+
+    // Try exact normalized match against nameFr
+    const normalizedNameHit = allCandidates.find(c => normalizeIngredientName(c.nameFr) === normalized);
+    if (normalizedNameHit) {
       return {
-        canonicalId: match.canonicalId,
-        canonicalName: match.ingredientCanonical?.[0]?.nameFr,
-        confidence: match.confidence,
+        canonicalId: normalizedNameHit.id,
+        canonicalName: normalizedNameHit.nameFr,
+        confidence: 0.9,
         needsReview: false
       };
     }
 
-    // Step 2: Try normalized fuzzy match
-    const normalized = normalizeIngredientName(ingredientName);
-    const { data: fuzzyMatch } = await supabase
-      .from('ingredientAlias')
-      .select(`
-        canonicalId:canonicalId,
-        confidence,
-        ingredientCanonical:ingredientCanonical!inner(nameFr:nameFr, category)
-      `)
-      .eq('normalizedForm', normalized)
-      .order('confidence', { ascending: false })
-      .limit(1);
-
-    if (fuzzyMatch && fuzzyMatch.length > 0) {
-      const match = fuzzyMatch[0] as IngredientAliasResponse;
-      return {
-        canonicalId: match.canonicalId,
-        canonicalName: match.ingredientCanonical?.[0]?.nameFr,
-        confidence: Math.max(0.8, match.confidence), // Fuzzy match penalty
-        needsReview: match.confidence < 0.9
-      };
+    // Try exact normalized match against any common alias
+    for (const c of allCandidates) {
+      const aliases = Array.isArray((c as any).commonAliases) ? (c as any).commonAliases as string[] : [];
+      if (aliases.some(a => normalizeIngredientName(a) === normalized)) {
+        return {
+          canonicalId: (c as any).id,
+          canonicalName: (c as any).nameFr,
+          confidence: 0.85,
+          needsReview: false
+        };
+      }
     }
 
-    // Step 3: Partial text matching for complex ingredient names
-    const { data: partialMatches } = await supabase
-      .from('ingredientCanonical')
-      .select('id, nameFr:nameFr, category')
-      .or(`nameFr.ilike.%${ingredientName}%,nameFr.ilike.%${ingredientName.split(' ')[0]}%`);
-
-    if (partialMatches && partialMatches.length > 0) {
-      const typedMatches = partialMatches as PartialMatchResponse[];
-      // Score by text similarity (simple heuristic)
-      const bestMatch = typedMatches.reduce((best, current) => {
+    // Step 3: Partial text matching for complex ingredient names on the candidate set
+    if (allCandidates.length > 0) {
+      const bestMatch = allCandidates.reduce((best, current) => {
         const currentScore = calculateSimilarity(ingredientName, current.nameFr);
-        const bestScore = calculateSimilarity(ingredientName, best.nameFr);
+        const bestScore = calculateSimilarity(ingredientName, (best as any).nameFr);
         return currentScore > bestScore ? current : best;
       });
 
-      const confidence = Math.min(0.7, calculateSimilarity(ingredientName, bestMatch.nameFr));
-      
+      const confidence = Math.min(0.7, calculateSimilarity(ingredientName, (bestMatch as any).nameFr));
       return {
-        canonicalId: bestMatch.id,
-        canonicalName: bestMatch.nameFr,
+        canonicalId: (bestMatch as any).id,
+        canonicalName: (bestMatch as any).nameFr,
         confidence,
         needsReview: true
       };
@@ -478,38 +507,13 @@ export async function importGPTRecipes(gptRecipes: GPTRecipe[]): Promise<ImportR
         results.skipped++;
         continue;
       }
-
-      // 5. Insert recipe_ingredient junction records
-      const junctionRecords = mappedIngredients
-        .filter(ing => ing.canonicalId)
-        .map(ing => ({
-          recipeId: recipe.id,
-          canonicalIngredientId: ing.canonicalId!,
-          originalName: ing.nom,
-          quantity: ing.quantite,
-          unit: ing.unite,
-          isOptional: ing.nom.toLowerCase().includes('optionnel')
-        }));
-
-      if (junctionRecords.length > 0) {
-        const { error: junctionError } = await supabase
-          .from('recipeIngredient')
-          .insert(junctionRecords);
-
-        if (junctionError) {
-          logger.error('Failed to insert recipe ingredients', { 
-            recipeId: recipe.id, 
-            error: junctionError 
-          });
-        }
-      }
+      // 5. No more junction table writes; JSON ingredients are authoritative
 
       results.imported++;
       results.successfulRecipes.push(gptRecipe);
       logger.info('Recipe imported successfully', { 
         title: gptRecipe.titleFr,
-        mappedIngredients: mappedIngredients.length,
-        canonicalMatches: junctionRecords.length
+        mappedIngredients: mappedIngredients.length
       });
 
     } catch (error) {
