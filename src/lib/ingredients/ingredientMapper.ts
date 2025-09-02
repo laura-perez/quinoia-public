@@ -352,7 +352,7 @@ export async function applyApprovedIngredients(
               canonicalId: existingIngredient.id,
               aliasName: ingredient.originalName,
               confidence: 0.9,
-              source: 'auto_mapper'
+              source: 'gpt_mapping'
             });
         }
 
@@ -403,7 +403,7 @@ export async function applyApprovedIngredients(
             canonicalId: newCanonical.id,
             aliasName: ingredient.originalName,
             confidence: 0.9,
-            source: 'auto_mapper'
+            source: 'gpt_mapping'
           });
       }
 
@@ -500,7 +500,7 @@ async function handleAliasMapping(
         canonicalId: targetCanonical.id,
         aliasName: ingredient.originalName,
         confidence: 0.9,
-        source: 'auto_mapper'
+  source: 'gpt_mapping'
       });
 
     // Update recipe ingredient mapping
