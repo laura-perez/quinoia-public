@@ -1,12 +1,12 @@
-# Quinoïa MVP - Spécification Technique v2.0
+# Quinoïa MVP - Spécification Technique v3.0
 
 ## Architecture & Objectif
 
-**Mission**: Sélection automatisée de recettes françaises personnalisées avec génération de listes de courses intelligentes.
+**Mission**: Sélection automatisée de recettes françaises personnalisées avec génération de listes de courses.
 
-**Workflow hybride v2.0**: Next.js (sélection algorithmique) + n8n (traitement IA & email)
+**Architecture native v3.0**: Next.js full-stack avec sélection algorithmique et traitement intégré
 
-**Sortie**: Email personnalisé + page publique `/menu/{shareId}` (noindex, sans PII)
+**Sortie**: Page publique interactive `/menu/{shareId}` (noindex, sans PII) avec liste de courses
 
 ---
 
@@ -80,60 +80,92 @@
 
 1. Récence partielle (max 2 de recentSoft avec pénalité)
 2. Élargissement calorique (±5% → ±10% → ±15% → ±20%)
-3. Sinon -> notification email de manque de recettes
+3. Sinon -> erreur explicite utilisateur de catalogue insuffisant
 
 ---
 
-## 4) Traitement IA (n8n Workflow)
+## 4) Génération Liste de Courses (Next.js Native)
 
-### Input n8n
+### Pipeline de Génération
 
-- Recettes sélectionnées (par Next.js)
-- Contexte utilisateur complet
-- Cibles nutritionnelles
+1. **Agrégation des ingrédients** de toutes les recettes sélectionnées
+2. **Mapping canonique** via repository d'ingrédients en base
+3. **Consolidation des quantités** par ingrédient canonique
+4. **Mise à l'échelle** selon numServings utilisateur
+5. **Organisation par catégories** de rayons magasin français
 
-### Nodes IA Critiques
+### Logique de Consolidation
 
-#### A) Agrégation Shopping List (Custom GPT)
+**Mapping automatique**: Base de données d'ingrédients canoniques
+- Recherche par nom exact puis similarité
+- Standardisation unités (g, ml, pièce)
+- Gestion des variants courants en base
 
-**Challenge**: Variants français → canonique
+**Agrégation intelligente**:
+- Addition quantités même ingrédient canonique
+- Conversion unités compatibles (g ↔ kg)
+- Préservation source recipe pour traçabilité
 
-- "quinoa blanc" + "quinoa rouge" = "Quinoa"
-- "oeufs" + "oeuf" + "œuf" = "Œufs"
+### Organisation Rayons
 
-**Traitement**:
+**Catégories prédéfinies**:
+- Fruits & Légumes
+- Boucherie & Poissonnerie  
+- Crémerie
+- Épicerie Salée
+- Épicerie Sucrée
+- Surgelés
+- Produits Frais
 
-- Combinaison variantes couleur/description
-- Standardisation orthographique (pluriel, accents)
-- Addition quantités automatique
-- Mise à l'échelle selon numServings
-- Organisation rayons magasin français
+### Interface Interactive
 
-#### B) Conseils Personnalisés (Custom GPT)
-
-**Input contexte**:
-
-- Niveau cuisine, équipement, batch mode, objectif, portions
-- Recettes spécifiques sélectionnées
-
-**Génération**:
-
-- 3-4 tips cuisson actionnables
-- Conseils meal prep si batch activé
-- Insights nutrition selon objectif
-- Techniques gain temps selon niveau
-
-### Email Composition
-
-- Header personnalisé avec prénom
-- Preview nbRecipes recettes
-- Section conseils IA (2 premiers tips)
-- Section shopping list (statistiques + exemple)
-- CTA vers menu complet avec shareId
+- **Accordéons par rayon** avec compteurs
+- **Cases à cocher** pour tracking progression
+- **Items cochés** déplacés en section séparée
+- **Compteur temps réel** items restants/total
 
 ---
 
-## 5) Base de Données
+## 5) Interface Menu Interactif
+
+### Page Menu Publique (`/menu/{shareId}`)
+
+**Design responsive** mobile-first avec version desktop optimisée
+
+### Sections Principales
+
+#### A) Carousel Recettes
+- **Mobile**: Vue carte unique avec pagination dots
+- **Desktop**: Grille 2x2 avec sélection interactive
+- **Métadonnées**: Temps préparation, calories, macros
+- **Images**: Fallback system avec placeholder Unsplash
+
+#### B) Liste de Courses Interactive
+- **Organisation**: Accordéons par rayon magasin
+- **Fonctionnalités**: Checkbox, compteur progression, items barrés
+- **État persistant**: Items cochés conservés en session
+- **UX**: Smooth animations, feedback visuel immédiat
+
+#### C) Navigation Sticky
+- **Mobile**: Bottom tab bar fixe (Recettes, Liste, Astuces, Batch)
+- **Desktop**: Floating navigation center avec scroll smooth
+- **État actif**: Highlighting section courante
+
+#### D) Contenu Statique Enrichi
+- **Astuces cuisson**: 4 tips pratiques avec icônes
+- **Batch cooking**: Timeline 3 jours avec étapes
+- **Design**: Cards avec couleurs brand (#F4C95D, #414535)
+
+### Spécifications Techniques
+
+- **SEO**: `noindex,nofollow` + X-Robots-Tag header
+- **Performance**: Images optimisées, lazy loading
+- **Accessibilité**: ARIA labels, keyboard navigation
+- **Sécurité**: Aucune PII exposée, shareId révocable
+
+---
+
+## 6) Base de Données
 
 ### Table Recipe (Core)
 
@@ -158,12 +190,12 @@
 
 ---
 
-## 6) Contraintes & Performance
+## 7) Contraintes & Performance
 
 ### Cibles Performance
 
 - **Sélection recettes**: <2s pour 200+ recettes
-- **Email delivery**: <30s depuis form submit
+- **Génération shopping list**: <1s pour consolidation
 - **Menu page load**: <1s optimisé
 - **Queries DB**: <100ms avec index
 
@@ -172,7 +204,7 @@
 - Temps préparation ≤30min
 - Nutrition plausible: calories = 4×(prot+carbs) + 9×fat ±15%
 - Catalogue minimum: 200 recettes validées
-- Coverage: 90%+ ingrédients auto-mappés par IA
+- Coverage: 90%+ ingrédients mappés par base canonique
 
 ### Fallbacks Jamais Relâchés
 
@@ -183,35 +215,31 @@
 
 ---
 
-## 7) Intégrations Externes
+## 8) Intégrations Externes
 
-### n8n Workflow Platform
+### Base de Données (Supabase)
 
-- Webhook endpoints Next.js → n8n
-- AI Agent nodes pour traitement IA
-- Template email + Resend integration
+- PostgreSQL avec Row Level Security (RLS)
+- Repository ingrédients canoniques
+- Tracking historique utilisateur
+- Storage recettes et métadonnées
 
-### AI agent nodes
+### Services d'Infrastructure
 
-- Shopping list: Expert variants français
-- Cooking tips: Chef expert pédagogique
-- Prompting structuré pour consistance
+- **Authentification**: reCAPTCHA v3 pour validation formulaire
+- **Rate Limiting**: Upstash Redis pour protection API
+- **Analytics**: Vercel Analytics pour métriques usage
+- **Logging**: Système structuré avec redaction PII
 
-### Resend Email Service
+### Recipe Generation (Hors scope MVP)
 
-- Domain: menu@quinoia.fr (SPF/DKIM)
-- Tags campagne pour analytics
-- Templates responsive mobile
-
-### Recipe Generation (Offline)
-
-- Custom GPT schema v2.0 aligné DB
-- Validation nutrition + mapping ingrédients
-- Pipeline import avec review manuelle
+- Import manuel recettes avec validation nutrition
+- Mapping ingrédients vers base canonique
+- Review qualité avant publication
 
 ---
 
-## 8) Conventions Techniques
+## 9) Conventions Techniques
 
 ### Données
 
@@ -235,46 +263,54 @@
 
 ---
 
-## 9) Architecture Décisionnelle v2.0
+## 10) Architecture Décisionnelle v3.0
 
-### Choix Technique: Hybride Next.js + n8n
+### Choix Technique: Next.js Full-Stack Native
 
-**Rationale**: Performance (Next.js) + Flexibilité IA (n8n)
+**Rationale**: Simplicité architecture + Performance uniforme + Maintenance réduite
 
-**Next.js Responsabilités**:
+**Next.js Responsabilités Complètes**:
 
-- Sélection algorithmique complexe
-- Accès direct DB optimisé
-- Calculs nutritionnels précis
+- Sélection algorithmique des recettes
+- Calculs nutritionnels (BMR/TDEE/fenêtres)
+- Génération et agrégation shopping list
+- Interface utilisateur responsive
+- Gestion base de données via Supabase
+- Authentification et sécurité
 
-**n8n Responsabilités**:
+### Évolution Architecture
 
-- Traitement IA temps réel
-- Agrégation shopping list intelligente
-- Composition email professionnelle
+- **v1.0**: Dépendance externe n8n pour toute logique métier
+- **v2.0**: Hybride Next.js (sélection) + n8n (IA)
+- **v3.0**: **Native Next.js complet** - Suppression n8n
 
-### Migration v1.1 → v2.0
+**Bénéfices v3.0**:
+- Latence réduite (pas de webhooks externes)
+- Debugging simplifié (stack unifié)
+- Coûts opérationnels réduits
+- Déploiement atomique
 
-- **BREAKING**: Suppression dépendance n8n pour sélection
-- **Ajout**: Traitement IA pour shopping list + conseils
-- **Conservation**: Architecture user/submission existante
-- **Enhancement**: Menu pages avec contenu IA
+**Trade-offs acceptés**:
+- Pas de tips cuisson AI-générés (content statique)
+- Shopping list basique (pas de variants linguistiques IA)
+- Focus MVP sur fonctionnalité core
 
 ---
 
-## 10) Métriques de Succès
+## 11) Métriques de Succès
 
 ### Technique
 
-- Email <60s
-- 95%+ delivery rate email
-- 90%+ ingrédients auto-mappés IA
+- Menu génération <5s end-to-end
+- 95%+ availability du service
+- 90%+ ingrédients mappés base canonique
 
 ### UX
 
-- Journey Form→Email→Menu >80% completion
-- Recettes perçues "très pertinentes"
-- Shopping list pratique et organisée
+- Journey Form→Menu >80% completion
+- Recettes perçues "très pertinentes" 
+- Shopping list interactive et organisée
+- Interface mobile-first fluide
 
 ### Business
 
@@ -284,4 +320,4 @@
 
 ---
 
-**Note**: Document single source of truth pour compréhension technique complète projet Quinoïa v2.0
+**Note**: Document single source of truth pour compréhension technique complète projet Quinoïa v3.0 - Architecture Next.js native

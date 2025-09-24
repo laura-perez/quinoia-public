@@ -23,5 +23,5 @@
     "jsx": "preserve"
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "debug/**/*"]
+  "exclude": ["node_modules", "debug/**/*", "figma/**/*"]
 }
