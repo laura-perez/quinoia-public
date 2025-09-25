@@ -14,38 +14,36 @@
 
 ### Champs Obligatoires
 
-- **Identité**: email, firstName, consent, age [16-100], gender
-- **Physique**: heightCm [100-250], weightKg [40-150]
+- **Identité**: email, firstName (optionnel), consent, age [13-100], gender (female|male|unspecified)
 - **Alimentaire**: diet (omnivore|flexitarian|vegetarian|vegan), proteinPreferences[], cookingLevel (beginner|intermediate|advanced)
 - **Menu**: numRecipes [2-7], numServings [1-4]
 
 ### Champs Optionnels
 
-- **Préférences**: favoriteFoods, dislikedFoods (texte libre)
-- **Technique**: equipmentAvailable[], batchMode
-- **Communication**: freeTextMessage
+- **Préférences**: favoriteFoods, dislikedFoods (texte libre, max 500 caractères chacun)
+- **Allergies**: allergiesText (texte libre, max 300 caractères), allergens[] (enum canoniques)
+- **Technique**: equipmentAvailable[] (Oven, Blender, Thermomix, Air Fryer), batchMode (forcé à false)
 
-### Activité Physique (3 micro-questions)
+### Simplifications v3.0
 
-- `deskJob` (oui/non) + `dailySteps` (<5k|5-8k|>8k) + `sessionsPerWeek` (0|1-2|3-4|≥5) + `highIntensity` (oui/non)
-- **Calcul activityFactor**: Base 1.35 + ajustements → clamp [1.35, 1.60]
+- **Suppression physique**: Plus de heightCm, weightKg, activité physique
+- **Suppression objectifs**: Plus de primaryGoal, secondaryFocus
+- **Batch mode**: Toujours false dans le formulaire (masqué à l'utilisateur)
 
 ---
 
-## 2) Calculs Nutritionnels (BMR→TDEE→Meal)
+## 2) Logique Nutritionnelle Simplifiée
 
-### Formules Mifflin-St Jeor
+### Suppression des Calculs Métaboliques
 
-- **Femme**: 10×kg + 6.25×cm - 5×âge - 161
-- **Homme**: 10×kg + 6.25×cm - 5×âge + 5
-- **TDEE**: round(BMR × activityFactor)
+- **Plus de BMR/TDEE**: Suppression complète des calculs Mifflin-St Jeor
+- **Plus de cibles caloriques**: Aucun filtrage par fenêtre calorique
+- **Plus d'objectifs utilisateur**: Suppression de saveTime/eatHealthier/weightLoss
 
-### Cibles par Objectif
+### Protéines Simplifiées
 
-- **saveTime|eatHealthier**: dailyTarget = TDEE (±15%)
-- **weightLoss**: dailyTarget = TDEE × 0.85 (±10%)
-- **Repas**: mealTarget = dailyTarget × 0.35
-- **Protéines**: 25g (saveTime), 30g (eatHealthier), 35g (weightLoss) +5g si highProtein
+- **Plancher unique**: 25g minimum par recette (valeur fixe)
+- **Plus de modulation**: Aucun ajustement par objectif ou profil utilisateur
 
 ---
 
@@ -54,20 +52,25 @@
 ### Pipeline de Sélection
 
 1. **Récupération historique**: Recency user (21 derniers jours)
-2. **Filtres durs**: Régime, équipement, fenêtre calorique, plancher protéique, exclusion récence stricte (≤14j)
-3. **Scoring déterministe**: 7 composants avec pondération
-4. **Stratégie diversité**: Rotation protéique par régime alimentaire
-5. **Sélection finale**: Top N recipes selon score
+2. **Filtres durs**: Régime, équipement, plancher protéique, exclusion récence stricte (≤14j), préférences protéiques
+3. **Scoring déterministe**: 6 composants avec pondération
+4. **Filtrage doublons**: Suppression recettes similaires (seuil 70%)
+5. **Stratégie diversité**: Rotation protéique par régime alimentaire
+6. **Sélection finale**: Top N recipes selon score
 
-### Scoring (7 composants)
+### Scoring (6 composants)
 
-- **Catégorie protéique**: +3 si préférée, -2 sinon
+- **Préférence protéique**: +1 si catégorie préférée, 0 sinon
 - **Densité protéique**: +0.8 × (proteinGPerServing / 100_kcal)
-- **Proximité calorique**: -0.02 × |kcal-target| (weightLoss), -0.01 (autres)
-- **Batch bonus**: +0.5 si batchMode ET recipe.batchFriendly
-- **Favoris**: +1 par mot trouvé dans titre/tags
-- **Détestés**: -3 par mot trouvé
+- **Batch bonus**: +0.5 si batchMode ET recipe.batchFriendly (toujours 0 car batchMode=false)
+- **Favoris**: +1 par mot trouvé dans titre/tags/ingrédients
+- **Détestés**: -3 par mot trouvé dans titre/tags/ingrédients
 - **Récence souple**: -1.5 pour 14-21 jours (max 2 en fallback)
+
+### Suppressions v3.0
+
+- **Plus de proximité calorique**: Suppression du scoring basé sur la distance à une cible calorique
+- **Filtrage protéines obligatoire**: Seules les recettes avec protéines préférées passent les filtres durs
 
 ### Stratégie Diversité (Rotation protéique)
 
@@ -79,8 +82,13 @@
 ### Fallback Gracieux
 
 1. Récence partielle (max 2 de recentSoft avec pénalité)
-2. Élargissement calorique (±5% → ±10% → ±15% → ±20%)
-3. Sinon -> erreur explicite utilisateur de catalogue insuffisant
+2. Sinon -> erreur explicite utilisateur de catalogue insuffisant
+
+### Filtrage Anti-Doublons
+
+- **Algorithme de similarité**: Comparaison titre, ingrédients, pattern de cuisson
+- **Seuil de rejet**: 70% de similarité
+- **Protection**: Maximum 40% du pool peut être supprimé par sécurité
 
 ---
 
@@ -167,6 +175,28 @@
 
 ## 6) Base de Données
 
+### Enum Canoniques
+
+```typescript
+// Genres supportés
+gender: ["female", "male", "unspecified"]
+
+// Régimes alimentaires
+diet: ["omnivore", "flexitarian", "vegetarian", "vegan"]
+
+// Catégories protéiques
+proteinCategory: ["Beef", "Poultry", "Meat alternatives", "Fish", "Eggs", "Dairy", "Legumes", "Tofu"]
+
+// Équipements (en anglais canonique)
+equipment: ["Oven", "Blender", "Thermomix", "Air Fryer"]
+
+// Niveaux de cuisine
+cookingLevel: ["beginner", "intermediate", "advanced"]
+
+// Allergènes canoniques
+allergens: ["Gluten", "Milk", "Eggs", "Fish", "Peanuts", "Tree nuts", "Soy", "Sesame", "Shellfish", "Mustard"]
+```
+
 ### Table Recipe (Core)
 
 **Identifiants**: id, titleFr, slug, servingsBase [1-4], prepTimeMinutes ≤30min
@@ -206,12 +236,13 @@
 - Catalogue minimum: 200 recettes validées
 - Coverage: 90%+ ingrédients mappés par base canonique
 
-### Fallbacks Jamais Relâchés
+### Filtres Jamais Compromis
 
 - Régime alimentaire strict
 - Équipement disponible requis
 - Niveau cuisine compatible
-- Plancher protéique minimum
+- Plancher protéique minimum (25g)
+- **Préférences protéiques obligatoires**: Seules les recettes matchant les protéines sélectionnées
 
 ---
 
@@ -272,8 +303,7 @@
 
 **Next.js Responsabilités Complètes**:
 
-- Sélection algorithmique des recettes
-- Calculs nutritionnels (BMR/TDEE/fenêtres)
+- Sélection algorithmique des recettes (sans calculs métaboliques)
 - Génération et agrégation shopping list
 - Interface utilisateur responsive
 - Gestion base de données via Supabase
@@ -292,10 +322,13 @@
 - Déploiement atomique
 - Meilleur contrôle qualité
 
-**Trade-offs acceptés**:
+**Trade-offs acceptés v3.0**:
+- Suppression complète calculs métaboliques (BMR/TDEE)
+- Suppression objectifs utilisateur (perte poids, santé...)
+- Protéines fixes à 25g minimum
 - Tips cuisson statiques (non AI-générés)
-- Focus MVP sur fonctionnalité core
-- Simplicité avant complexité
+- Batch mode masqué (toujours false)
+- Focus MVP sur sélection intelligente simplifiée
 
 ---
 
@@ -322,4 +355,24 @@
 
 ---
 
-**Note**: Document single source of truth pour compréhension technique complète projet Quinoïa v3.0 - Architecture Next.js native
+## 12) Différences Majeures v3.0 vs Spécifications Originales
+
+### Simplifications Majeures Implémentées
+
+1. **Suppression physique/métabolisme**: Plus de collecte taille/poids/activité, plus de BMR/TDEE
+2. **Suppression objectifs**: Plus de goals (saveTime/eatHealthier/weightLoss), logique unified
+3. **Protéines simplifiées**: Plancher fixe 25g au lieu de modulation par objectif
+4. **Batch mode masqué**: Option supprimée du formulaire, forcée à false
+5. **Scoring allégé**: 6 composants au lieu de 7 (suppression proximité calorique)
+6. **Préférences protéiques obligatoires**: Seules les protéines choisies passent les filtres
+
+### Architecture Actuelle
+
+- **Formulaire**: 3 steps au lieu de 4 (suppression physique/objectifs)
+- **Validation**: Zod strict avec enum canoniques
+- **Sélection**: Algorithme basé préférences + diversité uniquement
+- **Interface**: Mobile-first, focus simplicité
+
+---
+
+**Note**: Document mis à jour pour refléter l'implémentation réelle v3.0 - Architecture Next.js simplifiée sans calculs métaboliques
