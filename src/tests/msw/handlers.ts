@@ -7,8 +7,6 @@ import { http, HttpResponse, type HttpHandler } from "msw";
  * - reCAPTCHA: Use 'low_score_token' as response to trigger low score (0.3)
  * - reCAPTCHA: Use 'invalid_token' as response to trigger invalid token error
  * - reCAPTCHA: Use any other token for successful verification (score 0.9)
- * - n8n: Include { testScenario: 'n8n_failure' } in payload to trigger 502 error
- * - n8n: Use any other payload for successful response
  */
 
 // reCAPTCHA API Mock Handlers
@@ -57,31 +55,6 @@ export const recaptchaHandlers = [
   }),
 ];
 
-// n8n Webhook Mock Handlers
-export const n8nHandlers = [
-  // Unified n8n webhook handler with conditional responses
-  http.post(process.env.N8N_WEBHOOK_URL || 'http://localhost:5678/webhook/test', async ({ request }) => {
-    const payload = await request.json() as any;
-    
-    // Check for failure test scenario
-    if (payload.testScenario === 'n8n_failure') {
-      return HttpResponse.json(
-        { error: 'Workflow execution failed' },
-        { status: 502 }
-      );
-    }
-    
-    // Default successful response
-    return HttpResponse.json({
-      executionId: 'exec_12345',
-      status: 'success',
-      data: {
-        submissionId: payload.submissionId,
-        processedAt: new Date().toISOString(),
-      },
-    });
-  }),
-];
 
 // Supabase Mock Handlers (if needed for certain tests)
 export const supabaseHandlers = [
@@ -98,7 +71,6 @@ export const supabaseHandlers = [
 
 export const handlers: HttpHandler[] = [
   ...recaptchaHandlers,
-  ...n8nHandlers,
   ...supabaseHandlers,
 ];
 

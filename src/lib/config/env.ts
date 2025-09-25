@@ -5,9 +5,6 @@ const envSchema = z.object({
   SUPABASE_URL: z.string().min(1, "SUPABASE_URL is required"),
   SUPABASE_SERVICE_KEY: z.string().min(1, "SUPABASE_SERVICE_KEY is required"),
   SUPABASE_ANON_KEY: z.string().min(1, "SUPABASE_ANON_KEY is required"),
-  N8N_WEBHOOK_URL: z.string().min(1, "N8N_WEBHOOK_URL is required"),
-  N8N_WEBHOOK_SECRET: z.string().min(1, "N8N_WEBHOOK_SECRET is required"),
-  HMAC_SECRET: z.string().min(1, "HMAC_SECRET is required"),
   APP_BASE_URL: z.string().min(1, "APP_BASE_URL is required"),
 
   // Optional
@@ -21,9 +18,6 @@ const _env = {
   SUPABASE_URL: process.env.SUPABASE_URL,
   SUPABASE_SERVICE_KEY: process.env.SUPABASE_SERVICE_KEY,
   SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
-  N8N_WEBHOOK_URL: process.env.N8N_WEBHOOK_URL,
-  N8N_WEBHOOK_SECRET: process.env.N8N_WEBHOOK_SECRET,
-  HMAC_SECRET: process.env.HMAC_SECRET,
   APP_BASE_URL: process.env.APP_BASE_URL,
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
   UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,

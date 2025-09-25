@@ -68,7 +68,13 @@ export function normalizeFormInput(form: unknown): NormalizedFormOutput {
     batchMode: !!f.batchMode,
     primaryGoal: f.primaryGoal,
     secondaryFocus: f.secondaryFocus ?? null,
-    activity: { ...f.physicalActivity },
+    activity: {
+      deskJob: !!f.physicalActivity.deskJob,
+      dailySteps: f.physicalActivity.dailySteps,
+      sessionsPerWeek: f.physicalActivity.sessionsPerWeek,
+      // Si pas de séances (sessionsPerWeek = "0") ou highIntensity null, alors false
+      highIntensity: f.physicalActivity.sessionsPerWeek === "0" ? false : !!f.physicalActivity.highIntensity,
+    },
     allergiesText: f.allergens?.trim() || undefined,
     allergens: [...extractAllergens(f.allergens || "")],
     locale: "fr-FR",

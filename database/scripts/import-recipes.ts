@@ -40,8 +40,7 @@ async function main() {
   try {
     // Diagnostics: ensure required server env vars present BEFORE dynamic import
     const requiredKeys = [
-      'RECAPTCHA_SECRET_KEY','SUPABASE_URL','SUPABASE_SERVICE_KEY','SUPABASE_ANON_KEY',
-      'N8N_WEBHOOK_URL','N8N_WEBHOOK_SECRET','HMAC_SECRET','APP_BASE_URL'
+      'RECAPTCHA_SECRET_KEY','SUPABASE_URL','SUPABASE_SERVICE_KEY','SUPABASE_ANON_KEY', 'APP_BASE_URL'
     ];
     const missing = requiredKeys.filter(k => !process.env[k]);
     logger.info('Starting recipe import process...', {

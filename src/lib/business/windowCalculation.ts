@@ -22,7 +22,7 @@ export interface WindowCalculationResult {
  * @param dailyTargetKcal - Cible quotidienne en kcal
  * @param primaryGoal - Objectif principal (détermine la tolérance)
  * @param secondaryFocus - Focus secondaire (highProtein ajoute +5g)
- * @returns Fenêtre complète pour le payload n8n
+ * @returns Fenêtre complète pour la sélection de recettes
  */
 export function computeWindow(
   dailyTargetKcal: number,

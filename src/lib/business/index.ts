@@ -9,8 +9,7 @@ export type { WindowCalculationResult } from './windowCalculation';
 export { default as SubmitMenuForm } from './submitMenuForm';
 
 // Server-only exports (require database access)
-// Note: buildN8nPayload n'est pas exporté ici car il est server-only (importe recency.ts)
-// Import direct: import { buildN8nPayload } from '@/lib/business/buildN8nPayload'
+// Note: Direct imports for server-only functions that access database
 
 // Re-export commonly used types from schemas
 export type { NormalizedInput, Targets } from '@/schemas';

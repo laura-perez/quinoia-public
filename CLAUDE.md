@@ -5,14 +5,14 @@
 - **Next.js 15.4.5** app with file-based routing in `/pages`. All routes and API endpoints are defined here.
 - **UI**: Modular React components in `src/components` (UI, forms, layout). Use composition and props for reusability.
 - **Business logic & utilities**: In `src/lib` organized by domain:
-  - `src/lib/auth/` - Authentication (reCAPTCHA, HMAC)
-  - `src/lib/business/` - Core business logic (calculations, n8n payload)
+  - `src/lib/auth/` - Authentication (reCAPTCHA)
+  - `src/lib/business/` - Core business logic (calculations, nutritional targets)
   - `src/lib/supabase/` - Database operations and queries
   - `src/lib/logger/` - Structured logging system
   - `src/lib/config/` - Environment and configuration
 - **Static assets**: In `/public`.
 - **Styling**: Tailwind CSS (see `tailwind.config.js`), global styles in `/styles`.
-- **Data flow**: User input flows from forms (multi-step in `components/form/`) to API routes, then to external services (Supabase, n8n, Upstash, reCAPTCHA).
+- **Data flow**: User input flows from forms (multi-step in `components/form/`) to API routes, then to native processing (recipe selection, shopping list generation) and database persistence (Supabase).
 - **Environment variables**: Always import via `src/lib/env`. Never introduce new names.
 
 ## Developer Workflows
@@ -115,7 +115,7 @@ Perform a comprehensive quality assessment before finalizing:
 - **Validation**: All env validated at boot with Zod (`src/lib/config/env.ts`). Use Zod for all schema validation (client & server).
 - **Error handling**: API responses must use `{ error, code?, details? }` shape. Show user-friendly errors, log details for ops.
 - **Accessibility**: All interactive elements must be keyboard accessible and have ARIA labels/attributes. Use `aria-describedby` for error messages.
-- **Security**: Rate-limit `/api/submit` (see `src/lib/auth/rateLimits.ts`). HMAC-sign payloads to n8n (`src/lib/auth/hmac.ts`). Verify reCAPTCHA server-side (`src/lib/auth/recaptcha.ts`).
+- **Security**: Rate-limit `/api/submit` (see `src/lib/auth/rateLimits.ts`). Verify reCAPTCHA server-side (`src/lib/auth/recaptcha.ts`).
 - **SEO**: `/menu/{shareId}` must send `X-Robots-Tag: noindex` and `<meta name="robots" content="noindex,nofollow">`.
 - **Logging**: Use structured logging system (`src/lib/logger`) - never `console.error` in production code.
 - **Tests**: All tests must pass before any implementation is considered complete.
@@ -200,18 +200,17 @@ describe("Security Tests", () => {
 
 - **Supabase**: Server-only, initialized in `src/lib/supabase/client.ts`. Use `getServiceClient()` for database operations.
 - **Upstash**: Used for rate limiting (see `src/lib/auth/rateLimits.ts`).
-- **n8n**: Receives HMAC-signed payloads (see `src/lib/auth/hmac.ts` and `src/lib/business/buildN8nPayload.ts`).
 - **reCAPTCHA**: Verified server-side (see `src/lib/auth/recaptcha.ts`).
 - **Logging**: Structured logging with run IDs, PII redaction, and environment-aware levels.
 
 ## Testing Patterns
 
 - **Unit tests**: Place in `tests/unit/` or `src/tests/unit/`. Use Vitest, MSW for mocking, jest-dom for DOM assertions.
-- **Integration tests**: Place in `src/tests/integration/`. Test complete workflows (e.g., `submit-n8n-pipeline.test.ts`).
+- **Integration tests**: Place in `src/tests/integration/`. Test complete workflows (e.g., `v2-system.test.ts`).
 - **E2E tests**: Place in `tests/e2e/`. Use Playwright. Example: `smoke.spec.ts` checks home page loads.
 - **Test setup**: All test env setup in `tests/setupTests.ts`.
 - **Mock patterns**:
-  - Always mock external services (Supabase, logger, n8n)
+  - Always mock external services (Supabase, logger)
   - Use `vi.hoisted()` for complex mock objects
   - Mock at module level, not function level
 - **Test validation**: All tests must pass before considering implementation complete.
@@ -263,8 +262,8 @@ npx vitest run --coverage       # Test coverage with performance impact
 
 - **Env import**: `import { env } from '@/lib/config/env'`
 - **API error shape**: `{ error: 'Invalid input', code: 400, details: { ... } }`
-- **Unit test**: See `tests/unit/hmac.test.ts` for env mocking and signature checks.
-- **Business logic**: See `src/lib/business/buildN8nPayload.ts` for complete data pipeline.
+- **Unit test**: See `tests/unit/activityFactor.test.ts` for nutritional calculations testing.
+- **Business logic**: See `src/lib/business/targets.ts` for complete nutritional calculations pipeline.
 
 ## Technical Patterns & Best Practices
 
@@ -423,7 +422,6 @@ src/lib/
 
 BMR: Basal Metabolic Rate
 TDEE: Total Daily Energy Expenditure
-HMAC: Hash-based Message Authentication Code
 PII: Personally Identifiable Information
 RLS: Row-Level Security (DB policy)
 SPF/DKIM/DMARC: Email auth & policies (DNS records)

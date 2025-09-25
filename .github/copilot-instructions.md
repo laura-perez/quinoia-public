@@ -200,7 +200,6 @@ describe("Security Tests", () => {
 
 - **Supabase**: Server-only, initialized in `src/lib/supabase/client.ts`. Use `getServiceClient()` for database operations.
 - **Upstash**: Used for rate limiting (see `src/lib/auth/rateLimits.ts`).
-- **n8n**: Receives HMAC-signed payloads (see `src/lib/auth/hmac.ts` and `src/lib/business/buildN8nPayload.ts`).
 - **reCAPTCHA**: Verified server-side (see `src/lib/auth/recaptcha.ts`).
 - **Logging**: Structured logging with run IDs, PII redaction, and environment-aware levels.
 
@@ -423,7 +422,6 @@ src/lib/
 
 BMR: Basal Metabolic Rate
 TDEE: Total Daily Energy Expenditure
-HMAC: Hash-based Message Authentication Code
 PII: Personally Identifiable Information
 RLS: Row-Level Security (DB policy)
 SPF/DKIM/DMARC: Email auth & policies (DNS records)

@@ -7,7 +7,7 @@ import { verifyAndExtractRecaptcha } from "@/lib/auth";
 import { detectClientIP } from "@/lib/auth";
 import { upsertUserAndSubmission } from "@/lib/supabase";
 import { createLogger, redact } from "@/lib/logger";
-import { buildN8nPayload } from "@/lib/business/buildN8nPayload";
+import { computeTargets, computeActivityFactor, computeWindow } from "@/lib/business";
 import { selectRecipes } from "@/lib/recipes/recipeSelector";
 import { generateShoppingList } from "@/lib/recipes/shoppingListGenerator";
 import { sendRecipeMenu } from "@/lib/email/sendRecipeMenu";
@@ -131,16 +131,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Erreur lors de l'enregistrement en base de données." });
   }
 
-  // V2.0: Native recipe selection replacing n8n workflow
+  // Native recipe selection and shopping list generation
   let recipeResults;
   try {
-    // Build selection context from normalized input
-    const n8nPayload = await buildN8nPayload(
-      norm.data,
-      submissionResult.userId,
-      submissionResult.submissionId
+    // Calculate nutritional targets directly
+    const activityFactor = computeActivityFactor(norm.data.activity);
+    const targets = computeTargets(norm.data, activityFactor);
+    const window = computeWindow(
+      targets.dailyEnergyTarget,
+      norm.data.primaryGoal,
+      norm.data.secondaryFocus
     );
-    
+
     const selectionContext = {
       userId: submissionResult.userId,
       diet: norm.data.diet,
@@ -152,14 +154,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       batchMode: norm.data.batchMode,
       favoriteFoods: norm.data.favoriteFoods,
       dislikedFoods: norm.data.dislikedFoods,
-      mealTargetKcal: n8nPayload.window.mealTargetKcal,
-      mealMinKcal: n8nPayload.window.mealMinKcal,
-      mealMaxKcal: n8nPayload.window.mealMaxKcal,
-      proteinFloorG: n8nPayload.window.proteinFloorG,
+      mealTargetKcal: window.mealTargetKcal,
+      mealMinKcal: window.mealMinKcal,
+      mealMaxKcal: window.mealMaxKcal,
+      proteinFloorG: window.proteinFloorG,
       primaryGoal: norm.data.primaryGoal,
     };
 
-    // Native recipe selection (replaces n8n)
+    // Native recipe selection
     recipeResults = await selectRecipes(selectionContext);
     
     logger.info('Native recipe selection completed', { 
@@ -198,9 +200,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Erreur lors de la génération de la liste de courses." });
   }
 
-  // Create result bundle (compatible with existing format)
+  // Create result bundle
   const resultBundle = {
-    version: "v2.0_native",
+    version: "v3.0_native",
     generatedAt: new Date().toISOString(),
     meta: {
       primaryGoal: norm.data.primaryGoal,
@@ -248,13 +250,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const totalTime = Date.now() - startTime;
   
-  logger.info('API request completed successfully (v2.0 native)', {
+  logger.info('API request completed successfully (native)', {
     submissionId: submissionResult.submissionId,
     duration: totalTime,
     email: redact(norm.data.email),
     recipesSelected: recipeResults.selectedRecipes.length,
     shoppingItemsGenerated: shoppingList.summary.totalItems,
-    version: "v2.0_native"
+    version: "v3.0_native"
   });
   
   return res.status(200).json({ 

@@ -1,9 +1,7 @@
 /**
- * Constantes contractuelles pour le payload API → n8n
- * Source: SPECS_MVP_QUINOIA v1.1
+ * Constantes nutritionnelles et métaboliques
+ * Source: SPECS_MVP_QUINOIA v3.0
  */
-
-export const CONTRACT_VERSION = "api_to_n8n.v1.1";
 
 // Fenêtre repas : 35% de l'apport quotidien
 export const MEAL_SHARE = 0.35;

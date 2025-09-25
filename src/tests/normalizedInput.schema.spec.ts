@@ -98,6 +98,34 @@ describe("normalizedInputSchema integration", () => {
     expect(candidate.equipmentAvailable).toEqual(["Oven", "Blender"]);
   });
 
+  it("highIntensity: null quand sessionsPerWeek=0 → false", () => {
+    const form = makeForm({
+      physicalActivity: {
+        deskJob: true,
+        dailySteps: "<5k",
+        sessionsPerWeek: "0",
+        highIntensity: null, // null car conditionnel dans le formulaire
+      }
+    });
+    const candidate: NormalizedFormOutput = normalizeFormInput(form);
+    expect(candidate.activity.highIntensity).toBe(false);
+    expect(() => normalizedInputSchema.parse(candidate)).not.toThrow();
+  });
+
+  it("highIntensity: null quand sessionsPerWeek>0 → false", () => {
+    const form = makeForm({
+      physicalActivity: {
+        deskJob: true,
+        dailySteps: "5-8k",
+        sessionsPerWeek: "3-4",
+        highIntensity: null, // null si pas rempli
+      }
+    });
+    const candidate: NormalizedFormOutput = normalizeFormInput(form);
+    expect(candidate.activity.highIntensity).toBe(false);
+    expect(() => normalizedInputSchema.parse(candidate)).not.toThrow();
+  });
+
   it("physicalActivity valeurs hors enum → error enum", () => {
     const form = makeForm({
       physicalActivity: {

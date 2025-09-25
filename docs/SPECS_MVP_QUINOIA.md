@@ -4,7 +4,7 @@
 
 **Mission**: Sélection automatisée de recettes françaises personnalisées avec génération de listes de courses.
 
-**Architecture native v3.0**: Next.js full-stack avec sélection algorithmique et traitement intégré
+**Architecture native v3.0**: Next.js full-stack avec sélection algorithmique native et traitement intégré
 
 **Sortie**: Page publique interactive `/menu/{shareId}` (noindex, sans PII) avec liste de courses
 
@@ -236,6 +236,7 @@
 - Import manuel recettes avec validation nutrition
 - Mapping ingrédients vers base canonique
 - Review qualité avant publication
+- Scripts d'import automatisés
 
 ---
 
@@ -280,20 +281,21 @@
 
 ### Évolution Architecture
 
-- **v1.0**: Dépendance externe n8n pour toute logique métier
-- **v2.0**: Hybride Next.js (sélection) + n8n (IA)
-- **v3.0**: **Native Next.js complet** - Suppression n8n
+- **v1.0**: Architecture distribuée avec services externes
+- **v2.0**: Migration progressive vers traitement natif
+- **v3.0**: **Native Next.js complet** - Traitement unifié
 
 **Bénéfices v3.0**:
-- Latence réduite (pas de webhooks externes)
+- Latence réduite (traitement local)
 - Debugging simplifié (stack unifié)
 - Coûts opérationnels réduits
 - Déploiement atomique
+- Meilleur contrôle qualité
 
 **Trade-offs acceptés**:
-- Pas de tips cuisson AI-générés (content statique)
-- Shopping list basique (pas de variants linguistiques IA)
+- Tips cuisson statiques (non AI-générés)
 - Focus MVP sur fonctionnalité core
+- Simplicité avant complexité
 
 ---
 

@@ -14,9 +14,6 @@ const dummyEnvVars = {
   'RECAPTCHA_SECRET_KEY': 'test-key',
   'NEXT_PUBLIC_RECAPTCHA_SITE_KEY': 'test-site-key',
   'SUPABASE_ANON_KEY': 'test-anon-key',
-  'N8N_WEBHOOK_URL': 'http://localhost:3000',
-  'N8N_WEBHOOK_SECRET': 'test-secret',
-  'HMAC_SECRET': 'test-hmac-secret',
   'APP_BASE_URL': 'http://localhost:3000'
 };
 
