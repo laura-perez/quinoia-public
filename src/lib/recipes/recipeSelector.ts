@@ -139,7 +139,7 @@ function scoreRecipes(
   
   return recipes.map(recipe => {
     const scoreBreakdown = {
-      proteinCategoryMatch: 0,
+      proteinPreferenceBonus: 0,
       proteinDensity: 0,
       batchBonus: 0,
       favoriteBonus: 0,
@@ -147,8 +147,8 @@ function scoreRecipes(
       recencyPenalty: 0
     };
 
-    // 1. Protein category match: +1 for each matching preferred protein category
-    scoreBreakdown.proteinCategoryMatch = context.proteinPreferences.includes(recipe.proteinCategory) ? 1 : 0;
+    // 1. Protein preference bonus: +1 for each matching preferred protein category
+    scoreBreakdown.proteinPreferenceBonus = context.proteinPreferences.includes(recipe.proteinCategory) ? 1 : 0;
     
     // 2. Protein density bonus: +0.8 × (protein_g / 100_kcal)
     const proteinDensity = (recipe.proteinGPerServing / recipe.caloriesPerServing) * 100;

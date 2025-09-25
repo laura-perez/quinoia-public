@@ -52,7 +52,7 @@ export default function Step1({ formData, updateFormData, goToNext, goToPrev, em
           name="age"
           value={formData.age || ""}
           onChange={handleInputChange}
-          error={errors.age}
+          error={errors.age} 
           placeholder="Âge"
           type="number"
         />

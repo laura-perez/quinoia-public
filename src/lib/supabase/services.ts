@@ -16,8 +16,11 @@ export async function upsertUserAndSubmission({
   const logger = createLogger();
   logger.info('Starting database upsert', { email: redact(email) });
   
-  // Upsert user (by email)
-  const user = await usersRepository.upsert({ email });
+  // Upsert user (by email and firstName)
+  const user = await usersRepository.upsert({
+    email,
+    firstName: normalizedInput.firstName
+  });
   
   // Prepare submission data with default values for removed fields
   const submissionInput: CreateSubmissionInput = {
