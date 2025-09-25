@@ -14,8 +14,6 @@ export interface RecipeFilters {
   diet: string;
   status?: string;
   maxPrepTime?: number;
-  minCalories?: number;
-  maxCalories?: number;
   minProtein?: number;
   excludeRecipeIds?: string[];
 }
@@ -49,19 +47,11 @@ export async function getFilteredRecipes(filters: RecipeFilters): Promise<Recipe
     .eq('status', filters.status || 'active')
     .in('diet', allowedDiets);
     
-  // Apply nutritional filters
+  // Apply nutritional filters (no caloric filters)
   if (filters.maxPrepTime) {
     query = query.lte('prepTimeMinutes', filters.maxPrepTime);
   }
-  
-  if (filters.minCalories) {
-    query = query.gte('caloriesPerServing', filters.minCalories);
-  }
-  
-  if (filters.maxCalories) {
-    query = query.lte('caloriesPerServing', filters.maxCalories);
-  }
-  
+
   if (filters.minProtein) {
     query = query.gte('proteinGPerServing', filters.minProtein);
   }

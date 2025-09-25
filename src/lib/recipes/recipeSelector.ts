@@ -13,12 +13,11 @@ interface RecencyViewData {
 const logger = createLogger();
 
 /**
- * Main recipe selection algorithm implementing the scoring system from SPECS
- * 
- * Scoring breakdown:
- * - Protein category match: +3 if preferred, -2 if not
- * - Protein density: +0.8 × (protein_g / 100_kcal)  
- * - Calorie proximity: -c × |calories - target| (c=0.02 for weightLoss, 0.01 others)
+ * Main recipe selection algorithm implementing the scoring system
+ *
+ * Scoring breakdown (6 components):
+ * - Protein preferences: +1 per matching preferred protein category
+ * - Protein density: +0.8 × (protein_g / 100_kcal)
  * - Batch cooking: +0.5 if both user wants and recipe supports
  * - Favorite foods: +1 per match
  * - Disliked foods: -3 per match
@@ -44,7 +43,6 @@ export async function selectRecipes(context: SelectionContext): Promise<RecipeSe
       userId: context.userId,
       diet: context.diet,
       proteinPreferences: context.proteinPreferences,
-      kcalRange: { min: context.mealMinKcal, max: context.mealMaxKcal },
       proteinFloorG: context.proteinFloorG
     });
     // TODO: Implement email notification to ops with above context + recency data
@@ -98,8 +96,6 @@ async function applyHardFilters(
     diet: context.diet,
     status: 'active',
     maxPrepTime: 30,
-    minCalories: context.mealMinKcal,
-    maxCalories: context.mealMaxKcal,
     minProtein: context.proteinFloorG,
     // Exclude union of strict recent list + explicit exclusion list (deduped)
     excludeRecipeIds: Array.from(new Set([...(recency.recentStrict || []), ...(recency.excludeRecipeIds || [])]))
@@ -123,7 +119,7 @@ async function applyHardFilters(
     const levelOrder: Record<string, number> = { beginner: 1, intermediate: 2, advanced: 3 };
     const hasSkillLevel = levelOrder[recipe.cookingLevel] <= levelOrder[context.cookingLevel];
     
-    // Protein category check: only allow user's preferences
+// Protein category check: only allow user's preferences
     const isPreferredProtein = context.proteinPreferences.includes(recipe.proteinCategory);
     
     return hasRequiredEquipment && hasSkillLevel && isPreferredProtein;
@@ -145,42 +141,36 @@ function scoreRecipes(
     const scoreBreakdown = {
       proteinCategoryMatch: 0,
       proteinDensity: 0,
-      calorieProximity: 0,
       batchBonus: 0,
       favoriteBonus: 0,
       dislikedPenalty: 0,
       recencyPenalty: 0
     };
-    
-    // 1. Protein category preference: +3 if preferred, -2 if not
-    scoreBreakdown.proteinCategoryMatch = context.proteinPreferences.includes(recipe.proteinCategory) ? 3 : -2;
+
+    // 1. Protein category match: +1 for each matching preferred protein category
+    scoreBreakdown.proteinCategoryMatch = context.proteinPreferences.includes(recipe.proteinCategory) ? 1 : 0;
     
     // 2. Protein density bonus: +0.8 × (protein_g / 100_kcal)
     const proteinDensity = (recipe.proteinGPerServing / recipe.caloriesPerServing) * 100;
     scoreBreakdown.proteinDensity = 0.8 * proteinDensity;
     
-    // 3. Calorie proximity penalty
-    const calorieCoeff = context.primaryGoal === 'weightLoss' ? 0.02 : 0.01;
-    const calorieDistance = Math.abs(recipe.caloriesPerServing - context.mealTargetKcal);
-    scoreBreakdown.calorieProximity = -calorieCoeff * calorieDistance;
-    
-    // 4. Batch cooking bonus
+    // 3. Batch cooking bonus
     if (context.batchMode && recipe.batchFriendly) {
       scoreBreakdown.batchBonus = 0.5;
     }
     
-    // 5. Favorite foods bonus (+1 per match with ingredients/tags/title)
+    // 4. Favorite foods bonus (+1 per match with ingredients/tags/title)
     const recipeText = `${recipe.titleFr} ${recipe.tags.join(' ')} ${recipe.ingredients.map(i => i.nom).join(' ')}`.toLowerCase();
     scoreBreakdown.favoriteBonus = favoriteWords.reduce((sum, word) => 
       recipeText.includes(word) ? sum + 1 : sum, 0
     );
     
-    // 6. Disliked foods penalty (-3 per match with ingredients/tags/title)  
+    // 5. Disliked foods penalty (-3 per match with ingredients/tags/title)
     scoreBreakdown.dislikedPenalty = -3 * dislikedWords.reduce((sum, word) =>
       recipeText.includes(word) ? sum + 1 : sum, 0
     );
     
-    // 7. Recency penalty for soft recent recipes (-1.5)
+    // 6. Recency penalty for soft recent recipes (-1.5)
   if (recency.recentSoft.includes(recipe.id)) {
       scoreBreakdown.recencyPenalty = -1.5;
     }
@@ -196,12 +186,7 @@ function scoreRecipes(
     // Primary sort: score descending
     if (b.score !== a.score) return b.score - a.score;
     
-    // Tiebreaker 1: closer to calorie target
-    const aCalorieDist = Math.abs(a.caloriesPerServing - context.mealTargetKcal);
-    const bCalorieDist = Math.abs(b.caloriesPerServing - context.mealTargetKcal);
-    if (aCalorieDist !== bCalorieDist) return aCalorieDist - bCalorieDist;
-    
-    // Tiebreaker 2: more protein
+    // Tiebreaker 1: more protein
     if (b.proteinGPerServing !== a.proteinGPerServing) {
       return b.proteinGPerServing - a.proteinGPerServing;
     }
@@ -219,7 +204,7 @@ function applyDiversitySelection(scoredRecipes: ScoredRecipe[], context: Selecti
   const selected: ScoredRecipe[] = [];
   const used = new Set<string>();
   
-  // Phase 1: Ensure at least one recipe per preferred protein category
+    // Phase 1: Ensure at least one recipe per preferred protein category
   for (const proteinCategory of context.proteinPreferences) {
     if (selected.length >= context.numRecipes) break;
     
@@ -279,13 +264,10 @@ function getDiversityStrategy(diet: string): string {
  * Calculate nutrition summary for selected recipes
  */
 function calculateNutritionSummary(recipes: ScoredRecipe[], numServings: number) {
-  const totalCalories = recipes.reduce((sum, r) => sum + r.caloriesPerServing, 0) * numServings;
   const totalProtein = recipes.reduce((sum, r) => sum + r.proteinGPerServing, 0) * numServings;
-  
+
   return {
-    avgCalories: Math.round(totalCalories / recipes.length / numServings),
     avgProtein: Math.round((totalProtein / recipes.length / numServings) * 10) / 10,
-    totalCalories,
     totalProtein: Math.round(totalProtein * 10) / 10
   };
 }

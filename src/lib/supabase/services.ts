@@ -19,19 +19,14 @@ export async function upsertUserAndSubmission({
   // Upsert user (by email)
   const user = await usersRepository.upsert({ email });
   
-  // Prepare submission data
+  // Prepare submission data with default values for removed fields
   const submissionInput: CreateSubmissionInput = {
     userId: user.id,
     rawFormJson: rawFormData,
     normalizedInput: normalizedInput,
+    // Use real data for age and protein preferences
     age: normalizedInput.age,
     gender: normalizedInput.gender,
-    heightCm: normalizedInput.heightCm,
-    weightKg: normalizedInput.weightKg,
-    activityDeskJob: normalizedInput.activity.deskJob,
-    activityDailySteps: normalizedInput.activity.dailySteps,
-    activitySessionsPerWeek: normalizedInput.activity.sessionsPerWeek,
-    activityHighIntensity: normalizedInput.activity.highIntensity,
     diet: normalizedInput.diet,
     proteinPreferences: normalizedInput.proteinPreferences,
     equipmentAvailable: normalizedInput.equipmentAvailable,

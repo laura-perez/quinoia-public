@@ -10,12 +10,6 @@ export interface Submission {
   normalizedInput: NormalizedInput;
   age: number;
   gender: string;
-  heightCm: number;
-  weightKg: number;
-  activityDeskJob: boolean;
-  activityDailySteps: string; // Enum string value
-  activitySessionsPerWeek: string; // Enum string value
-  activityHighIntensity: boolean;
   diet: string;
   proteinPreferences: string[];
   equipmentAvailable: string[];
@@ -44,12 +38,6 @@ export interface CreateSubmissionInput {
   normalizedInput: NormalizedInput;
   age: number;
   gender: string;
-  heightCm: number;
-  weightKg: number;
-  activityDeskJob: boolean;
-  activityDailySteps: string; // Enum string value
-  activitySessionsPerWeek: string; // Enum string value
-  activityHighIntensity: boolean;
   diet: string;
   proteinPreferences: string[];
   equipmentAvailable: string[];

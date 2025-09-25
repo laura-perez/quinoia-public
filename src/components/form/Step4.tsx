@@ -18,11 +18,6 @@ declare global {
   }
 }
 
-const PRIMARY_GOAL_OPTIONS = [
-  { label: "Gagner du temps", value: "saveTime" },
-  { label: "Manger plus sainement", value: "eatHealthier" },
-  { label: "Perdre du poids", value: "weightLoss" },
-];
 
 export default function Step4({ formData, updateFormData, goToPrev, email, isLast }: FormStepProps) {
   // Initialize logger for this component (stable reference)
@@ -59,29 +54,10 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
     [handleFieldChange]
   );
 
-  const handlePrimaryGoalChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const selected = PRIMARY_GOAL_OPTIONS.find((opt) => opt.label === e.target.value);
-      updateFormData({ primaryGoal: selected ? selected.value : "" });
-      setErrors((prev) => ({ ...prev, primaryGoal: undefined }));
-    },
-    [updateFormData]
-  );
-
-  const handleSecondaryFocusChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const val = e.target.value === "Oui" ? "highProtein" : null;
-      updateFormData({ secondaryFocus: val });
-    },
-    [updateFormData]
-  );
 
   // Validation
   const validate = useCallback(() => {
     const newErrors: FormErrors = {};
-    if (!formData.primaryGoal || formData.primaryGoal === "") {
-      newErrors.primaryGoal = "Merci de sélectionner un objectif principal.";
-    }
     if (!formState.agreed) {
       newErrors.consent = "Merci d'accepter l'utilisation de tes données.";
     }
@@ -91,7 +67,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  }, [formData.primaryGoal, formState.agreed, formState.email]);
+  }, [formState.agreed, formState.email]);
 
   // Extract reCAPTCHA token generation
   const getRecaptchaToken = useCallback(async (): Promise<string> => {
@@ -214,39 +190,9 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
             Tu es à 2 doigts de recevoir ton menu personnalisé ✨
           </h2>
           <p className="text-[#8A8A8A] mb-6">
-            Dernière question avant de générer ton menu. Merci pour ta confiance !
+            Plus qu'à confirmer ton email pour recevoir tes recettes sur-mesure.
           </p>
 
-          {/* Objectif principal */}
-          <div className="mb-6">
-            <RadioGroup
-              name="primaryGoal"
-              options={PRIMARY_GOAL_OPTIONS.map((opt) => opt.label)}
-              value={
-                PRIMARY_GOAL_OPTIONS.find((opt) => opt.value === formData.primaryGoal)?.label || ""
-              }
-              onChange={handlePrimaryGoalChange}
-              error={errors && errors.primaryGoal}
-              label={FORM_LABELS.PRIMARY_GOAL}
-              optionClassName="text-sm"
-            />
-            <div className="mt-4">
-              <RadioGroup
-                name="secondaryFocus"
-                label="Je souhaite prioriser les protéines"
-                options={["Oui", "Non"]}
-                value={
-                  formData.secondaryFocus === "highProtein"
-                    ? "Oui"
-                    : formData.secondaryFocus === null
-                      ? "Non"
-                      : ""
-                }
-                onChange={handleSecondaryFocusChange}
-                optionClassName="flex-1 text-center font-medium"
-              />
-            </div>
-          </div>
 
           <div className="mb-6">
             <TextInput

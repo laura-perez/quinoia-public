@@ -1,9 +1,6 @@
 import { z } from "zod";
-import { targetsSchema } from "@/schemas/targets.schema";
 
 import { normalizedInputSchema } from "@/schemas/normalizedInput.schema";
-// Reuse the primaryGoalEnum from normalizedInputSchema
-import { primaryGoalEnum } from "@/schemas/normalizedInput.schema";
 
 export const resultBundleSchema = z
   .object({
@@ -12,13 +9,10 @@ export const resultBundleSchema = z
     generatedAt: z.string(),
     meta: z
       .object({
-        primaryGoal: z.enum(primaryGoalEnum),
-        secondaryFocus: z.union([z.literal("highProtein"), z.null()]),
         numRecipes: z.number().int().min(1),
         numServings: z.number().int().min(1),
       })
       .strict(),
-    targets: targetsSchema,
     recipes: z
       .array(
         z

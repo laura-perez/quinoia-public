@@ -7,7 +7,6 @@ import { verifyAndExtractRecaptcha } from "@/lib/auth";
 import { detectClientIP } from "@/lib/auth";
 import { upsertUserAndSubmission } from "@/lib/supabase";
 import { createLogger, redact } from "@/lib/logger";
-import { computeTargets, computeActivityFactor, computeWindow } from "@/lib/business";
 import { selectRecipes } from "@/lib/recipes/recipeSelector";
 import { generateShoppingList } from "@/lib/recipes/shoppingListGenerator";
 import { sendRecipeMenu } from "@/lib/email/sendRecipeMenu";
@@ -79,10 +78,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ errors: formatZodErrors(norm.error) });
   }
 
-  logger.info('Form data validated successfully', { 
+  logger.info('Form data validated successfully', {
     email: redact(norm.data.email),
-    hasProteinPreferences: Boolean(norm.data.proteinPreferences?.length),
-    primaryGoal: norm.data.primaryGoal,
     diet: norm.data.diet
   });
 
@@ -134,19 +131,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // Native recipe selection and shopping list generation
   let recipeResults;
   try {
-    // Calculate nutritional targets directly
-    const activityFactor = computeActivityFactor(norm.data.activity);
-    const targets = computeTargets(norm.data, activityFactor);
-    const window = computeWindow(
-      targets.dailyEnergyTarget,
-      norm.data.primaryGoal,
-      norm.data.secondaryFocus
-    );
+    // Default protein floor (no longer based on goals)
+    const proteinFloorG = 25; // 25g minimum par défaut
 
     const selectionContext = {
       userId: submissionResult.userId,
       diet: norm.data.diet,
-      proteinPreferences: norm.data.proteinPreferences,
+      proteinPreferences: norm.data.proteinPreferences || [],
       equipmentAvailable: norm.data.equipmentAvailable || [],
       cookingLevel: norm.data.cookingLevel,
       numRecipes: norm.data.numRecipes,
@@ -154,11 +145,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       batchMode: norm.data.batchMode,
       favoriteFoods: norm.data.favoriteFoods,
       dislikedFoods: norm.data.dislikedFoods,
-      mealTargetKcal: window.mealTargetKcal,
-      mealMinKcal: window.mealMinKcal,
-      mealMaxKcal: window.mealMaxKcal,
-      proteinFloorG: window.proteinFloorG,
-      primaryGoal: norm.data.primaryGoal,
+      proteinFloorG,
+      primaryGoal: "eatHealthier", // Default goal since no longer collected
     };
 
     // Native recipe selection
@@ -205,8 +193,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     version: "v3.0_native",
     generatedAt: new Date().toISOString(),
     meta: {
-      primaryGoal: norm.data.primaryGoal,
-      secondaryFocus: norm.data.secondaryFocus,
       numRecipes: norm.data.numRecipes,
       numServings: norm.data.numServings,
       selectionStrategy: recipeResults.scoringDetails.diversityStrategy,

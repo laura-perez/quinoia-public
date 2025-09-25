@@ -22,8 +22,6 @@ export interface RawFormData {
   readonly name?: string;
   readonly age: number;
   readonly gender: string;
-  readonly heightCm: number;
-  readonly weightKg: number;
   readonly dietType: string;
   readonly proteinPreferences?: string[];
   readonly equipmentAvailable?: string[];
@@ -33,14 +31,6 @@ export interface RawFormData {
   readonly favoriteFoods?: string;
   readonly dislikedFoods?: string;
   readonly batchMode?: boolean;
-  readonly primaryGoal: string;
-  readonly secondaryFocus?: string | null;
-  readonly physicalActivity: {
-    readonly deskJob: boolean;
-    readonly dailySteps: string;
-    readonly sessionsPerWeek: string;
-    readonly highIntensity: boolean;
-  };
   readonly allergens?: string; // String input converted to array during normalization
   readonly consent: boolean;
 }

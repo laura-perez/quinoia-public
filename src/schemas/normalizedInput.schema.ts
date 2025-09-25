@@ -15,9 +15,6 @@ const proteinEnum = [
 ] as const;
 const equipmentEnum = ["Oven", "Blender", "Thermomix", "Air Fryer"] as const;
 const cookingLevelEnum = ["beginner", "intermediate", "advanced"] as const;
-export const primaryGoalEnum = ["saveTime", "eatHealthier", "weightLoss"] as const;
-const dailyStepsEnum = ["<5k", "5-8k", ">8k"] as const;
-const sessionsPerWeekEnum = ["0", "1-2", "3-4", ">=5"] as const;
 const allergensEnum = [
   "Gluten",
   "Milk",
@@ -37,14 +34,6 @@ export const normalizedInputSchema = z
     firstName: z.string().trim().max(80).optional(),
     age: z.coerce.number().int().min(13).max(100),
     gender: z.enum(genderEnum),
-    heightCm: z.coerce
-      .number()
-      .min(120, { message: "Taille minimale 120 cm" })
-      .max(230, { message: "Taille maximale 230 cm" }),
-    weightKg: z.coerce
-      .number()
-      .min(30, { message: "Poids minimal 30 kg" })
-      .max(250, { message: "Poids maximal 250 kg" }),
     diet: z.enum(dietEnum),
     proteinPreferences: z.array(z.enum(proteinEnum)).default([]),
     equipmentAvailable: z.array(z.enum(equipmentEnum)).default([]),
@@ -54,16 +43,6 @@ export const normalizedInputSchema = z
     favoriteFoods: z.string().trim().max(500).optional(),
     dislikedFoods: z.string().trim().max(500).optional(),
     batchMode: z.boolean(),
-    primaryGoal: z.enum(primaryGoalEnum),
-    secondaryFocus: z.union([z.literal("highProtein"), z.null()]),
-    activity: z
-      .object({
-        deskJob: z.boolean(),
-        dailySteps: z.enum(dailyStepsEnum),
-        sessionsPerWeek: z.enum(sessionsPerWeekEnum),
-        highIntensity: z.boolean(),
-      })
-      .strict(),
     allergiesText: z.string().trim().max(300).optional(),
     allergens: z.array(z.enum(allergensEnum)).default([]),
     locale: z.literal("fr-FR"),

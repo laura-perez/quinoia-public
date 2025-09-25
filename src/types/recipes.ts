@@ -46,7 +46,7 @@ export const RecipeSchema = z.object({
 
 export type Recipe = z.infer<typeof RecipeSchema>;
 
-// Selection context from user submission
+// Selection context from user submission (simplified)
 export interface SelectionContext {
   // User profile
   diet: string;
@@ -56,29 +56,25 @@ export interface SelectionContext {
   numRecipes: number;
   numServings: number;
   batchMode?: boolean;
-  
+
   // Preferences
   favoriteFoods?: string;
   dislikedFoods?: string;
-  
-  // Nutritional targets
-  mealTargetKcal: number;
-  mealMinKcal: number;
-  mealMaxKcal: number;
+
+  // Nutritional targets (protein only)
   proteinFloorG: number;
   primaryGoal: string;
-  
+
   // User history
   userId: string;
 }
 
-// Recipe with scoring
+// Recipe with scoring (6 components)
 export interface ScoredRecipe extends Recipe {
   score: number;
   scoreBreakdown: {
-    proteinCategoryMatch: number;
+    proteinPreferenceBonus: number;
     proteinDensity: number;
-    calorieProximity: number;
     batchBonus: number;
     favoriteBonus: number;
     dislikedPenalty: number;
@@ -96,9 +92,7 @@ export interface RecipeSelectionResult {
     fallbacksUsed: string[];
   };
   nutritionSummary: {
-    avgCalories: number;
     avgProtein: number;
-    totalCalories: number;
     totalProtein: number;
   };
 }

@@ -27,7 +27,7 @@ export const proteinPreferenceMap = {
   "Fromages, Produits laitiers": "Dairy",
   Légumineuses: "Legumes",
   Tofu: "Tofu",
-  "Simili-viandes (Heura, LaVie etc ..)": "Meat alternatives",
+  "Simili-viandes (Heura, LaVie etc ..)": "Meat alternatives"
 } as const;
 
 export const equipmentMap = {

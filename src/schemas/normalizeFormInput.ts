@@ -18,8 +18,6 @@ export interface NormalizedFormOutput {
   firstName?: string;
   age: number;
   gender: string;
-  heightCm: number;
-  weightKg: number;
   diet: string;
   proteinPreferences: string[];
   equipmentAvailable: string[];
@@ -29,14 +27,6 @@ export interface NormalizedFormOutput {
   favoriteFoods?: string;
   dislikedFoods?: string;
   batchMode: boolean;
-  primaryGoal: string;
-  secondaryFocus: string | null;
-  activity: {
-    deskJob: boolean;
-    dailySteps: string;
-    sessionsPerWeek: string;
-    highIntensity: boolean;
-  };
   allergiesText?: string;
   allergens: string[];
   locale: string;
@@ -55,8 +45,6 @@ export function normalizeFormInput(form: unknown): NormalizedFormOutput {
     firstName: f.name?.trim(),
     age: f.age,
     gender: mapValue(genderMap, f.gender) ?? "unspecified",
-    heightCm: f.heightCm,
-    weightKg: f.weightKg,
     diet: mapValue(dietMap, f.dietType) ?? "omnivore",
     proteinPreferences: mapArrayUnique(proteinPreferenceMap, f.proteinPreferences || []),
     equipmentAvailable: mapArrayUnique(equipmentMap, f.equipmentAvailable || []),
@@ -66,15 +54,6 @@ export function normalizeFormInput(form: unknown): NormalizedFormOutput {
     favoriteFoods: f.favoriteFoods?.trim(),
     dislikedFoods: f.dislikedFoods?.trim(),
     batchMode: !!f.batchMode,
-    primaryGoal: f.primaryGoal,
-    secondaryFocus: f.secondaryFocus ?? null,
-    activity: {
-      deskJob: !!f.physicalActivity.deskJob,
-      dailySteps: f.physicalActivity.dailySteps,
-      sessionsPerWeek: f.physicalActivity.sessionsPerWeek,
-      // Si pas de séances (sessionsPerWeek = "0") ou highIntensity null, alors false
-      highIntensity: f.physicalActivity.sessionsPerWeek === "0" ? false : !!f.physicalActivity.highIntensity,
-    },
     allergiesText: f.allergens?.trim() || undefined,
     allergens: [...extractAllergens(f.allergens || "")],
     locale: "fr-FR",
