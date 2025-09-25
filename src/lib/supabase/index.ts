@@ -4,6 +4,9 @@ export { upsertUserAndSubmission } from './services';
 // Core database exports
 export { getServiceClient } from './client';
 
+// Storage utilities
+export * from './storage';
+
 // Modern modular exports (preferred for new code)
 export * from './types';
 export * from './repositories';

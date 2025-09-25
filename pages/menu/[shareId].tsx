@@ -10,6 +10,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { ChevronDown, ChevronUp, Clock, Users, Lightbulb, Timer, CheckSquare, List, PlusCircle, Calendar } from 'lucide-react';
 import { getServiceClient } from '@/lib/supabase/client';
+import { getRecipeImageUrls } from '@/lib/supabase/storage';
 import { createLogger } from '@/lib/logger';
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -18,6 +19,32 @@ import { Badge } from '@/components/ui/badge';
 import Navbar from '@/components/ui/Navbar';
 
 const logger = createLogger();
+
+// Interface for transformed recipes with image URLs
+interface TransformedRecipe {
+  id: string;
+  title: string;
+  titleFr: string;
+  prepTimeMinutes: number;
+  caloriesPerServing: number;
+  proteinGPerServing: number;
+  carbsGPerServing: number;
+  fatGPerServing: number;
+  cookingLevel: string;
+  picture_file?: string;
+  ingredients: Array<{
+    nom: string;
+    quantite: number;
+    unite: string;
+    canonical_name?: string;
+  }>;
+  instructions: string[];
+  cookingTip?: string;
+  cuisineType?: string;
+  tags: string[];
+  image: string; // The actual image URL (Supabase or fallback)
+  meta: { icon: string; text: string };
+}
 
 interface MenuPageProps {
   shareId: string;
@@ -39,6 +66,8 @@ interface MenuPageProps {
       carbsGPerServing: number;
       fatGPerServing: number;
       cookingLevel: string;
+      picture_file?: string; // New: filename in recipes_photos bucket
+      imageUrl?: string | null; // New: resolved image URL from Supabase Storage
       ingredients: Array<{
         nom: string;
         quantite: number;
@@ -225,11 +254,15 @@ export default function MenuPage({ shareId, resultBundle, error }: MenuPageProps
   const { recipes, shoppingList, nutritionSummary, meta } = resultBundle;
   const { remaining, total } = getTotalItems();
 
-  // Transform recipes for carousel with placeholder images
-  const transformedRecipes = recipes.map((recipe, index) => ({
+  // Fallback image URL for recipes without pictures
+  const fallbackImageUrl = `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmb29kJTIwZGlzaHxlbnwxfHx8fDE3NTY4Mjg0MjF8MA&ixlib=rb-4.1.0&q=80&w=1080`;
+
+  // Transform recipes with proper image URLs
+  const transformedRecipes: TransformedRecipe[] = recipes.map((recipe) => ({
     ...recipe,
     title: recipe.titleFr,
-    image: `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmb29kJTIwZGlzaHxlbnwxfHx8fDE3NTY4Mjg0MjF8MA&ixlib=rb-4.1.0&q=80&w=1080`,
+    // Use Supabase image if available, otherwise fallback to Unsplash
+    image: recipe.imageUrl || fallbackImageUrl,
     meta: { icon: "⏱", text: `${recipe.prepTimeMinutes} min` }
   }));
 
@@ -750,10 +783,46 @@ export const getServerSideProps: GetServerSideProps<MenuPageProps> = async (cont
       recipeCount: menuResult.numRecipes
     });
 
+    // Get recipe image URLs from Supabase Storage
+    const recipeImageUrls = new Map<string, string | null>();
+    if (menuResult.resultBundle?.recipes) {
+      const pictureFiles = (menuResult.resultBundle.recipes as any[])
+        .map((recipe: any) => recipe.picture_file as string | undefined)
+        .filter((file): file is string => Boolean(file));
+      
+      if (pictureFiles.length > 0) {
+        try {
+          const urlMap = await getRecipeImageUrls(pictureFiles);
+          urlMap.forEach((url, filename) => {
+            recipeImageUrls.set(filename, url);
+          });
+          
+          logger.info('Recipe images loaded', { 
+            shareId, 
+            imageCount: recipeImageUrls.size 
+          });
+        } catch (imageError) {
+          logger.warn('Failed to load recipe images', { 
+            shareId, 
+            error: imageError 
+          });
+        }
+      }
+    }
+
+    // Add image URLs to result bundle
+    const resultBundleWithImages = {
+      ...menuResult.resultBundle,
+      recipes: (menuResult.resultBundle?.recipes as any[])?.map((recipe: any) => ({
+        ...recipe,
+        imageUrl: recipe.picture_file ? recipeImageUrls.get(recipe.picture_file) : null
+      })) || []
+    };
+
     return {
       props: {
         shareId,
-        resultBundle: menuResult.resultBundle,
+        resultBundle: resultBundleWithImages,
       }
     };
 
