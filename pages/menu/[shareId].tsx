@@ -15,6 +15,7 @@ import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
+import Navbar from '@/components/ui/Navbar';
 
 const logger = createLogger();
 
@@ -242,15 +243,11 @@ export default function MenuPage({ shareId, resultBundle, error }: MenuPageProps
       </Head>
 
       <div className="min-h-screen" style={{ backgroundColor: '#FFFDF8' }}>
+        <Navbar />
+        
         {/* Mobile Layout */}
         <div className="lg:hidden">
           <div className="p-4 pb-24 space-y-4">
-            {/* Header */}
-            <div className="space-y-2">
-              <h1 className="text-2xl font-semibold" style={{ color: '#414535', fontSize: '24px' }}>Quinoïa</h1>
-              <p className="caption" style={{ color: '#8A8A8A', fontSize: '12px' }}>Tes menus sans charge mentale.</p>
-            </div>
-
             {/* Recettes Section */}
             <div ref={recettesRef} id="recettes" className="space-y-4">
               <h2 style={{ color: '#414535', fontSize: '20px' }}>Recettes</h2>
@@ -481,20 +478,12 @@ export default function MenuPage({ shareId, resultBundle, error }: MenuPageProps
         {/* Desktop Layout */}
         <div className="hidden lg:block">
           <div className="w-full max-w-[1200px] mx-auto p-4 pb-8">
-            {/* Header */}
-            <div className="space-y-2 mb-8">
-              <h1 className="text-2xl font-semibold" style={{ color: '#414535', fontSize: '24px' }}>Quinoïa</h1>
-              <p className="caption" style={{ color: '#8A8A8A', fontSize: '12px' }}>Tes menus sans charge mentale.</p>
-            </div>
-
             {/* Desktop Grid Layout */}
             <div className="grid grid-cols-2 gap-8">
               {/* Left Column */}
               <div className="space-y-8">
                 {/* Recettes Section */}
                 <div ref={recettesRef} id="recettes" className="space-y-4">
-                  <h2 style={{ color: '#414535', fontSize: '20px' }}>Recettes</h2>
-                  
                   {/* Recipe Grid for Desktop */}
                   <div className="grid grid-cols-2 gap-4">
                     {transformedRecipes.map((recipe, index) => (
