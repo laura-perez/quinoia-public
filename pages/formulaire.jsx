@@ -43,7 +43,7 @@ export default function Formulaire() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-[#FDFBF8] px-4 py-6 flex items-center justify-center">
+      <main className="min-h-screen bg-[#FDFBF8] px-4 py-6 flex items-start justify-center">
         <div className="w-full max-w-xl bg-white rounded-xl shadow-xl p-8">
           <AnimatePresence mode="wait">
             <motion.div
