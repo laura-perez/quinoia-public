@@ -53,7 +53,7 @@ export function normalizeFormInput(form: unknown): NormalizedFormOutput {
     numServings: f.numServings,
     favoriteFoods: f.favoriteFoods?.trim(),
     dislikedFoods: f.dislikedFoods?.trim(),
-    batchMode: !!f.batchMode,
+    batchMode: false,
     allergiesText: f.allergens?.trim() || undefined,
     allergens: [...extractAllergens(f.allergens || "")],
     locale: "fr-FR",

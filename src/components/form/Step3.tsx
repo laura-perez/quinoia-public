@@ -31,8 +31,6 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev, em
     () => formData.equipmentAvailable || []
   );
 
-  // Batch mode boolean handler
-  const handleBatchModeChange = createBooleanRadioHandler('batchMode');
 
   // Validate and submit
   const handleSubmit = () => {
@@ -97,19 +95,6 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev, em
           label="Combien de portions par recette ?"
         />
 
-        {/* Batch cooking radio group */}
-        <RadioGroup
-          name="batchMode"
-          label="Souhaites-tu recevoir des conseils en batch cooking ?"
-          options={["Oui", "Non"]}
-          value={formData.batchMode === true ? "Oui" : formData.batchMode === false ? "Non" : ""}
-          onChange={handleBatchModeChange}
-          optionClassName="flex-1 text-center font-medium"
-        />
-        <div className="text-xs text-[#8A8A8A] mt-1">
-          💡 Le batch cooking, c’est une méthode pour s'organiser en avance, cuisiner plusieurs
-          plats d’un coup, puis assembler ou réchauffer facilement la semaine.
-        </div>
       </div>
 
       {/* Navigation buttons */}

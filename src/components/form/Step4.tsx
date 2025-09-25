@@ -192,8 +192,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
           <p className="text-[#8A8A8A] mb-6">
             Plus qu'à confirmer ton email pour recevoir tes recettes sur-mesure.
           </p>
-
-
+          
           <div className="mb-6">
             <TextInput
               label="Ton adresse email"
