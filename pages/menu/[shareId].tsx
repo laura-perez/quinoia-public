@@ -17,6 +17,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import Navbar from '@/components/ui/Navbar';
+import { RecipeModal } from '@/components/ui/RecipeModal';
 
 const logger = createLogger();
 
@@ -121,6 +122,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
   const [activeSection, setActiveSection] = useState('recettes');
   const [shoppingData, setShoppingData] = useState<any>({});
   const [checkedItems, setCheckedItems] = useState<any[]>([]);
+  const [selectedRecipeIndex, setSelectedRecipeIndex] = useState<number | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   // Refs for scrolling
@@ -256,6 +258,20 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
     const uncheckedCount = Object.values(shoppingData).reduce((total: number, rayon: any) => total + rayon.length, 0);
     const checkedCount = checkedItems.length;
     return { remaining: uncheckedCount, total: uncheckedCount + checkedCount };
+  };
+
+  // Modal management functions
+  const openRecipeModal = (recipeIndex: number) => {
+    setSelectedRecipeIndex(recipeIndex);
+    setCurrentRecipe(recipeIndex);
+  };
+
+  const closeRecipeModal = () => {
+    setSelectedRecipeIndex(null);
+  };
+
+  const handleRecipeChange = (newIndex: number) => {
+    setCurrentRecipe(newIndex);
   };
 
   // Scroll to specific recipe in horizontal carousel
@@ -440,7 +456,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                   {transformedRecipes.map((recipe, index) => (
                     <div
                       key={recipe.id}
-                      className={`flex-shrink-0 rounded-2xl overflow-hidden shadow-quinoia relative aspect-square snap-center transition-opacity duration-300 ${
+                      className={`flex-shrink-0 rounded-2xl overflow-hidden shadow-quinoia relative aspect-square snap-center transition-opacity duration-300 cursor-pointer ${
                         index === currentRecipe ? 'opacity-100' : 'opacity-40'
                       }`}
                       style={{
@@ -448,6 +464,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                         maxWidth: '350px',
                         scrollSnapAlign: 'center'
                       }}
+                      onClick={() => openRecipeModal(index)}
                     >
                       <ImageWithFallback
                         src={recipe.image}
@@ -645,10 +662,10 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                   {/* Recipe Grid for Desktop */}
                   <div className="grid grid-cols-2 gap-4">
                     {transformedRecipes.map((recipe, index) => (
-                      <div 
+                      <div
                         key={recipe.id}
                         className="rounded-2xl overflow-hidden shadow-quinoia relative cursor-pointer aspect-[4/5]"
-                        onClick={() => setCurrentRecipe(index)}
+                        onClick={() => openRecipeModal(index)}
                       >
                         <ImageWithFallback
                           src={recipe.image}
@@ -806,6 +823,17 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             </div>
           </div>
         </div>
+
+        {/* Recipe Modal */}
+        {selectedRecipeIndex !== null && (
+          <RecipeModal
+            recipes={transformedRecipes}
+            initialRecipeIndex={selectedRecipeIndex}
+            isOpen={selectedRecipeIndex !== null}
+            onClose={closeRecipeModal}
+            onRecipeChange={handleRecipeChange}
+          />
+        )}
       </div>
     </>
   );
