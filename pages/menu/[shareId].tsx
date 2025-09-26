@@ -262,23 +262,46 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
         <title>Menu personnalisé Quinoïa</title>
         <meta name="robots" content="noindex,nofollow" />
         <meta name="description" content="Menu de recettes personnalisé généré par Quinoïa" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <style jsx global>{`
+          html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+          }
+
+          * {
+            box-sizing: border-box;
+          }
+
+          @media (max-width: 1023px) {
+            .lg\\:hidden {
+              max-width: 100vw;
+              overflow-x: hidden;
+            }
+
+            .lg\\:hidden * {
+              max-width: 100%;
+              word-wrap: break-word;
+              overflow-wrap: break-word;
+            }
+          }
+        `}</style>
       </Head>
 
-      <div className="min-h-screen" style={{ backgroundColor: '#FFFDF8' }}>
+      <div className="min-h-screen overflow-x-hidden" style={{ backgroundColor: '#FFFDF8' }}>
         <Navbar />
-        
+
         {/* Mobile Layout */}
-        <div className="lg:hidden">
-          <div className="p-4 pb-24 space-y-4">
+        <div className="lg:hidden w-full">
+          <div className="px-4 py-4 pb-24 space-y-4 w-full max-w-full">
             {/* Recettes Section */}
-            <div ref={recettesRef} id="recettes" className="space-y-4">
+            <div ref={recettesRef} id="recettes" className="space-y-4 w-full">
               <h2 style={{ color: '#414535', fontSize: '20px' }}>Recettes</h2>
-              
+
               {/* Recipe Carousel */}
-              <div className="relative">
-                <div 
-                  className="rounded-2xl overflow-hidden shadow-quinoia relative"
+              <div className="relative w-full">
+                <div
+                  className="rounded-2xl overflow-hidden shadow-quinoia relative w-full mx-auto max-w-sm"
                   style={{ height: '72vh', aspectRatio: '4/5' }}
                 >
                   <ImageWithFallback
@@ -286,15 +309,15 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                     alt={transformedRecipes[currentRecipe].title}
                     className="w-full h-full object-cover"
                   />
-                  
+
                   {/* Bottom Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
-                    <h3 className="text-white mb-3 font-medium leading-tight">
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                    <h3 className="text-white mb-3 font-medium leading-tight text-sm">
                       {transformedRecipes[currentRecipe].title}
                     </h3>
                     <div className="flex items-center gap-2">
-                      <Badge 
-                        className="text-foreground hover:bg-primary/90"
+                      <Badge
+                        className="text-foreground hover:bg-primary/90 text-xs px-2 py-1"
                         style={{ backgroundColor: '#F4C95D', color: '#414535' }}
                       >
                         {transformedRecipes[currentRecipe].meta.icon} {transformedRecipes[currentRecipe].meta.text}
@@ -302,9 +325,9 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Pagination Dots */}
-                <div className="flex justify-center gap-2 mt-4">
+                <div className="flex justify-center gap-2 mt-4 w-full">
                   {transformedRecipes.map((_, index) => (
                     <button
                       key={index}
@@ -320,40 +343,44 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             </div>
 
             {/* Liste de courses Section */}
-            <div ref={listeRef} id="liste" className="space-y-4">
+            <div ref={listeRef} id="liste" className="space-y-4 w-full">
               <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses</h2>
-              
+
               {/* Progress */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 w-full">
                 <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
                   {remaining}/{total} restants
                 </Badge>
               </div>
 
               {/* Accordions for each rayon */}
-              <Accordion type="multiple" className="space-y-2">
+              <Accordion type="multiple" className="space-y-2 w-full">
                 {Object.entries(shoppingData).map(([rayonName, items]: [string, any]) => (
-                  <AccordionItem 
-                    key={rayonName} 
+                  <AccordionItem
+                    key={rayonName}
                     value={rayonName}
-                    className="border rounded-lg"
+                    className="border rounded-lg w-full"
                     style={{ borderColor: '#EAEAEA' }}
                   >
-                    <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                    <AccordionTrigger className="px-4 py-3 hover:no-underline w-full">
                       <div className="flex items-center justify-between w-full">
-                        <span style={{ color: '#414535' }}>{rayonName} ({items.length})</span>
+                        <span style={{ color: '#414535' }} className="truncate pr-2">
+                          {rayonName} ({items.length})
+                        </span>
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent className="px-4 pb-4">
-                      <div className="space-y-3">
+                    <AccordionContent className="px-4 pb-4 w-full">
+                      <div className="space-y-3 w-full">
                         {items.map((item: any) => (
-                          <div key={item.id} className="flex items-center gap-3">
+                          <div key={item.id} className="flex items-center gap-3 w-full">
                             <Checkbox
                               checked={item.checked}
                               onCheckedChange={() => toggleItem(rayonName, item.id)}
+                              className="flex-shrink-0"
                             />
-                            <span className="flex-1" style={{ color: '#414535' }}>
-                              {item.name} – {item.quantity}
+                            <span className="flex-1 text-sm leading-tight min-w-0" style={{ color: '#414535' }}>
+                              <span className="truncate block">{item.name}</span>
+                              <span className="text-xs opacity-75">{item.quantity}</span>
                             </span>
                           </div>
                         ))}
@@ -364,26 +391,30 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                 
                 {/* Checked Items */}
                 {checkedItems.length > 0 && (
-                  <AccordionItem 
-                    value="checked-items" 
-                    className="border rounded-lg opacity-60"
+                  <AccordionItem
+                    value="checked-items"
+                    className="border rounded-lg opacity-60 w-full"
                     style={{ borderColor: '#EAEAEA' }}
                   >
-                    <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                    <AccordionTrigger className="px-4 py-3 hover:no-underline w-full">
                       <div className="flex items-center justify-between w-full">
-                        <span style={{ color: '#8A8A8A' }}>Checked items ({checkedItems.length})</span>
+                        <span style={{ color: '#8A8A8A' }} className="truncate pr-2">
+                          Checked items ({checkedItems.length})
+                        </span>
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent className="px-4 pb-4">
-                      <div className="space-y-3">
+                    <AccordionContent className="px-4 pb-4 w-full">
+                      <div className="space-y-3 w-full">
                         {checkedItems.map((item: any) => (
-                          <div key={item.id} className="flex items-center gap-3">
+                          <div key={item.id} className="flex items-center gap-3 w-full">
                             <Checkbox
                               checked={true}
                               onCheckedChange={() => toggleCheckedItem(item.id)}
+                              className="flex-shrink-0"
                             />
-                            <span className="flex-1 line-through" style={{ color: '#8A8A8A' }}>
-                              {item.name} – {item.quantity}
+                            <span className="flex-1 text-sm leading-tight line-through min-w-0" style={{ color: '#8A8A8A' }}>
+                              <span className="truncate block">{item.name}</span>
+                              <span className="text-xs opacity-75">{item.quantity}</span>
                             </span>
                           </div>
                         ))}
@@ -395,39 +426,41 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             </div>
 
             {/* Astuces Section */}
-            <div ref={astucesRef} id="astuces" className="space-y-4">
+            <div ref={astucesRef} id="astuces" className="space-y-4 w-full">
               <h2 style={{ color: '#414535', fontSize: '20px' }}>Astuces personnalisées</h2>
-              
-              <div className="space-y-3">
+
+              <div className="space-y-3 w-full">
                 {mockTips.map((tip) => (
-                  <div 
-                    key={tip.id} 
-                    className="flex items-start gap-3 p-4 rounded-lg"
+                  <div
+                    key={tip.id}
+                    className="flex items-start gap-3 p-4 rounded-lg w-full"
                     style={{ backgroundColor: '#FFF6DC' }}
                   >
-                    <div 
+                    <div
                       className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
                       style={{ backgroundColor: '#F4C95D' }}
                     >
                       <span className="text-sm">{tip.icon}</span>
                     </div>
-                    <p className="text-sm" style={{ color: '#414535' }}>{tip.text}</p>
+                    <p className="text-sm flex-1 leading-relaxed" style={{ color: '#414535' }}>
+                      {tip.text}
+                    </p>
                   </div>
                 ))}
               </div>
-              
-              <p className="caption text-center" style={{ color: '#8A8A8A', fontSize: '12px' }}>
+
+              <p className="caption text-center w-full" style={{ color: '#8A8A8A', fontSize: '12px' }}>
                 Astuces générées automatiquement par IA.
               </p>
             </div>
           </div>
 
           {/* Sticky Bottom Navigation */}
-          <div 
-            className="fixed bottom-0 left-0 right-0 bg-white border-t px-4 py-2"
+          <div
+            className="fixed bottom-0 left-0 right-0 bg-white border-t px-4 py-2 w-full"
             style={{ backgroundColor: '#FFFDF8', borderColor: '#EAEAEA' }}
           >
-            <div className="flex justify-around">
+            <div className="flex justify-around w-full max-w-md mx-auto">
               {[
                 { key: 'recettes', label: 'Recettes', icon: CheckSquare },
                 { key: 'liste', label: 'Liste', icon: List },
@@ -436,17 +469,17 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                 <button
                   key={key}
                   onClick={() => scrollToSection(key)}
-                  className="flex flex-col items-center gap-1 py-2 px-3 min-h-[44px] justify-center"
+                  className="flex flex-col items-center gap-1 py-2 px-3 min-h-[44px] justify-center flex-1"
                 >
-                  <Icon 
-                    className="w-5 h-5" 
-                    style={{ 
-                      color: activeSection === key ? '#F4C95D' : '#8A8A8A' 
-                    }} 
+                  <Icon
+                    className="w-5 h-5"
+                    style={{
+                      color: activeSection === key ? '#F4C95D' : '#8A8A8A'
+                    }}
                   />
-                  <span 
-                    className="text-xs"
-                    style={{ 
+                  <span
+                    className="text-xs truncate"
+                    style={{
                       color: activeSection === key ? '#F4C95D' : '#8A8A8A',
                       fontSize: '12px'
                     }}
