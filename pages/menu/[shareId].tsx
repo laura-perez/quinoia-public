@@ -121,6 +121,8 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
   const [activeSection, setActiveSection] = useState('recettes');
   const [shoppingData, setShoppingData] = useState<any>({});
   const [checkedItems, setCheckedItems] = useState<any[]>([]);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   // Refs for scrolling
   const recettesRef = useRef<HTMLDivElement>(null);
@@ -214,6 +216,35 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
     return { remaining: uncheckedCount, total: uncheckedCount + checkedCount };
   };
 
+  // Swipe handlers for recipe navigation
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const minSwipeDistance = 50;
+
+    if (Math.abs(distance) < minSwipeDistance) return;
+
+    if (!resultBundle?.recipes) return;
+
+    if (distance > 0) {
+      // Swipe left - next recipe
+      setCurrentRecipe((prev) => (prev + 1) % resultBundle.recipes.length);
+    } else {
+      // Swipe right - previous recipe
+      setCurrentRecipe((prev) => (prev - 1 + resultBundle.recipes.length) % resultBundle.recipes.length);
+    }
+  };
+
   // Mock data for sections not available in current resultBundle
   const mockTips = [
     { id: 1, icon: "⚡", text: "Réalise en avance des découpes de légumes → 10 min de gagné" },
@@ -293,25 +324,38 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
 
         {/* Mobile Layout */}
         <div className="lg:hidden w-full">
-          <div className="px-4 py-4 pb-24 space-y-4 w-full max-w-full">
+          <div className="px-4 py-4 pb-20 space-y-4 w-full max-w-full">
             {/* Recettes Section */}
             <div ref={recettesRef} id="recettes" className="space-y-4 w-full">
-              <h2 style={{ color: '#414535', fontSize: '20px' }}>Recettes</h2>
-
               {/* Recipe Carousel */}
               <div className="relative w-full">
                 <div
-                  className="rounded-2xl overflow-hidden shadow-quinoia relative w-full mx-auto max-w-sm"
-                  style={{ height: '72vh', aspectRatio: '4/5' }}
+                  className="rounded-2xl overflow-hidden shadow-quinoia relative w-full mx-auto aspect-square cursor-pointer select-none"
+                  style={{ maxWidth: '90vw', maxHeight: '90vw' }}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
                 >
                   <ImageWithFallback
                     src={transformedRecipes[currentRecipe].image}
                     alt={transformedRecipes[currentRecipe].title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover pointer-events-none"
                   />
 
+                  {/* Swipe indicators */}
+                  {transformedRecipes.length > 1 && (
+                    <>
+                      <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white/40 text-xs font-light pointer-events-none">
+                        ←
+                      </div>
+                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white/40 text-xs font-light pointer-events-none">
+                        →
+                      </div>
+                    </>
+                  )}
+
                   {/* Bottom Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 pointer-events-none">
                     <h3 className="text-white mb-3 font-medium leading-tight text-sm">
                       {transformedRecipes[currentRecipe].title}
                     </h3>
@@ -344,10 +388,8 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
 
             {/* Liste de courses Section */}
             <div ref={listeRef} id="liste" className="space-y-4 w-full">
-              <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses</h2>
-
-              {/* Progress */}
-              <div className="flex items-center gap-2 w-full">
+              <div className="flex items-center justify-between w-full">
+                <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses</h2>
                 <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
                   {remaining}/{total} restants
                 </Badge>
@@ -455,12 +497,17 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             </div>
           </div>
 
-          {/* Sticky Bottom Navigation */}
+          {/* Mobile Bottom Navigation - App Style */}
           <div
-            className="fixed bottom-0 left-0 right-0 bg-white border-t px-4 py-2 w-full"
-            style={{ backgroundColor: '#FFFDF8', borderColor: '#EAEAEA' }}
+            className="fixed bottom-0 left-0 right-0 bg-white border-t px-2 py-1 w-full z-50 lg:hidden shadow-lg"
+            style={{
+              backgroundColor: '#FFFDF8',
+              borderColor: '#EAEAEA',
+              backdropFilter: 'blur(8px)',
+              borderTopWidth: '1px'
+            }}
           >
-            <div className="flex justify-around w-full max-w-md mx-auto">
+            <div className="flex justify-around items-center w-full max-w-md mx-auto">
               {[
                 { key: 'recettes', label: 'Recettes', icon: CheckSquare },
                 { key: 'liste', label: 'Liste', icon: List },
@@ -469,19 +516,26 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                 <button
                   key={key}
                   onClick={() => scrollToSection(key)}
-                  className="flex flex-col items-center gap-1 py-2 px-3 min-h-[44px] justify-center flex-1"
+                  className={`flex flex-col items-center gap-1 py-3 px-4 min-h-[60px] justify-center flex-1 rounded-lg transition-all duration-200 ${
+                    activeSection === key ? 'transform scale-105' : 'hover:bg-gray-50'
+                  }`}
+                  style={{
+                    backgroundColor: activeSection === key ? 'rgba(244, 201, 93, 0.15)' : 'transparent'
+                  }}
                 >
                   <Icon
-                    className="w-5 h-5"
+                    className="w-6 h-6 transition-colors duration-200"
                     style={{
                       color: activeSection === key ? '#F4C95D' : '#8A8A8A'
                     }}
                   />
                   <span
-                    className="text-xs truncate"
+                    className={`text-xs font-medium truncate transition-colors duration-200 ${
+                      activeSection === key ? 'font-semibold' : ''
+                    }`}
                     style={{
                       color: activeSection === key ? '#F4C95D' : '#8A8A8A',
-                      fontSize: '12px'
+                      fontSize: '11px'
                     }}
                   >
                     {label}
@@ -564,10 +618,8 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
               <div className="space-y-8">
                 {/* Liste de courses Section */}
                 <div ref={listeRef} id="liste" className="space-y-4">
-                  <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses</h2>
-                  
-                  {/* Progress */}
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between">
+                    <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses</h2>
                     <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
                       {remaining}/{total} restants
                     </Badge>
@@ -640,7 +692,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             </div>
 
             {/* Desktop Navigation */}
-            <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50">
+            <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 hidden lg:block">
               <div 
                 className="flex gap-2 bg-white rounded-full px-4 py-2 shadow-quinoia"
                 style={{ backgroundColor: '#FFFDF8', borderColor: '#EAEAEA' }}
