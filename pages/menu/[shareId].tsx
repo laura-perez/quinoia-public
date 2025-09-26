@@ -395,7 +395,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
           <div className="w-full py-4 px-4" style={{ backgroundColor: '#FFFDF8' }}>
             <div className="max-w-2xl mx-auto lg:max-w-4xl">
               <div className="text-left space-y-2">
-                <p className="font-medium leading-relaxed" style={{ color: '#414535', fontSize: '20px' }}>
+                <p className="font-medium leading-relaxed" style={{ color: '#414535', fontSize: '24px' }}>
                   <span>Laura,</span> tu viens de déverrouiller ta semaine sans prise de tête.
                 </p>
                 <p className="text-sm font-medium leading-relaxed" style={{ color: '#414535' }}>
@@ -420,7 +420,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
         <div className="lg:hidden w-full">
           <div className="px-4 py-4 pb-20 space-y-4 w-full max-w-full">
             {/* Recettes Section */}
-            <div ref={recettesRef} id="recettes" className="space-y-4 w-full">
+            <div ref={recettesRef} id="recettes" className="space-y-4 w-full pt-2">
               {/* Recipe Carousel - Horizontal Scroll */}
               <div className="relative w-full">
                 <div
@@ -476,7 +476,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             </div>
 
             {/* Liste de courses Section */}
-            <div ref={listeRef} id="liste" className="space-y-4 w-full">
+            <div ref={listeRef} id="liste" className="space-y-6 w-full pt-6">
               <div className="flex items-center justify-between w-full">
                 <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses</h2>
                 <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
@@ -557,10 +557,10 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             </div>
 
             {/* Astuces Section */}
-            <div ref={astucesRef} id="astuces" className="space-y-4 w-full">
+            <div ref={astucesRef} id="astuces" className="space-y-6 w-full pt-6">
               <h2 style={{ color: '#414535', fontSize: '20px' }}>Astuces personnalisées</h2>
 
-              <div className="space-y-3 w-full">
+              <div className="space-y-4 w-full">
                 {mockTips.map((tip) => (
                   <div
                     key={tip.id}
@@ -588,15 +588,13 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
 
           {/* Mobile Bottom Navigation - App Style */}
           <div
-            className="fixed bottom-0 left-0 right-0 bg-white border-t px-2 py-1 w-full z-50 lg:hidden shadow-lg"
+            className="fixed bottom-4 left-10 right-10 bg-white/60 backdrop-blur-md border rounded-2xl px-2 py-1 w-auto z-50 lg:hidden shadow-xl"
             style={{
-              backgroundColor: '#FFFDF8',
-              borderColor: '#EAEAEA',
-              backdropFilter: 'blur(8px)',
-              borderTopWidth: '1px'
+              borderColor: 'rgba(234, 234, 234, 0.3)',
+              borderWidth: '1px'
             }}
           >
-            <div className="flex justify-around items-center w-full max-w-md mx-auto">
+            <div className="flex justify-around items-center w-full max-w-xs mx-auto">
               {[
                 { key: 'recettes', label: 'Recettes', icon: CheckSquare },
                 { key: 'liste', label: 'Liste', icon: List },
@@ -605,15 +603,15 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                 <button
                   key={key}
                   onClick={() => scrollToSection(key)}
-                  className={`flex flex-col items-center gap-1 py-3 px-4 min-h-[60px] justify-center flex-1 rounded-lg transition-all duration-200 ${
-                    activeSection === key ? 'transform scale-105' : 'hover:bg-gray-50'
+                  className={`flex flex-col items-center gap-1 py-2 px-3 min-h-[45px] justify-center flex-1 rounded-xl transition-all duration-200 ${
+                    activeSection === key ? 'transform scale-105' : 'hover:bg-white/20'
                   }`}
                   style={{
-                    backgroundColor: activeSection === key ? 'rgba(244, 201, 93, 0.15)' : 'transparent'
+                    backgroundColor: activeSection === key ? 'rgba(244, 201, 93, 0.2)' : 'transparent'
                   }}
                 >
                   <Icon
-                    className="w-6 h-6 transition-colors duration-200"
+                    className="w-5 h-5 transition-colors duration-200"
                     style={{
                       color: activeSection === key ? '#F4C95D' : '#8A8A8A'
                     }}
@@ -624,7 +622,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                     }`}
                     style={{
                       color: activeSection === key ? '#F4C95D' : '#8A8A8A',
-                      fontSize: '11px'
+                      fontSize: '10px'
                     }}
                   >
                     {label}
@@ -639,11 +637,11 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
         <div className="hidden lg:block">
           <div className="w-full max-w-[1200px] mx-auto p-4 pb-8">
             {/* Desktop Grid Layout */}
-            <div className="grid grid-cols-2 gap-8">
+            <div className="grid grid-cols-2 gap-12 mt-8">
               {/* Left Column */}
-              <div className="space-y-8">
+              <div className="space-y-12">
                 {/* Recettes Section */}
-                <div className="space-y-4">
+                <div className="space-y-6 pt-4">
                   {/* Recipe Grid for Desktop */}
                   <div className="grid grid-cols-2 gap-4">
                     {transformedRecipes.map((recipe, index) => (
@@ -676,10 +674,10 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                 </div>
 
                 {/* Astuces Section */}
-                <div className="space-y-4">
+                <div className="space-y-6 pt-8">
                   <h2 style={{ color: '#414535', fontSize: '20px' }}>Astuces personnalisées</h2>
                   
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     {mockTips.map((tip) => (
                       <div 
                         key={tip.id} 
@@ -704,9 +702,9 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
               </div>
 
               {/* Right Column */}
-              <div className="space-y-8">
+              <div className="space-y-12">
                 {/* Liste de courses Section */}
-                <div className="space-y-4">
+                <div className="space-y-6 pt-4">
                   <div className="flex items-center justify-between">
                     <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses</h2>
                     <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
