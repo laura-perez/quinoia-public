@@ -121,8 +121,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
   const [activeSection, setActiveSection] = useState('recettes');
   const [shoppingData, setShoppingData] = useState<any>({});
   const [checkedItems, setCheckedItems] = useState<any[]>([]);
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   // Refs for scrolling
   const recettesRef = useRef<HTMLDivElement>(null);
@@ -134,18 +133,18 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
       // Les données sont déjà groupées par category et triées par le service
       // Il suffit de les transformer pour l'interface interactive avec mapping vers noms d'affichage
       const transformedData: any = {};
-      
+
       resultBundle.shoppingList.organizedByCategory.forEach((categoryGroup) => {
         // Utiliser le mapping pour obtenir le nom d'affichage joli
         const sectionName = getSectionDisplayNameWithContext(
-          categoryGroup.section_code, 
+          categoryGroup.section_code,
           categoryGroup.category
         );
-        
+
         if (!transformedData[sectionName]) {
           transformedData[sectionName] = [];
         }
-        
+
         categoryGroup.items.forEach((item, index) => {
           transformedData[sectionName].push({
             id: `${categoryGroup.section_code}-${categoryGroup.category}-${index}`,
@@ -156,10 +155,41 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
           });
         });
       });
-      
+
       setShoppingData(transformedData);
     }
   }, [resultBundle]);
+
+  // Scroll observer to update active section
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const sections = [
+        { key: 'recettes', ref: recettesRef },
+        { key: 'liste', ref: listeRef },
+        { key: 'astuces', ref: astucesRef }
+      ];
+
+      let currentSection = 'recettes';
+
+      for (const section of sections) {
+        if (section.ref.current) {
+          const rect = section.ref.current.getBoundingClientRect();
+          if (rect.top <= 100) {
+            currentSection = section.key;
+          }
+        }
+      }
+
+      setActiveSection(currentSection);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Call once to set initial state
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const scrollToSection = (section: string) => {
     setActiveSection(section);
@@ -168,7 +198,19 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
       liste: listeRef,
       astuces: astucesRef
     };
-    refs[section as keyof typeof refs]?.current?.scrollIntoView({ behavior: 'smooth' });
+
+    const targetRef = refs[section as keyof typeof refs];
+    if (targetRef?.current) {
+      // Get the element position
+      const elementTop = targetRef.current.offsetTop;
+      // Account for fixed navbar at top (if any) and add some padding
+      const offset = 20; // 20px padding from top
+
+      window.scrollTo({
+        top: elementTop - offset,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const toggleItem = (rayonName: string, itemId: string) => {
@@ -216,34 +258,50 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
     return { remaining: uncheckedCount, total: uncheckedCount + checkedCount };
   };
 
-  // Swipe handlers for recipe navigation
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
-  };
+  // Scroll to specific recipe in horizontal carousel
+  const scrollToRecipe = (index: number) => {
+    if (carouselRef.current) {
+      const recipeWidth = carouselRef.current.scrollWidth / (resultBundle?.recipes.length || 1);
+      const scrollPosition = recipeWidth * index;
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
-  };
+      carouselRef.current.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth'
+      });
 
-  const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-
-    const distance = touchStart - touchEnd;
-    const minSwipeDistance = 50;
-
-    if (Math.abs(distance) < minSwipeDistance) return;
-
-    if (!resultBundle?.recipes) return;
-
-    if (distance > 0) {
-      // Swipe left - next recipe
-      setCurrentRecipe((prev) => (prev + 1) % resultBundle.recipes.length);
-    } else {
-      // Swipe right - previous recipe
-      setCurrentRecipe((prev) => (prev - 1 + resultBundle.recipes.length) % resultBundle.recipes.length);
+      setCurrentRecipe(index);
     }
   };
+
+  // Detect which recipe is currently visible
+  const handleCarouselScroll = React.useCallback(() => {
+    if (carouselRef.current && resultBundle?.recipes) {
+      const container = carouselRef.current;
+      const scrollLeft = container.scrollLeft;
+      const containerWidth = container.clientWidth;
+      const scrollCenter = scrollLeft + containerWidth / 2;
+
+      // Find which recipe is closest to center
+      const recipeElements = container.children;
+      let closestIndex = 0;
+      let closestDistance = Infinity;
+
+      for (let i = 0; i < recipeElements.length; i++) {
+        const element = recipeElements[i] as HTMLElement;
+        const elementCenter = element.offsetLeft + element.offsetWidth / 2;
+        const distance = Math.abs(scrollCenter - elementCenter);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = i;
+        }
+      }
+
+      if (closestIndex !== currentRecipe) {
+        setCurrentRecipe(closestIndex);
+      }
+    }
+  }, [currentRecipe, resultBundle?.recipes]);
 
   // Mock data for sections not available in current resultBundle
   const mockTips = [
@@ -304,6 +362,16 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             box-sizing: border-box;
           }
 
+          /* Hide scrollbar for carousel */
+          .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+
+          .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+          }
+
           @media (max-width: 1023px) {
             .lg\\:hidden {
               max-width: 100vw;
@@ -322,65 +390,86 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
       <div className="min-h-screen overflow-x-hidden" style={{ backgroundColor: '#FFFDF8' }}>
         <Navbar />
 
+        {/* Menu Info Banner */}
+        {resultBundle && (
+          <div className="w-full py-4 px-4" style={{ backgroundColor: '#FFFDF8' }}>
+            <div className="max-w-2xl mx-auto lg:max-w-4xl">
+              <div className="text-left space-y-2">
+                <p className="font-medium leading-relaxed" style={{ color: '#414535', fontSize: '20px' }}>
+                  <span>Laura,</span> tu viens de déverrouiller ta semaine sans prise de tête.
+                </p>
+                <p className="text-sm font-medium leading-relaxed" style={{ color: '#414535' }}>
+                  <span className="font-semibold" style={{ color: '#F4C95D' }}>
+                    {resultBundle.meta.numRecipes} repas équilibrés
+                  </span>
+                  , prêts en{' '}
+                  <span className="font-semibold" style={{ color: '#F4C95D' }}>
+                    {Math.max(...resultBundle.recipes.map(r => r.prepTimeMinutes))} min max 
+                  </span>
+                  , avec ta liste de courses incluse.
+                </p>
+                <p className="text-sm font-medium" style={{ color: '#414535' }}>
+                  Cette semaine, c'est simple, clair et rassasiant.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Mobile Layout */}
         <div className="lg:hidden w-full">
           <div className="px-4 py-4 pb-20 space-y-4 w-full max-w-full">
             {/* Recettes Section */}
             <div ref={recettesRef} id="recettes" className="space-y-4 w-full">
-              {/* Recipe Carousel */}
+              {/* Recipe Carousel - Horizontal Scroll */}
               <div className="relative w-full">
                 <div
-                  className="rounded-2xl overflow-hidden shadow-quinoia relative w-full mx-auto aspect-square cursor-pointer select-none"
-                  style={{ maxWidth: '90vw', maxHeight: '90vw' }}
-                  onTouchStart={handleTouchStart}
-                  onTouchMove={handleTouchMove}
-                  onTouchEnd={handleTouchEnd}
+                  ref={carouselRef}
+                  className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4"
+                  style={{
+                    scrollSnapType: 'x mandatory',
+                    scrollBehavior: 'smooth',
+                    WebkitOverflowScrolling: 'touch',
+                    paddingLeft: '7.5vw',
+                    paddingRight: '7.5vw',
+                    marginLeft: '-7.5vw',
+                    marginRight: '-7.5vw'
+                  }}
+                  onScroll={handleCarouselScroll}
                 >
-                  <ImageWithFallback
-                    src={transformedRecipes[currentRecipe].image}
-                    alt={transformedRecipes[currentRecipe].title}
-                    className="w-full h-full object-cover pointer-events-none"
-                  />
-
-                  {/* Swipe indicators */}
-                  {transformedRecipes.length > 1 && (
-                    <>
-                      <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white/40 text-xs font-light pointer-events-none">
-                        ←
-                      </div>
-                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white/40 text-xs font-light pointer-events-none">
-                        →
-                      </div>
-                    </>
-                  )}
-
-                  {/* Bottom Overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 pointer-events-none">
-                    <h3 className="text-white mb-3 font-medium leading-tight text-sm">
-                      {transformedRecipes[currentRecipe].title}
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      <Badge
-                        className="text-foreground hover:bg-primary/90 text-xs px-2 py-1"
-                        style={{ backgroundColor: '#F4C95D', color: '#414535' }}
-                      >
-                        {transformedRecipes[currentRecipe].meta.icon} {transformedRecipes[currentRecipe].meta.text}
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Pagination Dots */}
-                <div className="flex justify-center gap-2 mt-4 w-full">
-                  {transformedRecipes.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentRecipe(index)}
-                      className="w-2 h-2 rounded-full transition-colors"
-                      style={{ 
-                        backgroundColor: index === currentRecipe ? '#F4C95D' : '#EAEAEA' 
+                  {transformedRecipes.map((recipe, index) => (
+                    <div
+                      key={recipe.id}
+                      className={`flex-shrink-0 rounded-2xl overflow-hidden shadow-quinoia relative aspect-square snap-center transition-opacity duration-300 ${
+                        index === currentRecipe ? 'opacity-100' : 'opacity-40'
+                      }`}
+                      style={{
+                        width: '85vw',
+                        maxWidth: '350px',
+                        scrollSnapAlign: 'center'
                       }}
-                    />
+                    >
+                      <ImageWithFallback
+                        src={recipe.image}
+                        alt={recipe.title}
+                        className="w-full h-full object-cover"
+                      />
+
+                      {/* Bottom Overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                        <h3 className="text-white mb-2 font-medium leading-tight text-sm">
+                          {recipe.title}
+                        </h3>
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            className="text-foreground hover:bg-primary/90 text-xs px-2 py-1"
+                            style={{ backgroundColor: '#F4C95D', color: '#414535' }}
+                          >
+                            {recipe.meta.icon} {recipe.meta.text}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -441,7 +530,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                     <AccordionTrigger className="px-4 py-3 hover:no-underline w-full">
                       <div className="flex items-center justify-between w-full">
                         <span style={{ color: '#8A8A8A' }} className="truncate pr-2">
-                          Checked items ({checkedItems.length})
+                          Articles cochés ({checkedItems.length})
                         </span>
                       </div>
                     </AccordionTrigger>
@@ -554,7 +643,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
               {/* Left Column */}
               <div className="space-y-8">
                 {/* Recettes Section */}
-                <div ref={recettesRef} id="recettes" className="space-y-4">
+                <div className="space-y-4">
                   {/* Recipe Grid for Desktop */}
                   <div className="grid grid-cols-2 gap-4">
                     {transformedRecipes.map((recipe, index) => (
@@ -587,7 +676,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                 </div>
 
                 {/* Astuces Section */}
-                <div ref={astucesRef} id="astuces" className="space-y-4">
+                <div className="space-y-4">
                   <h2 style={{ color: '#414535', fontSize: '20px' }}>Astuces personnalisées</h2>
                   
                   <div className="grid grid-cols-2 gap-3">
@@ -617,7 +706,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
               {/* Right Column */}
               <div className="space-y-8">
                 {/* Liste de courses Section */}
-                <div ref={listeRef} id="liste" className="space-y-4">
+                <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses</h2>
                     <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
@@ -666,7 +755,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                       >
                         <AccordionTrigger className="px-4 py-3 hover:no-underline">
                           <div className="flex items-center justify-between w-full">
-                            <span style={{ color: '#8A8A8A' }}>Checked items ({checkedItems.length})</span>
+                            <span style={{ color: '#8A8A8A' }}>Articles cochés ({checkedItems.length})</span>
                           </div>
                         </AccordionTrigger>
                         <AccordionContent className="px-4 pb-4">
