@@ -8,3 +8,6 @@ export * from './activityFactor';
 
 // Nutrition calculation constants
 export * from './nutrition';
+
+// Supermarket sections organization
+export * from './supermarket-sections';

@@ -7,11 +7,11 @@
 import React, { useState, useRef } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import Link from 'next/link';
-import { ChevronDown, ChevronUp, Clock, Users, Lightbulb, Timer, CheckSquare, List, PlusCircle, Calendar } from 'lucide-react';
+import { Lightbulb, CheckSquare, List } from 'lucide-react';
 import { getServiceClient } from '@/lib/supabase/client';
 import { getRecipeImageUrls } from '@/lib/supabase/storage';
 import { createLogger } from '@/lib/logger';
+import { SECTION_DISPLAY_ORDER, getSectionDisplayNameWithContext } from '@/lib/constants';
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -116,7 +116,7 @@ interface MenuPageProps {
   error?: string;
 }
 
-export default function MenuPage({ shareId, resultBundle, error }: MenuPageProps) {
+export default function MenuPage({resultBundle, error }: MenuPageProps) {
   const [currentRecipe, setCurrentRecipe] = useState(0);
   const [activeSection, setActiveSection] = useState('recettes');
   const [shoppingData, setShoppingData] = useState<any>({});
@@ -126,20 +126,35 @@ export default function MenuPage({ shareId, resultBundle, error }: MenuPageProps
   const recettesRef = useRef<HTMLDivElement>(null);
   const listeRef = useRef<HTMLDivElement>(null);
   const astucesRef = useRef<HTMLDivElement>(null);
-  const batchRef = useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     if (resultBundle?.shoppingList?.organizedByCategory) {
-      // Transform shopping list data to match interactive format
+      // Les données sont déjà groupées par category et triées par le service
+      // Il suffit de les transformer pour l'interface interactive avec mapping vers noms d'affichage
       const transformedData: any = {};
-      resultBundle.shoppingList.organizedByCategory.forEach(category => {
-        transformedData[category.category] = category.items.map((item, index) => ({
-          id: `${category.category}-${index}`,
-          name: item.name_fr,
-          quantity: `${Math.round(item.total_amount * 10) / 10} ${item.unit}`,
-          checked: false
-        }));
+      
+      resultBundle.shoppingList.organizedByCategory.forEach((categoryGroup) => {
+        // Utiliser le mapping pour obtenir le nom d'affichage joli
+        const sectionName = getSectionDisplayNameWithContext(
+          categoryGroup.section_code, 
+          categoryGroup.category
+        );
+        
+        if (!transformedData[sectionName]) {
+          transformedData[sectionName] = [];
+        }
+        
+        categoryGroup.items.forEach((item, index) => {
+          transformedData[sectionName].push({
+            id: `${categoryGroup.section_code}-${categoryGroup.category}-${index}`,
+            name: item.name_fr,
+            quantity: `${Math.round(item.total_amount * 10) / 10} ${item.unit}`,
+            checked: false,
+            category: categoryGroup.category // Keep category info for reference
+          });
+        });
       });
+      
       setShoppingData(transformedData);
     }
   }, [resultBundle]);
@@ -149,8 +164,7 @@ export default function MenuPage({ shareId, resultBundle, error }: MenuPageProps
     const refs = {
       recettes: recettesRef,
       liste: listeRef,
-      astuces: astucesRef,
-      batch: batchRef
+      astuces: astucesRef
     };
     refs[section as keyof typeof refs]?.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -206,30 +220,6 @@ export default function MenuPage({ shareId, resultBundle, error }: MenuPageProps
     { id: 2, icon: "🔥", text: "Préchauffage four pendant que tu prépares → temps optimisé" },
     { id: 3, icon: "💡", text: "Double les portions et congèle → repas rapide demain" },
     { id: 4, icon: "⏰", text: "Utilise la cuisson vapeur pour garder les nutriments" }
-  ];
-
-  const mockBatchDays = [
-    {
-      day: "Jour 1",
-      steps: [
-        "Couper tous les légumes",
-        "Cuire les légumineuses",
-        "Préparer les sauces"
-      ]
-    },
-    {
-      day: "Jour 2", 
-      steps: [
-        "Assembler les plats",
-        "Portions individuelles"
-      ]
-    },
-    {
-      day: "Jour 3",
-      steps: [
-        "Réchauffer et déguster"
-      ]
-    }
   ];
 
   if (error) {
@@ -430,44 +420,6 @@ export default function MenuPage({ shareId, resultBundle, error }: MenuPageProps
                 Astuces générées automatiquement par IA.
               </p>
             </div>
-
-            {/* Batch Cooking Section */}
-            <div ref={batchRef} id="batch" className="space-y-4">
-              <h2 style={{ color: '#414535', fontSize: '20px' }}>Batch cooking</h2>
-              
-              <div className="space-y-4">
-                {mockBatchDays.map((day, index) => (
-                  <div key={day.day} className="flex gap-4">
-                    {/* Timeline dot */}
-                    <div className="flex flex-col items-center">
-                      <div 
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: '#F4C95D' }}
-                      />
-                      {index < mockBatchDays.length - 1 && (
-                        <div 
-                          className="w-px h-16 mt-2"
-                          style={{ backgroundColor: '#EAEAEA' }}
-                        />
-                      )}
-                    </div>
-                    
-                    {/* Day content */}
-                    <div className="flex-1 pb-4">
-                      <h3 className="font-medium mb-2" style={{ color: '#414535' }}>{day.day}</h3>
-                      <div className="space-y-2">
-                        {day.steps.map((step, stepIndex) => (
-                          <div key={stepIndex} className="flex items-center gap-2">
-                            <Timer className="w-4 h-4" style={{ color: '#8A8A8A' }} />
-                            <span className="text-sm" style={{ color: '#414535' }}>{step}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
 
           {/* Sticky Bottom Navigation */}
@@ -479,8 +431,7 @@ export default function MenuPage({ shareId, resultBundle, error }: MenuPageProps
               {[
                 { key: 'recettes', label: 'Recettes', icon: CheckSquare },
                 { key: 'liste', label: 'Liste', icon: List },
-                { key: 'astuces', label: 'Astuces', icon: Lightbulb },
-                { key: 'batch', label: 'Batch', icon: Calendar }
+                { key: 'astuces', label: 'Astuces', icon: Lightbulb }
               ].map(({ key, label, icon: Icon }) => (
                 <button
                   key={key}
@@ -652,44 +603,6 @@ export default function MenuPage({ shareId, resultBundle, error }: MenuPageProps
                     )}
                   </Accordion>
                 </div>
-
-                {/* Batch Cooking Section */}
-                <div ref={batchRef} id="batch" className="space-y-4">
-                  <h2 style={{ color: '#414535', fontSize: '20px' }}>Batch cooking</h2>
-                  
-                  <div className="space-y-4">
-                    {mockBatchDays.map((day, index) => (
-                      <div key={day.day} className="flex gap-4">
-                        {/* Timeline dot */}
-                        <div className="flex flex-col items-center">
-                          <div 
-                            className="w-3 h-3 rounded-full"
-                            style={{ backgroundColor: '#F4C95D' }}
-                          />
-                          {index < mockBatchDays.length - 1 && (
-                            <div 
-                              className="w-px h-16 mt-2"
-                              style={{ backgroundColor: '#EAEAEA' }}
-                            />
-                          )}
-                        </div>
-                        
-                        {/* Day content */}
-                        <div className="flex-1 pb-4">
-                          <h3 className="font-medium mb-2" style={{ color: '#414535' }}>{day.day}</h3>
-                          <div className="space-y-2">
-                            {day.steps.map((step, stepIndex) => (
-                              <div key={stepIndex} className="flex items-center gap-2">
-                                <Timer className="w-4 h-4" style={{ color: '#8A8A8A' }} />
-                                <span className="text-sm" style={{ color: '#414535' }}>{step}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -702,8 +615,7 @@ export default function MenuPage({ shareId, resultBundle, error }: MenuPageProps
                 {[
                   { key: 'recettes', label: 'Recettes', icon: CheckSquare },
                   { key: 'liste', label: 'Liste', icon: List },
-                  { key: 'astuces', label: 'Astuces', icon: Lightbulb },
-                  { key: 'batch', label: 'Batch', icon: Calendar }
+                  { key: 'astuces', label: 'Astuces', icon: Lightbulb }
                 ].map(({ key, label, icon: Icon }) => (
                   <button
                     key={key}

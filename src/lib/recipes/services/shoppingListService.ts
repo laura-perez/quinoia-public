@@ -5,6 +5,7 @@
 
 import { createLogger } from '@/lib/logger';
 import { getCanonicalIngredientsByIds } from '@/lib/supabase/repositories/ingredients';
+import { SECTION_DISPLAY_ORDER, type SupermarketSectionCode } from '@/lib/constants';
 import type { 
   Recipe, 
   RecipeIngredient, 
@@ -14,33 +15,6 @@ import type {
 } from '../types';
 
 const logger = createLogger();
-
-/**
- * Category ordering for French grocery stores
- */
-const FRENCH_GROCERY_ORGANIZATION = [
-  { category: 'Légumes', section_code: 'frais', priority: 1 },
-  { category: 'Viande', section_code: 'frais', priority: 2 },
-  { category: 'Volaille', section_code: 'frais', priority: 3 },
-  { category: 'Poisson', section_code: 'frais', priority: 4 },
-  { category: 'Œufs', section_code: 'frais', priority: 5 },
-  { category: 'Produits laitiers', section_code: 'frais', priority: 6 },
-  { category: 'Fromages', section_code: 'frais', priority: 7 },
-  { category: 'Herbes', section_code: 'frais', priority: 8 },
-  { category: 'Alternatives végétales', section_code: 'frais', priority: 9 },
-  { category: 'Protéines végétales', section_code: 'frais', priority: 10 },
-  { category: 'Laits végétaux', section_code: 'frais', priority: 11 },
-  { category: 'Féculents', section_code: 'sec', priority: 12 },
-  { category: 'Épices', section_code: 'sec', priority: 13 },
-  { category: 'Graines', section_code: 'sec', priority: 14 },
-  { category: 'Épicerie', section_code: 'sec', priority: 15 },
-  { category: 'Huiles', section_code: 'epicerie', priority: 16 },
-  { category: 'Condiments', section_code: 'epicerie', priority: 17 },
-  { category: 'Agrumes', section_code: 'frais', priority: 18 },
-  { category: 'Pâtisserie', section_code: 'frais', priority: 19 },
-  { category: 'Conserves', section_code: 'conserves', priority: 20 },
-  { category: 'Surgelé', section_code: 'surgele', priority: 21 }
-];
 
 /**
  * Extract and scale ingredients from recipes based on serving count
@@ -160,7 +134,8 @@ export async function aggregateIngredientsByCanonicalId(
 }
 
 /**
- * Organize ingredients by French grocery store categories
+ * Organize ingredients by section_code and sort by supermarket logical order
+ * Uses SECTION_DISPLAY_ORDER to respect real-world shopping flow
  */
 export function organizeByGroceryCategories(items: ShoppingListItem[]): Array<{
   category: string;
@@ -182,25 +157,28 @@ export function organizeByGroceryCategories(items: ShoppingListItem[]): Array<{
     categoryItems.sort((a, b) => a.name_fr.localeCompare(b.name_fr, 'fr'));
   }
 
-  // Create organized list with proper grocery store ordering
-  const organized = FRENCH_GROCERY_ORGANIZATION
-    .filter(org => categoryMap.has(org.category))
-    .map(org => ({
-      category: org.category,
-      section_code: org.section_code,
-      items: categoryMap.get(org.category)!
-    }));
-
-  // Add any categories not in the predefined organization
-  for (const [category, categoryItems] of categoryMap.entries()) {
-    if (!FRENCH_GROCERY_ORGANIZATION.some(org => org.category === category)) {
-      organized.push({
-        category,
-        section_code: 'autres',
-        items: categoryItems
-      });
-    }
-  }
+  // Create organized list grouped by category, sorted by supermarket section order
+  const organized = Array.from(categoryMap.entries())
+    .map(([category, categoryItems]) => ({
+      category,
+      section_code: categoryItems[0]?.section_code || 'epicerie', // Use section from first item (all items in category should have same section)
+      items: categoryItems
+    }))
+    .sort((a, b) => {
+      // Primary sort: by section_code using supermarket display order
+      const orderA = SECTION_DISPLAY_ORDER.indexOf(a.section_code as SupermarketSectionCode);
+      const orderB = SECTION_DISPLAY_ORDER.indexOf(b.section_code as SupermarketSectionCode);
+      
+      // If section not found in order, put at end
+      const finalOrderA = orderA === -1 ? SECTION_DISPLAY_ORDER.length : orderA;
+      const finalOrderB = orderB === -1 ? SECTION_DISPLAY_ORDER.length : orderB;
+      
+      const sectionCompare = finalOrderA - finalOrderB;
+      if (sectionCompare !== 0) return sectionCompare;
+      
+      // Secondary sort: by category alphabetically within same section
+      return a.category.localeCompare(b.category, 'fr');
+    });
 
   return organized;
 }
