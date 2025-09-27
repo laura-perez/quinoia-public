@@ -240,6 +240,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       selectionStrategy: recipeResults.scoringDetails.diversityStrategy,
       processingTimeMs: Date.now() - startTime
     },
+    userProfile: {
+      firstName: norm.data.firstName || 'Utilisateur'
+    },
     recipes: recipeResults.selectedRecipes,
     shoppingList: shoppingList,
     nutritionSummary: recipeResults.nutritionSummary,

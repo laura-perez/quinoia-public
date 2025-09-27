@@ -10,7 +10,7 @@ export function getWelcomeMenuSubject(user: User): string {
 }
 
 export function getWelcomeMenuHtml(user: User, menu: MenuData): string {
-  const firstName = user.firstName || 'Laura';
+  const firstName = user.firstName || ' ';
 
   return `
 <!DOCTYPE html>

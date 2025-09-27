@@ -58,6 +58,9 @@ interface MenuPageProps {
       numServings: number;
       selectionStrategy: string;
     };
+    userProfile?: {
+      firstName: string;
+    };
     aiTips?: {
       generalTips: Array<{
         id: string;
@@ -426,7 +429,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             <div className="max-w-2xl mx-auto lg:max-w-4xl">
               <div className="text-left space-y-2">
                 <p className="font-medium leading-relaxed" style={{ color: '#414535', fontSize: '24px' }}>
-                  <span>Laura,</span> tu viens de déverrouiller ta semaine sans prise de tête.
+                  <span>{resultBundle?.userProfile?.firstName || 'Laura'},</span> tu viens de déverrouiller ta semaine sans prise de tête.
                 </p>
                 <p className="text-sm font-medium leading-relaxed" style={{ color: '#414535' }}>
                   <span className="font-semibold" style={{ color: '#F4C95D' }}>
