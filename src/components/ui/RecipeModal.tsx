@@ -158,9 +158,10 @@ export function RecipeModal({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, currentRecipeIndex, onClose, goToPrevious, goToNext]);
 
-  // Format ingredients
+  // Format ingredients (no scaling needed - already scaled in API)
   const formatIngredient = (ingredient: typeof currentRecipe.ingredients[0]) => {
-    const quantity = Math.round(ingredient.quantite * 10) / 10;
+    // Ingredients in resultBundle are already scaled to user-selected servings
+    const quantity = Math.round((ingredient.quantite || 0) * 10) / 10;
     return `${quantity} ${ingredient.unite} ${ingredient.nom}`;
   };
 

@@ -172,8 +172,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // Generate intelligent shopping list
   let shoppingList;
   try {
+    // Add servingsBase property expected by shopping list service
+    const recipesWithServingsBase = recipeResults.selectedRecipes.map(recipe => ({
+      ...recipe,
+      servingsBase: 2 // All recipes in database serve 2 portions by default
+    }));
+
     shoppingList = await generateShoppingList(
-      recipeResults.selectedRecipes,
+      recipesWithServingsBase,
       norm.data.numServings
     );
     
@@ -230,6 +236,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
   }
 
+  // Scale recipe ingredients to user-selected servings (base servings = 2)
+  const scaledRecipes = recipeResults.selectedRecipes.map(recipe => ({
+    ...recipe,
+    ingredients: recipe.ingredients.map(ingredient => ({
+      ...ingredient,
+      quantite: (ingredient.quantite || 0) * (norm.data.numServings / 2) // Scale from base 2 servings
+    }))
+  }));
+
   // Create result bundle
   const resultBundle = {
     version: "v3.0_native",
@@ -243,7 +258,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     userProfile: {
       firstName: norm.data.firstName || 'Utilisateur'
     },
-    recipes: recipeResults.selectedRecipes,
+    recipes: scaledRecipes,
     shoppingList: shoppingList,
     nutritionSummary: recipeResults.nutritionSummary,
     scoringDetails: recipeResults.scoringDetails,
