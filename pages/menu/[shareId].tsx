@@ -832,6 +832,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             isOpen={selectedRecipeIndex !== null}
             onClose={closeRecipeModal}
             onRecipeChange={handleRecipeChange}
+            numServings={resultBundle.meta.numServings}
           />
         )}
       </div>

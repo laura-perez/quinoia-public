@@ -36,6 +36,7 @@ interface RecipeModalProps {
   isOpen: boolean;
   onClose: () => void;
   onRecipeChange?: (index: number) => void;
+  numServings: number;
 }
 
 export function RecipeModal({
@@ -43,7 +44,8 @@ export function RecipeModal({
   initialRecipeIndex,
   isOpen,
   onClose,
-  onRecipeChange
+  onRecipeChange,
+  numServings
 }: RecipeModalProps) {
   const [currentRecipeIndex, setCurrentRecipeIndex] = useState(initialRecipeIndex);
   const [isExtended, setIsExtended] = useState(false);
@@ -245,21 +247,15 @@ export function RecipeModal({
                 {currentRecipe.titleFr}
               </h2>
 
-              {/* Rating stars placeholder */}
-              <div className="flex items-center gap-1 mb-3">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <span key={star} className="text-yellow-400 text-sm">★</span>
-                ))}
-                <span className="text-sm ml-2" style={{ color: '#8A8A8A' }}>4.5</span>
-              </div>
-
               {/* Stats badges */}
-              <div className="flex gap-3">
+              <div className="flex gap-3 mb-3">
                 <div className="text-center">
                   <p className="text-sm font-medium" style={{ color: '#414535' }}>
-                    {Math.round(currentRecipe.caloriesPerServing)}
+                    {numServings}
                   </p>
-                  <p className="text-xs" style={{ color: '#8A8A8A' }}>Calories</p>
+                  <p className="text-xs" style={{ color: '#8A8A8A' }}>
+                    {numServings > 1 ? 'Portions' : 'Portion'}
+                  </p>
                 </div>
                 <div className="text-center">
                   <p className="text-sm font-medium" style={{ color: '#414535' }}>
@@ -289,24 +285,33 @@ export function RecipeModal({
               </div>
 
               {/* Nutrition info */}
-              <div className="grid grid-cols-3 gap-4 p-4 rounded-lg" style={{ backgroundColor: '#FFF6DC' }}>
-                <div className="text-center">
-                  <p className="text-sm font-medium" style={{ color: '#414535' }}>
-                    {Math.round(currentRecipe.proteinGPerServing)}g
-                  </p>
-                  <p className="text-xs" style={{ color: '#8A8A8A' }}>Protéines</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-sm font-medium" style={{ color: '#414535' }}>
-                    {Math.round(currentRecipe.carbsGPerServing)}g
-                  </p>
-                  <p className="text-xs" style={{ color: '#8A8A8A' }}>Glucides</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-sm font-medium" style={{ color: '#414535' }}>
-                    {Math.round(currentRecipe.fatGPerServing)}g
-                  </p>
-                  <p className="text-xs" style={{ color: '#8A8A8A' }}>Lipides</p>
+              <div className="space-y-2">
+                <p className="text-xs text-center" style={{ color: '#8A8A8A' }}>Par portion</p>
+                <div className="grid grid-cols-4 gap-4 p-4 rounded-lg" style={{ backgroundColor: '#FFF6DC' }}>
+                  <div className="text-center">
+                    <p className="text-sm font-medium" style={{ color: '#414535' }}>
+                      {Math.round(currentRecipe.caloriesPerServing)}
+                    </p>
+                    <p className="text-xs" style={{ color: '#8A8A8A' }}>Calories</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-medium" style={{ color: '#414535' }}>
+                      {Math.round(currentRecipe.proteinGPerServing)}g
+                    </p>
+                    <p className="text-xs" style={{ color: '#8A8A8A' }}>Protéines</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-medium" style={{ color: '#414535' }}>
+                      {Math.round(currentRecipe.carbsGPerServing)}g
+                    </p>
+                    <p className="text-xs" style={{ color: '#8A8A8A' }}>Glucides</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-medium" style={{ color: '#414535' }}>
+                      {Math.round(currentRecipe.fatGPerServing)}g
+                    </p>
+                    <p className="text-xs" style={{ color: '#8A8A8A' }}>Lipides</p>
+                  </div>
                 </div>
               </div>
 
