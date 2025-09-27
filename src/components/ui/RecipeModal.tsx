@@ -158,24 +158,13 @@ export function RecipeModal({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, currentRecipeIndex, onClose, goToPrevious, goToNext]);
 
-  // Format ingredients
+  // Format ingredients (no scaling needed - already scaled in API)
   const formatIngredient = (ingredient: typeof currentRecipe.ingredients[0]) => {
-    const quantity = Math.round(ingredient.quantite * 10) / 10;
+    // Ingredients in resultBundle are already scaled to user-selected servings
+    const quantity = Math.round((ingredient.quantite || 0) * 10) / 10;
     return `${quantity} ${ingredient.unite} ${ingredient.nom}`;
   };
 
-  // Generate description from tags/tip
-  const getRecipeDescription = () => {
-    if (currentRecipe.cookingTip) {
-      return currentRecipe.cookingTip;
-    }
-
-    const tags = currentRecipe.tags.join(', ');
-    const level = currentRecipe.cookingLevel === 'beginner' ? 'débutant' :
-                  currentRecipe.cookingLevel === 'intermediate' ? 'intermédiaire' : 'avancé';
-
-    return `Recette ${level} aux saveurs ${tags.toLowerCase()}. Une préparation équilibrée de ${currentRecipe.prepTimeMinutes} minutes pour ${Math.round(currentRecipe.caloriesPerServing)} calories par portion.`;
-  };
 
   if (!isOpen) return null;
 
@@ -249,13 +238,13 @@ export function RecipeModal({
             onScroll={handleScroll}
           >
             {/* Recipe header - Always visible */}
-            <div className="pb-4 border-b" style={{ borderColor: '#EAEAEA' }}>
+            <div className="pb-4">
               <h2 className="text-xl font-semibold mb-2" style={{ color: '#414535' }}>
                 {currentRecipe.titleFr}
               </h2>
 
               {/* Stats badges */}
-              <div className="flex gap-3 mb-3">
+              <div className="grid grid-cols-3 gap-3">
                 <div className="text-center">
                   <p className="text-sm font-medium" style={{ color: '#414535' }}>
                     {numServings}
@@ -280,20 +269,10 @@ export function RecipeModal({
             </div>
 
             {/* Scrollable detailed content */}
-            <div className="space-y-6 pt-6">
-              {/* About Recipe */}
-              <div>
-                <h3 className="text-lg font-medium mb-3" style={{ color: '#414535' }}>
-                  About Recipe
-                </h3>
-                <p className="text-sm leading-relaxed" style={{ color: '#8A8A8A' }}>
-                  {getRecipeDescription()}
-                </p>
-              </div>
-
+            <div className="space-y-6">
               {/* Nutrition info */}
               <div className="space-y-2">
-                <p className="text-xs text-center" style={{ color: '#8A8A8A' }}>Par portion</p>
+                <p className="text-xs text-left" style={{ color: '#8A8A8A' }}>Par portion :</p>
                 <div className="grid grid-cols-4 gap-4 p-4 rounded-lg" style={{ backgroundColor: '#FFF6DC' }}>
                   <div className="text-center">
                     <p className="text-sm font-medium" style={{ color: '#414535' }}>
@@ -381,30 +360,17 @@ export function RecipeModal({
                 </div>
               )}
 
-              {/* Cooking tip */}
-              {currentRecipe.cookingTip && (
-                <div className="p-4 rounded-lg" style={{ backgroundColor: '#FFF6DC' }}>
-                  <h3 className="text-lg font-medium mb-2" style={{ color: '#414535' }}>
-                    💡 Astuce de cuisson
-                  </h3>
-                  <p className="text-sm leading-relaxed" style={{ color: '#414535' }}>
-                    {currentRecipe.cookingTip}
-                  </p>
-                </div>
-              )}
-
               {/* AI Tips */}
               {recipeTips && recipeTips[currentRecipe.id] && recipeTips[currentRecipe.id].length > 0 && (
-                <div>
+                <div className="p-4 rounded-lg" style={{ backgroundColor: '#FFF6DC' }}>
                   <h3 className="text-lg font-medium mb-3" style={{ color: '#414535' }}>
-                    🤖 Astuces personnalisées
+                    💡 Astuces personnalisées
                   </h3>
                   <div className="space-y-3">
                     {recipeTips[currentRecipe.id].map((tip) => (
                       <div
                         key={tip.id}
-                        className="flex items-start gap-3 p-3 rounded-lg"
-                        style={{ backgroundColor: '#FFF6DC' }}
+                        className="flex items-start gap-3"
                       >
                         <div
                           className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"

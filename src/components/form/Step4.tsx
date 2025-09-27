@@ -4,6 +4,8 @@ import ProgressBar from "./form-components/ProgressBar";
 import TextInput from "./form-components/TextInput";
 import FormError from "./form-components/FormError";
 import ConsentCheckbox from "./form-components/ConsentCheckbox";
+import { ProgressOverlay } from "@/components/ui/ProgressOverlay";
+import { useProgressSimulation } from "@/hooks/useProgressSimulation";
 import { createEnvironmentLogger } from "@/lib/logger";
 import { getRecaptchaSiteKey } from "@/lib/config/clientEnv";
 import { FormStepProps, FormErrors } from "./types";
@@ -37,6 +39,9 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
+
+  // Progress simulation hook
+  const { progress, currentStep, isCompleted, startProgress, resetProgress, forceComplete } = useProgressSimulation();
 
   // Centralized change handler
   const handleFieldChange = useCallback((name: string, value: string | boolean) => {
@@ -130,17 +135,18 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
     }
   }, [logger]);
 
-  // Main submit handler - now focused and concise
+  // Main submit handler with progress simulation
   const handleSubmit = useCallback(async () => {
     if (!validate()) return;
-    
+
     setIsSubmitting(true);
     setError("");
     setErrors({});
-    
+    startProgress(); // Start progress animation
+
     try {
       const token = await getRecaptchaToken();
-      
+
       const submissionData = {
         recaptchaToken: token,
         form: {
@@ -156,8 +162,17 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         hasConsent: formState.agreed,
         formDataKeys: Object.keys(formData)
       });
+
+      // Submit to API (this can take time)
       await submitToApi(submissionData);
-      setSubmitted(true);
+
+      // Force complete progress and show success immediately
+      forceComplete();
+
+      // Small delay to let user see completion, then show success
+      setTimeout(() => {
+        setSubmitted(true);
+      }, 800);
     } catch (err) {
       logger.error('Form submission failed', {
         error: err instanceof Error ? err.message : 'Unknown error',
@@ -166,11 +181,37 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         hasEmail: !!formState.email,
         hasConsent: formState.agreed
       });
-      setError(err instanceof Error ? err.message : "Une erreur est survenue. Merci de réessayer.");
+
+      // Force complete progress even on error
+      forceComplete();
+
+      // Don't show the error to user, just show success (per requirements)
+      setTimeout(() => {
+        setSubmitted(true);
+      }, 800);
+
+      // Send error notification email to admin (non-blocking)
+      try {
+        await fetch('/api/notify-admin-error', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            error: err instanceof Error ? err.message : 'Unknown error',
+            stack: err instanceof Error ? err.stack : undefined,
+            formData: {
+              email: formState.email,
+              ...formData
+            },
+            timestamp: new Date().toISOString()
+          })
+        });
+      } catch (emailError) {
+        logger.error('Failed to send admin error notification', { emailError });
+      }
     } finally {
       setIsSubmitting(false);
     }
-  }, [validate, getRecaptchaToken, submitToApi, formData, formState, logger]);
+  }, [validate, getRecaptchaToken, submitToApi, formData, formState, logger, startProgress, forceComplete]);
 
   return (
     <div>
@@ -236,6 +277,13 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
           </div>
         </>
       )}
+
+      {/* Progress Overlay */}
+      <ProgressOverlay
+        isVisible={isSubmitting}
+        progress={progress}
+        currentStep={currentStep}
+      />
     </div>
   );
 }

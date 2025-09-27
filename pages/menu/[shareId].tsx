@@ -58,6 +58,9 @@ interface MenuPageProps {
       numServings: number;
       selectionStrategy: string;
     };
+    userProfile?: {
+      firstName: string;
+    };
     aiTips?: {
       generalTips: Array<{
         id: string;
@@ -426,7 +429,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             <div className="max-w-2xl mx-auto lg:max-w-4xl">
               <div className="text-left space-y-2">
                 <p className="font-medium leading-relaxed" style={{ color: '#414535', fontSize: '24px' }}>
-                  <span>Laura,</span> tu viens de déverrouiller ta semaine sans prise de tête.
+                  <span>{resultBundle?.userProfile?.firstName || 'Laura'},</span> tu viens de déverrouiller ta semaine sans prise de tête.
                 </p>
                 <p className="text-sm font-medium leading-relaxed" style={{ color: '#414535' }}>
                   <span className="font-semibold" style={{ color: '#F4C95D' }}>
@@ -509,7 +512,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             {/* Liste de courses Section */}
             <div ref={listeRef} id="liste" className="space-y-6 w-full pt-6">
               <div className="flex items-center justify-between w-full">
-                <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses</h2>
+                <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses complète</h2>
                 <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
                   {remaining}/{total} restants
                 </Badge>
@@ -610,10 +613,6 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                   </div>
                 ))}
               </div>
-
-              <p className="caption text-center w-full" style={{ color: '#8A8A8A', fontSize: '12px' }}>
-                Astuces générées automatiquement par IA.
-              </p>
             </div>
           </div>
 
@@ -737,7 +736,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                 {/* Liste de courses Section */}
                 <div className="space-y-6 pt-4">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses</h2>
+                    <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses complètes</h2>
                     <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
                       {remaining}/{total} restants
                     </Badge>

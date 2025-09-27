@@ -103,11 +103,11 @@ function buildPrompt(params: TipsGenerationParams): string {
     calories: recipe.caloriesPerServing
   }));
 
-  return `Bonjour ! Je m'appelle ${userProfile.firstName}, j'ai ${userProfile.age} ans et je suis ${userProfile.gender.toLowerCase()}.
-Mon niveau de cuisine est ${userProfile.cookingLevel} et je suis ${dietContext.diet}.
+  return `Profil utilisateur : ${userProfile.firstName}, age : ${userProfile.age} ans, genre : ${userProfile.gender.toLowerCase()}.
+Niveau de cuisine : ${userProfile.cookingLevel} , régime : ${dietContext.diet}.
 Mes préférences protéines : ${dietContext.proteinPreferences.join(', ')}.
 
-Voici mon menu de la semaine avec ${recipes.length} recettes :
+Voici le menu de la semaine avec ${recipes.length} recettes :
 
 ${recipesText.map((recipe, index) => `
 RECETTE ${index + 1} (ID: ${recipe.id}) - ${recipe.title}
@@ -121,9 +121,13 @@ RECETTE ${index + 1} (ID: ${recipe.id}) - ${recipe.title}
 
 Résumé nutritionnel total : ${nutritionSummary.totalProtein}g de protéines, moyenne ${nutritionSummary.avgProtein}g par recette.
 
-Peux-tu me donner :
-1. Exactement 4 astuces générales pour optimiser ma semaine de cuisine
-2. Maximum 4 astuces spécifiques par recette (préparation, technique, variation, conservation)
+Instructions :
+1. Génère EXACTEMENT 4 astuces ultra pertinenantes par recette (substitution, conseils de cuisson, préparation simplifiée ...)
+   ➝ Chaque astuce doit être VRAIMENT utile : gestes, enchaînement, gestion des temps, substitutions intelligentes, conservation sans perte de goût.
+2. Génère EXACTEMENT 4 astuces générales pour la semaine selon le menu (organisation, astuces de batch cooking, achats malins ...)
+   ➝ Exemples : comment organiser son plan de travail, préparer en avance, équilibrer les repas, s’y retrouver avec la liste de courses, sois créatif mais surtout ultra pertinent et personnalisé.
+   ➝ Tu peux écrire 2 phrases si nécessaire.
+3. Personnalise selon le profil utilisateur (niveau, équipement, allergènes).
 
 Format de réponse requis : JSON strict avec cette structure exacte.`;
 }
@@ -131,26 +135,20 @@ Format de réponse requis : JSON strict avec cette structure exacte.`;
 /**
  * System prompt defining the AI's role and output format
  */
-const SYSTEM_PROMPT = `Tu es un chef cuisinier expert et nutritionniste qui donne des conseils personnalisés.
+const SYSTEM_PROMPT = `Tu es un chef cuisinier pédagogue ET un coach culinaire.
+Tu donnes des astuces pratiques, claires et motivantes pour Quinoïa, une application de génération de menus hebdomadaires sains et simples, et de liste de courses.
+Tu aides l’utilisateur à cuisiner simplement et sans stress.
 
-Tes conseils doivent être :
-- Personnalisés selon l'âge, genre, niveau de cuisine et régime alimentaire
-- Pratiques et réalisables
-- Courts (50-80 caractères maximum par astuce)
-- Avec un émoji approprié
-- En français familier et bienveillant
-
-Types d'astuces par recette :
-- preparation : techniques de préparation, découpe, organisation
-- technique : méthodes de cuisson, températures, timing
-- variation : substitutions d'ingrédients, adaptations
-- conservation : stockage, réchauffage, durée de vie
-
-Types d'astuces générales :
-- organization : planification, mise en place, rangement
-- batch : préparation en avance, batch cooking
-- nutrition : équilibre, associations d'aliments
-- planning : organisation des courses et de la semaine
+Contraintes :
+- Format JSON strict (recipeTips + generalTips).
+- 4 astuces par recette, pertinentes à chaque recette
+- 4 astuces générales pertinentes au menu de la semaine
+- Chaque astuce peut contenir UNE ou DEUX phrases si c’est utile.
+- Texte concis, clair, en français naturel.
+- Ton chaleureux et motivant (style “copain qui t’explique la combine”).
+- Adapter au niveau de cuisine (débutant = simplification, avancé = détails de pro).
+- Éviter les banalités (“ajoute de l’avocat”) et donner des conseils qui améliorent l'expérience utilisateur avec le menu ou la recette.
+- Toujours inclure un emoji pertinent au début du texte.
 
 IMPORTANT : Réponds UNIQUEMENT en JSON avec cette structure exacte :
 {
