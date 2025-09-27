@@ -58,6 +58,20 @@ interface MenuPageProps {
       numServings: number;
       selectionStrategy: string;
     };
+    aiTips?: {
+      generalTips: Array<{
+        id: string;
+        type: string;
+        icon: string;
+        text: string;
+      }>;
+      recipeTips: { [recipeId: string]: Array<{
+        id: string;
+        type: string;
+        icon: string;
+        text: string;
+      }> };
+    };
     recipes: Array<{
       id: string;
       titleFr: string;
@@ -319,12 +333,12 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
     }
   }, [currentRecipe, resultBundle?.recipes]);
 
-  // Mock data for sections not available in current resultBundle
-  const mockTips = [
-    { id: 1, icon: "⚡", text: "Réalise en avance des découpes de légumes → 10 min de gagné" },
-    { id: 2, icon: "🔥", text: "Préchauffage four pendant que tu prépares → temps optimisé" },
-    { id: 3, icon: "💡", text: "Double les portions et congèle → repas rapide demain" },
-    { id: 4, icon: "⏰", text: "Utilise la cuisson vapeur pour garder les nutriments" }
+  // Get AI tips from resultBundle or fallback to mock data
+  const displayTips = resultBundle?.aiTips?.generalTips || [
+    { id: "1", type: "organization", icon: "⚡", text: "Réalise en avance des découpes de légumes → 10 min de gagné" },
+    { id: "2", type: "batch", icon: "🔥", text: "Préchauffage four pendant que tu prépares → temps optimisé" },
+    { id: "3", type: "nutrition", icon: "💡", text: "Double les portions et congèle → repas rapide demain" },
+    { id: "4", type: "planning", icon: "⏰", text: "Utilise la cuisson vapeur pour garder les nutriments" }
   ];
 
   if (error) {
@@ -578,7 +592,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
               <h2 style={{ color: '#414535', fontSize: '20px' }}>Astuces personnalisées</h2>
 
               <div className="space-y-4 w-full">
-                {mockTips.map((tip) => (
+                {displayTips.map((tip) => (
                   <div
                     key={tip.id}
                     className="flex items-start gap-3 p-4 rounded-lg w-full"
@@ -695,7 +709,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                   <h2 style={{ color: '#414535', fontSize: '20px' }}>Astuces personnalisées</h2>
                   
                   <div className="grid grid-cols-2 gap-4">
-                    {mockTips.map((tip) => (
+                    {displayTips.map((tip) => (
                       <div 
                         key={tip.id} 
                         className="flex items-start gap-3 p-4 rounded-lg"
@@ -833,6 +847,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             onClose={closeRecipeModal}
             onRecipeChange={handleRecipeChange}
             numServings={resultBundle.meta.numServings}
+            recipeTips={resultBundle?.aiTips?.recipeTips}
           />
         )}
       </div>

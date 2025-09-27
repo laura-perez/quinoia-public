@@ -191,6 +191,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Erreur lors de la génération de la liste de courses." });
   }
 
+  // Generate AI tips
+  let aiTips;
+  try {
+    const { generatePersonalizedTips } = await import('@/lib/ai/tipsGenerator');
+
+    aiTips = await generatePersonalizedTips({
+      recipes: recipeResults.selectedRecipes,
+      userProfile: {
+        firstName: norm.data.firstName || 'Utilisateur',
+        gender: norm.data.gender,
+        age: String(norm.data.age),
+        cookingLevel: norm.data.cookingLevel
+      },
+      dietContext: {
+        diet: norm.data.diet,
+        proteinPreferences: norm.data.proteinPreferences || []
+      },
+      nutritionSummary: recipeResults.nutritionSummary
+    });
+
+    logger.info('AI tips generated successfully', {
+      submissionId: submissionResult.submissionId,
+      generalTipsCount: aiTips.generalTips.length,
+      recipeTipsCount: Object.keys(aiTips.recipeTips).length
+    });
+  } catch (err) {
+    logger.error('AI tips generation failed', {
+      error: err,
+      submissionId: submissionResult.submissionId
+    });
+
+    // Use fallback tips
+    const { FALLBACK_GENERAL_TIPS } = await import('@/lib/ai/types');
+    aiTips = {
+      generalTips: FALLBACK_GENERAL_TIPS,
+      recipeTips: {}
+    };
+  }
+
   // Create result bundle
   const resultBundle = {
     version: "v3.0_native",
@@ -204,7 +243,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     recipes: recipeResults.selectedRecipes,
     shoppingList: shoppingList,
     nutritionSummary: recipeResults.nutritionSummary,
-    scoringDetails: recipeResults.scoringDetails
+    scoringDetails: recipeResults.scoringDetails,
+    aiTips: aiTips
   };
 
   // Save menu result with shareId generation

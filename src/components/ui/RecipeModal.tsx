@@ -37,6 +37,12 @@ interface RecipeModalProps {
   onClose: () => void;
   onRecipeChange?: (index: number) => void;
   numServings: number;
+  recipeTips?: { [recipeId: string]: Array<{
+    id: string;
+    type: string;
+    icon: string;
+    text: string;
+  }> };
 }
 
 export function RecipeModal({
@@ -45,7 +51,8 @@ export function RecipeModal({
   isOpen,
   onClose,
   onRecipeChange,
-  numServings
+  numServings,
+  recipeTips
 }: RecipeModalProps) {
   const [currentRecipeIndex, setCurrentRecipeIndex] = useState(initialRecipeIndex);
   const [isExtended, setIsExtended] = useState(false);
@@ -383,6 +390,34 @@ export function RecipeModal({
                   <p className="text-sm leading-relaxed" style={{ color: '#414535' }}>
                     {currentRecipe.cookingTip}
                   </p>
+                </div>
+              )}
+
+              {/* AI Tips */}
+              {recipeTips && recipeTips[currentRecipe.id] && recipeTips[currentRecipe.id].length > 0 && (
+                <div>
+                  <h3 className="text-lg font-medium mb-3" style={{ color: '#414535' }}>
+                    🤖 Astuces personnalisées
+                  </h3>
+                  <div className="space-y-3">
+                    {recipeTips[currentRecipe.id].map((tip) => (
+                      <div
+                        key={tip.id}
+                        className="flex items-start gap-3 p-3 rounded-lg"
+                        style={{ backgroundColor: '#FFF6DC' }}
+                      >
+                        <div
+                          className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
+                          style={{ backgroundColor: '#F4C95D' }}
+                        >
+                          <span className="text-xs">{tip.icon}</span>
+                        </div>
+                        <p className="text-sm leading-relaxed" style={{ color: '#414535' }}>
+                          {tip.text}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

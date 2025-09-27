@@ -9,6 +9,7 @@ const envSchema = z.object({
   RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY is required"),
   FROM_EMAIL: z.string().email("FROM_EMAIL must be a valid email address"),
   ADMIN_EMAIL: z.string().email("ADMIN_EMAIL must be a valid email address").optional(),
+  OPENAI_API_KEY: z.string().min(1, "OPENAI_API_KEY is required"),
 
   // Optional
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().optional(),
@@ -25,6 +26,7 @@ const _env = {
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   FROM_EMAIL: process.env.FROM_EMAIL,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
   UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
   UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
