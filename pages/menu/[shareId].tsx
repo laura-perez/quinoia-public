@@ -512,7 +512,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             {/* Liste de courses Section */}
             <div ref={listeRef} id="liste" className="space-y-6 w-full pt-6">
               <div className="flex items-center justify-between w-full">
-                <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses</h2>
+                <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses complète</h2>
                 <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
                   {remaining}/{total} restants
                 </Badge>
@@ -613,10 +613,6 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                   </div>
                 ))}
               </div>
-
-              <p className="caption text-center w-full" style={{ color: '#8A8A8A', fontSize: '12px' }}>
-                Astuces générées automatiquement par IA.
-              </p>
             </div>
           </div>
 
@@ -740,7 +736,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                 {/* Liste de courses Section */}
                 <div className="space-y-6 pt-4">
                   <div className="flex items-center justify-between">
-                    <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses</h2>
+                    <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses complètes</h2>
                     <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
                       {remaining}/{total} restants
                     </Badge>
