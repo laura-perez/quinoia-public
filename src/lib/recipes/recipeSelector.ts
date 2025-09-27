@@ -23,7 +23,10 @@ const logger = createLogger();
  * - Disliked foods: -3 per match
  * - Recent recipes: -1.5 penalty for 14-21 day recipes
  */
-export async function selectRecipes(context: SelectionContext): Promise<RecipeSelectionResult> {
+export async function selectRecipes(
+  context: SelectionContext,
+  alertParams?: { userEmail: string; submissionId: string }
+): Promise<RecipeSelectionResult> {
   logger.info('Starting recipe selection', { 
     userId: context.userId,
     numRecipes: context.numRecipes,
@@ -45,7 +48,31 @@ export async function selectRecipes(context: SelectionContext): Promise<RecipeSe
       proteinPreferences: context.proteinPreferences,
       proteinFloorG: context.proteinFloorG
     });
-    // TODO: Implement email notification to ops with above context + recency data
+
+    // Send alert email to admin (non-blocking)
+    if (alertParams) {
+      try {
+        const { sendInsufficientRecipesAlert } = await import('@/lib/email');
+        await sendInsufficientRecipesAlert({
+          context,
+          availableCount: filteredRecipes.length,
+          requestedCount: context.numRecipes,
+          userEmail: alertParams.userEmail,
+          submissionId: alertParams.submissionId
+        });
+        logger.info('Insufficient recipes alert sent', {
+          userId: context.userId,
+          submissionId: alertParams.submissionId
+        });
+      } catch (emailError) {
+        logger.error('Failed to send insufficient recipes alert', {
+          userId: context.userId,
+          submissionId: alertParams.submissionId,
+          error: emailError
+        });
+      }
+    }
+
     throw new Error(`Recipe selection aborted: only ${filteredRecipes.length} recipes available (< ${context.numRecipes} required)`);
   }
   

@@ -18,7 +18,7 @@ const EQUIPMENT_OPTIONS = ["Four", "Mixeur/Blender", "Thermomix", "Air Fryer"];
 
 // Recipe and portion count options
 const RECIPE_COUNTS = [2, 3, 4, 5, 6, 7];
-const PORTION_COUNTS = [1, 2, 3, "4+"];
+const PORTION_COUNTS = [2, 3, 4];
 
 export default function Step3({ formData, updateFormData, goToNext, goToPrev, email, isLast }: FormStepProps) {
   const { errors, clearFieldError, setValidationErrors } = useFormStep();

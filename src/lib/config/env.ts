@@ -6,6 +6,9 @@ const envSchema = z.object({
   SUPABASE_SERVICE_KEY: z.string().min(1, "SUPABASE_SERVICE_KEY is required"),
   SUPABASE_ANON_KEY: z.string().min(1, "SUPABASE_ANON_KEY is required"),
   APP_BASE_URL: z.string().min(1, "APP_BASE_URL is required"),
+  RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY is required"),
+  FROM_EMAIL: z.string().email("FROM_EMAIL must be a valid email address"),
+  ADMIN_EMAIL: z.string().email("ADMIN_EMAIL must be a valid email address").optional(),
 
   // Optional
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().optional(),
@@ -19,6 +22,9 @@ const _env = {
   SUPABASE_SERVICE_KEY: process.env.SUPABASE_SERVICE_KEY,
   SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
   APP_BASE_URL: process.env.APP_BASE_URL,
+  RESEND_API_KEY: process.env.RESEND_API_KEY,
+  FROM_EMAIL: process.env.FROM_EMAIL,
+  ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
   UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
   UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,

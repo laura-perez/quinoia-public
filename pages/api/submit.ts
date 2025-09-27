@@ -9,8 +9,8 @@ import { upsertUserAndSubmission } from "@/lib/supabase";
 import { createLogger, redact } from "@/lib/logger";
 import { selectRecipes } from "@/lib/recipes/recipeSelector";
 import { generateShoppingList } from "@/lib/recipes/shoppingListGenerator";
-import { sendRecipeMenu } from "@/lib/email/sendRecipeMenu";
 import { saveMenuResult } from "@/lib/supabase/menuResults";
+import { sendWelcomeMenuEmail } from "@/lib/email";
 import type { RecaptchaMetadata } from "@/schemas/api.types";
 
 setZodErrorMapFR();
@@ -150,7 +150,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
 
     // Native recipe selection
-    recipeResults = await selectRecipes(selectionContext);
+    recipeResults = await selectRecipes(selectionContext, {
+      userEmail: norm.data.email,
+      submissionId: submissionResult.submissionId
+    });
     
     logger.info('Native recipe selection completed', { 
       submissionId: submissionResult.submissionId,
@@ -234,8 +237,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Erreur lors de la sauvegarde du menu." });
   }
 
+  // Send welcome email with menu
+  try {
+    await sendWelcomeMenuEmail({
+      user: {
+        id: submissionResult.userId,
+        email: norm.data.email,
+        firstName: norm.data.firstName
+      },
+      menu: {
+        shareId: menuResult.shareId,
+        shareUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'https://quinoia.fr'}/menu/${menuResult.shareId}`,
+        recipes: recipeResults.selectedRecipes,
+        numServings: norm.data.numServings,
+        numRecipes: norm.data.numRecipes,
+        shoppingList: shoppingList,
+        nutritionSummary: recipeResults.nutritionSummary
+      }
+    });
+
+    logger.info('Welcome email sent successfully', {
+      submissionId: submissionResult.submissionId,
+      shareId: menuResult.shareId
+    });
+  } catch (emailError) {
+    // Log email error but don't fail the API request
+    logger.error('Welcome email failed (non-blocking)', {
+      submissionId: submissionResult.submissionId,
+      shareId: menuResult.shareId,
+      error: emailError
+    });
+  }
+
   const totalTime = Date.now() - startTime;
-  
+
   logger.info('API request completed successfully (native)', {
     submissionId: submissionResult.submissionId,
     duration: totalTime,
@@ -244,12 +279,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     shoppingItemsGenerated: shoppingList.summary.totalItems,
     version: "v3.0_native"
   });
-  
-  return res.status(200).json({ 
-    ok: true, 
-    submissionId: submissionResult.submissionId, 
+
+  return res.status(200).json({
+    ok: true,
+    submissionId: submissionResult.submissionId,
     shareId: menuResult.shareId,
     shareUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'https://quinoia.fr'}/menu/${menuResult.shareId}`,
-    resultBundle: resultBundle 
+    resultBundle: resultBundle
   });
 }
