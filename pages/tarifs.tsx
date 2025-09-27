@@ -4,8 +4,30 @@ import Link from 'next/link';
 import { Check, X, Star, Gift, Zap } from 'lucide-react';
 import Navbar from '../src/components/ui/Navbar';
 
+interface Feature {
+  text: string;
+  included: boolean;
+  note?: boolean;
+}
+
+interface Plan {
+  id: string;
+  name: string;
+  price: string;
+  duration?: string;
+  originalPrice?: string;
+  yearlyPrice?: string;
+  yearlyDiscount?: string;
+  badge: string | null;
+  icon: React.ReactNode;
+  description: string;
+  features: Feature[];
+  cta: string;
+  ctaStyle: string;
+}
+
 const PricingPage = () => {
-  const plans = [
+  const plans: Plan[] = [
     {
       id: 'essai',
       name: 'Essai Gratuit',

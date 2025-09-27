@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import RadioGroup from "./form-components/RadioGroup";
 import ProgressBar from "./form-components/ProgressBar";
 import TextInput from "./form-components/TextInput";
@@ -37,6 +38,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
   }));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [shareId, setShareId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
 
@@ -109,13 +111,13 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
   }, [logger]);
 
   // Extract API submission logic
-  const submitToApi = useCallback(async (submissionData: any): Promise<void> => {
+  const submitToApi = useCallback(async (submissionData: any): Promise<string | null> => {
     const response = await fetch("/api/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(submissionData),
     });
-    
+
     if (!response.ok) {
       let errorMessage = "Une erreur est survenue. Merci de réessayer.";
       try {
@@ -132,6 +134,15 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         });
       }
       throw new Error(errorMessage);
+    }
+
+    // Parse response to get shareId
+    try {
+      const responseData = await response.json();
+      return responseData.shareId || null;
+    } catch (parseError) {
+      logger.error('Response parsing failed', { parseError });
+      return null;
     }
   }, [logger]);
 
@@ -164,7 +175,12 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
       });
 
       // Submit to API (this can take time)
-      await submitToApi(submissionData);
+      const resultShareId = await submitToApi(submissionData);
+
+      // Store shareId for success message
+      if (resultShareId) {
+        setShareId(resultShareId);
+      }
 
       // Force complete progress and show success immediately
       forceComplete();
@@ -219,11 +235,24 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
 
       {submitted ? (
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-[#414535] mb-4">C’est envoyé 🎉</h2>
-          <p className="text-[#8A8A8A] max-w-md mx-auto">
+          <h2 className="text-2xl font-bold text-[#414535] mb-4">C'est envoyé 🎉</h2>
+          <p className="text-[#8A8A8A] max-w-md mx-auto mb-6">
             Merci ! Tu vas recevoir très bientôt ton menu personnalisé directement dans ta boîte
             mail.
           </p>
+          {shareId && (
+            <div className="space-y-3">
+              <p className="text-[#414535] font-medium">
+                Ton menu est déjà prêt ! 🍽️
+              </p>
+              <Link
+                href={`/menu/${shareId}`}
+                className="inline-block bg-[#F4C95D] text-[#414535] px-6 py-3 rounded-md font-semibold hover:bg-[#E5B84A] transition-colors"
+              >
+                Voir mon menu
+              </Link>
+            </div>
+          )}
         </div>
       ) : (
         <>
