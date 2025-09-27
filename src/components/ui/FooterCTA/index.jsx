@@ -11,12 +11,20 @@ export default function FinalCTA() {
           Reçois ton menu personnalisé, ta liste de courses prête, et tes recettes équilibrées –
           sans rien faire.
         </p>
-        <Link
-          href="/formulaire"
-          className="inline-block bg-[#414535] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#2f3226] transition"
-        >
-          Voir mon menu
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-stretch">
+          <Link
+            href="/formulaire"
+            className="inline-flex items-center justify-center bg-[#414535] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#2f3226] transition border-2 border-[#414535]"
+          >
+            Voir mon menu
+          </Link>
+          <Link
+            href="/tarifs"
+            className="inline-flex items-center justify-center border-2 border-[#414535] text-[#414535] px-6 py-3 rounded-md font-semibold hover:bg-[#414535] hover:text-white transition"
+          >
+            Tarifs
+          </Link>
+        </div>
       </div>
     </section>
   );
