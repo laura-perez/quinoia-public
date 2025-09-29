@@ -116,13 +116,99 @@ export class UsersRepository {
         this.logger.debug('User not found', { userId: id });
         return null;
       }
-      
+
       this.logger.error('User lookup failed', { error, userId: id });
       throw new Error(error.message || "User lookup failed");
     }
 
     this.logger.debug('User found', { userId: data?.id });
     return data;
+  }
+
+  /**
+   * Update user's last submission tracking fields
+   */
+  async updateLastSubmission(userId: string, menuResultId: string): Promise<void> {
+    this.logger.debug('Updating user last submission', {
+      userId,
+      menuResultId
+    });
+
+    const { error } = await this.client
+      .from(TABLE_NAMES.USERS)
+      .update({
+        lastSubmissionAt: new Date().toISOString(),
+        lastMenuResultId: menuResultId
+      })
+      .eq("id", userId);
+
+    if (error) {
+      this.logger.error('User last submission update failed', {
+        error,
+        userId,
+        menuResultId
+      });
+      throw new Error(error.message || "User last submission update failed");
+    }
+
+    this.logger.info('User last submission updated successfully', {
+      userId,
+      menuResultId
+    });
+  }
+
+  /**
+   * Update user status
+   */
+  async updateStatus(userId: string, status: string): Promise<void> {
+    this.logger.debug('Updating user status', {
+      userId,
+      status
+    });
+
+    const { error } = await this.client
+      .from(TABLE_NAMES.USERS)
+      .update({ status })
+      .eq("id", userId);
+
+    if (error) {
+      this.logger.error('User status update failed', {
+        error,
+        userId,
+        status
+      });
+      throw new Error(error.message || "User status update failed");
+    }
+
+    this.logger.info('User status updated successfully', {
+      userId,
+      status
+    });
+  }
+
+  /**
+   * Update user status after trial usage
+   */
+  async markTrialAsUsed(userId: string): Promise<void> {
+    this.logger.debug('Marking trial as used', { userId });
+
+    const { error } = await this.client
+      .from(TABLE_NAMES.USERS)
+      .update({
+        status: 'trial_used',
+        hasUsedTrial: true
+      })
+      .eq("id", userId);
+
+    if (error) {
+      this.logger.error('Mark trial as used failed', {
+        error,
+        userId
+      });
+      throw new Error(error.message || "Mark trial as used failed");
+    }
+
+    this.logger.info('Trial marked as used successfully', { userId });
   }
 }
 

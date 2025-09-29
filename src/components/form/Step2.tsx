@@ -94,14 +94,6 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev, em
           placeholder={FORM_PLACEHOLDERS.DISLIKED_FOODS}
         />
 
-        {/* Favorite foods */}
-        <TextInput
-          label={FORM_LABELS.FAVORITE_FOODS}
-          name="favoriteFoods"
-          value={formData.favoriteFoods || ""}
-          onChange={handleInputChange}
-          placeholder={FORM_PLACEHOLDERS.FAVORITE_FOODS}
-        />
       </div>
 
       {/* Navigation buttons */}
