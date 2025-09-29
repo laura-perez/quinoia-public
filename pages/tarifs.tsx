@@ -205,7 +205,7 @@ const PricingPage = () => {
                         <span
                           className={`text-sm ${
                             feature.included ? 'text-[#414535]' : 'text-gray-400'
-                          } ${feature.note ? 'italic' : ''}`}
+                          } ${'note' in feature && feature.note ? 'italic' : ''}`}
                         >
                           {feature.text}
                         </span>
