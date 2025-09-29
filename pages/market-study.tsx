@@ -119,10 +119,21 @@ const MarketStudyPage = () => {
     setIsSubmitting(true);
 
     try {
-      const submissionData = {
-        ...formData,
-        email: formData.email.trim().toLowerCase()
+      // Construire les données en omettant l'email si l'utilisateur ne veut pas tester
+      const submissionData: any = {
+        galeres: formData.galeres,
+        autreGalere: formData.autreGalere,
+        solutionsActuelles: formData.solutionsActuelles,
+        solutionActuelleName: formData.solutionActuelleName,
+        valeurPercue: formData.valeurPercue,
+        prixAcceptable: formData.prixAcceptable,
+        veutTester: formData.veutTester
       };
+
+      // N'ajouter l'email que si l'utilisateur veut tester ET qu'il a fourni un email
+      if (formData.veutTester === 'oui' && formData.email.trim()) {
+        submissionData.email = formData.email.trim().toLowerCase();
+      }
 
       const response = await fetch('/api/market-study', {
         method: 'POST',
