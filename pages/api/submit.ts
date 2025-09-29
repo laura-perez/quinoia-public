@@ -5,7 +5,7 @@ import { normalizeFormInput } from "@/schemas/normalizeFormInput";
 import { normalizedInputSchema } from "@/schemas/normalizedInput.schema";
 import { verifyAndExtractRecaptcha } from "@/lib/auth";
 import { detectClientIP } from "@/lib/auth";
-import { upsertUserAndSubmission } from "@/lib/supabase";
+import { upsertUserAndSubmission, usersRepository } from "@/lib/supabase";
 import { createLogger, redact } from "@/lib/logger";
 import { selectRecipes } from "@/lib/recipes/recipeSelector";
 import { generateShoppingList } from "@/lib/recipes/shoppingListGenerator";
@@ -288,11 +288,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       menuResultId: menuResult.id
     });
   } catch (err) {
-    logger.error('Menu result save failed', { 
-      error: err, 
-      submissionId: submissionResult.submissionId 
+    logger.error('Menu result save failed', {
+      error: err,
+      submissionId: submissionResult.submissionId
     });
     return res.status(500).json({ error: "Erreur lors de la sauvegarde du menu." });
+  }
+
+  // Update user's last submission tracking
+  try {
+    await usersRepository.updateLastSubmission(submissionResult.userId, menuResult.id);
+    logger.info('User last submission updated successfully', {
+      userId: submissionResult.userId,
+      menuResultId: menuResult.id
+    });
+  } catch (err) {
+    // Log error but don't fail the API request
+    logger.error('User last submission update failed (non-blocking)', {
+      error: err,
+      userId: submissionResult.userId,
+      menuResultId: menuResult.id
+    });
   }
 
   // Send welcome email with menu

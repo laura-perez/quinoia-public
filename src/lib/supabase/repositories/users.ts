@@ -116,13 +116,45 @@ export class UsersRepository {
         this.logger.debug('User not found', { userId: id });
         return null;
       }
-      
+
       this.logger.error('User lookup failed', { error, userId: id });
       throw new Error(error.message || "User lookup failed");
     }
 
     this.logger.debug('User found', { userId: data?.id });
     return data;
+  }
+
+  /**
+   * Update user's last submission tracking fields
+   */
+  async updateLastSubmission(userId: string, menuResultId: string): Promise<void> {
+    this.logger.debug('Updating user last submission', {
+      userId,
+      menuResultId
+    });
+
+    const { error } = await this.client
+      .from(TABLE_NAMES.USERS)
+      .update({
+        lastSubmissionAt: new Date().toISOString(),
+        lastMenuResultId: menuResultId
+      })
+      .eq("id", userId);
+
+    if (error) {
+      this.logger.error('User last submission update failed', {
+        error,
+        userId,
+        menuResultId
+      });
+      throw new Error(error.message || "User last submission update failed");
+    }
+
+    this.logger.info('User last submission updated successfully', {
+      userId,
+      menuResultId
+    });
   }
 }
 
