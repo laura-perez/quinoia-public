@@ -1,6 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Check, X, Star, Gift, Zap } from 'lucide-react';
 import Navbar from '../src/components/ui/Navbar';
 
@@ -27,7 +28,11 @@ interface Plan {
 }
 
 const PricingPage = () => {
-  const plans: Plan[] = [
+  const router = useRouter();
+  const isFromTrialExpired = router.query.from === 'trial-expired';
+
+  // Base plans configuration
+  const allPlans: Plan[] = [
     {
       id: 'essai',
       name: 'Essai Gratuit',
@@ -51,36 +56,13 @@ const PricingPage = () => {
       ctaStyle: 'border-2 border-[#F4C95D] text-[#414535] hover:bg-[#F4C95D]'
     },
     {
-      id: 'decouverte',
-      name: 'Pack Découverte',
-      price: '9,90€',
-      originalPrice: '19€',
-      duration: '4 semaines',
-      badge: 'Recommandé',
-      icon: <Star className="w-6 h-6" />,
-      description: 'Parfait pour tester Quinoïa sur un mois',
-      features: [
-        { text: '4 menus hebdomadaires', included: true },
-        { text: 'Jusqu\'à 7 recettes de 2 à 4 portions', included: true },
-        { text: 'Listes de courses optimisées', included: true },
-        { text: 'Astuces illimitées', included: true },
-        { text: 'Historique des 4 menus', included: true },
-        { text: 'Export PDF des listes', included: true },
-        { text: 'Favoris & blacklist', included: true },
-        { text: 'Support par email', included: true },
-        { text: 'Support prioritaire', included: false }
-      ],
-      cta: 'Choisir ce pack',
-      ctaStyle: 'bg-[#F4C95D] text-[#414535] hover:bg-[#E5B84A]'
-    },
-    {
       id: 'mensuel',
       name: 'Abonnement',
       price: '9,90€',
       duration: '/mois',
       yearlyPrice: '95€/an',
       yearlyDiscount: '-20%',
-      badge: null,
+      badge: 'Recommandé',
       icon: <Zap className="w-6 h-6" />,
       description: 'Pour une expérience complète et continue',
       features: [
@@ -95,9 +77,37 @@ const PricingPage = () => {
         { text: 'Support prioritaire', included: true }
       ],
       cta: "S'abonner",
+      ctaStyle: 'bg-[#F4C95D] text-[#414535] hover:bg-[#E5B84A]'
+    },
+    {
+      id: 'decouverte',
+      name: 'Pack Découverte',
+      price: '9,90€',
+      originalPrice: '19€',
+      duration: '4 semaines',
+      badge: null,
+      icon: <Star className="w-6 h-6" />,
+      description: 'Parfait pour tester Quinoïa sur un mois',
+      features: [
+        { text: '4 menus hebdomadaires', included: true },
+        { text: 'Jusqu\'à 7 recettes de 2 à 4 portions', included: true },
+        { text: 'Listes de courses optimisées', included: true },
+        { text: 'Astuces illimitées', included: true },
+        { text: 'Historique des 4 menus', included: true },
+        { text: 'Export PDF des listes', included: true },
+        { text: 'Favoris & blacklist', included: true },
+        { text: 'Support par email', included: true },
+        { text: 'Support prioritaire', included: false }
+      ],
+      cta: 'Choisir ce pack',
       ctaStyle: 'border-2 border-[#414535] text-[#414535] hover:bg-[#414535] hover:text-white'
     }
   ];
+
+  // Filter plans based on context
+  const plans = isFromTrialExpired
+    ? allPlans.filter(plan => plan.id !== 'essai') // Remove trial option
+    : allPlans;
 
   return (
     <>
@@ -110,17 +120,17 @@ const PricingPage = () => {
         <meta name="robots" content="index,follow" />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-white">
+      <div className="min-h-screen bg-white">
         {/* Header - Same as landing page */}
         <Navbar />
 
         {/* Hero Section */}
-        <section className="py-16 px-4">
+        <section className="pt-8 md:pt-12 lg:pt-16 pb-8 px-4 bg-[#FDFBF8]">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-[#414535] mb-6">
+            <h1 className="text-4xl font-extrabold sm:text-5xl text-[#414535] mb-6">
               Éliminez la charge mentale des repas
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            <p className="text-lg text-[#8A8A8A] mb-8 max-w-2xl mx-auto">
               Des menus équilibrés, frais et non transformés, avec leurs listes de courses optimisées.
               Chaque semaine, en quelques minutes.
             </p>
@@ -144,7 +154,9 @@ const PricingPage = () => {
         {/* Pricing Cards */}
         <section className="py-12 px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div className={`grid gap-8 max-w-5xl mx-auto ${
+              isFromTrialExpired ? 'md:grid-cols-2' : 'md:grid-cols-3'
+            }`}>
               {plans.map((plan) => (
                 <div
                   key={plan.id}
@@ -228,36 +240,36 @@ const PricingPage = () => {
         </section>
 
         {/* FAQ Section */}
-        <section className="py-16 px-4 bg-gray-50">
+        <section className="py-16 px-4 bg-[#FDFBF8]">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-[#414535] text-center mb-12">
+            <h2 className="text-4xl font-extrabold sm:text-5xl text-[#414535] text-center mb-12">
               Questions fréquentes
             </h2>
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-semibold text-[#414535] mb-2">
+                  <h3 className="text-lg font-bold text-[#414535] mb-2">
                     Comment fonctionne la sélection des recettes ?
                   </h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-[#8A8A8A] text-base">
                     Notre algorithme analyse tes préférences alimentaires, ton régime et ton historique pour
                     sélectionner des recettes variées et équilibrées, sans jamais répéter les mêmes plats.
                   </p>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#414535] mb-2">
+                  <h3 className="text-lg font-bold text-[#414535] mb-2">
                     Puis-je annuler mon abonnement facilement ?
                   </h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-[#8A8A8A] text-base">
                     Oui, tu peux annuler ton abonnement en 1 clic depuis ton compte,
                     sans frais ni pénalité. L'accès reste actif jusqu'à la fin de la période payée.
                   </p>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#414535] mb-2">
+                  <h3 className="text-lg font-bold text-[#414535] mb-2">
                     Les recettes conviennent-elles aux débutants ?
                   </h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-[#8A8A8A] text-base">
                     Absolument ! Nos recettes sont conçues pour tous les niveaux, avec des instructions
                     claires et des astuces adaptées selon ton expérience en cuisine.
                   </p>
@@ -265,28 +277,28 @@ const PricingPage = () => {
               </div>
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-semibold text-[#414535] mb-2">
+                  <h3 className="text-lg font-bold text-[#414535] mb-2">
                     Que contient exactement un menu ?
                   </h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-[#8A8A8A] text-base">
                     Chaque menu contient jusqu'à 7 recettes équilibrées (2 à 4 portions), leurs listes de courses
                     organisées par rayon, et des astuces personnalisées pour optimiser ta préparation.
                   </p>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#414535] mb-2">
+                  <h3 className="text-lg font-bold text-[#414535] mb-2">
                     Les recettes sont-elles adaptées aux régimes spéciaux ?
                   </h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-[#8A8A8A] text-base">
                     Oui ! Nous proposons des options pour végétariens, végétaliens, flexitariens,
                     et prenons en compte tes allergies et intolérances alimentaires.
                   </p>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#414535] mb-2">
+                  <h3 className="text-lg font-bold text-[#414535] mb-2">
                     Y a-t-il des frais cachés ?
                   </h3>
-                  <p className="text-gray-600 text-sm">
+                  <p className="text-[#8A8A8A] text-base">
                     Aucun frais caché ! Le prix affiché est le prix final.
                     Pas de frais d'inscription, pas de frais de résiliation.
                   </p>
@@ -299,11 +311,11 @@ const PricingPage = () => {
         {/* CTA Section */}
         <section className="py-16 px-4 bg-[#414535]">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-white mb-6">
-              Prêt à éliminer la charge mentale des repas ?
+            <h2 className="text-4xl font-extrabold sm:text-5xl text-white mb-6">
+              Prêt à bien manger, sans y penser ?
             </h2>
-            <p className="text-gray-200 mb-8 max-w-2xl mx-auto">
-              Rejoins les femmes actives qui ont déjà simplifié leur quotidien avec Quinoïa.
+            <p className="text-lg text-gray-200 mb-8 max-w-2xl mx-auto">
+              Rejoins les personnes actives qui ont déjà simplifié leur quotidien avec Quinoïa.
               Un menu personnalisé t'attend !
             </p>
             <Link
