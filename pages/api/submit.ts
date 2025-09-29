@@ -109,24 +109,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Erreur lors de la vérification reCAPTCHA." });
   }
 
-  // Upsert user and submission
+  // Get user from email (access already validated by check-access endpoint)
+  let user;
   let submissionResult;
+
   try {
+    // Find user by email since access was already validated
+    user = await usersRepository.findByEmail(norm.data.email);
+    if (!user) {
+      logger.error('User not found - access should have been validated', { email: redact(norm.data.email) });
+      return res.status(500).json({ error: "Erreur utilisateur." });
+    }
+
+    // Create submission record for this generation
     submissionResult = await upsertUserAndSubmission({
       email: norm.data.email,
       normalizedInput: norm.data,
       recaptchaMeta,
       rawFormData: parsed.data.form,
     });
-    logger.info('Database upsert successful', { 
+
+    logger.info('User found and submission created', {
       submissionId: submissionResult.submissionId,
-      userId: submissionResult.userId,
+      userId: user.id,
+      status: user.status,
       email: redact(norm.data.email)
     });
   } catch (err) {
-    logger.error('Database upsert failed', { error: err });
-    return res.status(500).json({ error: "Erreur lors de l'enregistrement en base de données." });
+    logger.error('User lookup or submission creation failed', { error: err });
+    return res.status(500).json({ error: "Erreur lors de l'initialisation." });
   }
+
+  // Proceed directly with menu generation (access already validated)
+  logger.info('Starting menu generation - access pre-validated', {
+    userId: user.id,
+    submissionId: submissionResult.submissionId,
+    status: user.status
+  });
 
   // Native recipe selection and shopping list generation
   let recipeResults;
@@ -309,6 +328,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       userId: submissionResult.userId,
       menuResultId: menuResult.id
     });
+  }
+
+  // If user was on trial, mark trial as used
+  if (user.status === 'trial_available') {
+    try {
+      await usersRepository.markTrialAsUsed(submissionResult.userId);
+      logger.info('Trial marked as used', {
+        userId: submissionResult.userId
+      });
+    } catch (err) {
+      // Log error but don't fail the API request
+      logger.error('Mark trial as used failed (non-blocking)', {
+        error: err,
+        userId: submissionResult.userId
+      });
+    }
   }
 
   // Send welcome email with menu

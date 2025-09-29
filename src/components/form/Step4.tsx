@@ -41,6 +41,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
   const [shareId, setShareId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
+  const [trialExpired, setTrialExpired] = useState(false);
 
   // Progress simulation hook
   const { progress, currentStep, isCompleted, startProgress, resetProgress, forceComplete } = useProgressSimulation();
@@ -110,7 +111,30 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
     return token;
   }, [logger]);
 
-  // Extract API submission logic
+  // Step 1: Quick access check
+  const checkAccess = useCallback(async (submissionData: any): Promise<boolean> => {
+    const response = await fetch("/api/check-access", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(submissionData),
+    });
+
+    if (!response.ok) {
+      if (response.status === 403) {
+        const errorData = await response.json();
+        if (errorData.nextAction === 'redirect_to_payment') {
+          const error = new Error(errorData.error) as any;
+          error.isTrialExpired = true;
+          throw error;
+        }
+      }
+      throw new Error("Erreur lors de la vérification d'accès");
+    }
+
+    return true;
+  }, []);
+
+  // Step 2: Full menu generation (only called if access granted)
   const submitToApi = useCallback(async (submissionData: any): Promise<string | null> => {
     const response = await fetch("/api/submit", {
       method: "POST",
@@ -119,21 +143,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
     });
 
     if (!response.ok) {
-      let errorMessage = "Une erreur est survenue. Merci de réessayer.";
-      try {
-        const errorData = await response.json();
-        if (errorData.error) {
-          errorMessage = errorData.error;
-        }
-      } catch (parseError) {
-        logger.error('API response parsing failed', {
-          parseError: parseError instanceof Error ? parseError.message : String(parseError),
-          responseStatus: response.status,
-          responseStatusText: response.statusText,
-          url: response.url
-        });
-      }
-      throw new Error(errorMessage);
+      throw new Error("Erreur lors de la génération du menu");
     }
 
     // Parse response to get shareId
@@ -153,7 +163,6 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
     setIsSubmitting(true);
     setError("");
     setErrors({});
-    startProgress(); // Start progress animation
 
     try {
       const token = await getRecaptchaToken();
@@ -174,7 +183,13 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         formDataKeys: Object.keys(formData)
       });
 
-      // Submit to API (this can take time)
+      // Step 1: Quick access check (fast response)
+      await checkAccess(submissionData);
+
+      // If we reach here, access is granted - NOW start progress animation
+      startProgress();
+
+      // Step 2: Full menu generation (takes time)
       const resultShareId = await submitToApi(submissionData);
 
       // Store shareId for success message
@@ -189,24 +204,33 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
       setTimeout(() => {
         setSubmitted(true);
       }, 800);
-    } catch (err) {
+    } catch (err: any) {
       logger.error('Form submission failed', {
         error: err instanceof Error ? err.message : 'Unknown error',
         stack: err instanceof Error ? err.stack : undefined,
         formDataKeys: Object.keys(formData),
         hasEmail: !!formState.email,
-        hasConsent: formState.agreed
+        hasConsent: formState.agreed,
+        isTrialExpired: err?.isTrialExpired
       });
 
       // Force complete progress even on error
       forceComplete();
 
-      // Don't show the error to user, just show success (per requirements)
+      // Handle trial expired case differently
+      if (err?.isTrialExpired) {
+        setTimeout(() => {
+          setTrialExpired(true);
+        }, 800);
+        return; // Don't send admin email for business case
+      }
+
+      // For other errors, show success (per original requirements)
       setTimeout(() => {
         setSubmitted(true);
       }, 800);
 
-      // Send error notification email to admin (non-blocking)
+      // Send error notification email to admin only for technical errors
       try {
         await fetch('/api/notify-admin-error', {
           method: 'POST',
@@ -227,30 +251,59 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
     } finally {
       setIsSubmitting(false);
     }
-  }, [validate, getRecaptchaToken, submitToApi, formData, formState, logger, startProgress, forceComplete]);
+  }, [validate, getRecaptchaToken, checkAccess, submitToApi, formData, formState, logger, startProgress, forceComplete]);
 
   return (
     <div>
       <ProgressBar step={4} total={4} />
 
-      {submitted ? (
+      {trialExpired ? (
+        <div className="text-center max-w-lg mx-auto">
+          <h2 className="text-2xl font-bold text-[#414535] mb-4">
+            Tu as adoré ton premier menu ? ✨
+          </h2>
+          <div className="bg-[#FDFBF8] border-2 border-[#F4C95D] rounded-xl p-6 mb-6">
+            <p className="text-[#414535] font-medium mb-4">
+              🎉 <strong>Offre de lancement exclusive !</strong>
+            </p>
+            <p className="text-[#8A8A8A] mb-4">
+              Accède à des <strong>centaines de nouvelles recettes</strong> personnalisées,
+              tes listes de courses optimisées, et bien plus encore.
+            </p>
+            <div className="flex items-center justify-center gap-4 text-sm text-[#8A8A8A] mb-4">
+              <span>✓ Menus illimités</span>
+              <span>✓ Annulation facile</span>
+              <span>✓ Zéro charge mentale</span>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <Link
+              href="/tarifs?from=trial-expired"
+              className="inline-block bg-[#414535] text-white px-8 py-4 rounded-md font-semibold text-lg hover:bg-[#2f3226] transition-colors"
+            >
+              Découvrir l'offre à 9,90€ 🚀
+            </Link>
+            <p className="text-xs text-[#8A8A8A]">
+              Rejoins déjà 500+ personnes qui ont simplifié leurs repas
+            </p>
+          </div>
+        </div>
+      ) : submitted ? (
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-[#414535] mb-4">C'est envoyé 🎉</h2>
-          <p className="text-[#8A8A8A] max-w-md mx-auto mb-6">
-            Merci ! Tu vas recevoir très bientôt ton menu personnalisé directement dans ta boîte
-            mail.
-          </p>
+          <h2 className="text-2xl font-bold text-[#414535] mb-6">Ton menu est prêt ! 🍽️</h2>
           {shareId && (
-            <div className="space-y-3">
-              <p className="text-[#414535] font-medium">
-                Ton menu est déjà prêt ! 🍽️
-              </p>
+            <div className="space-y-6">
               <Link
                 href={`/menu/${shareId}`}
-                className="inline-block bg-[#F4C95D] text-[#414535] px-6 py-3 rounded-md font-semibold hover:bg-[#E5B84A] transition-colors"
+                className="inline-block bg-[#F4C95D] text-[#414535] px-8 py-4 rounded-md font-semibold text-lg hover:bg-[#E5B84A] transition-colors"
               >
-                Voir mon menu
+                Découvrir mon menu
               </Link>
+              <p className="text-[#8A8A8A] max-w-md mx-auto text-sm">
+                Tu vas aussi recevoir ce menu dans ta boîte mail dans quelques minutes.
+                Garde-le précieusement pour tes prochaines courses ! 📧✨
+              </p>
             </div>
           )}
         </div>

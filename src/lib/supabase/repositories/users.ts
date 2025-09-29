@@ -156,6 +156,60 @@ export class UsersRepository {
       menuResultId
     });
   }
+
+  /**
+   * Update user status
+   */
+  async updateStatus(userId: string, status: string): Promise<void> {
+    this.logger.debug('Updating user status', {
+      userId,
+      status
+    });
+
+    const { error } = await this.client
+      .from(TABLE_NAMES.USERS)
+      .update({ status })
+      .eq("id", userId);
+
+    if (error) {
+      this.logger.error('User status update failed', {
+        error,
+        userId,
+        status
+      });
+      throw new Error(error.message || "User status update failed");
+    }
+
+    this.logger.info('User status updated successfully', {
+      userId,
+      status
+    });
+  }
+
+  /**
+   * Update user status after trial usage
+   */
+  async markTrialAsUsed(userId: string): Promise<void> {
+    this.logger.debug('Marking trial as used', { userId });
+
+    const { error } = await this.client
+      .from(TABLE_NAMES.USERS)
+      .update({
+        status: 'trial_used',
+        hasUsedTrial: true
+      })
+      .eq("id", userId);
+
+    if (error) {
+      this.logger.error('Mark trial as used failed', {
+        error,
+        userId
+      });
+      throw new Error(error.message || "Mark trial as used failed");
+    }
+
+    this.logger.info('Trial marked as used successfully', { userId });
+  }
 }
 
 // Export singleton instance
