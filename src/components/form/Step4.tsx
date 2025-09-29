@@ -111,30 +111,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
     return token;
   }, [logger]);
 
-  // Step 1: Quick access check
-  const checkAccess = useCallback(async (submissionData: any): Promise<boolean> => {
-    const response = await fetch("/api/check-access", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(submissionData),
-    });
-
-    if (!response.ok) {
-      if (response.status === 403) {
-        const errorData = await response.json();
-        if (errorData.nextAction === 'redirect_to_payment') {
-          const error = new Error(errorData.error) as any;
-          error.isTrialExpired = true;
-          throw error;
-        }
-      }
-      throw new Error("Erreur lors de la vérification d'accès");
-    }
-
-    return true;
-  }, []);
-
-  // Step 2: Full menu generation (only called if access granted)
+  // Full form submission (handles user verification and menu generation)
   const submitToApi = useCallback(async (submissionData: any): Promise<string | null> => {
     const response = await fetch("/api/submit", {
       method: "POST",
@@ -143,6 +120,14 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
     });
 
     if (!response.ok) {
+      if (response.status === 403) {
+        const errorData = await response.json();
+        if (errorData.redirectTo?.includes('trial-expired')) {
+          const error = new Error(errorData.error) as any;
+          error.isTrialExpired = true;
+          throw error;
+        }
+      }
       throw new Error("Erreur lors de la génération du menu");
     }
 
@@ -183,13 +168,10 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         formDataKeys: Object.keys(formData)
       });
 
-      // Step 1: Quick access check (fast response)
-      await checkAccess(submissionData);
-
-      // If we reach here, access is granted - NOW start progress animation
+      // Start progress animation and submit to API (handles user verification + menu generation)
       startProgress();
 
-      // Step 2: Full menu generation (takes time)
+      // Full form submission (handles user verification and menu generation)
       const resultShareId = await submitToApi(submissionData);
 
       // Store shareId for success message
@@ -251,7 +233,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
     } finally {
       setIsSubmitting(false);
     }
-  }, [validate, getRecaptchaToken, checkAccess, submitToApi, formData, formState, logger, startProgress, forceComplete]);
+  }, [validate, getRecaptchaToken, submitToApi, formData, formState, logger, startProgress, forceComplete]);
 
   return (
     <div>

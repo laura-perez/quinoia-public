@@ -227,11 +227,20 @@ const PricingPage = () => {
 
                   {/* CTA Button */}
                   <div className="mt-auto">
-                    <button
-                      className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${plan.ctaStyle}`}
-                    >
-                      {plan.cta}
-                    </button>
+                    {plan.id === 'essai' ? (
+                      <Link
+                        href="/formulaire"
+                        className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${plan.ctaStyle} block text-center`}
+                      >
+                        {plan.cta}
+                      </Link>
+                    ) : (
+                      <button
+                        className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${plan.ctaStyle}`}
+                      >
+                        {plan.cta}
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

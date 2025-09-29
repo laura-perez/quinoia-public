@@ -109,16 +109,50 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Erreur lors de la vérification reCAPTCHA." });
   }
 
-  // Get user from email (access already validated by check-access endpoint)
+  // User lookup and creation flow for new users
   let user;
   let submissionResult;
 
   try {
-    // Find user by email since access was already validated
+    // Check if user exists
     user = await usersRepository.findByEmail(norm.data.email);
+
     if (!user) {
-      logger.error('User not found - access should have been validated', { email: redact(norm.data.email) });
-      return res.status(500).json({ error: "Erreur utilisateur." });
+      // User doesn't exist - create new user with trial_available status
+      logger.info('Creating new user', { email: redact(norm.data.email) });
+
+      const newUser = await usersRepository.upsert({
+        email: norm.data.email.toLowerCase().trim(),
+        firstName: norm.data.firstName || undefined,
+        status: 'trial_available'
+      });
+
+      user = newUser;
+      logger.info('New user created successfully', {
+        userId: user.id,
+        status: user.status,
+        email: redact(norm.data.email)
+      });
+    } else {
+      // User exists - verify trial eligibility
+      logger.info('Existing user found', {
+        userId: user.id,
+        status: user.status,
+        email: redact(norm.data.email)
+      });
+
+      // Check if user can access trial
+      if (user.status === 'trial_used' || user.status === 'paid_expired') {
+        logger.warn('User trial expired - should redirect to pricing', {
+          userId: user.id,
+          status: user.status,
+          email: redact(norm.data.email)
+        });
+        return res.status(403).json({
+          error: "Essai déjà utilisé",
+          redirectTo: "/tarifs?from=trial-expired"
+        });
+      }
     }
 
     // Create submission record for this generation
@@ -129,19 +163,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       rawFormData: parsed.data.form,
     });
 
-    logger.info('User found and submission created', {
+    logger.info('User verified and submission created', {
       submissionId: submissionResult.submissionId,
       userId: user.id,
       status: user.status,
       email: redact(norm.data.email)
     });
   } catch (err) {
-    logger.error('User lookup or submission creation failed', { error: err });
+    logger.error('User lookup or creation failed', { error: err });
     return res.status(500).json({ error: "Erreur lors de l'initialisation." });
   }
 
-  // Proceed directly with menu generation (access already validated)
-  logger.info('Starting menu generation - access pre-validated', {
+  // Proceed with menu generation (user access verified)
+  logger.info('Starting menu generation - user access verified', {
     userId: user.id,
     submissionId: submissionResult.submissionId,
     status: user.status
