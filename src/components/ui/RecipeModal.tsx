@@ -45,6 +45,58 @@ interface RecipeModalProps {
   }> };
 }
 
+// Interface for parsed cooking tips
+interface CookingTip {
+  id: string;
+  text: string;
+  category: string;
+  icon: string;
+}
+
+// Helper function to parse cooking tips JSON and add icons
+function parseCookingTips(cookingTip?: string | any): CookingTip[] {
+  if (!cookingTip) {
+    return [];
+  }
+
+  try {
+    // If cookingTip is already an object, use it directly
+    // If it's a string, parse it as JSON
+    let parsed: any;
+    if (typeof cookingTip === 'string') {
+      parsed = JSON.parse(cookingTip);
+    } else {
+      parsed = cookingTip;
+    }
+
+    if (!parsed.tips || !Array.isArray(parsed.tips)) {
+      return [];
+    }
+
+    return parsed.tips.map((tip: any) => ({
+      id: tip.id || 'unknown',
+      text: tip.text || '',
+      category: tip.category || 'general',
+      icon: getCategoryIcon(tip.category || 'general')
+    }));
+  } catch (error) {
+    return [];
+  }
+}
+
+// Helper function to get icon based on tip category
+function getCategoryIcon(category: string): string {
+  const iconMap: { [key: string]: string } = {
+    general: '👨‍🍳',
+    ingredient: '🥬',
+    technique: '🔥',
+    efficiency: '⚡',
+    time_saver: '⏰',
+    nutrition: '💪'
+  };
+  return iconMap[category] || '💡';
+}
+
 export function RecipeModal({
   recipes,
   initialRecipeIndex,
@@ -234,7 +286,7 @@ export function RecipeModal({
           {/* Scrollable content */}
           <div
             ref={scrollRef}
-            className="h-full overflow-y-auto px-6 pb-8"
+            className="h-full overflow-y-auto px-6 pb-24"
             onScroll={handleScroll}
           >
             {/* Recipe header - Always visible */}
@@ -360,32 +412,36 @@ export function RecipeModal({
                 </div>
               )}
 
-              {/* AI Tips */}
-              {recipeTips && recipeTips[currentRecipe.id] && recipeTips[currentRecipe.id].length > 0 && (
-                <div className="p-4 rounded-lg" style={{ backgroundColor: '#FFF6DC' }}>
-                  <h3 className="text-lg font-medium mb-3" style={{ color: '#414535' }}>
-                    💡 Astuces personnalisées
-                  </h3>
-                  <div className="space-y-3">
-                    {recipeTips[currentRecipe.id].map((tip) => (
-                      <div
-                        key={tip.id}
-                        className="flex items-start gap-3"
-                      >
+              {/* Cooking Tips from Database */}
+              {(() => {
+                const cookingTips = parseCookingTips(currentRecipe.cookingTip);
+                return cookingTips.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-medium mb-3" style={{ color: '#414535' }}>
+                      💡 Astuces pour cette recette
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {cookingTips.map((tip: CookingTip) => (
                         <div
-                          className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
-                          style={{ backgroundColor: '#F4C95D' }}
+                          key={tip.id}
+                          className="flex items-start gap-3 p-4 rounded-lg"
+                          style={{ backgroundColor: '#FFF6DC' }}
                         >
-                          <span className="text-xs">{tip.icon}</span>
+                          <div
+                            className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                            style={{ backgroundColor: '#F4C95D' }}
+                          >
+                            <span className="text-sm">{tip.icon}</span>
+                          </div>
+                          <p className="text-sm" style={{ color: '#414535' }}>
+                            {tip.text}
+                          </p>
                         </div>
-                        <p className="text-sm leading-relaxed" style={{ color: '#414535' }}>
-                          {tip.text}
-                        </p>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                );
+              })()}
             </div>
           </div>
         </div>

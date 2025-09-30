@@ -105,12 +105,14 @@
 ### Types d'Astuces Générées
 
 #### Astuces par Recette (4 types)
+
 - **Préparation** (🔪): Techniques de découpe, préparation des ingrédients
 - **Technique** (🔥): Méthodes de cuisson, astuces culinaires
 - **Variation** (🥜🌽🥒🥦): Suggestions de substitutions et adaptations
 - **Conservation** (🥡): Conseils de stockage et durée de vie
 
 #### Astuces Générales (4 types)
+
 - **Organisation** (⚡): Planification et préparation en avance
 - **Batch** (🍱): Cuisson en lots et optimisation du temps
 - **Nutrition** (🥗): Équilibre alimentaire et bienfaits nutritionnels
@@ -152,6 +154,7 @@
 **Problématique**: Toutes les recettes en base servent 2 portions, mais l'utilisateur peut choisir 2, 3 ou 4 portions.
 
 **Solution technique**:
+
 - **Shopping list**: Scaling automatique via `servingsBase: 2` et `numServings` utilisateur
 - **Affichage recettes**: Scaling des ingrédients dans le `resultBundle` (API)
 - **Interface utilisateur**: Pas de re-scaling côté frontend (déjà fait en API)
@@ -161,11 +164,13 @@
 ### Logique de Consolidation
 
 **Mapping automatique**: Base de données d'ingrédients canoniques
+
 - Recherche par nom exact puis similarité
 - Standardisation unités (g, ml, pièce)
 - Gestion des variants courants en base
 
 **Agrégation intelligente**:
+
 - Addition quantités même ingrédient canonique
 - Conversion unités compatibles (g ↔ kg)
 - Préservation source recipe pour traçabilité
@@ -173,8 +178,9 @@
 ### Organisation Rayons
 
 **Catégories prédéfinies**:
+
 - Fruits & Légumes
-- Boucherie & Poissonnerie  
+- Boucherie & Poissonnerie
 - Crémerie
 - Épicerie Salée
 - Épicerie Sucrée
@@ -199,18 +205,21 @@
 ### Sections Principales
 
 #### A) Carousel Recettes
+
 - **Mobile**: Vue carte unique avec pagination dots
 - **Desktop**: Grille 2x2 avec sélection interactive
 - **Métadonnées**: Temps préparation, calories, macros
 - **Images**: Fallback system avec placeholder Unsplash
 
 #### B) Liste de Courses Interactive
+
 - **Organisation**: Accordéons par rayon magasin
 - **Fonctionnalités**: Checkbox, compteur progression, items barrés
 - **État persistant**: Items cochés conservés en session
 - **UX**: Smooth animations, feedback visuel immédiat
 
 #### C) Modal Recettes Interactive (v3.1)
+
 - **Design coulissant**: Container blanc sur image de fond
 - **Navigation tactile**: Swipe gauche/droite entre recettes, pull-to-extend
 - **Contenu organisé**: Stats badges (grille 3 colonnes), nutrition (Par portion), ingrédients scaled, instructions
@@ -218,15 +227,10 @@
 - **Responsive**: Mobile-first avec support desktop
 
 #### D) Navigation Sticky
+
 - **Mobile**: Bottom tab bar fixe (Recettes, Liste, Astuces, Batch)
 - **Desktop**: Floating navigation center avec scroll smooth
 - **État actif**: Highlighting section courante
-
-#### E) Contenu Enrichi par IA (v3.1)
-- **Astuces générales**: 4 tips générés par GPT-4o-mini avec contexte utilisateur
-- **Astuces par recette**: 4 types (préparation, technique, variation, conservation)
-- **Personnalisation**: Adaptées au niveau de cuisine et préférences alimentaires
-- **Design**: Cards avec couleurs brand (#F4C95D, #414535) et émojis pertinents
 
 ### Spécifications Techniques
 
@@ -266,22 +270,42 @@
 
 ```typescript
 // Genres supportés
-gender: ["female", "male", "unspecified"]
+gender: ["female", "male", "unspecified"];
 
 // Régimes alimentaires
-diet: ["omnivore", "flexitarian", "vegetarian", "vegan"]
+diet: ["omnivore", "flexitarian", "vegetarian", "vegan"];
 
 // Catégories protéiques
-proteinCategory: ["Beef", "Poultry", "Meat alternatives", "Fish", "Eggs", "Dairy", "Legumes", "Tofu"]
+proteinCategory: [
+  "Beef",
+  "Poultry",
+  "Meat alternatives",
+  "Fish",
+  "Eggs",
+  "Dairy",
+  "Legumes",
+  "Tofu",
+];
 
 // Équipements (en anglais canonique)
-equipment: ["Oven", "Blender", "Thermomix", "Air Fryer"]
+equipment: ["Oven", "Blender", "Thermomix", "Air Fryer"];
 
 // Niveaux de cuisine
-cookingLevel: ["beginner", "intermediate", "advanced"]
+cookingLevel: ["beginner", "intermediate", "advanced"];
 
 // Allergènes canoniques
-allergens: ["Gluten", "Milk", "Eggs", "Fish", "Peanuts", "Tree nuts", "Soy", "Sesame", "Shellfish", "Mustard"]
+allergens: [
+  "Gluten",
+  "Milk",
+  "Eggs",
+  "Fish",
+  "Peanuts",
+  "Tree nuts",
+  "Soy",
+  "Sesame",
+  "Shellfish",
+  "Mustard",
+];
 ```
 
 ### Table Recipe (Core)
@@ -407,6 +431,7 @@ allergens: ["Gluten", "Milk", "Eggs", "Fish", "Peanuts", "Tree nuts", "Soy", "Se
 - **v3.0**: **Native Next.js complet** - Traitement unifié
 
 **Bénéfices v3.0**:
+
 - Latence réduite (traitement local)
 - Debugging simplifié (stack unifié)
 - Coûts opérationnels réduits
@@ -414,6 +439,7 @@ allergens: ["Gluten", "Milk", "Eggs", "Fish", "Peanuts", "Tree nuts", "Soy", "Se
 - Meilleur contrôle qualité
 
 **Trade-offs acceptés v3.0**:
+
 - Suppression complète calculs métaboliques (BMR/TDEE)
 - Suppression objectifs utilisateur (perte poids, santé...)
 - Protéines fixes à 25g minimum
@@ -421,6 +447,7 @@ allergens: ["Gluten", "Milk", "Eggs", "Fish", "Peanuts", "Tree nuts", "Soy", "Se
 - Focus MVP sur sélection intelligente simplifiée
 
 **Évolutions v3.1**:
+
 - Intégration GPT-4o-mini pour astuces personnalisées (coût maîtrisé ~$0.0015/génération)
 - Age devenu optionnel pour fluidifier l'inscription
 - Gestion correcte des portions avec scaling automatique
@@ -513,22 +540,22 @@ allergens: ["Gluten", "Milk", "Eggs", "Fish", "Peanuts", "Tree nuts", "Soy", "Se
 ```typescript
 // Structure ResultBundle v3.1
 interface ResultBundle {
-  version: "v3.0_native" | "v3.1_ai"
-  generatedAt: string
+  version: "v3.0_native" | "v3.1_ai";
+  generatedAt: string;
   meta: {
-    numRecipes: number
-    numServings: number
-    selectionStrategy: string
-    processingTimeMs: number
-  }
+    numRecipes: number;
+    numServings: number;
+    selectionStrategy: string;
+    processingTimeMs: number;
+  };
   userProfile: {
-    firstName: string
-  }
-  recipes: Recipe[]           // Scaled selon numServings
-  shoppingList: ShoppingList  // Agrégé et organisé
-  nutritionSummary: object
-  scoringDetails: object
-  aiTips: AITipsResult        // 20 astuces personnalisées
+    firstName: string;
+  };
+  recipes: Recipe[]; // Scaled selon numServings
+  shoppingList: ShoppingList; // Agrégé et organisé
+  nutritionSummary: object;
+  scoringDetails: object;
+  aiTips: AITipsResult; // 20 astuces personnalisées
 }
 ```
 

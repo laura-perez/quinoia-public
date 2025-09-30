@@ -226,16 +226,11 @@ export function getWelcomeMenuHtml(user: User, menu: MenuData): string {
       <img src="https://quinoia.fr/quinoia_logo.png" alt="Quinoïa Logo" />
     </div>
 
-    <!-- Greeting Box -->
-    <div class="greeting-box">
-      <h1>Salut ${firstName} ! 👋</h1>
-      <p>Ton menu personnalisé est prêt</p>
-    </div>
-
     <!-- Content -->
     <div class="content">
       <!-- Introduction -->
       <div class="intro">
+        <h1>Salut ${firstName} ! 👋</h1>
         <h2>Tu viens de déverrouiller ta semaine sans prise de tête</h2>
         <p>
           <span class="highlight">${menu.numRecipes} repas équilibrés</span>,

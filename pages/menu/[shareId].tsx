@@ -724,10 +724,6 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                       </div>
                     ))}
                   </div>
-                  
-                  <p className="caption text-center" style={{ color: '#8A8A8A', fontSize: '12px' }}>
-                    Astuces générées automatiquement par IA.
-                  </p>
                 </div>
               </div>
 
