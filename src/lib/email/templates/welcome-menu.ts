@@ -35,22 +35,35 @@ export function getWelcomeMenuHtml(user: User, menu: MenuData): string {
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-    .header {
-      background: linear-gradient(135deg, #F4C95D 0%, #F5D76A 100%);
-      padding: 40px 30px;
+    .navbar {
+      background-color: #FDFBF8;
+      border-bottom: 1px solid #EAEAEA;
+      padding: 16px 30px;
       text-align: center;
     }
-    .header h1 {
+    .navbar img {
+      height: 42px;
+      width: auto;
+    }
+    .greeting-box {
+      background-color: #FFFDF8;
+      border: 1px solid #F4F4F4;
+      border-radius: 12px;
+      padding: 32px 30px;
+      margin: 0 30px 30px 30px;
+      text-align: center;
+    }
+    .greeting-box h1 {
       color: #414535;
-      margin: 0;
+      margin: 0 0 8px 0;
       font-size: 28px;
       font-weight: 600;
       letter-spacing: -0.5px;
     }
-    .header p {
+    .greeting-box p {
       color: #414535;
       font-size: 18px;
-      margin: 12px 0 0 0;
+      margin: 0;
       opacity: 0.9;
     }
     .content {
@@ -191,7 +204,11 @@ export function getWelcomeMenuHtml(user: User, menu: MenuData): string {
 
     @media (max-width: 600px) {
       .container { margin: 10px; }
-      .header { padding: 30px 20px; }
+      .navbar { padding: 12px 20px; }
+      .navbar img { height: 36px; }
+      .greeting-box { padding: 24px 20px; margin: 0 20px 20px 20px; }
+      .greeting-box h1 { font-size: 24px; }
+      .greeting-box p { font-size: 16px; }
       .content { padding: 30px 20px; }
       .stats { padding: 20px 12px; }
       .stats-grid { display: table; }
@@ -204,8 +221,13 @@ export function getWelcomeMenuHtml(user: User, menu: MenuData): string {
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
-    <div class="header">
+    <!-- Navbar -->
+    <div class="navbar">
+      <img src="https://quinoia.fr/quinoia_logo.png" alt="Quinoïa Logo" />
+    </div>
+
+    <!-- Greeting Box -->
+    <div class="greeting-box">
       <h1>Salut ${firstName} ! 👋</h1>
       <p>Ton menu personnalisé est prêt</p>
     </div>
