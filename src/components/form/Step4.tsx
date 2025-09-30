@@ -5,8 +5,6 @@ import ProgressBar from "./form-components/ProgressBar";
 import TextInput from "./form-components/TextInput";
 import FormError from "./form-components/FormError";
 import ConsentCheckbox from "./form-components/ConsentCheckbox";
-import { ProgressOverlay } from "@/components/ui/ProgressOverlay";
-import { useProgressSimulation } from "@/hooks/useProgressSimulation";
 import { createEnvironmentLogger } from "@/lib/logger";
 import { getRecaptchaSiteKey } from "@/lib/config/clientEnv";
 import { FormStepProps, FormErrors } from "./types";
@@ -43,8 +41,6 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
   const [errors, setErrors] = useState<FormErrors>({});
   const [trialExpired, setTrialExpired] = useState(false);
 
-  // Progress simulation hook
-  const { progress, currentStep, isCompleted, startProgress, resetProgress, forceComplete } = useProgressSimulation();
 
   // Centralized change handler
   const handleFieldChange = useCallback((name: string, value: string | boolean) => {
@@ -141,7 +137,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
     }
   }, [logger]);
 
-  // Main submit handler with progress simulation
+  // Main submit handler
   const handleSubmit = useCallback(async () => {
     if (!validate()) return;
 
@@ -168,10 +164,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         formDataKeys: Object.keys(formData)
       });
 
-      // Start progress animation and submit to API (handles user verification + menu generation)
-      startProgress();
-
-      // Full form submission (handles user verification and menu generation)
+      // Submit to API (handles user verification + menu generation)
       const resultShareId = await submitToApi(submissionData);
 
       // Store shareId for success message
@@ -179,8 +172,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         setShareId(resultShareId);
       }
 
-      // Force complete progress and show success immediately
-      forceComplete();
+      // Show success immediately
 
       // Small delay to let user see completion, then show success
       setTimeout(() => {
@@ -196,8 +188,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         isTrialExpired: err?.isTrialExpired
       });
 
-      // Force complete progress even on error
-      forceComplete();
+      // Handle error state
 
       // Handle trial expired case differently
       if (err?.isTrialExpired) {
@@ -233,7 +224,7 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
     } finally {
       setIsSubmitting(false);
     }
-  }, [validate, getRecaptchaToken, submitToApi, formData, formState, logger, startProgress, forceComplete]);
+  }, [validate, getRecaptchaToken, submitToApi, formData, formState, logger]);
 
   return (
     <div>
@@ -330,24 +321,21 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
             <button
               onClick={handleSubmit}
               disabled={!formState.agreed || isSubmitting}
-              className={`px-6 py-3 rounded-md font-semibold transition text-white ${
+              className={`px-6 py-3 rounded-md font-semibold transition text-white flex items-center justify-center gap-2 ${
                 formState.agreed
                   ? "bg-[#414535] hover:bg-[#2f3226]"
                   : "bg-[#8A8A8A] cursor-not-allowed"
               }`}
             >
-              {isSubmitting ? "Envoi en cours…" : "C’est parti !"}
+              {isSubmitting && (
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              )}
+              {isSubmitting ? "Envoi en cours…" : "C'est parti !"}
             </button>
           </div>
         </>
       )}
 
-      {/* Progress Overlay */}
-      <ProgressOverlay
-        isVisible={isSubmitting}
-        progress={progress}
-        currentStep={currentStep}
-      />
     </div>
   );
 }
