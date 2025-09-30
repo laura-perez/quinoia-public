@@ -40,7 +40,7 @@ const PricingPage = () => {
       duration: '',
       badge: null,
       icon: <Gift className="w-6 h-6" />,
-      description: 'Découvre Quinoïa sans engagement',
+      description: 'Découvre Quinoïa',
       features: [
         { text: '1 menu personnalisé', included: true },
         { text: '3 recettes pour 2 portions', included: true },
@@ -64,7 +64,7 @@ const PricingPage = () => {
       yearlyDiscount: '-20%',
       badge: 'Recommandé',
       icon: <Zap className="w-6 h-6" />,
-      description: 'Pour une expérience complète et continue',
+      description: 'Sans engagment, annulation facile',
       features: [
         { text: '4 nouveaux menus/mois', included: true },
         { text: 'Jusqu\'à 7 recettes de 2 à 4 portions', included: true },
@@ -346,8 +346,8 @@ const PricingPage = () => {
               <Link href="/tarifs" className="text-gray-600 hover:text-[#414535] transition-colors">
                 Tarifs
               </Link>
-              <Link href="/contact" className="text-gray-600 hover:text-[#414535] transition-colors">
-                Contact
+              <Link href="mailto:hello@quinoia.fr" className="hover:underline">
+                Contact : hello@quinoia.fr
               </Link>
             </div>
             <p className="text-gray-500 text-sm">

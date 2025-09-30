@@ -16,7 +16,7 @@ export default function FinalCTA() {
             href="/formulaire"
             className="inline-flex items-center justify-center bg-[#414535] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#2f3226] transition border-2 border-[#414535]"
           >
-            Voir mon menu
+            Essayer gratuitement
           </Link>
           <Link
             href="/tarifs"

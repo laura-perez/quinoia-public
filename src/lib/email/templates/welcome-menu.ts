@@ -279,7 +279,7 @@ export function getWelcomeMenuHtml(user: User, menu: MenuData): string {
       <!-- CTA -->
       <div class="cta">
         <a href="${menu.shareUrl}" class="cta-button">
-          Voir mon menu complet 🍽️
+          Voir mon menu personnalisé 🍽️
         </a>
       </div>
 

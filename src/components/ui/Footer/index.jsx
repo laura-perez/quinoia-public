@@ -8,8 +8,8 @@ export default function Footer() {
           © {new Date().getFullYear()} Quinoïa. Tous droits réservés.
         </div>
         <div className="text-center md:text-right">
-          <Link href="mailto:hello@quinoia.app" className="hover:underline">
-            Contact : hello@quinoia.app
+          <Link href="mailto:hello@quinoia.fr" className="hover:underline">
+            Contact : hello@quinoia.fr
           </Link>
         </div>
       </div>

@@ -44,7 +44,7 @@ const SubscribeForm = () => {
         type="submit"
         className="block w-full mt-3 bg-[#F4C95D] hover:bg-[#f3b930] text-[#414535] font-semibold ring-offset-2 ring-[#F4C95D] focus:ring shadow sm:w-auto sm:mt-0"
       >
-        Voir mon menu
+        Essayer gratuitement
       </Button>
     </form>
   );
