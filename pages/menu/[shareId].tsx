@@ -514,7 +514,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
               <div className="w-full">
                 <div className="flex items-start justify-between w-full mb-2">
                   <div>
-                    <h2 style={{ color: '#414535', fontSize: '20px' }}>🛒 Liste de courses</h2>
+                    <h2 style={{ color: '#414535', fontSize: '20px' }}>🛒 Liste de courses complète</h2>
                     <p style={{ color: '#414535', fontSize: '16px', marginTop: '2px' }}>✓ Pour mes {recipes.length} recettes</p>
                   </div>
                   <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
