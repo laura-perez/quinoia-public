@@ -157,12 +157,6 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         },
       };
 
-      logger.debug('Form submission initiated', {
-        hasToken: !!token,
-        hasEmail: !!formState.email,
-        hasConsent: formState.agreed,
-        formDataKeys: Object.keys(formData)
-      });
 
       // Submit to API (handles user verification + menu generation)
       const resultShareId = await submitToApi(submissionData);
@@ -179,24 +173,22 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         setSubmitted(true);
       }, 800);
     } catch (err: any) {
-      logger.error('Form submission failed', {
-        error: err instanceof Error ? err.message : 'Unknown error',
-        stack: err instanceof Error ? err.stack : undefined,
-        formDataKeys: Object.keys(formData),
-        hasEmail: !!formState.email,
-        hasConsent: formState.agreed,
-        isTrialExpired: err?.isTrialExpired
-      });
-
-      // Handle error state
-
-      // Handle trial expired case differently
+      // Handle trial expired case differently (not an error, just business logic)
       if (err?.isTrialExpired) {
         setTimeout(() => {
           setTrialExpired(true);
         }, 800);
         return; // Don't send admin email for business case
       }
+
+      // Only log actual technical errors
+      logger.error('Form submission failed', {
+        error: err instanceof Error ? err.message : 'Unknown error',
+        stack: err instanceof Error ? err.stack : undefined,
+        formDataKeys: Object.keys(formData),
+        hasEmail: !!formState.email,
+        hasConsent: formState.agreed
+      });
 
       // For other errors, show success (per original requirements)
       setTimeout(() => {
