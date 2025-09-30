@@ -238,7 +238,7 @@ export function RecipeModal({
         <ImageWithFallback
           src={currentRecipe.image}
           alt={currentRecipe.title}
-          className="w-full h-full object-cover"
+          className="w-full h-[50vh] object-cover object-top md:object-center"
         />
 
         {/* Close button */}
