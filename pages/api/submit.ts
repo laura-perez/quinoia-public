@@ -185,7 +185,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   let recipeResults;
   try {
     // Default protein floor (no longer based on goals)
-    const proteinFloorG = 25; // 25g minimum par défaut
+    const proteinFloorG = 20; // 20g minimum par défaut
 
     const selectionContext = {
       userId: submissionResult.userId,

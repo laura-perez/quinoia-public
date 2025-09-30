@@ -33,11 +33,31 @@ export async function selectRecipes(
     diet: context.diet 
   });
 
-  // 1. Get recency data from SQL view (unified source)
-  const recency: RecencyViewData = await getUserRecencyFromView(context.userId);
+  // 1. Parallel execution: Get recency data AND base recipes simultaneously
+  logger.info('Starting parallel database queries', { userId: context.userId });
+  const startParallelTime = Date.now();
 
-  // 2. Apply hard filters (exclude strict + explicit exclusion list)
-  const filteredRecipes = await applyHardFilters(context, recency);
+  const [recency, baseRecipes] = await Promise.all([
+    getUserRecencyFromView(context.userId),
+    getFilteredRecipes({
+      diet: context.diet,
+      status: 'active',
+      maxPrepTime: 30,
+      minProtein: context.proteinFloorG,
+      // No exclusion yet - will filter after getting recency data
+      excludeRecipeIds: []
+    })
+  ]);
+
+  logger.info('Parallel queries completed', {
+    userId: context.userId,
+    parallelQueryTime: Date.now() - startParallelTime,
+    baseRecipesCount: baseRecipes.length,
+    recencyDataFound: !!recency
+  });
+
+  // 2. Apply remaining filters (now in-memory but much faster)
+  const filteredRecipes = applyRemainingFilters(baseRecipes, context, recency);
   
   if (filteredRecipes.length < context.numRecipes) {
     logger.error('Insufficient recipes after hard filtering', {
@@ -149,6 +169,52 @@ async function applyHardFilters(
 // Protein category check: only allow user's preferences
     const isPreferredProtein = context.proteinPreferences.includes(recipe.proteinCategory);
     
+    return hasRequiredEquipment && hasSkillLevel && isPreferredProtein;
+  });
+}
+
+/**
+ * Apply remaining filters after parallel query execution
+ * This combines the recency filtering with equipment/skill/protein filtering
+ */
+function applyRemainingFilters(
+  baseRecipes: Recipe[],
+  context: SelectionContext,
+  recency: RecencyViewData
+): Recipe[] {
+  // First, filter out recipes that should be excluded based on recency
+  const excludeIds = new Set([
+    ...(recency.recentStrict || []),
+    ...(recency.excludeRecipeIds || [])
+  ]);
+
+  const recipesAfterRecencyFilter = baseRecipes.filter(recipe =>
+    !excludeIds.has(recipe.id)
+  );
+
+  // Then apply the remaining filters (equipment, skill level, protein preferences)
+  // Optimize with Set for O(1) lookups instead of O(n) includes()
+  const BASE_EQUIPMENT = ["Pan", "Pot"];
+  const userEquipmentSet = new Set([...BASE_EQUIPMENT, ...context.equipmentAvailable]);
+  const proteinPreferencesSet = new Set(context.proteinPreferences);
+  const levelOrder: Record<string, number> = { beginner: 1, intermediate: 2, advanced: 3 };
+  const userSkillLevel = levelOrder[context.cookingLevel];
+
+  return recipesAfterRecencyFilter.filter(recipe => {
+    // Equipment check: translate French equipment to English and compare
+    const hasRequiredEquipment = recipe.equipmentRequired.every(
+      (eq: string) => {
+        const mappedEquipment = mapValue(equipmentMap, eq) || eq;
+        return userEquipmentSet.has(mappedEquipment);
+      }
+    );
+
+    // Cooking level check (pre-computed)
+    const hasSkillLevel = levelOrder[recipe.cookingLevel] <= userSkillLevel;
+
+    // Protein category check: O(1) Set lookup
+    const isPreferredProtein = proteinPreferencesSet.has(recipe.proteinCategory);
+
     return hasRequiredEquipment && hasSkillLevel && isPreferredProtein;
   });
 }
