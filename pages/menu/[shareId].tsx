@@ -511,11 +511,19 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
 
             {/* Liste de courses Section */}
             <div ref={listeRef} id="liste" className="space-y-6 w-full pt-6">
-              <div className="flex items-center justify-between w-full">
-                <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses complète</h2>
-                <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
-                  {remaining}/{total} restants
-                </Badge>
+              <div className="w-full">
+                <div className="flex items-start justify-between w-full mb-2">
+                  <div>
+                    <h2 style={{ color: '#414535', fontSize: '20px' }}>🛒 Liste de courses</h2>
+                    <p style={{ color: '#414535', fontSize: '16px', marginTop: '2px' }}>✓ Pour mes {recipes.length} recettes</p>
+                  </div>
+                  <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
+                    {remaining}/{total} restants
+                  </Badge>
+                </div>
+                <p style={{ color: '#8A8A8A', fontSize: '14px' }}>
+                  {meta.numServings} portions • Organisée par rayon
+                </p>
               </div>
 
               {/* Accordions for each rayon */}
@@ -731,11 +739,19 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
               <div className="space-y-12">
                 {/* Liste de courses Section */}
                 <div className="space-y-6 pt-4">
-                  <div className="flex items-center justify-between">
-                    <h2 style={{ color: '#414535', fontSize: '20px' }}>Liste de courses complètes</h2>
-                    <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
-                      {remaining}/{total} restants
-                    </Badge>
+                  <div>
+                    <div className="flex items-start justify-between mb-2">
+                      <div>
+                        <h2 style={{ color: '#414535', fontSize: '20px' }}>🛒 Liste de courses</h2>
+                        <p style={{ color: '#414535', fontSize: '16px', marginTop: '2px' }}>✓ Pour mes {recipes.length} recettes</p>
+                      </div>
+                      <Badge variant="secondary" style={{ backgroundColor: '#FFF6DC', color: '#414535' }}>
+                        {remaining}/{total} restants
+                      </Badge>
+                    </div>
+                    <p style={{ color: '#8A8A8A', fontSize: '14px' }}>
+                      {meta.numServings} portions • Organisé par rayon
+                    </p>
                   </div>
 
                   {/* Accordions for each rayon */}
