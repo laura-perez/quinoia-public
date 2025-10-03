@@ -2,7 +2,7 @@
  * Database types for the User table
  */
 export type UserStatus = 'trial_available' | 'trial_used' | 'paid_active' | 'paid_expired';
-export type SubscriptionType = 'one_time' | 'recurring';
+export type SubscriptionType = 'monthly' | 'yearly';
 
 export interface User {
   id: string;
@@ -15,6 +15,10 @@ export interface User {
   hasUsedTrial: boolean;
   lastSubmissionAt?: string;
   lastMenuResultId?: string;
+  // Stripe integration fields
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  stripePriceId?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -27,6 +31,9 @@ export interface CreateUserInput {
   paidUntil?: string;
   hasUsedPromo?: boolean;
   hasUsedTrial?: boolean;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  stripePriceId?: string;
 }
 
 export interface UpsertUserInput {
@@ -37,4 +44,7 @@ export interface UpsertUserInput {
   paidUntil?: string;
   hasUsedPromo?: boolean;
   hasUsedTrial?: boolean;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  stripePriceId?: string;
 }

@@ -11,8 +11,15 @@ const envSchema = z.object({
   ADMIN_EMAIL: z.string().email("ADMIN_EMAIL must be a valid email address").optional(),
   OPENAI_API_KEY: z.string().min(1, "OPENAI_API_KEY is required"),
 
+  // Stripe
+  STRIPE_SECRET_KEY: z.string().min(1, "STRIPE_SECRET_KEY is required"),
+  STRIPE_WEBHOOK_SECRET: z.string().min(1, "STRIPE_WEBHOOK_SECRET is required"),
+  STRIPE_PRICE_MONTHLY_PROMO: z.string().min(1, "STRIPE_PRICE_MONTHLY_PROMO is required"),
+  STRIPE_PRICE_YEARLY: z.string().min(1, "STRIPE_PRICE_YEARLY is required"),
+
   // Optional
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().optional(),
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
   UPSTASH_REDIS_REST_URL: z.string().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
 });
@@ -27,7 +34,12 @@ const _env = {
   FROM_EMAIL: process.env.FROM_EMAIL,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+  STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+  STRIPE_PRICE_MONTHLY_PROMO: process.env.STRIPE_PRICE_MONTHLY_PROMO,
+  STRIPE_PRICE_YEARLY: process.env.STRIPE_PRICE_YEARLY,
   NEXT_PUBLIC_RECAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
   UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
   UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
 };

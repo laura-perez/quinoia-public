@@ -9,6 +9,7 @@ interface Feature {
   text: string;
   included: boolean;
   note?: boolean;
+  highlight?: boolean; // Pour mettre en avant une feature clé
 }
 
 interface Plan {
@@ -35,72 +36,64 @@ const PricingPage = () => {
   const allPlans: Plan[] = [
     {
       id: 'essai',
-      name: 'Essai Gratuit',
+      name: 'Découverte',
       price: 'Gratuit',
       duration: '',
       badge: null,
       icon: <Gift className="w-6 h-6" />,
-      description: 'Découvre Quinoïa',
+      description: 'Un avant-goût de Quinoïa pour tester la simplicité',
       features: [
-        { text: '1 menu personnalisé', included: true },
-        { text: '3 recettes pour 2 portions', included: true },
-        { text: 'Liste de courses organisée', included: true },
-        { text: 'Astuces personnalisées', included: true },
-        { text: '1 seul essai par email', included: true, note: true },
-        { text: 'Historique des menus', included: false },
-        { text: 'Export PDF', included: false },
-        { text: 'Favoris & blacklist', included: false },
-        { text: 'Support prioritaire', included: false }
+        { text: '1 menu d\'essai par semaine (jusqu\'à 3 recettes)', included: true, highlight: false },
+        { text: '1 swap offert (change 1 recette)', included: true, highlight: false },
+        { text: 'Liste de courses basique', included: true },
+        { text: 'Accès immédiat aux nouvelles recettes', included: false },
+        { text: 'Astuces personnalisées chaque semaine', included: false },
+        { text: 'Export & partage de la liste de courses', included: false },
+        { text: 'Support', included: false }
       ],
       cta: 'Essayer gratuitement',
       ctaStyle: 'border-2 border-[#F4C95D] text-[#414535] hover:bg-[#F4C95D]'
     },
     {
       id: 'mensuel',
-      name: 'Abonnement',
+      name: 'Premium Mensuel',
       price: '9,90€',
       duration: '/mois',
-      yearlyPrice: '95€/an',
-      yearlyDiscount: '-20%',
       badge: 'Recommandé',
       icon: <Zap className="w-6 h-6" />,
-      description: 'Sans engagment, annulation facile',
+      description: 'Tes menus sans charge mentale, chaque semaine.',
       features: [
-        { text: '4 nouveaux menus/mois', included: true },
-        { text: 'Jusqu\'à 7 recettes de 2 à 4 portions', included: true },
-        { text: 'Listes de courses optimisées', included: true },
-        { text: 'Astuces illimitées', included: true },
-        { text: 'Historique illimité', included: true },
-        { text: 'Export PDF des listes', included: true },
-        { text: 'Favoris & blacklist', included: true },
-        { text: 'Bibliothèque complète (40+ recettes)', included: true },
+        { text: 'Menus hebdomadaires illimités', included: true, highlight: true },
+        { text: 'Swaps illimités (changes autant que tu veux)', included: true, highlight: true },
+        { text: 'Liste de courses interactive, optimisée par rayons, prête pour ton supermarché.', included: true },
+        { text: 'Accès anticipé aux nouvelles recettes', included: true },
+        { text: 'Astuces personnalisées chaque semaine', included: true },
+        { text: 'Export & partage de la listes de courses', included: true },
         { text: 'Support prioritaire', included: true }
       ],
       cta: "S'abonner",
       ctaStyle: 'bg-[#F4C95D] text-[#414535] hover:bg-[#E5B84A]'
     },
     {
-      id: 'decouverte',
-      name: 'Pack Découverte',
-      price: '9,90€',
-      originalPrice: '19€',
-      duration: '4 semaines',
-      badge: null,
+      id: 'annuel',
+      name: 'Premium Annuel',
+      price: '99€',
+      duration: '/an',
+      originalPrice: '118,80€',
+      badge: '3 mois offerts',
       icon: <Star className="w-6 h-6" />,
-      description: 'Parfait pour tester Quinoïa sur un mois',
+      description: '3 mois offerts – ton assistant culinaire pour toute l’année.',
       features: [
-        { text: '4 menus hebdomadaires', included: true },
-        { text: 'Jusqu\'à 7 recettes de 2 à 4 portions', included: true },
-        { text: 'Listes de courses optimisées', included: true },
-        { text: 'Astuces illimitées', included: true },
-        { text: 'Historique des 4 menus', included: true },
-        { text: 'Export PDF des listes', included: true },
-        { text: 'Favoris & blacklist', included: true },
-        { text: 'Support par email', included: true },
-        { text: 'Support prioritaire', included: false }
+        { text: 'Menus hebdomadaires illimités', included: true, highlight: true },
+        { text: 'Swaps illimités (changes autant que tu veux)', included: true, highlight: true },
+        { text: 'Liste de courses interactive, optimisée par rayons, prête pour ton supermarché.', included: true },
+        { text: 'Accès anticipé aux nouvelles recettes', included: true },
+        { text: 'Astuces personnalisées chaque semaine', included: true },
+        { text: 'Export & partage de la listes de courses', included: true },
+        { text: 'Support prioritaire', included: true }
       ],
-      cta: 'Choisir ce pack',
-      ctaStyle: 'border-2 border-[#414535] text-[#414535] hover:bg-[#414535] hover:text-white'
+      cta: "S'abonner",
+      ctaStyle: 'bg-[#F4C95D] text-[#414535] hover:bg-[#E5B84A]'
     }
   ];
 
@@ -115,7 +108,7 @@ const PricingPage = () => {
         <title>Tarifs - Quinoïa | Menus personnalisés et listes de courses</title>
         <meta
           name="description"
-          content="Découvrez nos tarifs pour des menus équilibrés personnalisés. Essai gratuit, pack découverte à 9,90€ ou abonnement mensuel. Éliminez la charge mentale des repas !"
+          content="Découvrez nos tarifs pour des menus équilibrés personnalisés. Essai gratuit, puis abonnement Premium à 9,90€/mois ou 99€/an. Éliminez la charge mentale des repas !"
         />
         <meta name="robots" content="index,follow" />
       </Head>
@@ -131,17 +124,17 @@ const PricingPage = () => {
               Éliminez la charge mentale des repas
             </h1>
             <p className="text-lg text-[#8A8A8A] mb-8 max-w-2xl mx-auto">
-              Des menus équilibrés, frais et non transformés, avec leurs listes de courses optimisées.
-              Chaque semaine, en quelques minutes.
+              Des menus faciles et équilibrés, avec leur liste de courses optimisée.
+              <br/>Chaque semaine dans ta boîte mail. 
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <div className="flex items-center gap-2 text-[#414535]">
                 <Check className="w-5 h-5 text-[#F4C95D]" />
-                <span>Menu simple et savoureux</span>
+                <span>Recettes rapides et variées</span>
               </div>
               <div className="flex items-center gap-2 text-[#414535]">
                 <Check className="w-5 h-5 text-[#F4C95D]" />
-                <span>Recettes non transformées</span>
+                <span>100% non transformé</span>
               </div>
               <div className="flex items-center gap-2 text-[#414535]">
                 <Check className="w-5 h-5 text-[#F4C95D]" />
@@ -206,17 +199,30 @@ const PricingPage = () => {
                   {/* Features */}
                   <div className="space-y-4 mb-8 flex-grow">
                     {plan.features.map((feature, index) => (
-                      <div key={index} className="flex items-start gap-3">
+                      <div
+                        key={index}
+                        className={`flex items-start gap-3 min-h-[3rem] ${
+                          feature.highlight && feature.included
+                            ? '-mx-2 px-2 py-1 rounded-lg border-2 border-[#F4C95D]'
+                            : ''
+                        }`}
+                      >
                         <div className="flex-shrink-0 mt-0.5">
                           {feature.included ? (
-                            <Check className="w-5 h-5 text-[#F4C95D]" />
+                            feature.highlight ? (
+                              <Zap className="w-5 h-5 text-[#F4C95D] fill-[#F4C95D]" />
+                            ) : (
+                              <Check className="w-5 h-5 text-[#F4C95D]" />
+                            )
                           ) : (
                             <X className="w-5 h-5 text-gray-300" />
                           )}
                         </div>
                         <span
                           className={`text-sm ${
-                            feature.included ? 'text-[#414535]' : 'text-gray-400'
+                            feature.included
+                              ? 'text-[#414535]'
+                              : 'text-gray-400'
                           } ${'note' in feature && feature.note ? 'italic' : ''}`}
                         >
                           {feature.text}
@@ -235,11 +241,12 @@ const PricingPage = () => {
                         {plan.cta}
                       </Link>
                     ) : (
-                      <button
-                        className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${plan.ctaStyle}`}
+                      <Link
+                        href={`/checkout/${plan.id === 'mensuel' ? 'monthly' : 'yearly'}`}
+                        className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${plan.ctaStyle} block text-center`}
                       >
                         {plan.cta}
-                      </button>
+                      </Link>
                     )}
                   </div>
                 </div>

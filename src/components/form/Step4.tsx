@@ -244,13 +244,13 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
 
           <div className="space-y-4">
             <Link
-              href="/tarifs?from=trial-expired"
+              href={`/checkout/monthly?email=${encodeURIComponent(formState.email)}&from=trial-expired`}
               className="inline-block bg-[#414535] text-white px-8 py-4 rounded-md font-semibold text-lg hover:bg-[#2f3226] transition-colors"
             >
               Découvrir l'offre à 9,90€ 🚀
             </Link>
             <p className="text-xs text-[#8A8A8A]">
-              Rejoins déjà 500+ personnes qui ont simplifié leurs repas
+              Sans engagement • Annulation facile
             </p>
           </div>
         </div>
