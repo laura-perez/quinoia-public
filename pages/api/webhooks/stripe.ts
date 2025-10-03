@@ -105,7 +105,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     const nextPaymentDate = new Date(subscription.current_period_end * 1000);
 
     // Update or create user
-    await supabase
+    const { data: upsertedUser, error: upsertError } = await supabase
       .from('user')
       .upsert({
         email: session.customer_email,
@@ -118,9 +118,23 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
         updatedAt: new Date().toISOString(),
       }, {
         onConflict: 'email'
+      })
+      .select()
+      .single();
+
+    if (upsertError) {
+      logger.error('Failed to upsert user in handleCheckoutCompleted', {
+        error: upsertError.message,
+        code: upsertError.code,
+        details: upsertError.details,
+        email: session.customer_email?.substring(0, 3) + '***'
       });
+      throw upsertError; // Re-throw to return 500, Stripe will retry
+    }
 
     logger.info('Checkout completed successfully', {
+      userId: upsertedUser.id,
+      status: upsertedUser.status,
       email: session.customer_email?.substring(0, 3) + '***',
       subscriptionType,
       subscriptionId
@@ -170,7 +184,7 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
       : new Date(Date.now() + (subscriptionType === 'yearly' ? 365 : 30) * 24 * 60 * 60 * 1000);
 
     // Upsert user (handles both first payment and renewals)
-    await supabase
+    const { data: upsertedUser, error: upsertError } = await supabase
       .from('user')
       .upsert({
         email: invoice.customer_email,
@@ -183,9 +197,23 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
         updatedAt: new Date().toISOString(),
       }, {
         onConflict: 'email'
+      })
+      .select()
+      .single();
+
+    if (upsertError) {
+      logger.error('Failed to upsert user in handlePaymentSucceeded', {
+        error: upsertError.message,
+        code: upsertError.code,
+        details: upsertError.details,
+        email: invoice.customer_email?.substring(0, 3) + '***'
       });
+      throw upsertError; // Re-throw to return 500, Stripe will retry
+    }
 
     logger.info('Payment succeeded', {
+      userId: upsertedUser.id,
+      status: upsertedUser.status,
       email: invoice.customer_email?.substring(0, 3) + '***',
       subscriptionType,
       subscriptionId

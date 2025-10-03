@@ -4,8 +4,12 @@ import path from "path";
 
 export default defineConfig({
   test: {
-    environment: "happy-dom",
-    setupFiles: ["./src/tests/setupTests.ts"],
+    // Use node environment for integration tests (server-side code), happy-dom for unit tests (React components)
+    environment: process.env.INTEGRATION_TESTS === 'true' ? 'node' : 'happy-dom',
+    setupFiles: [
+      "./src/tests/setup-env.ts", // Load env vars FIRST
+      "./src/tests/setupTests.ts"
+    ],
     coverage: {
       provider: "v8",
       reporter: ["text", "lcov"],

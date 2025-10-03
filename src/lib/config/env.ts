@@ -44,15 +44,29 @@ const _env = {
   UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
 };
 
-const parsed = envSchema.safeParse(_env);
+// Skip validation in test environment to allow dotenv to load vars first
+const isTest = process.env.NODE_ENV === 'test' || process.env.INTEGRATION_TESTS === 'true';
 
-if (!parsed.success) {
-  // Show all validation errors
-  const errors = parsed.error.issues.map((e) => `${String(e.path[0])}: ${e.message}`).join("\n");
-  throw new Error(`Environment variable configuration error:\n${errors}`);
+let env: z.infer<typeof envSchema>;
+
+if (isTest) {
+  // In test mode: use values directly without validation
+  // Validation happens at import time, but dotenv loads later in setup files
+  env = _env as z.infer<typeof envSchema>;
+} else {
+  // In production/dev: validate strictly
+  const parsed = envSchema.safeParse(_env);
+
+  if (!parsed.success) {
+    // Show all validation errors
+    const errors = parsed.error.issues.map((e) => `${String(e.path[0])}: ${e.message}`).join("\n");
+    throw new Error(`Environment variable configuration error:\n${errors}`);
+  }
+
+  env = parsed.data;
 }
 
-export const env: z.infer<typeof envSchema> = parsed.data;
+export { env };
 
 /**
  * Call in API routes to ensure all required server env variables are present.
