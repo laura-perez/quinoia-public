@@ -57,15 +57,20 @@ export const canonicalAllergens = [
 
 export const allergenSynonymsFr: Record<string, (typeof canonicalAllergens)[number]> = {
   gluten: "Gluten",
+  "Gluten": "Gluten", // Direct mapping for checkbox values
   lait: "Milk",
   lactose: "Milk",
+  "Lactose": "Milk", // Direct mapping for checkbox values
   oeuf: "Eggs",
   œuf: "Eggs",
   œufs: "Eggs",
   oeufs: "Eggs",
+  "Œufs": "Eggs", // Direct mapping for checkbox values
   poisson: "Fish",
   arachide: "Peanuts",
   "fruits à coque": "Tree nuts",
+  noix: "Tree nuts",
+  "Noix": "Tree nuts", // Direct mapping for checkbox values
   soja: "Soy",
   sésame: "Sesame",
   moutarde: "Mustard",

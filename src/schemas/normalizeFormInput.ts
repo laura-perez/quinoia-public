@@ -4,6 +4,7 @@ import {
   cookingLevelMap,
   proteinPreferenceMap,
   equipmentMap,
+  allergenSynonymsFr,
   mapValue,
   mapArrayUnique,
   extractAllergens,
@@ -29,6 +30,7 @@ export interface NormalizedFormOutput {
   batchMode: boolean;
   allergiesText?: string;
   allergens: string[];
+  otherAllergies?: string;
   locale: string;
   unitSystem: string;
   consent: boolean;
@@ -58,8 +60,17 @@ export function normalizeFormInput(form: unknown): NormalizedFormOutput {
       ? f.dislikedFoods.join(', ')
       : f.dislikedFoods?.trim(),
     batchMode: false,
-    allergiesText: f.allergens?.trim() || undefined,
-    allergens: [...extractAllergens(f.allergens || "")],
+    allergiesText: [
+      Array.isArray(f.allergens) ? f.allergens.join(', ') : f.allergens?.trim(),
+      f.otherAllergies?.trim()
+    ].filter(Boolean).join(', ') || undefined,
+    allergens: [
+      ...(Array.isArray(f.allergens) 
+        ? mapArrayUnique(allergenSynonymsFr, f.allergens.filter(a => a !== "Aucune" && a !== "Autres"))
+        : [...extractAllergens(f.allergens || "")]),
+      ...(f.otherAllergies ? extractAllergens(f.otherAllergies) : [])
+    ].filter(Boolean),
+    otherAllergies: f.otherAllergies?.trim(),
     locale: "fr-FR",
     unitSystem: "metric",
     consent: !!f.consent,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import RadioGroup from "./form-components/RadioGroup";
 import ProgressBar from "./form-components/ProgressBar";
 import CheckboxGroup from "./form-components/CheckboxGroup";
@@ -17,13 +17,26 @@ const COOKING_LEVELS = [
 const EQUIPMENT_OPTIONS = ["Four", "Mixeur/Blender", "Thermomix", "Air Fryer"];
 
 // Recipe and portion count options
-const RECIPE_COUNTS = [2, 3, 4, 5, 6, 7];
+const RECIPE_COUNTS = [2, 3]; // Only free options
+const PREMIUM_RECIPE_COUNTS = [4, 5, 6, 7]; // Premium options (fake buttons)
 const PORTION_COUNTS = [2, 3, 4];
 
 export default function Step3({ formData, updateFormData, goToNext, goToPrev, email, isLast }: FormStepProps) {
   const { errors, clearFieldError, setValidationErrors } = useFormStep();
   const { validateRequiredFields, hasValidationErrors } = useFormValidation();
   const { handleInputChange, createCheckboxArrayHandler, createBooleanRadioHandler } = useFormHandlers(updateFormData, clearFieldError);
+  const [hoveredPremium, setHoveredPremium] = useState<number | null>(null);
+
+  // Initialize default values when component mounts
+  useEffect(() => {
+    // Set default values if they don't exist
+    if (!formData.numRecipes) {
+      updateFormData({ numRecipes: "3" });
+    }
+    if (!formData.numServings) {
+      updateFormData({ numServings: "2" });
+    }
+  }, [formData.numRecipes, formData.numServings, updateFormData]); // Include dependencies
 
   // Equipment checkbox handler
   const handleCheckboxChange = createCheckboxArrayHandler(
@@ -75,21 +88,72 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev, em
           label={FORM_LABELS.EQUIPMENT}
         />
 
-        {/* Number of recipes radio group */}
-        <RadioGroup
-          name="numRecipes"
-          options={RECIPE_COUNTS}
-          value={formData.numRecipes || ""}
-          onChange={handleInputChange}
-          error={errors.numRecipes}
-          label="Combien de recettes veux tu cette semaine ?"
-        />
+        {/* Number of recipes section */}
+        <div>
+          <label className="block text-sm font-medium text-[#414535] mb-2">
+            Combien de recettes veux tu cette semaine ?
+          </label>
+          {/* Debug: {hoveredPremium && `Hovering: ${hoveredPremium}`} */}
+          <div className="flex flex-wrap gap-3">
+            {/* Free options - functional radio buttons */}
+            {RECIPE_COUNTS.map((option) => {
+              const optionStr = String(option);
+              const isSelected = (formData.numRecipes || "3") === optionStr;
+              return (
+                <label
+                  key={optionStr}
+                  className={`cursor-pointer rounded-lg border px-4 py-2 text-sm transition ${
+                    isSelected
+                      ? "bg-[#F4C95D] text-[#414535] border-[#F4C95D]"
+                      : "bg-white border-[#EAEAEA] text-[#414535] hover:border-[#F4C95D]"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="numRecipes"
+                    value={optionStr}
+                    checked={isSelected}
+                    onChange={handleInputChange}
+                    className="sr-only"
+                  />
+                  {optionStr}
+                </label>
+              );
+            })}
+            
+            {/* Premium options - fake buttons with tooltip */}
+            {PREMIUM_RECIPE_COUNTS.map((option) => (
+              <div key={option} className="relative">
+                <div
+                  className="cursor-not-allowed rounded-lg border px-4 py-2 text-sm bg-gray-100 text-gray-400 border-gray-200 inline-block"
+                  onMouseEnter={() => setHoveredPremium(option)}
+                  onMouseLeave={() => setHoveredPremium(null)}
+                >
+                  {option}
+                </div>
+                
+                {/* Tooltip */}
+                {hoveredPremium === option && (
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-50 pointer-events-none">
+                    <div className="bg-gray-900 text-white text-xs rounded-md py-2 px-3 whitespace-nowrap shadow-lg">
+                      Premium 👑
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          {errors.numRecipes && (
+            <p className="text-sm text-red-500 mt-2">{errors.numRecipes}</p>
+          )}
+        </div>
 
         {/* Number of portions radio group */}
         <RadioGroup
           name="numServings"
           options={PORTION_COUNTS}
-          value={formData.numServings || ""}
+          value={formData.numServings || "2"}
           onChange={handleInputChange}
           error={errors.numServings}
           label="Combien de portions par recette ?"

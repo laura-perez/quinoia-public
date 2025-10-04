@@ -45,6 +45,7 @@ export const normalizedInputSchema = z
     batchMode: z.boolean(),
     allergiesText: z.string().trim().max(300).optional(),
     allergens: z.array(z.enum(allergensEnum)).default([]),
+    otherAllergies: z.string().trim().max(300).optional(),
     locale: z.literal("fr-FR"),
     unitSystem: z.literal("metric"),
     consent: z.literal(true),

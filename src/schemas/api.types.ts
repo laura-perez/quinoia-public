@@ -31,7 +31,8 @@ export interface RawFormData {
   readonly favoriteFoods?: string;
   readonly dislikedFoods?: string;
   readonly batchMode?: boolean;
-  readonly allergens?: string; // String input converted to array during normalization
+  readonly allergens?: string | string[]; // Support both string (legacy) and array
+  readonly otherAllergies?: string; // Free text for custom allergies
   readonly consent: boolean;
 }
 

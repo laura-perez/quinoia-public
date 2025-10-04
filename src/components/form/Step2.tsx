@@ -19,6 +19,15 @@ const PROTEIN_OPTIONS = [
   "Simili-viandes (Heura, LaVie etc ..)",
 ];
 
+const ALLERGY_OPTIONS = [
+  { value: "none", label: "Aucune" },
+  { value: "Gluten", label: "Gluten" },
+  { value: "Milk", label: "Lactose" },
+  { value: "Tree nuts", label: "Noix" },
+  { value: "Eggs", label: "Œufs" },
+  { value: "other", label: "Autres" }
+];
+
 /**
  * Step 2: Dietary preferences and restrictions.
  */
@@ -32,6 +41,40 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev, em
     'proteinPreferences',
     () => formData.proteinPreferences || []
   );
+
+  // Custom handler for allergies with mutual exclusion logic
+  const handleAllergiesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const currentAllergies = formData.allergens || [];
+    const isChecked = e.target.checked;
+    
+    let newAllergies: string[];
+    
+    if (!isChecked) {
+      // Unchecking an item
+      newAllergies = currentAllergies.filter(item => item !== value);
+      // If nothing is selected, auto-select "Aucune"
+      if (newAllergies.length === 0) {
+        newAllergies = ["Aucune"];
+      }
+    } else {
+      // Checking an item
+      if (value === "Aucune") {
+        // If selecting "Aucune", clear all others
+        newAllergies = ["Aucune"];
+      } else {
+        // If selecting anything else, remove "Aucune" and add the new item
+        newAllergies = currentAllergies.filter(item => item !== "Aucune");
+        newAllergies.push(value);
+      }
+    }
+    
+    updateFormData({ allergens: newAllergies });
+    clearFieldError('allergens');
+  };
+
+  // Check if "Autres" is selected to show text input
+  const isOtherAllergySelected = (formData.allergens || []).includes("Autres");
 
   // Validate and submit
   const handleSubmit = () => {
@@ -77,13 +120,29 @@ export default function Step2({ formData, updateFormData, goToNext, goToPrev, em
         />
 
         {/* Allergies */}
-        <TextInput
-          label={FORM_LABELS.ALLERGIES}
-          name="allergens"
-          value={formData.allergens || ""}
-          onChange={handleInputChange}
-          placeholder={FORM_PLACEHOLDERS.ALLERGIES}
-        />
+        <div>
+          <CheckboxGroup
+            name="allergens"
+            options={ALLERGY_OPTIONS.map(a => a.label)}
+            values={formData.allergens || ["Aucune"]}
+            onChange={handleAllergiesChange}
+            label={FORM_LABELS.ALLERGIES}
+          />
+          
+          {/* Champ texte libre si "Autres" est sélectionné */}
+          {isOtherAllergySelected && (
+            <div className="mt-3">
+              <TextInput
+                label="Précisez vos autres allergies"
+                name="otherAllergies"
+                value={formData.otherAllergies || ""}
+                onChange={handleInputChange}
+                placeholder="Ex: sulfites, céleri, lupin..."
+                error={errors.otherAllergies}
+              />
+            </div>
+          )}
+        </div>
 
         {/* Disliked foods */}
         <TextInput

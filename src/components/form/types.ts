@@ -14,7 +14,8 @@ export interface FormData {
   // Step 2 - Dietary Preferences
   dietType?: string;
   proteinPreferences?: string[];
-  allergens?: string; // Text input for allergies
+  allergens?: string[]; // Checkbox array for allergies
+  otherAllergies?: string; // Free text for "Autre" option
   dislikedFoods?: string;
   favoriteFoods?: string;
 
@@ -58,6 +59,7 @@ export interface FormErrors {
   dietType?: string;
   proteinPreferences?: string;
   allergens?: string;
+  otherAllergies?: string;
   dislikedFoods?: string;
   favoriteFoods?: string;
 
