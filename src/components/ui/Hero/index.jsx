@@ -16,7 +16,7 @@ const Hero = () => {
           <div className="flex-none space-y-6 max-w-2xl">
             <h1 className="text-4xl font-extrabold sm:text-5xl">Bien manger, sans y penser.</h1>
             <p className="text-lg text-[#8A8A8A]">
-              Reçois ton menu personnalisé chaque semaine. Sain, simple, rassasiant.
+              Chaque semaine, reçois ton plan repas varié et équilibré, avec liste de courses prête.
             </p>
             <SubscribeForm />
           </div>

@@ -16,8 +16,8 @@ export default function CeQueTuVasRecevoir() {
           <circle cx="12" cy="12" r="6" />
         </svg>
       ),
-      title: "Menu personnalisé",
-      text: "Des plats déjà choisis rien que pour toi, adaptés à tes goûts et objectifs.",
+      title: "Ton menu personnalisé",
+      text: "Des plats déjà choisis rien que pour toi, adaptés à tes préférences.",
     },
     {
       icon: (
@@ -35,7 +35,7 @@ export default function CeQueTuVasRecevoir() {
         </svg>
       ),
       title: "Recettes ultra simples",
-      text: "Recettes détaillées, claires, jamais plus de 5 étapes. Toujours accessibles.",
+      text: "Recettes détaillées, claires et faciles. Toujours accessibles.",
     },
     {
       icon: (
@@ -52,8 +52,8 @@ export default function CeQueTuVasRecevoir() {
           <path d="M12 2a7 7 0 0 1 7 7c0 2.72-2.39 5.05-2.39 5.05-.65.75-1.1 1.77-1.1 2.77v.18a1 1 0 0 1-2 0v-.18c0-1-.45-2.02-1.1-2.77C7.39 14.05 5 11.72 5 9a7 7 0 0 1 7-7z" />
         </svg>
       ),
-      title: "Astuces hyper personnalisées",
-      text: "Des conseils d’organisation adaptés à ton rythme, ton niveau, tes contraintes.",
+      title: "Astuces pratiques",
+      text: "Des conseils d’organisation pour gagner du temps en cuisine.",
     },
     {
       icon: (
@@ -71,14 +71,14 @@ export default function CeQueTuVasRecevoir() {
         </svg>
       ),
       title: "Liste de courses par rayon",
-      text: "Une liste organisée et optimisée, plus jamais perdu·e au supermarché.",
+      text: "Une liste interactive et optimisée par rayon, plus jamais perdu·e au supermarché.",
     },
   ];
 
   return (
     <section className="custom-screen py-16 bg-white">
       <h2 className="text-2xl font-bold text-[#414535] mb-12 text-center">
-        Ce que tu vas recevoir chaque semaine
+        Ce que tu reçois chaque semaine
       </h2>
       <ol className="relative max-w-2xl mx-auto pl-6">
         {/* Ligne verticale continue */}

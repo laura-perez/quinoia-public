@@ -6,6 +6,7 @@ export default defineConfig({
   test: {
     // Use node environment for integration tests (server-side code), happy-dom for unit tests (React components)
     environment: process.env.INTEGRATION_TESTS === 'true' ? 'node' : 'happy-dom',
+    testTimeout: 30000, // 30 seconds for integration tests (onboarding flow can take time)
     setupFiles: [
       "./src/tests/setup-env.ts", // Load env vars FIRST
       "./src/tests/setupTests.ts"

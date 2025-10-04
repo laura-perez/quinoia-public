@@ -2,12 +2,12 @@ export default function Testimonials() {
   const testimonials = [
     {
       quote:
-        "J’en avais marre de réfléchir à mes repas. Maintenant, Quinoïa me propose des plats équilibrés qui me plaisent, et je gagne un temps fou chaque semaine.",
+        "J’en avais marre de tourner en rond avec les mêmes recettes. Maintenant je découvre de nouvelles idées chaque semaine, et tout est prêt.",
       name: "Marine, 30 ans",
     },
     {
       quote:
-        "Je pensais que ça allait être encore une enième appli de nutrition. Mais en fait tout est simple, clair, rapide. Et les recettes sont vraiment bonnes.",
+        "J’ai testé pas mal d’applis, mais Quinoïa est la seule qui m’a vraiment libéré la tête. Simple, clair, rapide, et ça se cuisine facilement.",
       name: "Sophie, 36 ans",
     },
   ];
