@@ -83,6 +83,11 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     const supabase = createSupabaseServiceClient();
 
     if (!session.customer_email || !session.subscription) {
+      logger.warn('Checkout session missing required fields', {
+        hasCustomerEmail: !!session.customer_email,
+        hasSubscription: !!session.subscription,
+        sessionId: session.id
+      });
       return;
     }
 
@@ -101,8 +106,26 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     }
 
     // Use subscription period end as next payment date
+    // Try to get from top-level first (older API), then from subscription item (newer API)
     // @ts-ignore - Stripe SDK type mismatch
-    const nextPaymentDate = new Date(subscription.current_period_end * 1000);
+    const periodEndTimestamp = subscription.current_period_end || subscription.items?.data?.[0]?.current_period_end;
+
+    if (!periodEndTimestamp) {
+      logger.error('Missing current_period_end from subscription', {
+        subscriptionId
+      });
+      throw new Error('Subscription missing current_period_end');
+    }
+
+    const nextPaymentDate = new Date(periodEndTimestamp * 1000);
+
+    if (isNaN(nextPaymentDate.getTime())) {
+      logger.error('Invalid date from current_period_end', {
+        periodEndTimestamp,
+        subscriptionId
+      });
+      throw new Error(`Invalid current_period_end value: ${periodEndTimestamp}`);
+    }
 
     // Update or create user
     const { data: upsertedUser, error: upsertError } = await supabase
@@ -136,8 +159,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       userId: upsertedUser.id,
       status: upsertedUser.status,
       email: session.customer_email?.substring(0, 3) + '***',
-      subscriptionType,
-      subscriptionId
+      subscriptionType
     });
 
     // TODO: Send welcome email here
@@ -148,6 +170,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       error: error instanceof Error ? error.message : String(error),
       email: session.customer_email?.substring(0, 3) + '***'
     });
+    throw error; // Re-throw to return 500 and let Stripe retry
   }
 }
 
