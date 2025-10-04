@@ -29,6 +29,19 @@ export async function sendWelcomeMenuEmail({ user, menu }: SendWelcomeMenuParams
     numRecipes: menu.numRecipes
   });
 
+  // Mock email sending during integration tests
+  if (process.env.INTEGRATION_TESTS === 'true') {
+    logger.info('Email sending mocked for integration tests', {
+      userId: user.id,
+      shareId: menu.shareId,
+      testMode: true
+    });
+    return {
+      success: true,
+      id: `mock-email-${Date.now()}`,
+    };
+  }
+
   const subject = getWelcomeMenuSubject(user);
   const html = getWelcomeMenuHtml(user, menu);
 

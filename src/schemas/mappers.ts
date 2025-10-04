@@ -9,6 +9,7 @@ export const dietMap = {
   Flexitarien: "flexitarian",
   Végétarien: "vegetarian",
   Végétalien: "vegan",
+  Vegan: "vegan",
 } as const;
 
 export const cookingLevelMap = {
@@ -26,6 +27,7 @@ export const proteinPreferenceMap = {
   Oeufs: "Eggs",
   "Fromages, Produits laitiers": "Dairy",
   Légumineuses: "Legumes",
+  "Légumineuses (Pois chiches, lentilles ..)": "Legumes",
   Tofu: "Tofu",
   "Simili-viandes (Heura, LaVie etc ..)": "Meat alternatives"
 } as const;

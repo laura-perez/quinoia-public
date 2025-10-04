@@ -5,24 +5,49 @@ import { createLogger, redact } from "../logger";
 export async function verifyAndExtractRecaptcha(token: string, ip?: string) {
   const logger = createLogger();
   
-  // Bypass pour le développement local
-  const testTokens = ['bypass-local', 'test-token', 'test_token_valid', 'postman-test'];
-  if (process.env.NODE_ENV === 'development' && testTokens.includes(token)) {
-    logger.info('reCAPTCHA bypass activated for local development', { 
-      token: token,
-      environment: process.env.NODE_ENV 
-    });
-    return {
-      ok: true,
-      meta: {
-        score: 0.9,
-        action: 'submit',
-        success: true,
-        challengeTs: new Date().toISOString(),
-        hostname: 'localhost',
-        challenge_ts: new Date().toISOString(),
-      },
-    };
+  // Bypass pour le développement local et tests d'intégration
+  const testTokens = ['bypass-local', 'test-token', 'test_token_valid', 'postman-test', 'test-recaptcha-token'];
+  const isTestEnvironment = process.env.NODE_ENV === 'development' || process.env.INTEGRATION_TESTS === 'true';
+
+  // Test scenario tokens for integration testing (only in test mode)
+  if (isTestEnvironment) {
+    // Simulated failure scenarios for integration tests
+    if (token === 'test-recaptcha-fail-score') {
+      logger.info('reCAPTCHA test failure: low score', { token });
+      return { ok: false, error: 'reCAPTCHA score too low' };
+    }
+    if (token === 'test-recaptcha-timeout') {
+      logger.info('reCAPTCHA test failure: timeout', { token });
+      return { ok: false, error: 'reCAPTCHA verification timeout' };
+    }
+    if (token === 'test-recaptcha-invalid') {
+      logger.info('reCAPTCHA test failure: invalid token', { token });
+      return { ok: false, error: 'Invalid reCAPTCHA token' };
+    }
+    if (token === 'test-recaptcha-network-error') {
+      logger.info('reCAPTCHA test failure: network error', { token });
+      throw new Error('Network error connecting to Google reCAPTCHA');
+    }
+
+    // Success tokens
+    if (testTokens.includes(token)) {
+      logger.info('reCAPTCHA bypass activated for local development/integration tests', {
+        token: token,
+        environment: process.env.NODE_ENV,
+        integrationTests: process.env.INTEGRATION_TESTS
+      });
+      return {
+        ok: true,
+        meta: {
+          score: 0.9,
+          action: 'submit',
+          success: true,
+          challengeTs: new Date().toISOString(),
+          hostname: 'localhost',
+          challenge_ts: new Date().toISOString(),
+        },
+      };
+    }
   }
   
   logger.info('Starting reCAPTCHA verification', { 

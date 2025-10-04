@@ -27,7 +27,9 @@ import {
   createMockStripeCustomerId,
   createMockStripeSubscriptionId,
 } from '../database/helpers';
-const WEBHOOK_URL = 'http://localhost:3000/api/webhooks/stripe';
+import { TEST_CONSTANTS } from '../shared/constants';
+
+const WEBHOOK_URL = TEST_CONSTANTS.WEBHOOK_URL;
 const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET!;
 
 // NOTE: Stripe SDK is mocked in src/lib/stripe/server.ts when INTEGRATION_TESTS=true

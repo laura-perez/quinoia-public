@@ -197,6 +197,7 @@ function applyRemainingFilters(
   const BASE_EQUIPMENT = ["Pan", "Pot"];
   const userEquipmentSet = new Set([...BASE_EQUIPMENT, ...context.equipmentAvailable]);
   const proteinPreferencesSet = new Set(context.proteinPreferences);
+  const hasProteinPreferences = context.proteinPreferences.length > 0;
   const levelOrder: Record<string, number> = { beginner: 1, intermediate: 2, advanced: 3 };
   const userSkillLevel = levelOrder[context.cookingLevel];
 
@@ -213,7 +214,8 @@ function applyRemainingFilters(
     const hasSkillLevel = levelOrder[recipe.cookingLevel] <= userSkillLevel;
 
     // Protein category check: O(1) Set lookup
-    const isPreferredProtein = proteinPreferencesSet.has(recipe.proteinCategory);
+    // If no preferences specified, allow all proteins
+    const isPreferredProtein = !hasProteinPreferences || proteinPreferencesSet.has(recipe.proteinCategory);
 
     return hasRequiredEquipment && hasSkillLevel && isPreferredProtein;
   });

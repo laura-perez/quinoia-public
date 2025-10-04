@@ -51,8 +51,12 @@ export function normalizeFormInput(form: unknown): NormalizedFormOutput {
     cookingLevel: mapValue(cookingLevelMap, f.cookingLevel) ?? "beginner",
     numRecipes: f.numRecipes,
     numServings: f.numServings,
-    favoriteFoods: f.favoriteFoods?.trim(),
-    dislikedFoods: f.dislikedFoods?.trim(),
+    favoriteFoods: Array.isArray(f.favoriteFoods)
+      ? f.favoriteFoods.join(', ')
+      : f.favoriteFoods?.trim(),
+    dislikedFoods: Array.isArray(f.dislikedFoods)
+      ? f.dislikedFoods.join(', ')
+      : f.dislikedFoods?.trim(),
     batchMode: false,
     allergiesText: f.allergens?.trim() || undefined,
     allergens: [...extractAllergens(f.allergens || "")],

@@ -40,27 +40,33 @@ export class UsersRepository {
 
   /**
    * Upsert user by email (create if not exists, return if exists)
+   * Only updates fields that are explicitly provided (not undefined)
    */
   async upsert(input: UpsertUserInput): Promise<User> {
     this.logger.debug('Upserting user', { email: redact(input.email) });
 
+    // Filter out undefined values to prevent overwriting existing data
+    const cleanInput = Object.fromEntries(
+      Object.entries(input).filter(([_, value]) => value !== undefined)
+    ) as UpsertUserInput;
+
     const { data, error } = await this.client
       .from(TABLE_NAMES.USERS)
-      .upsert([input], { onConflict: "email" })
+      .upsert([cleanInput], { onConflict: "email" })
       .select("*")
       .single();
 
     if (error || !data) {
-      this.logger.error('User upsert failed', { 
-        error, 
-        email: redact(input.email) 
+      this.logger.error('User upsert failed', {
+        error,
+        email: redact(input.email)
       });
       throw new Error(error?.message || "User upsert failed");
     }
 
-    this.logger.info('User upsert successful', { 
+    this.logger.info('User upsert successful', {
       userId: data.id,
-      email: redact(input.email) 
+      email: redact(input.email)
     });
 
     return data;
