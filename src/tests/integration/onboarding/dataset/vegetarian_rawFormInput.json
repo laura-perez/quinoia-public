@@ -1,0 +1,21 @@
+{
+  "age": "28",
+  "name": "Sarah",
+  "email": "sarah@test.com",
+  "gender": "Pas précisé",
+  "consent": true,
+  "dietType": "Végétarien",
+  "numRecipes": "3",
+  "numServings": "2",
+  "cookingLevel": "Débutant : Je veux juste que ce soit simple et rapide",
+  "equipmentAvailable": [
+    "Four",
+    "Mixeur/Blender"
+  ],
+  "proteinPreferences": [
+    "Œufs",
+    "Fromages, Produits laitiers",
+    "Légumineuses (Pois chiches, lentilles ..)",
+    "Simili-viandes (Heura, LaVie etc ..)"
+  ]
+}

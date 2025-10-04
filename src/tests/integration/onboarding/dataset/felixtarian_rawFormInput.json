@@ -1,0 +1,24 @@
+{
+  "age": "36",
+  "name": "Alex",
+  "email": "alex@test.com",
+  "gender": "Homme",
+  "consent": true,
+  "dietType": "Flexitarien",
+  "numRecipes": "5",
+  "numServings": "2",
+  "cookingLevel": "Intermédiaire : Je suis à l’aise, mais pas un chef non plus",
+  "equipmentAvailable": [
+    "Four",
+    "Air Fryer"
+  ],
+  "proteinPreferences": [
+    "Volaille",
+    "Œufs",
+    "Poisson",
+    "Fromages, Produits laitiers",
+    "Tofu",
+    "Légumineuses (Pois chiches, lentilles ..)",
+    "Simili-viandes (Heura, LaVie etc ..)"
+  ]
+}

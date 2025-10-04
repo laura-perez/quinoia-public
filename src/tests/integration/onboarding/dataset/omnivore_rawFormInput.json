@@ -1,0 +1,27 @@
+{
+  "age": "36",
+  "name": "TESTLOZ",
+  "email": "loz@test.com",
+  "gender": "Femme",
+  "consent": true,
+  "dietType": "Omnivore",
+  "numRecipes": "4",
+  "numServings": "3",
+  "cookingLevel": "Confirmé : Cuisiner, c’est mon terrain de jeu",
+  "equipmentAvailable": [
+    "Four",
+    "Thermomix",
+    "Air Fryer",
+    "Mixeur/Blender"
+  ],
+  "proteinPreferences": [
+    "Boeuf",
+    "Volaille",
+    "Poisson",
+    "Œufs",
+    "Fromages, Produits laitiers",
+    "Tofu",
+    "Légumineuses (Pois chiches, lentilles ..)",
+    "Simili-viandes (Heura, LaVie etc ..)"
+  ]
+}
