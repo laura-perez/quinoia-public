@@ -1,5 +1,6 @@
 /**
  * Stripe server-side utilities
+ * Production Stripe SDK
  */
 
 import Stripe from 'stripe';
@@ -8,72 +9,28 @@ import { createLogger } from '../logger';
 
 const logger = createLogger();
 
-// Create mock subscription for integration tests
-function createMockSubscription(subscriptionId: string): Stripe.Subscription {
-  const priceId = subscriptionId.includes('yearly')
-    ? process.env.STRIPE_PRICE_YEARLY!
-    : process.env.STRIPE_PRICE_MONTHLY_PROMO!;
+/**
+ * Initialize Stripe SDK
+ * In integration tests (INTEGRATION_TESTS=true), subscription.retrieve() is mocked
+ * to avoid real API calls. See src/tests/integration/stripe/mocks.ts
+ */
+function createStripeInstance(): Stripe {
+  const realStripe = new Stripe(STRIPE_CONFIG.secretKey, {
+    apiVersion: '2025-08-27.basil',
+    typescript: true,
+  });
 
-  const now = Math.floor(Date.now() / 1000);
-  const isYearly = priceId === process.env.STRIPE_PRICE_YEARLY;
+  // In integration test environment, apply mocks
+  if (process.env.INTEGRATION_TESTS === 'true') {
+    // Dynamic import to keep test code out of production bundle
+    const { createMockedStripeInstance } = require('../../tests/integration/stripe/mocks');
+    return createMockedStripeInstance(realStripe);
+  }
 
-  return {
-    id: subscriptionId,
-    object: 'subscription',
-    customer: subscriptionId.replace('sub_', 'cus_') as any,
-    status: 'active',
-    current_period_start: now,
-    current_period_end: now + (isYearly ? 365 : 30) * 24 * 60 * 60,
-    items: {
-      object: 'list',
-      data: [
-        {
-          id: `si_${subscriptionId}`,
-          object: 'subscription_item',
-          price: {
-            id: priceId,
-            object: 'price',
-            active: true,
-            currency: 'eur',
-            recurring: {
-              interval: isYearly ? 'year' : 'month',
-              interval_count: 1,
-            } as any,
-            type: 'recurring',
-            unit_amount: 1000,
-          } as Stripe.Price,
-        } as Stripe.SubscriptionItem,
-      ],
-      has_more: false,
-      url: '',
-    },
-    created: now,
-    cancel_at_period_end: false,
-    canceled_at: null,
-    ended_at: null,
-    metadata: {},
-  } as Stripe.Subscription;
+  return realStripe;
 }
 
-// Initialize real Stripe instance
-const realStripe = new Stripe(STRIPE_CONFIG.secretKey, {
-  apiVersion: '2025-08-27.basil',
-  typescript: true,
-});
-
-// Export mocked or real Stripe based on environment
-export const stripe = process.env.INTEGRATION_TESTS === 'true'
-  ? {
-      ...realStripe,
-      subscriptions: {
-        ...realStripe.subscriptions,
-        retrieve: async (subscriptionId: string) => {
-          logger.info('[MOCK] Stripe subscription retrieve', { subscriptionId });
-          return createMockSubscription(subscriptionId);
-        },
-      },
-    } as unknown as Stripe
-  : realStripe;
+export const stripe = createStripeInstance();
 
 /**
  * Create a Stripe checkout session

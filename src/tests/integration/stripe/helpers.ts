@@ -3,8 +3,16 @@
  */
 
 import Stripe from 'stripe';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 import { generateTestId, getCurrentTimestamp, getTimestampMinutesAgo } from '../shared/test-utils';
+
+/**
+ * Extended Invoice type for webhook testing
+ * Actual Stripe webhook payloads include subscription field even though TypeScript definition doesn't
+ */
+interface InvoiceWebhookPayload extends Partial<Stripe.Invoice> {
+  subscription?: string | Stripe.Subscription;
+}
 
 /**
  * Create a mock Stripe event for testing
@@ -106,13 +114,13 @@ export function createInvoicePaymentSucceededEvent(
   priceId: string,
   periodEnd: number
 ): Stripe.Event {
-  const invoice: Partial<Stripe.Invoice> = {
+  const invoice: InvoiceWebhookPayload = {
     id: generateTestId('in_test_'),
     object: 'invoice',
     customer: customerId,
     customer_email: customerEmail,
     subscription: subscriptionId,
-    paid: true,
+    status: 'paid',
     lines: {
       object: 'list',
       data: [
@@ -148,7 +156,7 @@ export function createInvoicePaymentFailedEvent(
     object: 'invoice',
     customer: customerId,
     customer_email: customerEmail,
-    paid: false,
+    status: 'open',
     attempt_count: 3,
   };
 

@@ -76,7 +76,7 @@ export function createInvalidSubmitRequest() {
 /**
  * Verify response structure for success case
  */
-export function verifySuccessResponse(response: Record<string, any>): void {
+export function verifySuccessResponse(response: Record<string, any>): Record<string, any> {
   expect(response).toHaveProperty('ok', true);
   expect(response).toHaveProperty('submissionId');
   expect(response).toHaveProperty('shareId');

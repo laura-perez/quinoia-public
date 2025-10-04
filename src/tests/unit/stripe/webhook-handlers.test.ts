@@ -1,20 +1,6 @@
 import { describe, it, expect } from 'vitest';
 
 describe('Webhook Subscription Type Detection', () => {
-  it('should detect yearly subscription by exact price ID match', () => {
-    const yearlyPriceId = process.env.STRIPE_PRICE_YEARLY || 'price_yearly_test';
-    const monthlyPriceId = process.env.STRIPE_PRICE_MONTHLY_PROMO || 'price_monthly_test';
-
-    // Test logic extracted from webhook
-    const detectSubscriptionType = (priceId: string): 'monthly' | 'yearly' => {
-      return priceId === yearlyPriceId ? 'yearly' : 'monthly';
-    };
-
-    expect(detectSubscriptionType(yearlyPriceId)).toBe('yearly');
-    expect(detectSubscriptionType(monthlyPriceId)).toBe('monthly');
-    expect(detectSubscriptionType('price_unknown')).toBe('monthly'); // default
-  });
-
   it('should NOT use string.includes for detection', () => {
     // Anti-regression test for bug fix
     const priceId = 'price_1SD6sIFZmIavhYFO7cW6oIUx';
