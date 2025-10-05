@@ -6,6 +6,7 @@
 import { sendEmail } from './client';
 import { getWelcomeMenuSubject, getWelcomeMenuHtml } from './templates/welcome-menu';
 import { getInsufficientRecipesSubject, getInsufficientRecipesHtml } from './templates/insufficient-recipes-alert';
+import { getMagicLinkSubject, getMagicLinkHtml } from './templates/magic-link';
 import { env } from '@/lib/config/env';
 import type { User, MenuData, EmailType } from './types';
 import type { SelectionContext } from '@/types/recipes';
@@ -130,6 +131,59 @@ export async function sendInsufficientRecipesAlert({
     logger.error('Insufficient recipes alert failed', {
       userId: context.userId,
       submissionId,
+      error: result.error
+    });
+  }
+
+  return result;
+}
+
+export interface SendMagicLinkParams {
+  email: string;
+  magicLinkUrl: string;
+  firstName?: string | null;
+}
+
+/**
+ * Send magic link authentication email
+ */
+export async function sendMagicLinkEmail({ email, magicLinkUrl, firstName }: SendMagicLinkParams) {
+  logger.info('Sending magic link email', {
+    email: email.substring(0, 3) + '***',
+    hasFirstName: !!firstName
+  });
+
+  // Mock email sending during integration tests
+  if (process.env.INTEGRATION_TESTS === 'true') {
+    logger.info('Email sending mocked for integration tests', {
+      email: email.substring(0, 3) + '***',
+      testMode: true
+    });
+    return {
+      success: true,
+      id: `mock-email-${Date.now()}`,
+    };
+  }
+
+  const subject = getMagicLinkSubject(firstName);
+  const html = getMagicLinkHtml(magicLinkUrl, firstName);
+
+  const result = await sendEmail({
+    to: email,
+    subject,
+    html,
+    from: 'Quinoïa <hello@rs.quinoia.fr>',
+    replyTo: 'hello@rs.quinoia.fr'
+  });
+
+  if (result.success) {
+    logger.info('Magic link email sent successfully', {
+      email: email.substring(0, 3) + '***',
+      emailId: result.id
+    });
+  } else {
+    logger.error('Magic link email failed', {
+      email: email.substring(0, 3) + '***',
       error: result.error
     });
   }

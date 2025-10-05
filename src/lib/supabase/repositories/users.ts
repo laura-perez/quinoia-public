@@ -216,6 +216,55 @@ export class UsersRepository {
 
     this.logger.info('Trial marked as used successfully', { userId });
   }
+
+  /**
+   * Update user's last login timestamp
+   */
+  async updateLastLogin(userId: string): Promise<void> {
+    this.logger.debug('Updating user last login', { userId });
+
+    const { error } = await this.client
+      .from(TABLE_NAMES.USERS)
+      .update({
+        lastLoginAt: new Date().toISOString(),
+        isFirstLogin: false
+      })
+      .eq("id", userId);
+
+    if (error) {
+      this.logger.error('Update last login failed', {
+        error,
+        userId
+      });
+      throw new Error(error.message || "Update last login failed");
+    }
+
+    this.logger.info('User last login updated successfully', { userId });
+  }
+
+  /**
+   * Mark user's first login as complete
+   */
+  async markFirstLoginComplete(userId: string): Promise<void> {
+    this.logger.debug('Marking first login complete', { userId });
+
+    const { error } = await this.client
+      .from(TABLE_NAMES.USERS)
+      .update({
+        isFirstLogin: false
+      })
+      .eq("id", userId);
+
+    if (error) {
+      this.logger.error('Mark first login complete failed', {
+        error,
+        userId
+      });
+      throw new Error(error.message || "Mark first login complete failed");
+    }
+
+    this.logger.info('First login marked as complete', { userId });
+  }
 }
 
 // Export singleton instance
