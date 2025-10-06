@@ -9,7 +9,7 @@ import { z } from 'zod';
  */
 export const requestMagicLinkSchema = z.object({
   email: z
-    .string({ required_error: "L'email est requis" })
+    .string({ message: "L'email est requis" })
     .email("Format d'email invalide")
     .trim()
     .toLowerCase(),
@@ -22,7 +22,7 @@ export type RequestMagicLinkInput = z.infer<typeof requestMagicLinkSchema>;
  */
 export const verifyMagicLinkSchema = z.object({
   token: z
-    .string({ required_error: 'Le token est requis' })
+    .string({ message: 'Le token est requis' })
     .uuid({ message: 'Format de token invalide' }),
 });
 

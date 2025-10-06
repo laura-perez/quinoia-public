@@ -90,7 +90,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       user = await usersRepository.create({
         email,
         status: 'trial_available',
-        firstName: null
+        firstName: undefined
       });
 
       logger.info('New user created', {

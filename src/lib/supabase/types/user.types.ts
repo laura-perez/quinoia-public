@@ -15,6 +15,9 @@ export interface User {
   hasUsedTrial: boolean;
   lastSubmissionAt?: string;
   lastMenuResultId?: string;
+  // Authentication fields
+  lastLoginAt?: string;
+  isFirstLogin: boolean;
   // Stripe integration fields
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
@@ -31,6 +34,8 @@ export interface CreateUserInput {
   paidUntil?: string;
   hasUsedPromo?: boolean;
   hasUsedTrial?: boolean;
+  lastLoginAt?: string;
+  isFirstLogin?: boolean;
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
   stripePriceId?: string;
@@ -44,6 +49,8 @@ export interface UpsertUserInput {
   paidUntil?: string;
   hasUsedPromo?: boolean;
   hasUsedTrial?: boolean;
+  lastLoginAt?: string;
+  isFirstLogin?: boolean;
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
   stripePriceId?: string;

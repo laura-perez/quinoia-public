@@ -1,81 +1,184 @@
 /**
- * Premium user dashboard
+ * Dashboard Page - Refactored with 3-section layout
+ * Sections: Menu, Historique, Profil
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Navbar } from '@/components/ui';
-
-interface UserData {
-  email: string;
-  firstName?: string;
-  status: string;
-  subscriptionType?: string;
-  paidUntil?: string;
-}
+import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
+import { MenuSection } from '@/components/dashboard/MenuSection';
+import { HistoriqueSection } from '@/components/dashboard/HistoriqueSection';
+import { ProfilSection } from '@/components/dashboard/ProfilSection';
+import { ShoppingListDrawer } from '@/components/dashboard/ShoppingListDrawer';
+import { UpsellModal } from '@/components/dashboard/UpsellModals';
+import { generateShoppingList } from '@/utils/shoppingList/generator';
+import type {
+  DashboardStatusResponse,
+  DashboardMenu,
+  QuotaStatus,
+  DashboardUser,
+} from '@/types/dashboard';
+import type { CanonicalIngredientInfo } from '@/lib/supabase/repositories/ingredients';
 
 export default function Dashboard() {
   const router = useRouter();
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardStatusResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isGeneratingMenu, setIsGeneratingMenu] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
 
+  // Drawer & Modal States
+  const [isShoppingListOpen, setIsShoppingListOpen] = useState(false);
+  const [upsellModal, setUpsellModal] = useState<{
+    isOpen: boolean;
+    type: 'swap' | 'history' | 'shopping';
+  }>({ isOpen: false, type: 'swap' });
+
+  // Load dashboard data on mount
   useEffect(() => {
-    loadUserData();
+    loadDashboardData();
   }, []);
 
-  const loadUserData = async () => {
-    try {
-      // Get user email from localStorage or session
-      const email = localStorage.getItem('quinoia_user_email');
+  // Check for first login welcome
+  useEffect(() => {
+    if (router.query.welcome === 'true' && dashboardData?.user) {
+      setShowWelcome(true);
+      const timer = setTimeout(() => setShowWelcome(false), 3000);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [router.query.welcome, dashboardData]);
 
-      if (!email) {
-        router.push('/tarifs');
-        return;
+  const loadDashboardData = async () => {
+    try {
+      const response = await fetch('/api/dashboard/status');
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          router.push('/login');
+          return;
+        }
+
+        const data = await response.json();
+        throw new Error(data.message || 'Erreur lors du chargement');
       }
 
-      // For now, we'll use localStorage data
-      // TODO: Implement proper user session management
-      setUserData({
-        email,
-        firstName: 'Laura', // Temporary
-        status: 'paid_active',
-        subscriptionType: 'monthly',
-      });
-
+      const data = await response.json();
+      setDashboardData(data);
     } catch (err) {
-      console.error('Error loading user data:', err);
-      setError('Erreur lors du chargement des données utilisateur');
+      console.error('Error loading dashboard:', err);
+      setError(err instanceof Error ? err.message : 'Erreur de chargement');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('quinoia_user_email');
-    router.push('/');
+  const handleGenerateMenu = async () => {
+    setIsGeneratingMenu(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/dashboard/generate-menu', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          numRecipes: 7,
+          numServings: 2,
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+
+        // Handle onboarding required
+        if (response.status === 403 && data.requiresOnboarding) {
+          router.push(data.redirectUrl || '/onboarding');
+          return;
+        }
+
+        // Handle quota exceeded
+        if (response.status === 403) {
+          setError(data.message || 'Quota dépassé');
+          return;
+        }
+
+        throw new Error(data.message || 'Erreur lors de la génération');
+      }
+
+      const data = await response.json();
+
+      // Update dashboard data with new menu
+      setDashboardData((prev) =>
+        prev
+          ? {
+              ...prev,
+              currentMenu: data.menu,
+              ingredientsCatalog: data.ingredientsCatalog,
+              quotas: data.quotas,
+            }
+          : null
+      );
+    } catch (err) {
+      console.error('Error generating menu:', err);
+      setError(err instanceof Error ? err.message : 'Erreur de génération');
+    } finally {
+      setIsGeneratingMenu(false);
+    }
   };
 
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/');
+    } catch (err) {
+      console.error('Logout error:', err);
+      router.push('/');
+    }
+  };
+
+  const handleUpgrade = () => {
+    router.push('/checkout/monthly');
+  };
+
+  const handleSwapQuotaExceeded = () => {
+    setUpsellModal({ isOpen: true, type: 'swap' });
+  };
+
+  // Calculate shopping list
+  const shoppingList = useMemo(() => {
+    if (!dashboardData?.currentMenu || !dashboardData?.ingredientsCatalog) return null;
+
+    return generateShoppingList({
+      recipes: dashboardData.currentMenu.activeRecipes,
+      numServings: dashboardData.currentMenu.numServings,
+      ingredientsCatalog: dashboardData.ingredientsCatalog,
+    });
+  }, [dashboardData?.currentMenu, dashboardData?.ingredientsCatalog]);
+
+  // Loading state
   if (isLoading) {
     return (
       <>
         <Head>
-          <title>Dashboard - Quinoïa Premium</title>
+          <title>Dashboard - Quinoïa</title>
         </Head>
         <Navbar />
         <div className="min-h-screen bg-[#FFFDF8] flex items-center justify-center">
           <div className="text-center">
             <div className="w-12 h-12 border-4 border-[#F4C95D] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-[#8A8A8A]">Chargement de votre espace...</p>
+            <p className="text-[#8A8A8A]">Chargement de ton espace...</p>
           </div>
         </div>
       </>
     );
   }
 
-  if (error) {
+  // Error state
+  if (error && !dashboardData) {
     return (
       <>
         <Head>
@@ -93,177 +196,223 @@ export default function Dashboard() {
     );
   }
 
+  const { user, quotas, currentMenu, ingredientsCatalog } = dashboardData || {};
+  const isPremium = user?.status === 'paid_active';
+
+  // Mock historique data (will be fetched from API later)
+  const historique = [
+    {
+      id: '1',
+      weekNumber: 40,
+      year: 2025,
+      firstRecipeTitle: 'Pâtes au pesto',
+      recipeCount: 5,
+      createdAt: '2025-10-01',
+    },
+    {
+      id: '2',
+      weekNumber: 39,
+      year: 2025,
+      firstRecipeTitle: 'Poulet rôti',
+      recipeCount: 7,
+      createdAt: '2025-09-24',
+    },
+  ];
+
   return (
     <>
       <Head>
-        <title>Dashboard - Quinoïa Premium</title>
-        <meta name="description" content="Votre espace Premium Quinoïa" />
+        <title>Dashboard - Quinoïa</title>
+        <meta name="description" content="Ton espace Quinoïa" />
       </Head>
 
-      <Navbar />
+      <Navbar
+        statusBadge={
+          <button
+            onClick={handleUpgrade}
+            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
+              isPremium
+                ? 'bg-[#F4C95D] text-[#414535]'
+                : 'bg-[#FFF6DC] text-[#414535] hover:bg-[#F4C95D]'
+            }`}
+          >
+            {isPremium ? 'Premium 💎' : 'Gratuit — découvrir Premium 💎'}
+          </button>
+        }
+      />
 
-      <div className="min-h-screen bg-[#FFFDF8] py-8">
-        <div className="max-w-4xl mx-auto px-4">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-[#414535]">
-                Salut {userData?.firstName || 'Laura'} ! ✨
-              </h1>
-              <div className="flex items-center gap-2 mt-2">
-                <span className="bg-[#F4C95D] text-[#414535] px-3 py-1 rounded-full text-sm font-medium">
-                  Premium {userData?.subscriptionType === 'yearly' ? 'Annuel' : 'Mensuel'}
-                </span>
-                <span className="text-[#8A8A8A] text-sm">
-                  • {userData?.email}
-                </span>
-              </div>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="text-[#8A8A8A] hover:text-[#414535] transition-colors text-sm"
-            >
-              Déconnexion
-            </button>
+      {/* Welcome Animation (First Visit) */}
+      {showWelcome && (
+        <div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center">
+          <div className="welcome-sparkles">
+            <span className="sparkle" style={{ left: '30%', top: '20%', animationDelay: '0s' }}>
+              ✨
+            </span>
+            <span className="sparkle" style={{ left: '60%', top: '15%', animationDelay: '0.2s' }}>
+              ✨
+            </span>
+            <span className="sparkle" style={{ left: '50%', top: '40%', animationDelay: '0.4s' }}>
+              ✨
+            </span>
           </div>
-
-          {/* Quick Actions Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {/* Generate Menu */}
-            <Link
-              href="/formulaire"
-              className="bg-white rounded-xl border border-[#EAEAEA] p-6 hover:shadow-lg transition-shadow group"
-            >
-              <div className="text-center">
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">🍽️</div>
-                <h3 className="text-lg font-semibold text-[#414535] mb-2">
-                  Générer un nouveau menu
-                </h3>
-                <p className="text-[#8A8A8A] text-sm">
-                  Créez un menu personnalisé avec vos préférences
-                </p>
-              </div>
-            </Link>
-
-            {/* Preferences */}
-            <Link
-              href="/dashboard/preferences"
-              className="bg-white rounded-xl border border-[#EAEAEA] p-6 hover:shadow-lg transition-shadow group"
-            >
-              <div className="text-center">
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">⚙️</div>
-                <h3 className="text-lg font-semibold text-[#414535] mb-2">
-                  Mes préférences
-                </h3>
-                <p className="text-[#8A8A8A] text-sm">
-                  Modifiez vos goûts et restrictions alimentaires
-                </p>
-              </div>
-            </Link>
-
-            {/* Subscription Management */}
-            <Link
-              href="/dashboard/subscription"
-              className="bg-white rounded-xl border border-[#EAEAEA] p-6 hover:shadow-lg transition-shadow group"
-            >
-              <div className="text-center">
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">💳</div>
-                <h3 className="text-lg font-semibold text-[#414535] mb-2">
-                  Mon abonnement
-                </h3>
-                <p className="text-[#8A8A8A] text-sm">
-                  Gérez votre abonnement et facturation
-                </p>
-              </div>
-            </Link>
-
-            {/* Menu History */}
-            <Link
-              href="/dashboard/history"
-              className="bg-white rounded-xl border border-[#EAEAEA] p-6 hover:shadow-lg transition-shadow group"
-            >
-              <div className="text-center">
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">📊</div>
-                <h3 className="text-lg font-semibold text-[#414535] mb-2">
-                  Historique des menus
-                </h3>
-                <p className="text-[#8A8A8A] text-sm">
-                  Retrouvez vos anciens menus et recettes
-                </p>
-              </div>
-            </Link>
-
-            {/* Profile Settings */}
-            <Link
-              href="/dashboard/profile"
-              className="bg-white rounded-xl border border-[#EAEAEA] p-6 hover:shadow-lg transition-shadow group"
-            >
-              <div className="text-center">
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">👤</div>
-                <h3 className="text-lg font-semibold text-[#414535] mb-2">
-                  Mon profil
-                </h3>
-                <p className="text-[#8A8A8A] text-sm">
-                  Modifiez vos informations personnelles
-                </p>
-              </div>
-            </Link>
-
-            {/* Support */}
-            <a
-              href="mailto:hello@quinoia.fr"
-              className="bg-white rounded-xl border border-[#EAEAEA] p-6 hover:shadow-lg transition-shadow group"
-            >
-              <div className="text-center">
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform">💬</div>
-                <h3 className="text-lg font-semibold text-[#414535] mb-2">
-                  Support
-                </h3>
-                <p className="text-[#8A8A8A] text-sm">
-                  Contactez notre équipe pour toute question
-                </p>
-              </div>
-            </a>
-          </div>
-
-          {/* Welcome Message for New Users */}
-          <div className="bg-[#FFF6DC] border border-[#F4C95D] rounded-xl p-6 mb-8">
-            <div className="flex items-start gap-4">
-              <div className="text-2xl">🎉</div>
-              <div>
-                <h3 className="font-semibold text-[#414535] mb-2">
-                  Bienvenue dans Quinoïa Premium !
-                </h3>
-                <p className="text-[#8A8A8A] text-sm mb-3">
-                  Vous avez maintenant accès à toutes nos fonctionnalités premium. Commencez par générer votre premier menu personnalisé !
-                </p>
-                <Link
-                  href="/formulaire"
-                  className="inline-block bg-[#414535] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#2f3226] transition-colors"
-                >
-                  Créer mon premier menu
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white rounded-lg border border-[#EAEAEA] p-4 text-center">
-              <div className="text-2xl font-bold text-[#F4C95D] mb-1">0</div>
-              <div className="text-sm text-[#8A8A8A]">Menus générés</div>
-            </div>
-            <div className="bg-white rounded-lg border border-[#EAEAEA] p-4 text-center">
-              <div className="text-2xl font-bold text-[#F4C95D] mb-1">7</div>
-              <div className="text-sm text-[#8A8A8A]">Jours d'essai restants</div>
-            </div>
-            <div className="bg-white rounded-lg border border-[#EAEAEA] p-4 text-center">
-              <div className="text-2xl font-bold text-[#F4C95D] mb-1">∞</div>
-              <div className="text-sm text-[#8A8A8A]">Menus disponibles</div>
-            </div>
-          </div>
+          <style jsx>{`
+            @keyframes sparkle-fade {
+              0% {
+                opacity: 0;
+                transform: translateY(0) scale(0.5);
+              }
+              50% {
+                opacity: 0.4;
+                transform: translateY(-20px) scale(1);
+              }
+              100% {
+                opacity: 0;
+                transform: translateY(-40px) scale(0.5);
+              }
+            }
+            .welcome-sparkles {
+              position: relative;
+              width: 100vw;
+              height: 100vh;
+            }
+            .sparkle {
+              position: absolute;
+              font-size: 2rem;
+              animation: sparkle-fade 1s ease-out forwards;
+            }
+          `}</style>
         </div>
-      </div>
+      )}
+
+      <DashboardLayout
+        userStatus={user?.status}
+        swapQuota={{
+          used: quotas?.swapsUsedThisMenu || 0,
+          limit: quotas?.swapQuotaLimit || null,
+        }}
+        onUpgrade={handleUpgrade}
+      >
+        {(activeTab, setActiveTab, layoutData) => (
+          <>
+            {/* Menu Section */}
+            {activeTab === 'menu' && (
+              <>
+                {currentMenu && ingredientsCatalog ? (
+                  <MenuSection
+                    menu={currentMenu}
+                    ingredientsCatalog={ingredientsCatalog}
+                    isPremium={isPremium}
+                    swapQuota={{
+                      used: quotas?.swapsUsedThisMenu || 0,
+                      limit: quotas?.swapQuotaLimit || null,
+                    }}
+                    onError={(err) => setError(err)}
+                    onSwapQuotaExceeded={handleSwapQuotaExceeded}
+                    onOpenShoppingList={() => setIsShoppingListOpen(true)}
+                  />
+                ) : (
+                  <EmptyState
+                    onGenerateMenu={handleGenerateMenu}
+                    isGenerating={isGeneratingMenu}
+                    canGenerate={
+                      quotas?.menusGeneratedThisWindow !== undefined &&
+                      quotas.menusGeneratedThisWindow < (quotas.menuQuotaLimit || Infinity)
+                    }
+                  />
+                )}
+              </>
+            )}
+
+            {/* Historique Section */}
+            {activeTab === 'historique' && (
+              <HistoriqueSection
+                isPremium={isPremium}
+                historique={historique}
+                onUpgrade={() => setUpsellModal({ isOpen: true, type: 'history' })}
+              />
+            )}
+
+            {/* Profil Section */}
+            {activeTab === 'profil' && user && (
+              <ProfilSection
+                user={user}
+                onUpgrade={handleUpgrade}
+                onManageSubscription={() => router.push('/account/subscription')}
+                onDeleteAccount={() => {
+                  if (confirm('Es-tu sûr de vouloir supprimer ton compte ?')) {
+                    // Handle account deletion
+                  }
+                }}
+              />
+            )}
+          </>
+        )}
+      </DashboardLayout>
+
+      {/* Shopping List Drawer */}
+      {currentMenu && shoppingList && (
+        <ShoppingListDrawer
+          isOpen={isShoppingListOpen}
+          onClose={() => setIsShoppingListOpen(false)}
+          shoppingList={shoppingList}
+          isPremium={isPremium}
+          numServings={currentMenu.numServings}
+          recipeCount={currentMenu.activeRecipes.length}
+          onUpgrade={() => setUpsellModal({ isOpen: true, type: 'shopping' })}
+        />
+      )}
+
+      {/* Upsell Modals */}
+      <UpsellModal
+        isOpen={upsellModal.isOpen}
+        onClose={() => setUpsellModal({ ...upsellModal, isOpen: false })}
+        type={upsellModal.type}
+      />
     </>
+  );
+}
+
+// Empty State Component
+function EmptyState({
+  onGenerateMenu,
+  isGenerating,
+  canGenerate,
+}: {
+  onGenerateMenu: () => void;
+  isGenerating: boolean;
+  canGenerate: boolean;
+}) {
+  return (
+    <div className="text-center py-16 px-4">
+      <div className="text-6xl mb-4">🍽️</div>
+      <h2 className="text-2xl font-semibold text-[#414535] mb-2">Aucun menu actif</h2>
+      <p className="text-[#8A8A8A] mb-6">
+        Génère ton premier menu personnalisé pour commencer
+      </p>
+      <button
+        onClick={onGenerateMenu}
+        disabled={isGenerating || !canGenerate}
+        className="bg-[#414535] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#2f3226] transition-colors disabled:bg-[#BDBDBD] disabled:cursor-not-allowed"
+      >
+        {isGenerating ? (
+          <span className="flex items-center gap-2">
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            Génération en cours...
+          </span>
+        ) : canGenerate ? (
+          'Générer un menu'
+        ) : (
+          'Quota épuisé'
+        )}
+      </button>
+      {!canGenerate && (
+        <p className="text-sm text-[#8A8A8A] mt-4">
+          <Link href="/tarifs" className="text-[#F4C95D] hover:underline">
+            Passe Premium
+          </Link>{' '}
+          pour des menus illimités
+        </p>
+      )}
+    </div>
   );
 }

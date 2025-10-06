@@ -22,7 +22,7 @@
 
 - **Préférences**: favoriteFoods, dislikedFoods (texte libre, max 500 caractères chacun)
 - **Allergies**: allergiesText (texte libre, max 300 caractères), allergens[] (enum canoniques)
-- **Technique**: equipmentAvailable[] (Oven, Blender, Thermomix, Air Fryer), batchMode (forcé à false)
+- **Technique**: equipmentAvailable[] (Oven, Blender, Thermomix, Air Fryer)
 
 ### Simplifications v3.0
 
@@ -93,53 +93,7 @@
 
 ---
 
-## 4) Génération d'Astuces IA Personnalisées (GPT-4o-mini)
-
-### Pipeline de Génération
-
-1. **Collecte des données utilisateur** : Profil (firstName, age, gender, cookingLevel) et contexte alimentaire (diet, proteinPreferences)
-2. **Analyse des recettes sélectionnées** : Titres, ingrédients, instructions, tags culinaires
-3. **Génération via GPT-4o-mini** : Prompt personnalisé avec contexte nutritionnel
-4. **Validation et fallback** : Format JSON strict avec système de récupération
-
-### Types d'Astuces Générées
-
-#### Astuces par Recette (4 types)
-
-- **Préparation** (🔪): Techniques de découpe, préparation des ingrédients
-- **Technique** (🔥): Méthodes de cuisson, astuces culinaires
-- **Variation** (🥜🌽🥒🥦): Suggestions de substitutions et adaptations
-- **Conservation** (🥡): Conseils de stockage et durée de vie
-
-#### Astuces Générales (4 types)
-
-- **Organisation** (⚡): Planification et préparation en avance
-- **Batch** (🍱): Cuisson en lots et optimisation du temps
-- **Nutrition** (🥗): Équilibre alimentaire et bienfaits nutritionnels
-- **Planning** (🛒): Gestion des courses et organisation des repas
-
-### Configuration Technique
-
-```typescript
-// Paramètres GPT-4o-mini
-{
-  model: 'gpt-4o-mini',
-  temperature: 0.7,
-  max_tokens: 2500,
-  response_format: { type: 'json_object' }
-}
-```
-
-### Métriques de Performance
-
-- **Coût par génération**: ~$0.0015
-- **Temps de réponse**: 2-4 secondes
-- **Taux de succès**: 95%+ avec système de fallback
-- **Format de sortie**: JSON strict avec validation Zod
-
----
-
-## 5) Génération Liste de Courses (Next.js Native)
+## 4) Génération Liste de Courses (Next.js Native)
 
 ### Pipeline de Génération
 
@@ -196,7 +150,7 @@
 
 ---
 
-## 6) Interface Menu Interactif
+## 5) Interface Menu Interactif
 
 ### Page Menu Publique (`/menu/{shareId}`)
 
@@ -241,18 +195,17 @@
 
 ---
 
-## 7) Workflow Complet v3.1
+## 6) Workflow Complet v3.1
 
 ### Pipeline End-to-End
 
 1. **Saisie utilisateur**: Formulaire 3 étapes (identité, préférences, menu)
 2. **Validation**: Zod schemas avec enum canoniques
 3. **Sélection recettes**: Algorithme natif avec scoring et diversité
-4. **Génération astuces**: GPT-4o-mini avec prompts personnalisés
-5. **Shopping list**: Agrégation canonique avec scaling portions
-6. **Sauvegarde**: ResultBundle avec shareId généré
-7. **Email**: Notification utilisateur avec lien menu
-8. **Interface**: Page publique interactive avec modal recettes
+4. **Shopping list**: Agrégation canonique avec scaling portions
+5. **Sauvegarde**: ResultBundle avec shareId généré
+6. **Email**: Notification utilisateur avec lien menu
+7. **Interface**: Page publique interactive avec modal recettes
 
 ### Nouveautés v3.1
 
@@ -264,7 +217,7 @@
 
 ---
 
-## 8) Base de Données
+## 7) Base de Données
 
 ### Enum Canoniques
 
@@ -331,12 +284,11 @@ allergens: [
 
 ---
 
-## 9) Contraintes & Performance
+## 8) Contraintes & Performance
 
 ### Cibles Performance
 
 - **Sélection recettes**: <2s pour 200+ recettes
-- **Génération astuces IA**: 2-4s avec GPT-4o-mini
 - **Génération shopping list**: <1s pour consolidation
 - **Menu page load**: <1s optimisé
 - **Queries DB**: <100ms avec index
@@ -359,7 +311,7 @@ allergens: [
 
 ---
 
-## 10) Intégrations Externes
+## 9) Intégrations Externes
 
 ### Base de Données (Supabase)
 
@@ -374,7 +326,6 @@ allergens: [
 - **Rate Limiting**: Upstash Redis pour protection API
 - **Analytics**: Vercel Analytics pour métriques usage
 - **Logging**: Système structuré avec redaction PII
-- **IA**: OpenAI GPT-4o-mini pour génération astuces personnalisées
 - **Email**: Resend pour notifications utilisateur
 
 ### Recipe Generation (Hors scope MVP)
@@ -386,7 +337,7 @@ allergens: [
 
 ---
 
-## 11) Conventions Techniques
+## 10) Conventions Techniques
 
 ### Données
 
@@ -410,7 +361,7 @@ allergens: [
 
 ---
 
-## 12) Architecture Décisionnelle v3.0
+## 11) Architecture Décisionnelle v3.0
 
 ### Choix Technique: Next.js Full-Stack Native
 
@@ -448,22 +399,19 @@ allergens: [
 
 **Évolutions v3.1**:
 
-- Intégration GPT-4o-mini pour astuces personnalisées (coût maîtrisé ~$0.0015/génération)
 - Age devenu optionnel pour fluidifier l'inscription
 - Gestion correcte des portions avec scaling automatique
 - UX améliorée avec progress overlay et modal interactive
 
 ---
 
-## 13) Métriques de Succès
+## 12) Métriques de Succès
 
 ### Technique
 
-- Menu génération <15s end-to-end (avec astuces IA)
+- Menu génération <15s end-to-end
 - 95%+ availability du service
 - 90%+ ingrédients mappés base canonique
-- 95%+ succès génération astuces IA
-- Coût IA <$0.002 par menu généré
 
 ### UX
 
@@ -471,7 +419,6 @@ allergens: [
 - Recettes perçues "très pertinentes"
 - Shopping list interactive et organisée
 - Interface mobile-first fluide
-- Astuces IA perçues comme utiles et personnalisées
 - Modal recettes intuitive avec navigation tactile
 
 ### Business
@@ -482,7 +429,7 @@ allergens: [
 
 ---
 
-## 14) Différences Majeures v3.0/v3.1 vs Spécifications Originales
+## 13) Différences Majeures v3.0/v3.1 vs Spécifications Originales
 
 ### Simplifications Majeures Implémentées (v3.0)
 
@@ -495,26 +442,23 @@ allergens: [
 
 ### Ajouts Majeurs v3.1
 
-1. **Astuces IA personnalisées**: Intégration GPT-4o-mini avec 20 astuces par menu
-2. **Age optionnel**: Simplification formulaire pour réduire friction
-3. **Scaling portions intelligent**: Gestion automatique 2/3/4 portions avec formule correcte
-4. **Modal recettes interactive**: Navigation tactile, pull-to-extend, UX mobile optimisée
-5. **Progress overlay**: Animation fluide masquant les 10-15s de traitement
-6. **Fallback system**: Astuces de secours en cas d'échec IA
+1. **Age optionnel**: Simplification formulaire pour réduire friction
+2. **Scaling portions intelligent**: Gestion automatique 2/3/4 portions avec formule correcte
+3. **Modal recettes interactive**: Navigation tactile, pull-to-extend, UX mobile optimisée
+4. **Progress overlay**: Animation fluide masquant les 10-15s de traitement
 
 ### Architecture Actuelle v3.1
 
 - **Formulaire**: 3 steps avec age optionnel
 - **Validation**: Zod strict avec enum canoniques
 - **Sélection**: Algorithme basé préférences + diversité
-- **IA**: GPT-4o-mini intégré avec prompts contextuels
 - **Interface**: Mobile-first avec modal interactive
 - **Performance**: Progress overlay pour masquer latence (10-15s)
 - **Portions**: Scaling automatique base 2 vers 2/3/4 portions
 
 ---
 
-## 15) Technologies et Stack Technique
+## 14) Technologies et Stack Technique
 
 ### Core Stack
 
@@ -522,7 +466,6 @@ allergens: [
 - **Language**: TypeScript avec Zod pour validation
 - **Base de données**: PostgreSQL via Supabase
 - **Authentification**: reCAPTCHA v3
-- **IA**: OpenAI GPT-4o-mini
 - **Email**: Resend
 - **Déploiement**: Vercel
 
@@ -540,7 +483,7 @@ allergens: [
 ```typescript
 // Structure ResultBundle v3.1
 interface ResultBundle {
-  version: "v3.0_native" | "v3.1_ai";
+  version: "v3.0_native";
   generatedAt: string;
   meta: {
     numRecipes: number;
@@ -555,10 +498,9 @@ interface ResultBundle {
   shoppingList: ShoppingList; // Agrégé et organisé
   nutritionSummary: object;
   scoringDetails: object;
-  aiTips: AITipsResult; // 20 astuces personnalisées
 }
 ```
 
 ---
 
-**Note**: Document mis à jour pour refléter l'implémentation réelle v3.1 - Architecture Next.js avec IA intégrée et UX optimisée
+**Note**: Document mis à jour pour refléter l'implémentation réelle v3.1 - Architecture Next.js native avec UX optimisée
