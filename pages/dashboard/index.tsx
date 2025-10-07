@@ -30,6 +30,8 @@ export default function Dashboard() {
   const [error, setError] = useState('');
   const [isGeneratingMenu, setIsGeneratingMenu] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [activeTab, setActiveTab] = useState('menu');
+  const [currentActiveRecipes, setCurrentActiveRecipes] = useState<any[] | null>(null);
 
   // Drawer & Modal States
   const [isShoppingListOpen, setIsShoppingListOpen] = useState(false);
@@ -141,23 +143,26 @@ export default function Dashboard() {
   };
 
   const handleUpgrade = () => {
-    router.push('/checkout/monthly');
+    const email = encodeURIComponent(user?.email || '');
+    router.push(`/checkout/monthly?email=${email}`);
   };
 
   const handleSwapQuotaExceeded = () => {
     setUpsellModal({ isOpen: true, type: 'swap' });
   };
 
-  // Calculate shopping list
+  // Calculate shopping list (uses currentActiveRecipes if available, otherwise fallback to dashboardData)
   const shoppingList = useMemo(() => {
     if (!dashboardData?.currentMenu || !dashboardData?.ingredientsCatalog) return null;
 
+    const recipesToUse = currentActiveRecipes || dashboardData.currentMenu.activeRecipes;
+
     return generateShoppingList({
-      recipes: dashboardData.currentMenu.activeRecipes,
+      recipes: recipesToUse,
       numServings: dashboardData.currentMenu.numServings,
       ingredientsCatalog: dashboardData.ingredientsCatalog,
     });
-  }, [dashboardData?.currentMenu, dashboardData?.ingredientsCatalog]);
+  }, [currentActiveRecipes, dashboardData?.currentMenu, dashboardData?.ingredientsCatalog]);
 
   // Loading state
   if (isLoading) {
@@ -228,16 +233,40 @@ export default function Dashboard() {
 
       <Navbar
         statusBadge={
-          <button
-            onClick={handleUpgrade}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all ${
-              isPremium
-                ? 'bg-[#F4C95D] text-[#414535]'
-                : 'bg-[#FFF6DC] text-[#414535] hover:bg-[#F4C95D]'
-            }`}
-          >
-            {isPremium ? 'Premium 💎' : 'Gratuit — découvrir Premium 💎'}
-          </button>
+          <div className="flex items-center gap-3">
+            {!isPremium && (
+              <button
+                onClick={handleUpgrade}
+                className="px-3 py-1.5 rounded-full text-sm font-medium transition-all bg-[#FFF6DC] text-[#414535] hover:bg-[#F4C95D]"
+              >
+                Gratuit — découvrir Premium 💎
+              </button>
+            )}
+            {isPremium && (
+              <span className="px-3 py-1.5 rounded-full text-sm font-medium bg-[#F4C95D] text-[#414535]">
+                Premium 💎
+              </span>
+            )}
+            <button
+              onClick={() => setActiveTab('profil')}
+              className="p-2 hover:bg-[#FAFAFA] rounded-lg transition-colors"
+              title="Profil"
+            >
+              <svg
+                className="w-5 h-5 text-[#414535]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+            </button>
+          </div>
         }
       />
 
@@ -291,8 +320,10 @@ export default function Dashboard() {
           limit: quotas?.swapQuotaLimit || null,
         }}
         onUpgrade={handleUpgrade}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
       >
-        {(activeTab, setActiveTab, layoutData) => (
+        {(layoutData) => (
           <>
             {/* Menu Section */}
             {activeTab === 'menu' && (
@@ -309,6 +340,9 @@ export default function Dashboard() {
                     onError={(err) => setError(err)}
                     onSwapQuotaExceeded={handleSwapQuotaExceeded}
                     onOpenShoppingList={() => setIsShoppingListOpen(true)}
+                    onActiveRecipesChange={setCurrentActiveRecipes}
+                    historique={historique}
+                    onUpgradeHistory={() => setUpsellModal({ isOpen: true, type: 'history' })}
                   />
                 ) : (
                   <EmptyState
@@ -357,7 +391,7 @@ export default function Dashboard() {
           shoppingList={shoppingList}
           isPremium={isPremium}
           numServings={currentMenu.numServings}
-          recipeCount={currentMenu.activeRecipes.length}
+          recipeCount={(currentActiveRecipes || currentMenu.activeRecipes).length}
           onUpgrade={() => setUpsellModal({ isOpen: true, type: 'shopping' })}
         />
       )}

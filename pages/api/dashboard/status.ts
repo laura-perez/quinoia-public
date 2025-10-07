@@ -90,9 +90,20 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
           .map(id => recipeMap.get(id))
           .filter(Boolean);
 
+        // Filter swap pool to remove any recipes already in active recipes (defensive)
+        const activeIds = new Set(menuResult.activeRecipeIds);
         const swapPool = menuResult.swapPoolRecipeIds
+          .filter(id => !activeIds.has(id)) // Remove duplicates
           .map(id => recipeMap.get(id))
           .filter(Boolean);
+
+        if (swapPool.length < menuResult.swapPoolRecipeIds.length) {
+          logger.warn('Removed duplicate recipes from swap pool', {
+            originalPoolSize: menuResult.swapPoolRecipeIds.length,
+            cleanedPoolSize: swapPool.length,
+            duplicatesRemoved: menuResult.swapPoolRecipeIds.length - swapPool.length
+          });
+        }
 
         // Extract all unique ingredient canonical IDs
         const ingredientIds = new Set<string>();

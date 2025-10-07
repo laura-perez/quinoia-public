@@ -37,6 +37,7 @@ export interface CreateMenuResultInput {
 
 export interface UpdateMenuSwapInput {
   activeRecipeIds: string[];
+  swapPoolRecipeIds: string[];
   swapsCount: number;
 }
 
@@ -138,6 +139,7 @@ export class MenuResultsRepository {
       .from('menuResult')
       .update({
         activeRecipeIds: input.activeRecipeIds,
+        swapPoolRecipeIds: input.swapPoolRecipeIds,
         swapsCount: input.swapsCount,
         updatedAt: new Date().toISOString(),
       })
@@ -153,7 +155,8 @@ export class MenuResultsRepository {
 
     this.logger.info('Menu swap updated successfully', {
       id,
-      swapsCount: input.swapsCount
+      swapsCount: input.swapsCount,
+      poolSize: input.swapPoolRecipeIds.length
     });
   }
 

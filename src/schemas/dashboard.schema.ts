@@ -32,6 +32,9 @@ export const updateMenuSwapSchema = z.object({
     .array(z.string().uuid('ID de recette invalide'))
     .min(1, 'Au moins une recette active requise')
     .max(7, 'Maximum 7 recettes actives'),
+  swapPoolRecipeIds: z
+    .array(z.string().uuid('ID de recette invalide'))
+    .max(10, 'Maximum 10 recettes dans le pool'),
   swapsCount: z
     .number()
     .int()

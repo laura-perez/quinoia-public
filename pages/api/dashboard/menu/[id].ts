@@ -58,7 +58,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
     return res.status(400).json({ errors: formatZodErrors(parsed.error) });
   }
 
-  const { activeRecipeIds, swapsCount } = parsed.data;
+  const { activeRecipeIds, swapPoolRecipeIds, swapsCount } = parsed.data;
 
   try {
     // Verify menu exists and ownership
@@ -114,6 +114,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
     // Update menu (simple persistence, no server-side recalculation)
     await menuResultsRepository.updateSwap(menuId, {
       activeRecipeIds,
+      swapPoolRecipeIds,
       swapsCount
     });
 

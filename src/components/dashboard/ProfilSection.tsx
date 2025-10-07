@@ -38,10 +38,7 @@ export function ProfilSection({
   return (
     <div className="px-4 py-6">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-[#414535]">
-          Salut {user.firstName || 'toi'} ⚙️
-        </h2>
-        <p className="text-[#8A8A8A] mt-1">{user.email}</p>
+        <p className="text-[#8A8A8A] mt-1">{user.firstName || 'toi'} - {user.email}</p>
       </div>
 
       {/* Sub-tabs */}

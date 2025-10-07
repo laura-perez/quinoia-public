@@ -35,6 +35,8 @@ export interface UseMenuSwapReturn {
   swapPool: Recipe[];
   swapsCount: number;
   swapRecipe: (recipeToRemove: Recipe, recipeToAdd: Recipe) => void;
+  removeRecipe: (recipe: Recipe) => void;
+  addRecipe: () => void;
   isSwapping: boolean;
   isSaving: boolean;
   error: string | null;
@@ -66,75 +68,20 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pendingSaveRef = useRef<{
     activeRecipeIds: string[];
+    swapPoolRecipeIds: string[];
     swapsCount: number;
   } | null>(null);
-
-  /**
-   * Swap recipe - INSTANT update (0ms latency)
-   * Database save happens asynchronously with debounce
-   */
-  const swapRecipe = useCallback(
-    (recipeToRemove: Recipe, recipeToAdd: Recipe) => {
-      setIsSwapping(true);
-      setError(null);
-
-      try {
-        // INSTANT state update (frontend-first)
-        setActiveRecipes((prev) => {
-          const index = prev.findIndex((r) => r.id === recipeToRemove.id);
-          if (index === -1) return prev;
-
-          const updated = [...prev];
-          updated[index] = recipeToAdd;
-          return updated;
-        });
-
-        // Move swapped-out recipe to pool, remove swapped-in recipe from pool
-        setSwapPool((prev) => {
-          const filtered = prev.filter((r) => r.id !== recipeToAdd.id);
-          return [recipeToRemove, ...filtered];
-        });
-
-        // Increment swaps count
-        setSwapsCount((prev) => prev + 1);
-
-        // Schedule debounced save
-        scheduleDebouncedSave();
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Erreur lors du swap';
-        setError(errorMessage);
-        if (onError) onError(errorMessage);
-      } finally {
-        setIsSwapping(false);
-      }
-    },
-    [onError]
-  );
-
-  /**
-   * Schedule debounced save to database
-   * Cancels previous pending save and restarts timer
-   */
-  const scheduleDebouncedSave = useCallback(() => {
-    // Cancel previous timeout
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-
-    // Schedule new save
-    saveTimeoutRef.current = setTimeout(() => {
-      saveToDatabase();
-    }, DEBOUNCE_DELAY_MS);
-  }, []);
 
   /**
    * Save current state to database (debounced)
    */
   const saveToDatabase = useCallback(async () => {
     const activeRecipeIds = activeRecipes.map((r) => r.id);
+    const swapPoolRecipeIds = swapPool.map((r) => r.id);
 
     pendingSaveRef.current = {
       activeRecipeIds,
+      swapPoolRecipeIds,
       swapsCount,
     };
 
@@ -146,6 +93,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           activeRecipeIds,
+          swapPoolRecipeIds,
           swapsCount,
         }),
       });
@@ -175,7 +123,137 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     } finally {
       setIsSaving(false);
     }
-  }, [activeRecipes, swapsCount, menuId, onQuotaExceeded, onError]);
+  }, [activeRecipes, swapPool, swapsCount, menuId, onQuotaExceeded, onError]);
+
+  /**
+   * Schedule debounced save to database
+   * Cancels previous pending save and restarts timer
+   */
+  const scheduleDebouncedSave = useCallback(() => {
+    // Cancel previous timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    // Schedule new save
+    saveTimeoutRef.current = setTimeout(() => {
+      saveToDatabase();
+    }, DEBOUNCE_DELAY_MS);
+  }, [saveToDatabase]);
+
+  /**
+   * Swap recipe - INSTANT update (0ms latency)
+   * Database save happens asynchronously with debounce
+   */
+  const swapRecipe = useCallback(
+    (recipeToRemove: Recipe, recipeToAdd: Recipe) => {
+      setIsSwapping(true);
+      setError(null);
+
+      try {
+        // Prevent swapping to a recipe already in activeRecipes
+        const isAlreadyActive = activeRecipes.some((r) => r.id === recipeToAdd.id);
+
+        if (isAlreadyActive) {
+          setError('Cette recette est déjà dans ton menu');
+          if (onError) onError('Cette recette est déjà dans ton menu');
+          setIsSwapping(false);
+          return;
+        }
+
+        // INSTANT state update (frontend-first)
+        setActiveRecipes((prev) => {
+          const index = prev.findIndex((r) => r.id === recipeToRemove.id);
+          if (index === -1) return prev;
+
+          const updated = [...prev];
+          updated[index] = recipeToAdd;
+          return updated;
+        });
+
+        // Move swapped-out recipe to pool (at the end - FIFO queue), remove swapped-in recipe from pool
+        setSwapPool((prev) => {
+          const filtered = prev.filter((r) => r.id !== recipeToAdd.id);
+          return [...filtered, recipeToRemove];
+        });
+
+        // Increment swaps count
+        setSwapsCount((prev) => prev + 1);
+
+        // Schedule debounced save
+        scheduleDebouncedSave();
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Erreur lors du swap';
+        setError(errorMessage);
+        if (onError) onError(errorMessage);
+      } finally {
+        setIsSwapping(false);
+      }
+    },
+    [activeRecipes, onError, scheduleDebouncedSave]
+  );
+
+  /**
+   * Remove recipe from menu - does NOT add to swap pool
+   */
+  const removeRecipe = useCallback(
+    (recipe: Recipe) => {
+      setIsSwapping(true);
+      setError(null);
+
+      try {
+        // Remove recipe from active recipes
+        setActiveRecipes((prev) => {
+          const filtered = prev.filter((r) => r.id !== recipe.id);
+          return filtered;
+        });
+
+        // Schedule debounced save
+        scheduleDebouncedSave();
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Erreur lors de la suppression';
+        setError(errorMessage);
+        if (onError) onError(errorMessage);
+      } finally {
+        setIsSwapping(false);
+      }
+    },
+    [onError, scheduleDebouncedSave]
+  );
+
+  /**
+   * Add recipe from swap pool to active recipes
+   */
+  const addRecipe = useCallback(() => {
+    setIsSwapping(true);
+    setError(null);
+
+    try {
+      if (swapPool.length === 0) {
+        setError('Aucune recette disponible dans le pool');
+        if (onError) onError('Aucune recette disponible dans le pool');
+        setIsSwapping(false);
+        return;
+      }
+
+      const recipeToAdd = swapPool[0];
+
+      // Add recipe to active recipes
+      setActiveRecipes((prev) => [...prev, recipeToAdd]);
+
+      // Remove from swap pool
+      setSwapPool((prev) => prev.slice(1));
+
+      // Schedule debounced save
+      scheduleDebouncedSave();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Erreur lors de l'ajout";
+      setError(errorMessage);
+      if (onError) onError(errorMessage);
+    } finally {
+      setIsSwapping(false);
+    }
+  }, [swapPool, onError, scheduleDebouncedSave]);
 
   /**
    * Refetch swap pool (premium only)
@@ -250,6 +328,8 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     swapPool,
     swapsCount,
     swapRecipe,
+    removeRecipe,
+    addRecipe,
     isSwapping,
     isSaving,
     error,
