@@ -3,6 +3,7 @@
 Ce document synthétise le scan complet du code lié au dashboard, à l'auth, aux quotas, à la génération de menus et aux services Supabase. Il recense les endpoints, les modèles de données, les composants front, les middlewares et décrit les user flows principaux avec diagrammes.
 
 ## Fichiers et zones scannés
+
 - Pages / API (Next.js pages/api)
   - `pages/api/dashboard/generate-menu.ts`
   - `pages/api/dashboard/menu/[id].ts`
@@ -30,6 +31,7 @@ Ce document synthétise le scan complet du code lié au dashboard, à l'auth, au
   - `package.json`, test suites (`vitest`), MSW handlers
 
 ## Objectifs du scan
+
 - Documenter les user flows (login -> onboarding -> generate -> swap -> share -> history)
 - Lister endpoints API et data shapes attendues
 - Repérer les règles freemium / quotas et points critiques
@@ -164,6 +166,7 @@ Fichier principal: `src/lib/recipes/recipeSelector.ts`
 - Sortie: RecipeSelectionResult { selectedRecipes, scoringDetails, nutritionSummary }
 
 Points d'optimisation déjà présents:
+
 - Requêtes parallèles (recency + base recipes)
 - In-memory filters avec Set (O(1) includes)
 
@@ -271,6 +274,7 @@ flowchart TD
 ---
 
 ## Fichiers à consulter pour chaque responsabilité
+
 - Auth: `src/lib/auth/*` + `pages/api/auth/*` + `src/lib/supabase/repositories/magicLinks.ts`
 - Menu persistence: `src/lib/supabase/repositories/menuResults.ts` + `src/lib/supabase/menuResults.ts`
 - Recipe selection: `src/lib/recipes/recipeSelector.ts` + `src/lib/supabase/repositories/recipes.ts`
@@ -280,11 +284,13 @@ flowchart TD
 ---
 
 ## Prochaine étape proposée (je peux lancer immédiatement)
+
 1. Générer un diagramme plus complet (PlantUML / mermaid) exportable si tu veux l'intégrer à Confluence/Notion.
 2. Produire une checklist de tickets prioritaires (ex: tests `generate-menu`, fix RLS, swap quota UI tweaks).
 3. Implémenter la première fonctionnalité que tu me commanderas via ton prompt (ex: augmenter poolSize pour premium, changer swap limit, améliorer UI swap flow).
 
 Dis‑moi quelle prochaine action tu veux que je fasse maintenant :
+
 - Je rédige la checklist de tâches priorisées (tickets) ; ou
 - Je commence par écrire les tests d'intégration pour `generate-menu` et `PATCH /api/dashboard/menu/[id]`; ou
 - Je commence une PR qui ajoute un affichage clair du quota swap restant dans le `MenuSection`.
