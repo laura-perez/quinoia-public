@@ -24,3 +24,4 @@ export { default as SubscribeForm } from './SubscribeForm';
 
 // Navigation
 export { default as NavLink } from './NavLink';
+export { default as DashboardNavbar } from './DashboardNavbar';

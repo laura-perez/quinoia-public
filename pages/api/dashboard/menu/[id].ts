@@ -10,6 +10,7 @@ import { setZodErrorMapFR, formatZodErrors } from '@/schemas/zodErrorMap.fr';
 import { updateMenuSwapSchema } from '@/schemas/dashboard.schema';
 import { createLogger } from '@/lib/logger';
 import { withAuth } from '@/middleware/withAuth';
+import { getServiceClient } from '@/lib/supabase/client';
 import { menuResultsRepository } from '@/lib/supabase/repositories/menuResults';
 import { checkUserQuota, isPremiumUser } from '@/lib/quotas/checker';
 
@@ -112,22 +113,16 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
     });
 
     // Update menu (simple persistence, no server-side recalculation)
+    // Persist via repository (no RPC)
     await menuResultsRepository.updateSwap(menuId, {
       activeRecipeIds,
       swapPoolRecipeIds,
-      swapsCount
+      swapsCount,
     });
 
-    logger.info('Menu updated successfully', {
-      menuId,
-      userId,
-      swapsCount
-    });
+    logger.info('Menu updated successfully', { menuId, userId, swapsCount });
 
-    return res.status(200).json({
-      success: true,
-      message: 'Menu mis à jour'
-    });
+    return res.status(200).json({ success: true, message: 'Menu mis à jour' });
 
   } catch (error) {
     logger.error('Error updating menu', {

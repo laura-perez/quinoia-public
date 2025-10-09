@@ -183,25 +183,38 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
     // Generate share ID
     const shareId = generateShareId();
 
-    // Create menu result in database
-    const menuResult = await menuResultsRepository.create({
-      submissionId: existingSubmission.id,
-      userId,
-      resultBundle: {
-        recipes: selectedRecipes,
-        nutritionSummary: selectionResult.nutritionSummary
-      },
-      numRecipes,
-      numServings,
-      shareId,
-      activeRecipeIds: activeRecipes.map(r => r.id),
-      swapPoolRecipeIds: swapPool.map(r => r.id),
-    });
+    // Create menu result in database via repository (unique index on userId+weekStart enforces one-per-week)
+    let menuResult;
+    try {
+      menuResult = await menuResultsRepository.create({
+        submissionId: existingSubmission.id,
+        userId,
+        resultBundle: {
+          recipes: selectedRecipes,
+          nutritionSummary: selectionResult.nutritionSummary,
+        },
+        numRecipes,
+        numServings,
+        shareId,
+        activeRecipeIds: activeRecipes.map(r => r.id),
+        swapPoolRecipeIds: swapPool.map(r => r.id),
+      });
 
-    logger.info('Menu result created', {
-      menuResultId: menuResult.id,
-      shareId
-    });
+      logger.info('Menu result created', {
+        menuResultId: menuResult.id,
+        shareId,
+      });
+    } catch (createErr: any) {
+      // Detect unique constraint violation (attempt to create second menu in the same week)
+      const msg = createErr?.message || String(createErr);
+      logger.warn('Menu result creation failed', { error: msg, userId });
+
+      if (msg.includes('duplicate key value') || msg.includes('idx_menu_result_user_week')) {
+        return res.status(403).json({ error: 'Quota dépassé', message: 'Tu as déjà généré un menu cette semaine' });
+      }
+
+      return res.status(500).json({ error: 'Erreur création menu', message: msg });
+    }
 
     // Update user's lastMenuResultId and lastSubmissionAt
     await usersRepository.updateLastSubmission(userId, menuResult.id);

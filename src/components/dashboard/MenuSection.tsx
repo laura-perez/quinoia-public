@@ -90,10 +90,19 @@ export function MenuSection({
   const canAddRecipe = isPremium || activeRecipes.length < 3;
   const maxRecipesReached = !canAddRecipe;
 
+  // swapRemaining for free users (0 or 1)
+  const swapRemaining = isPremium ? null : Math.max(0, (swapQuota.limit || 1) - swapQuota.used);
+
   const handleSwap = (recipe: any) => {
     if (!canSwap) {
       onSwapQuotaExceeded();
       return;
+    }
+
+    // If free user and this swap will consume the last swap, ask confirmation
+    if (!isPremium && swapRemaining === 1) {
+      const confirmed = window.confirm("Ce swap consommera ton seul swap gratuit de la semaine. Continuer ?");
+      if (!confirmed) return;
     }
 
     if (swapPool.length > 0) {

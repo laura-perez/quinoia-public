@@ -16,9 +16,10 @@ export async function upsertUserAndSubmission({
   const logger = createLogger();
   logger.info('Starting database upsert', { email: redact(email) });
   
-  // Upsert user (by email and firstName)
+  // Normalize email and upsert user (by email and firstName)
+  const normalizedEmail = (email || '').toLowerCase().trim();
   const user = await usersRepository.upsert({
-    email,
+    email: normalizedEmail,
     firstName: normalizedInput.firstName
   });
   

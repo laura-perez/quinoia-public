@@ -7,7 +7,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Navbar } from '@/components/ui';
+import { Navbar, DashboardNavbar } from '@/components/ui';
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { MenuSection } from '@/components/dashboard/MenuSection';
 import { HistoriqueSection } from '@/components/dashboard/HistoriqueSection';
@@ -231,7 +231,7 @@ export default function Dashboard() {
         <meta name="description" content="Ton espace Quinoïa" />
       </Head>
 
-      <Navbar
+      <DashboardNavbar
         statusBadge={
           <div className="flex items-center gap-3">
             {!isPremium && (
