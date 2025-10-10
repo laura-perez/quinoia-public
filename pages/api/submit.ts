@@ -6,6 +6,7 @@ import { normalizedInputSchema } from '@/schemas/normalizedInput.schema'
 import { verifyAndExtractRecaptcha } from '@/lib/auth'
 import { detectClientIP } from '@/lib/auth'
 import { upsertUserAndSubmission, usersRepository } from '@/lib/supabase'
+import { USER_STATUS } from '@/lib/supabase/types/user.types'
 import { saveMenuResult } from '@/lib/supabase/menuResults'
 import { createLogger, redact } from '@/lib/logger'
 import { selectRecipes } from '@/lib/recipes/recipeSelector'
@@ -156,7 +157,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!existingUser) {
     try {
       const normalizedEmail = (norm.data.email || '').toLowerCase().trim()
-      const user = await usersRepository.upsert({ email: normalizedEmail, firstName: norm.data.firstName || undefined, status: 'trial_available' })
+  const user = await usersRepository.upsert({ email: normalizedEmail, firstName: norm.data.firstName || undefined, status: USER_STATUS.TRIAL_AVAILABLE })
       const submission = await upsertUserAndSubmission({ email: normalizedEmail, normalizedInput: norm.data, recaptchaMeta, rawFormData: parsed.data.form })
       submissionIdGlobal = submission.submissionId
 
@@ -175,15 +176,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Existing user flows
   const status = existingUser.status
-  if (status === 'paid_active') {
+  if (status === USER_STATUS.PAID_ACTIVE) {
     return res.status(403).json({ error: 'Account exists', redirectTo: '/dashboard' })
   }
 
-  if (status === 'trial_used' || status === 'paid_expired') {
+  if (status === USER_STATUS.TRIAL_USED || status === USER_STATUS.PAID_EXPIRED) {
     return res.status(403).json({ error: 'Essai déjà utilisé', redirectTo: `/tarifs?reason=trial-expired` })
   }
 
-  if (status === 'trial_available') {
+  if (status === USER_STATUS.TRIAL_AVAILABLE) {
     // Allow generation for existing trial_available user
     try {
       const normalizedEmail = (norm.data.email || '').toLowerCase().trim()

@@ -7,6 +7,7 @@ import { buffer } from 'micro';
 import Stripe from 'stripe';
 import { verifyWebhookSignature, stripe } from '@/lib/stripe';
 import { createSupabaseServiceClient } from '@/lib/supabase/service';
+import { USER_STATUS } from '@/lib/supabase/types/user.types'
 import { createLogger } from '@/lib/logger';
 
 const logger = createLogger();
@@ -132,7 +133,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       .from('user')
       .upsert({
         email: session.customer_email,
-        status: 'paid_active' as const,
+  status: USER_STATUS.PAID_ACTIVE,
         subscriptionType,
         stripeCustomerId: session.customer as string,
         stripeSubscriptionId: subscriptionId,
@@ -211,7 +212,7 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
       .from('user')
       .upsert({
         email: invoice.customer_email,
-        status: 'paid_active' as const,
+  status: USER_STATUS.PAID_ACTIVE,
         subscriptionType,
         stripeCustomerId: invoice.customer as string,
         stripeSubscriptionId: subscriptionId,
@@ -265,7 +266,7 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
     await supabase
       .from('user')
       .update({
-        status: 'paid_expired',
+        status: USER_STATUS.PAID_EXPIRED,
         updatedAt: new Date().toISOString(),
       })
       .eq('stripeCustomerId', invoice.customer as string);
@@ -297,7 +298,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
     await supabase
       .from('user')
       .update({
-        status: 'trial_used',
+        status: USER_STATUS.TRIAL_USED,
         subscriptionType: null,
         stripeSubscriptionId: null,
         stripePriceId: null,

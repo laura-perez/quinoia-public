@@ -1,6 +1,7 @@
 import { getServiceClient } from "../client";
 import { createLogger, redact } from "../../logger";
 import { TABLE_NAMES } from "../constants";
+import { USER_STATUS } from '../types/user.types';
 import type { User, CreateUserInput, UpsertUserInput } from "../types";
 
 /**
@@ -201,7 +202,7 @@ export class UsersRepository {
     const { error } = await this.client
       .from(TABLE_NAMES.USERS)
       .update({
-        status: 'trial_used',
+        status: USER_STATUS.TRIAL_USED,
         hasUsedTrial: true
       })
       .eq("id", userId);

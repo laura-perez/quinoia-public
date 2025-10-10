@@ -4,6 +4,7 @@
  */
 
 import { getServiceClient } from '../supabase/client';
+import { USER_STATUS, type UserStatus } from '../supabase/types/user.types';
 import { createLogger } from '../logger';
 
 const logger = createLogger();
@@ -11,7 +12,7 @@ const logger = createLogger();
 export interface QuotaStatus {
   userId: string;
   email?: string;
-  status: 'trial_available' | 'trial_used' | 'paid_active' | 'paid_expired' | string;
+  status: UserStatus | string;
   lastMenuGeneratedAt: Date | null;
   menusGeneratedThisWindow: number;
   swapsUsedThisMenu: number;
@@ -66,7 +67,7 @@ export async function checkUserQuota(
   const quotaStatus: QuotaStatus = {
     userId,
     email: user?.email,
-    status: user?.status || 'trial_available',
+  status: user?.status || USER_STATUS.TRIAL_AVAILABLE,
     lastMenuGeneratedAt: null,
     menusGeneratedThisWindow: 0,
     swapsUsedThisMenu: 0,
@@ -77,7 +78,7 @@ export async function checkUserQuota(
   };
 
   // Premium users -> unlimited
-  if (quotaStatus.status === 'paid_active') {
+  if (quotaStatus.status === USER_STATUS.PAID_ACTIVE) {
     logger.info('User is premium - unlimited quotas', { userId });
     // Use null to indicate unlimited
     return {
@@ -194,7 +195,7 @@ export async function checkUserQuota(
  * Check if user is premium (has unlimited quotas)
  */
 export function isPremiumUser(quotaStatus: QuotaStatus): boolean {
-  return quotaStatus.status === 'paid_active';
+  return quotaStatus.status === USER_STATUS.PAID_ACTIVE;
 }
 
 /**

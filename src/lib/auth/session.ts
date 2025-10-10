@@ -6,6 +6,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { generateSessionToken, getSessionExpiration, isTokenExpired } from './tokens';
 import { sessionsRepository } from '../supabase/repositories/sessions';
+import { USER_STATUS, type UserStatus } from '../supabase/types/user.types';
 import { createLogger } from '../logger';
 
 const logger = createLogger();
@@ -17,7 +18,7 @@ export interface SessionUser {
   id: string;
   email: string;
   firstName: string | null;
-  status: 'trial_available' | 'trial_used' | 'paid_active' | 'paid_expired';
+  status: UserStatus | string;
   isFirstLogin: boolean;
   lastLoginAt: Date | null;
 }

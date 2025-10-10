@@ -1,5 +1,6 @@
 import { getServiceClient } from "../client";
 import { createLogger } from "../../logger";
+import type { UserStatus } from '../types/user.types';
 
 export interface UserSession {
   id: string;
@@ -14,7 +15,7 @@ export interface UserSession {
   user: {
     email: string;
     firstName: string | null;
-    status: 'trial_available' | 'trial_used' | 'paid_active' | 'paid_expired';
+  status: UserStatus;
     isFirstLogin: boolean;
     lastLoginAt: Date | null;
   };

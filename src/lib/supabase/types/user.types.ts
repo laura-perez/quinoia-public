@@ -1,7 +1,15 @@
 /**
  * Database types for the User table
  */
-export type UserStatus = 'trial_available' | 'trial_used' | 'paid_active' | 'paid_expired';
+export const USER_STATUS = {
+  TRIAL_AVAILABLE: 'trial_available',
+  TRIAL_USED: 'trial_used',
+  PAID_ACTIVE: 'paid_active',
+  PAID_EXPIRED: 'paid_expired',
+  FREE: 'free',
+} as const;
+
+export type UserStatus = typeof USER_STATUS[keyof typeof USER_STATUS];
 export type SubscriptionType = 'monthly' | 'yearly';
 
 export interface User {

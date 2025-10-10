@@ -8,6 +8,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Navbar, DashboardNavbar } from '@/components/ui';
+import { USER_STATUS } from '@/lib/supabase/types/user.types';
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout';
 import { MenuSection } from '@/components/dashboard/MenuSection';
 import { HistoriqueSection } from '@/components/dashboard/HistoriqueSection';
@@ -202,7 +203,7 @@ export default function Dashboard() {
   }
 
   const { user, quotas, currentMenu, ingredientsCatalog } = dashboardData || {};
-  const isPremium = user?.status === 'paid_active';
+  const isPremium = user?.status === USER_STATUS.PAID_ACTIVE;
 
   // Mock historique data (will be fetched from API later)
   const historique = [

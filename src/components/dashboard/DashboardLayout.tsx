@@ -5,6 +5,7 @@
  */
 
 import React, { useState } from 'react';
+import { USER_STATUS } from '@/lib/supabase/types/user.types';
 import { Home, History, User } from 'lucide-react';
 
 interface DashboardLayoutProps {
@@ -18,7 +19,7 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children, userStatus, swapQuota, onUpgrade, activeTab, setActiveTab }: DashboardLayoutProps) {
 
-  const isPremium = userStatus === 'paid_active';
+  const isPremium = userStatus === USER_STATUS.PAID_ACTIVE;
 
   const tabs = [
     { id: 'menu', label: 'Menu', icon: Home },

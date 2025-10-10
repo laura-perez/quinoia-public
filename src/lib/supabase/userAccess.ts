@@ -1,4 +1,5 @@
 import type { User, UserStatus } from './types/user.types';
+import { USER_STATUS } from './types/user.types';
 import { createLogger } from '../logger';
 
 /**
@@ -34,14 +35,14 @@ export function checkUserAccess(user: User): AccessCheckResult {
   });
 
   switch (user.status) {
-    case 'trial_available':
+    case USER_STATUS.TRIAL_AVAILABLE:
       logger.info('User can use trial', { userId: user.id });
       return {
         canAccess: true,
         nextAction: 'allow_generation'
       };
 
-    case 'trial_used':
+    case USER_STATUS.TRIAL_USED:
       logger.info('User trial expired, needs payment', { userId: user.id });
       return {
         canAccess: false,
@@ -49,7 +50,7 @@ export function checkUserAccess(user: User): AccessCheckResult {
         nextAction: 'redirect_to_payment'
       };
 
-    case 'paid_active':
+    case USER_STATUS.PAID_ACTIVE:
       if (!user.paidUntil) {
         logger.warn('Paid user without paidUntil date', { userId: user.id });
         return {
@@ -83,7 +84,7 @@ export function checkUserAccess(user: User): AccessCheckResult {
         };
       }
 
-    case 'paid_expired':
+    case USER_STATUS.PAID_EXPIRED:
       logger.info('User subscription expired', { userId: user.id });
       return {
         canAccess: false,
@@ -122,7 +123,7 @@ export function getUserPricingInfo(user: User): UserPricingInfo {
  * Check if user status should be updated (e.g., paid_active -> paid_expired)
  */
 export function shouldUpdateUserStatus(user: User): { needsUpdate: boolean; newStatus?: UserStatus } {
-  if (user.status === 'paid_active' && user.paidUntil) {
+  if (user.status === USER_STATUS.PAID_ACTIVE && user.paidUntil) {
     const paidUntilDate = new Date(user.paidUntil);
     const now = new Date();
 

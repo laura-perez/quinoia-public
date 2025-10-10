@@ -3,6 +3,7 @@
  */
 
 import React, { useState } from 'react';
+import { USER_STATUS } from '@/lib/supabase/types/user.types';
 import { Settings, Bell, CreditCard, User } from 'lucide-react';
 
 interface ProfilSectionProps {
@@ -26,7 +27,7 @@ export function ProfilSection({
 }: ProfilSectionProps) {
   const [activeSubTab, setActiveSubTab] = useState('preferences');
 
-  const isPremium = user.status === 'paid_active';
+  const isPremium = user.status === USER_STATUS.PAID_ACTIVE;
 
   const subTabs = [
     { id: 'preferences', label: 'Préférences', icon: Settings },

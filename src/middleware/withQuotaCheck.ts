@@ -5,6 +5,7 @@
 
 import { NextApiRequest, NextApiResponse } from 'next';
 import { checkUserQuota, getQuotaMessage } from '@/lib/quotas/checker';
+import { USER_STATUS } from '@/lib/supabase/types/user.types';
 import { createLogger } from '@/lib/logger';
 
 const logger = createLogger();
@@ -53,7 +54,7 @@ export function withQuotaCheck(quotaType: QuotaType) {
               remaining: quotaResult.remaining,
               nextReset: quotaResult.nextReset,
               daysUntilReset: quotaResult.daysUntilReset,
-              isPremium: quotaResult.quotaStatus.status === 'paid_active'
+              isPremium: quotaResult.quotaStatus.status === USER_STATUS.PAID_ACTIVE
             }
           });
         }
