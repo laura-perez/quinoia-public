@@ -8,7 +8,7 @@
  * 4. User clicks link in email → /api/auth/verify-magic-link → redirect to dashboard
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -23,6 +23,29 @@ function LoginPageContent() {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [validationError, setValidationError] = useState('');
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
+  // Check if user is already authenticated on mount
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      try {
+        const response = await fetch('/api/dashboard/status');
+
+        // If the response is OK, user is authenticated - redirect to dashboard
+        if (response.ok) {
+          router.push('/dashboard');
+          return;
+        }
+      } catch (error) {
+        // If there's an error, user is not authenticated - continue with login
+        console.log('User not authenticated');
+      } finally {
+        setIsCheckingAuth(false);
+      }
+    };
+
+    checkAuthentication();
+  }, [router]);
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -95,6 +118,24 @@ function LoginPageContent() {
       setErrorMessage('Lien expiré. Demande un nouveau lien.');
     }
   }, [router.query.error]);
+
+  // Show loading state while checking authentication
+  if (isCheckingAuth) {
+    return (
+      <>
+        <Head>
+          <title>Connexion - Quinoïa</title>
+        </Head>
+        <Navbar />
+        <div className="min-h-screen bg-[#FFFDF8] flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-[#F4C95D] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-[#8A8A8A]">Vérification...</p>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "../src/components/ui/Navbar";
 import Step1 from "../src/components/form/Step1";
@@ -14,17 +15,45 @@ const steps = [
 ];
 
 export default function Formulaire() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({});
   const [email, setEmail] = useState("");
+  const [isCheckingStatus, setIsCheckingStatus] = useState(true);
 
   useEffect(() => {
-    const storedEmail = sessionStorage.getItem("quinoia_email");
-    if (storedEmail) {
-      setEmail(storedEmail);
-      setFormData((prev) => ({ ...prev, email: storedEmail }));
-    }
-  }, []);
+    const checkUserStatus = async () => {
+      const storedEmail = sessionStorage.getItem("quinoia_email");
+      if (storedEmail) {
+        setEmail(storedEmail);
+        setFormData((prev) => ({ ...prev, email: storedEmail }));
+
+        // Check user status in database
+        try {
+          const response = await fetch('/api/user/check-status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: storedEmail }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+
+            // If user exists and status is NOT trial_available, redirect to login
+            if (data.exists && data.status !== 'trial_available') {
+              router.push('/login');
+              return;
+            }
+          }
+        } catch (error) {
+          console.error('Error checking user status:', error);
+        }
+      }
+      setIsCheckingStatus(false);
+    };
+
+    checkUserStatus();
+  }, [router]);
 
   const goToNext = () => {
     if (currentStep < steps.length - 1) setCurrentStep((prev) => prev + 1);
@@ -39,6 +68,22 @@ export default function Formulaire() {
   };
 
   const CurrentComponent = steps[currentStep].component;
+
+  // Show loading state while checking user status
+  if (isCheckingStatus) {
+    return (
+      <>
+        <Navbar />
+        <main className="min-h-screen bg-[#FDFBF8] px-4 py-6 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-[#F4C95D] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-[#8A8A8A]">Vérification en cours...</p>
+          </div>
+        </main>
+      </>
+    );
+  }
+
   return (
     <>
       <Navbar />
