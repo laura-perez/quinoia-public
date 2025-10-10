@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getUserByEmail } from '@/lib/supabase/repositories/users';
+import { usersRepository } from '@/lib/supabase/repositories/users';
 
 /**
  * API endpoint to check user status by email
@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    const user = await getUserByEmail(email);
+    const user = await usersRepository.findByEmail(email);
 
     if (!user) {
       return res.status(200).json({ exists: false, status: null });
