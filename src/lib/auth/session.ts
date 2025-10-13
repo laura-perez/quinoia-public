@@ -19,6 +19,7 @@ export interface SessionUser {
   email: string;
   firstName: string | null;
   status: UserStatus | string;
+  lastMenuResultId?: string | null;
   isFirstLogin: boolean;
   lastLoginAt: Date | null;
 }

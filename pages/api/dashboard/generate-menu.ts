@@ -10,11 +10,13 @@ import { setZodErrorMapFR, formatZodErrors } from '@/schemas/zodErrorMap.fr';
 import { generateMenuSchema } from '@/schemas/dashboard.schema';
 import { createLogger } from '@/lib/logger';
 import { withAuthAndQuota } from '@/middleware/withQuotaCheck';
+import type { SessionUser } from '@/lib/auth/session';
 import { usersRepository } from '@/lib/supabase/repositories/users';
 import { menuResultsRepository } from '@/lib/supabase/repositories/menuResults';
 import { selectRecipes } from '@/lib/recipes/recipeSelector';
 import { getCanonicalIngredientsByIds } from '@/lib/supabase/repositories/ingredients';
-import { checkUserQuota, isPremiumUser } from '@/lib/quotas/checker';
+import { checkUserQuota } from '@/lib/quotas/checker';
+import { USER_STATUS } from '@/lib/supabase/types/user.types';
 import { getServiceClient } from '@/lib/supabase/client';
 import { randomBytes } from 'crypto';
 import type { SelectionContext } from '@/types/recipes';
@@ -30,7 +32,7 @@ function generateShareId(): string {
     .replace(/=/g, '');
 }
 
-async function handler(req: NextApiRequest, res: NextApiResponse, userId: string) {
+async function handler(req: NextApiRequest, res: NextApiResponse, userId: string, sessionUser: SessionUser) {
   const logger = createLogger();
   const supabase = getServiceClient();
 
@@ -69,13 +71,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
   const { numRecipes, numServings } = parsed.data;
 
   try {
-    // Get user to check status
-    const user = await usersRepository.findById(userId);
-
-    if (!user) {
-      logger.error('User not found', { userId });
-      return res.status(404).json({ error: 'Utilisateur non trouvé' });
-    }
+    // User already provided by withAuth middleware
+    const user = sessionUser;
 
     // Check if user has completed onboarding (has a submission)
     const { data: existingSubmission } = await supabase
@@ -100,9 +97,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       diet: existingSubmission.diet
     });
 
-    // Check quota status
-    const quotaResult = await checkUserQuota(userId, 'menu');
-    const premium = isPremiumUser(quotaResult.quotaStatus);
+    // Check quota status (already checked by withAuthAndQuota, but re-check for logging)
+    const quotaResult = await checkUserQuota(userId, user, 'menu');
+    const premium = user.status === USER_STATUS.PAID_ACTIVE;
 
     logger.info('User quota checked', {
       userId,
@@ -225,7 +222,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
     });
 
     // Get updated quotas
-    const updatedQuota = await checkUserQuota(userId, 'menu');
+    const updatedQuota = await checkUserQuota(userId, user, 'menu');
 
     // Build response
     const response = {

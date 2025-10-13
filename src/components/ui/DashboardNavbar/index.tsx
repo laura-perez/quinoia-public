@@ -14,7 +14,7 @@ export default function DashboardNavbar({ statusBadge, userAvatar = null }: Prop
       id="navbar-dashboard"
     >
       <nav className="custom-screen py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/dashboard" className="flex items-center gap-2">
           <Brand />
         </Link>
 

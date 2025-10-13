@@ -10,15 +10,17 @@ import { setZodErrorMapFR, formatZodErrors } from '@/schemas/zodErrorMap.fr';
 import { refetchPoolSchema } from '@/schemas/dashboard.schema';
 import { createLogger } from '@/lib/logger';
 import { withAuth } from '@/middleware/withAuth';
+import type { SessionUser } from '@/lib/auth/session';
 import { menuResultsRepository } from '@/lib/supabase/repositories/menuResults';
+import { usersRepository } from '@/lib/supabase/repositories/users';
 import { selectRecipes } from '@/lib/recipes/recipeSelector';
 import { checkUserQuota, isPremiumUser } from '@/lib/quotas/checker';
 import type { SelectionContext } from '@/types/recipes';
-import { usersRepository } from '@/lib/supabase/repositories/users';
+import { USER_STATUS } from '@/lib/supabase/types/user.types';
 
 setZodErrorMapFR();
 
-async function handler(req: NextApiRequest, res: NextApiResponse, userId: string) {
+async function handler(req: NextApiRequest, res: NextApiResponse, userId: string, sessionUser: SessionUser) {
   const logger = createLogger();
 
   logger.info('Refetch pool request started', {
@@ -80,8 +82,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
 
     logger.debug('Menu ownership verified', { menuId, userId });
 
-    // Check if user is premium
-    const quotaResult = await checkUserQuota(userId, 'menu');
+  // Check if user is premium
+  const quotaResult = await checkUserQuota(userId, sessionUser, 'menu');
     const premium = isPremiumUser(quotaResult.quotaStatus);
 
     if (!premium) {

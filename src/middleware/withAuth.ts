@@ -1,10 +1,10 @@
 /**
  * Authentication middleware for API routes
- * Verifies session and injects userId into handler
+ * Verifies session and injects userId and sessionUser into handler
  */
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import { validateSession, getSessionToken } from '@/lib/auth/session';
+import { validateSession, getSessionToken, type SessionUser } from '@/lib/auth/session';
 import { createLogger } from '@/lib/logger';
 
 const logger = createLogger();
@@ -12,12 +12,13 @@ const logger = createLogger();
 export type AuthenticatedHandler = (
   req: NextApiRequest,
   res: NextApiResponse,
-  userId: string
+  userId: string,
+  sessionUser: SessionUser
 ) => Promise<void> | void;
 
 /**
  * Higher-order function that wraps API handlers with authentication
- * Injects userId as third parameter to handler
+ * Injects userId as third parameter and sessionUser as fourth parameter
  */
 export function withAuth(handler: AuthenticatedHandler) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
@@ -56,7 +57,7 @@ export function withAuth(handler: AuthenticatedHandler) {
       method: req.method
     });
 
-    // Inject userId as third parameter
-    return handler(req, res, sessionUser.id);
+    // Inject userId as third parameter and sessionUser as fourth parameter
+    return handler(req, res, sessionUser.id, sessionUser);
   };
 }

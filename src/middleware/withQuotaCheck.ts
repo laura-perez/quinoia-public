@@ -6,6 +6,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { checkUserQuota, getQuotaMessage } from '@/lib/quotas/checker';
 import { USER_STATUS } from '@/lib/supabase/types/user.types';
+import type { SessionUser } from '@/lib/auth/session';
 import { createLogger } from '@/lib/logger';
 
 const logger = createLogger();
@@ -15,16 +16,17 @@ export type QuotaType = 'menu' | 'swap';
 export type QuotaAuthenticatedHandler = (
   req: NextApiRequest,
   res: NextApiResponse,
-  userId: string
+  userId: string,
+  sessionUser: SessionUser
 ) => Promise<void> | void;
 
 /**
  * Higher-order function that wraps API handlers with quota checking
- * Must be used AFTER withAuth middleware (requires userId)
+ * Must be used AFTER withAuth middleware (requires userId and sessionUser)
  */
 export function withQuotaCheck(quotaType: QuotaType) {
   return function (handler: QuotaAuthenticatedHandler) {
-    return async (req: NextApiRequest, res: NextApiResponse, userId: string) => {
+    return async (req: NextApiRequest, res: NextApiResponse, userId: string, sessionUser: SessionUser) => {
       logger.debug('Checking quota', {
         userId,
         quotaType,
@@ -32,7 +34,7 @@ export function withQuotaCheck(quotaType: QuotaType) {
       });
 
       try {
-        const quotaResult = await checkUserQuota(userId, quotaType);
+        const quotaResult = await checkUserQuota(userId, sessionUser, quotaType);
 
         if (!quotaResult.canGenerate) {
           const message = getQuotaMessage(quotaResult, quotaType);
@@ -66,7 +68,7 @@ export function withQuotaCheck(quotaType: QuotaType) {
         });
 
         // Quota OK, proceed to handler
-        return handler(req, res, userId);
+        return handler(req, res, userId, sessionUser);
       } catch (error) {
         logger.error('Quota check error', {
           error: error instanceof Error ? error.message : String(error),

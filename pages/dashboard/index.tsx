@@ -240,7 +240,10 @@ export default function Dashboard() {
                 onClick={handleUpgrade}
                 className="px-3 py-1.5 rounded-full text-sm font-medium transition-all bg-[#FFF6DC] text-[#414535] hover:bg-[#F4C95D]"
               >
-                Gratuit — découvrir Premium 💎
+                <span className="flex flex-col md:flex-row items-start md:items-center md:gap-2">
+                  <span className="leading-tight">Gratuit</span>
+                  <span className="text-[11px] md:text-sm">découvrir Premium 💎</span>
+                </span>
               </button>
             )}
             {isPremium && (

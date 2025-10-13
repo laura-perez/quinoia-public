@@ -8,13 +8,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createLogger } from '@/lib/logger';
 import { withAuth } from '@/middleware/withAuth';
-import { usersRepository } from '@/lib/supabase/repositories/users';
+import type { SessionUser } from '@/lib/auth/session';
 import { menuResultsRepository } from '@/lib/supabase/repositories/menuResults';
 import { checkUserQuota } from '@/lib/quotas/checker';
 import { getRecipesByIds } from '@/lib/supabase/repositories/recipes';
 import { getCanonicalIngredientsByIds } from '@/lib/supabase/repositories/ingredients';
+import { USER_STATUS } from '@/lib/supabase/types/user.types';
 
-async function handler(req: NextApiRequest, res: NextApiResponse, userId: string) {
+async function handler(req: NextApiRequest, res: NextApiResponse, userId: string, sessionUser: SessionUser) {
   const logger = createLogger();
 
   logger.info('Dashboard status request started', {
@@ -31,30 +32,51 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
   }
 
   try {
-    // Fetch user
-    const user = await usersRepository.findById(userId);
+    // User already provided by withAuth middleware (sessionUser)
+    const user = sessionUser;
 
-    if (!user) {
-      logger.error('User not found in dashboard status', { userId });
-      return res.status(404).json({
-        error: 'Utilisateur non trouvé'
-      });
-    }
-
-    logger.debug('User fetched', {
+    logger.debug('User from session', {
       userId: user.id,
       status: user.status
     });
 
-    // Fetch quotas
-    const menuQuota = await checkUserQuota(userId, 'menu');
-    const swapQuota = await checkUserQuota(userId, 'swap');
+    // Fetch quotas (skip for premium users)
+    const isPremium = user.status === USER_STATUS.PAID_ACTIVE;
+    let menuQuota, swapQuota;
 
-    logger.debug('Quotas fetched', {
-      userId,
-      canGenerateMenu: menuQuota.canGenerate,
-      swapsRemaining: swapQuota.remaining
-    });
+    if (isPremium) {
+      // Premium users have unlimited quotas - skip DB queries
+      logger.debug('Premium user - unlimited quotas', { userId });
+      menuQuota = {
+        canGenerate: true,
+        remaining: null,
+        nextReset: null,
+        daysUntilReset: null,
+        quotaStatus: {
+          userId: user.id,
+          email: user.email,
+          status: user.status,
+          lastMenuGeneratedAt: null,
+          menusGeneratedThisWindow: 0,
+          swapsUsedThisMenu: 0,
+          menuQuotaLimit: null,
+          swapQuotaLimit: null,
+          nextQuotaReset: null,
+          canGenerateMenu: true,
+        }
+      };
+      swapQuota = { ...menuQuota };
+    } else {
+      // Free users - check quotas
+      menuQuota = await checkUserQuota(userId, user, 'menu');
+      swapQuota = await checkUserQuota(userId, user, 'swap');
+
+      logger.debug('Quotas fetched', {
+        userId,
+        canGenerateMenu: menuQuota.canGenerate,
+        swapsRemaining: swapQuota.remaining
+      });
+    }
 
     // Fetch current menu if exists
     let currentMenu = null;

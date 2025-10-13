@@ -9,6 +9,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { createLogger } from '@/lib/logger';
 import { withAuth } from '@/middleware/withAuth';
+import type { SessionUser } from '@/lib/auth/session';
 import { getServiceClient } from '@/lib/supabase/client';
 import { z } from 'zod';
 import { dietMap, cookingLevelMap, proteinPreferenceMap, equipmentMap, genderMap } from '@/schemas/mappers';
@@ -30,7 +31,7 @@ const onboardingSchema = z.object({
   dislikedFoods: z.string().optional(),
 });
 
-async function handler(req: NextApiRequest, res: NextApiResponse, userId: string) {
+async function handler(req: NextApiRequest, res: NextApiResponse, userId: string, sessionUser: SessionUser) {
   const logger = createLogger();
   const supabase = getServiceClient();
 

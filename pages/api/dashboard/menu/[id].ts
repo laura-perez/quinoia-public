@@ -10,13 +10,15 @@ import { setZodErrorMapFR, formatZodErrors } from '@/schemas/zodErrorMap.fr';
 import { updateMenuSwapSchema } from '@/schemas/dashboard.schema';
 import { createLogger } from '@/lib/logger';
 import { withAuth } from '@/middleware/withAuth';
+import type { SessionUser } from '@/lib/auth/session';
 import { getServiceClient } from '@/lib/supabase/client';
 import { menuResultsRepository } from '@/lib/supabase/repositories/menuResults';
-import { checkUserQuota, isPremiumUser } from '@/lib/quotas/checker';
+import { checkUserQuota } from '@/lib/quotas/checker';
+import { USER_STATUS } from '@/lib/supabase/types/user.types';
 
 setZodErrorMapFR();
 
-async function handler(req: NextApiRequest, res: NextApiResponse, userId: string) {
+async function handler(req: NextApiRequest, res: NextApiResponse, userId: string, sessionUser: SessionUser) {
   const logger = createLogger();
 
   logger.info('Update menu request started', {
@@ -78,12 +80,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
 
     logger.debug('Menu ownership verified', { menuId, userId });
 
-    // Check swap quota for free users
-    const quotaResult = await checkUserQuota(userId, 'swap');
-    const premium = isPremiumUser(quotaResult.quotaStatus);
+    // Check swap quota for free users (skip for premium)
+    const isPremium = sessionUser.status === USER_STATUS.PAID_ACTIVE;
 
-    if (!premium) {
-      // Free user: check swap limit (max 1)
+    if (!isPremium) {
+      // Free user: check swap limit using quota checker
+      const quotaResult = await checkUserQuota(userId, sessionUser, 'swap');
       const swapQuotaLimit = quotaResult.quotaStatus.swapQuotaLimit || 1;
 
       if (swapsCount > swapQuotaLimit) {
@@ -109,7 +111,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
     logger.debug('Swap quota check passed', {
       userId,
       swapsCount,
-      isPremium: premium
+      isPremium
     });
 
     // Update menu (simple persistence, no server-side recalculation)
