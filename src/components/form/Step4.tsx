@@ -166,6 +166,9 @@ export default function Step4({ formData, updateFormData, goToPrev, email, isLas
         setShareId(resultShareId);
       }
 
+      // Store email in sessionStorage for shareId page
+      sessionStorage.setItem('quinoia_email', formState.email);
+
       // Show success immediately
 
       // Small delay to let user see completion, then show success

@@ -21,6 +21,8 @@ interface MenuResultInput {
   resultBundle: any;
   numRecipes: number;
   numServings: number;
+  activeRecipeIds?: string[];
+  swapPoolRecipeIds?: string[];
 }
 
 interface MenuResult {
@@ -98,7 +100,9 @@ export async function saveMenuResult(input: MenuResultInput): Promise<{
         numServings: input.numServings,
         shareId,
         shareActive: true,
-        shareCreatedAt: new Date().toISOString()
+        shareCreatedAt: new Date().toISOString(),
+        activeRecipeIds: input.activeRecipeIds || [],
+        swapPoolRecipeIds: input.swapPoolRecipeIds || []
       })
       .select('*')
       .single();

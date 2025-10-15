@@ -129,7 +129,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const baseUrl = env.APP_BASE_URL || `${req.headers['x-forwarded-proto'] || 'http'}://${req.headers.host}`;
     const magicLinkUrl = `${baseUrl}/api/auth/verify-magic-link?token=${token}`;
 
-    // Send email
+    // Send email (same template for both login and shareid context)
     const emailResult = await sendMagicLinkEmail({
       email,
       magicLinkUrl,

@@ -140,6 +140,8 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
   const [shoppingData, setShoppingData] = useState<any>({});
   const [checkedItems, setCheckedItems] = useState<any[]>([]);
   const [selectedRecipeIndex, setSelectedRecipeIndex] = useState<number | null>(null);
+  const [showActivationModal, setShowActivationModal] = useState(false);
+  const [isRequestingLink, setIsRequestingLink] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   // Refs for scrolling
@@ -289,6 +291,45 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
 
   const handleRecipeChange = (newIndex: number) => {
     setCurrentRecipe(newIndex);
+  };
+
+  // Handle activation account click
+  const handleActivateAccount = async () => {
+    // Try to get email from sessionStorage
+    const storedEmail = sessionStorage.getItem('quinoia_email');
+
+    if (!storedEmail) {
+      // No email available - redirect to login
+      window.location.href = '/login';
+      return;
+    }
+
+    // Email available - generate new magic link and show modal
+    setIsRequestingLink(true);
+
+    try {
+      const response = await fetch('/api/auth/request-magic-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: storedEmail })
+      });
+
+      if (response.ok) {
+        // Show success modal
+        setShowActivationModal(true);
+      } else if (response.status === 429) {
+        // Rate limit exceeded
+        alert('Tu as atteint la limite de demandes. Réessaie dans 1 heure.');
+      } else {
+        // Generic error
+        alert('Une erreur est survenue. Réessaie dans quelques instants.');
+      }
+    } catch (error) {
+      console.error('Error requesting magic link:', error);
+      alert('Une erreur est survenue. Réessaie dans quelques instants.');
+    } finally {
+      setIsRequestingLink(false);
+    }
   };
 
   // Scroll to specific recipe in horizontal carousel
@@ -451,7 +492,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
 
         {/* Mobile Layout */}
         <div className="lg:hidden w-full">
-          <div className="px-4 py-4 pb-20 space-y-4 w-full max-w-full">
+          <div className="px-4 py-4 pb-48 space-y-4 w-full max-w-full">
             {/* Recettes Section */}
             <div ref={recettesRef} id="recettes" className="space-y-4 w-full pt-2">
               {/* Recipe Carousel - Horizontal Scroll */}
@@ -624,56 +665,11 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             </div>
           </div>
 
-          {/* Mobile Bottom Navigation - App Style */}
-          <div
-            className="fixed bottom-4 left-10 right-10 bg-white/60 backdrop-blur-md border rounded-2xl px-2 py-1 w-auto z-50 lg:hidden shadow-xl"
-            style={{
-              borderColor: 'rgba(234, 234, 234, 0.3)',
-              borderWidth: '1px'
-            }}
-          >
-            <div className="flex justify-around items-center w-full max-w-xs mx-auto">
-              {[
-                { key: 'recettes', label: 'Recettes', icon: CheckSquare },
-                { key: 'liste', label: 'Liste', icon: List },
-                { key: 'astuces', label: 'Astuces', icon: Lightbulb }
-              ].map(({ key, label, icon: Icon }) => (
-                <button
-                  key={key}
-                  onClick={() => scrollToSection(key)}
-                  className={`flex flex-col items-center gap-1 py-2 px-3 min-h-[45px] justify-center flex-1 rounded-xl transition-all duration-200 ${
-                    activeSection === key ? 'transform scale-105' : 'hover:bg-white/20'
-                  }`}
-                  style={{
-                    backgroundColor: activeSection === key ? 'rgba(244, 201, 93, 0.2)' : 'transparent'
-                  }}
-                >
-                  <Icon
-                    className="w-5 h-5 transition-colors duration-200"
-                    style={{
-                      color: activeSection === key ? '#F4C95D' : '#8A8A8A'
-                    }}
-                  />
-                  <span
-                    className={`text-xs font-medium truncate transition-colors duration-200 ${
-                      activeSection === key ? 'font-semibold' : ''
-                    }`}
-                    style={{
-                      color: activeSection === key ? '#F4C95D' : '#8A8A8A',
-                      fontSize: '10px'
-                    }}
-                  >
-                    {label}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* Desktop Layout */}
         <div className="hidden lg:block">
-          <div className="w-full max-w-[1200px] mx-auto p-4 pb-8">
+          <div className="w-full max-w-[1200px] mx-auto p-4 pb-40">
             {/* Desktop Grid Layout */}
             <div className="grid grid-cols-2 gap-12 mt-8">
               {/* Left Column */}
@@ -820,30 +816,35 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
               </div>
             </div>
 
-            {/* Desktop Navigation */}
-            <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 hidden lg:block">
-              <div 
-                className="flex gap-2 bg-white rounded-full px-4 py-2 shadow-quinoia"
-                style={{ backgroundColor: '#FFFDF8', borderColor: '#EAEAEA' }}
-              >
-                {[
-                  { key: 'recettes', label: 'Recettes', icon: CheckSquare },
-                  { key: 'liste', label: 'Liste', icon: List },
-                  { key: 'astuces', label: 'Astuces', icon: Lightbulb }
-                ].map(({ key, label, icon: Icon }) => (
-                  <button
-                    key={key}
-                    onClick={() => scrollToSection(key)}
-                    className="flex items-center gap-2 py-2 px-4 rounded-full min-h-[44px] transition-colors"
-                    style={{
-                      backgroundColor: activeSection === key ? '#F4C95D' : 'transparent',
-                      color: activeSection === key ? '#414535' : '#8A8A8A'
-                    }}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span className="text-sm">{label}</span>
-                  </button>
-                ))}
+          </div>
+        </div>
+
+        {/* Activation Banner - Desktop & Mobile */}
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-[#F4C95D] to-[#F5D76A] shadow-2xl">
+          <div className="max-w-7xl mx-auto px-4 py-4 lg:py-5">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-3 lg:gap-4">
+              {/* Text Content */}
+              <div className="text-center lg:text-left flex-1">
+                <h3 className="text-[#414535] font-bold text-sm lg:text-lg mb-1 lg:mb-2">
+                Crée ton compte pour débloquer ton espace perso :
+                </h3>
+                <p className="text-[#414535] text-xs lg:text-base">
+                  🔄 changer tes recettes • 📜 sauvegarder ton menu • 🍽️ recevoir 3 nouvelles recettes gratuites chaque semaine
+                </p>
+              </div>
+
+              {/* CTA Button */}
+              <div className="flex flex-col items-center gap-1 lg:gap-2">
+                <button
+                  onClick={handleActivateAccount}
+                  disabled={isRequestingLink}
+                  className="bg-[#414535] text-white px-6 py-2.5 lg:py-3 rounded-full font-semibold text-sm lg:text-base hover:bg-[#2f3226] transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isRequestingLink ? 'Envoi...' : 'Activer mon compte'}
+                </button>
+                <p className="text-[#414535] text-[10px] lg:text-xs">
+                  🔐 Pas de mot de passe, juste un lien magique par email
+                </p>
               </div>
             </div>
           </div>
@@ -860,6 +861,34 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             numServings={resultBundle.meta.numServings}
             recipeTips={resultBundle?.aiTips?.recipeTips}
           />
+        )}
+
+        {/* Activation Modal */}
+        {showActivationModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center">
+              <div className="mb-6">
+                <div className="text-6xl mb-4">✉️</div>
+                <h2 className="text-2xl font-bold text-[#414535] mb-3">
+                  Vérifie ta boîte mail
+                </h2>
+                <p className="text-[#666666] text-base leading-relaxed">
+                  On t'a envoyé ton lien magique pour accéder à ton espace Quinoïa.
+                  Tu y trouveras tes menus gratuits de la semaine, et plus encore 💎
+                </p>
+                <p className="text-[#8A8A8A] text-sm mt-3">
+                  (Pense à vérifier tes spams, au cas où !)
+                </p>
+              </div>
+
+              <button
+                onClick={() => setShowActivationModal(false)}
+                className="w-full bg-[#F4C95D] text-[#414535] px-6 py-3 rounded-full font-semibold text-base hover:bg-[#E5B84A] transition-all shadow-md"
+              >
+                OK, j'y vais !
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </>

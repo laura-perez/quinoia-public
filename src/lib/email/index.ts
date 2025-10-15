@@ -3,5 +3,11 @@
  */
 
 export { sendEmail } from './client';
-export { sendWelcomeMenuEmail, sendInsufficientRecipesAlert } from './service';
-export type { User, MenuData, EmailType } from './types';
+export {
+  sendInsufficientRecipesAlert,
+  sendMagicLinkEmail,
+  sendWelcomeMenuWithActivationEmail,
+  type SendMagicLinkParams,
+  type SendWelcomeMenuWithActivationParams
+} from './service';
+export type { EmailType } from './types';

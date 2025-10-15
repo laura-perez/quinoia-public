@@ -8,11 +8,12 @@ import { detectClientIP } from '@/lib/auth'
 import { upsertUserAndSubmission, usersRepository } from '@/lib/supabase'
 import { USER_STATUS } from '@/lib/supabase/types/user.types'
 import { saveMenuResult } from '@/lib/supabase/menuResults'
-import { createLogger, redact } from '@/lib/logger'
+import { createLogger } from '@/lib/logger'
 import { selectRecipes } from '@/lib/recipes/recipeSelector'
 import { generateShoppingList } from '@/lib/recipes/shoppingListGenerator'
-import { sendWelcomeMenuEmail } from '@/lib/email'
+import { createAndSendMagicLinkForWelcome } from '@/lib/auth/magicLinkHelper'
 import type { RecaptchaMetadata } from '@/schemas/api.types'
+import { env } from '@/lib/config'
 
 setZodErrorMapFR()
 
@@ -77,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       proteinPreferences: norm.data.proteinPreferences || [],
       equipmentAvailable: norm.data.equipmentAvailable || [],
       cookingLevel: norm.data.cookingLevel,
-      numRecipes: norm.data.numRecipes,
+      numRecipes: norm.data.numRecipes + 3, // Generate N active + 3 pool recipes
       numServings: norm.data.numServings,
       batchMode: norm.data.batchMode,
       favoriteFoods: norm.data.favoriteFoods,
@@ -100,9 +101,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       throw err
     }
 
+    // Scale ingredients for all recipes first
+    const scaledRecipes = recipeResults.selectedRecipes.map((recipe: any) => ({ ...recipe, ingredients: recipe.ingredients.map((ing: any) => ({ ...ing, quantite: (ing.quantite || 0) * (norm.data.numServings / 2) })) }))
+
+    // Split recipes: first N = active (visible), last 3 = swap pool (hidden until login)
+    const activeRecipes = scaledRecipes.slice(0, norm.data.numRecipes)
+    const swapPoolRecipes = scaledRecipes.slice(norm.data.numRecipes, norm.data.numRecipes + 3)
+    const activeRecipeIds = activeRecipes.map((r: any) => r.id)
+    const swapPoolRecipeIds = swapPoolRecipes.map((r: any) => r.id)
+
+    // Generate shopping list ONLY for active recipes (user doesn't see swap pool yet)
     let shoppingList: any
     try {
-      const recipesWithServingsBase = recipeResults.selectedRecipes.map((r: any) => ({ ...r, servingsBase: 2 }))
+      const recipesWithServingsBase = activeRecipes.map((r: any) => ({ ...r, servingsBase: 2 }))
       shoppingList = await generateShoppingList(recipesWithServingsBase, norm.data.numServings)
     } catch (err) {
       logger.error('generateShoppingList failed', {
@@ -114,14 +125,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       throw err
     }
 
-    const scaledRecipes = recipeResults.selectedRecipes.map((recipe: any) => ({ ...recipe, ingredients: recipe.ingredients.map((ing: any) => ({ ...ing, quantite: (ing.quantite || 0) * (norm.data.numServings / 2) })) }))
-
     const resultBundle = {
       version: 'v3.0_native',
       generatedAt: new Date().toISOString(),
       meta: { numRecipes: norm.data.numRecipes, numServings: norm.data.numServings, selectionStrategy: recipeResults.scoringDetails?.diversityStrategy, processingTimeMs: Date.now() - startTime },
       userProfile: { firstName: norm.data.firstName || 'Utilisateur' },
-      recipes: scaledRecipes,
+      recipes: activeRecipes, // Only active recipes visible to trial user (swap pool hidden)
       shoppingList,
       nutritionSummary: recipeResults.nutritionSummary,
       scoringDetails: recipeResults.scoringDetails,
@@ -130,7 +139,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     let saveResult: any
     try {
-      saveResult = await saveMenuResult({ submissionId: submissionIdGlobal, userId, resultBundle, numRecipes: norm.data.numRecipes, numServings: norm.data.numServings })
+      saveResult = await saveMenuResult({
+        submissionId: submissionIdGlobal,
+        userId,
+        resultBundle,
+        numRecipes: norm.data.numRecipes,
+        numServings: norm.data.numServings,
+        activeRecipeIds,
+        swapPoolRecipeIds
+      })
     } catch (err) {
       logger.error('saveMenuResult threw', {
         error: err instanceof Error ? err.stack || err.message : String(err),
@@ -165,9 +182,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try { await usersRepository.updateLastSubmission(submission.userId, menuResult.id) } catch (err) { logger.error('updateLastSubmission failed', { error: err }) }
   try { await usersRepository.markTrialAsUsed(submission.userId) } catch (err) { logger.error('markTrialAsUsed failed', { error: err }) }
-  try { await sendWelcomeMenuEmail({ user: { id: submission.userId, email: norm.data.email, firstName: norm.data.firstName }, menu: { shareId: menuResult.shareId, shareUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'https://quinoia.fr'}/menu/${menuResult.shareId}`, recipes: recipeResults.selectedRecipes, numServings: norm.data.numServings, numRecipes: norm.data.numRecipes, shoppingList, nutritionSummary: recipeResults.nutritionSummary } }) } catch (e) { logger.error('sendWelcomeMenuEmail failed', { error: e }) }
 
-  return res.status(200).json({ ok: true, submissionId: submission.submissionId, shareId: menuResult.shareId, shareUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'https://quinoia.fr'}/menu/${menuResult.shareId}`, resultBundle })
+  // Generate magic link and send welcome email
+  await createAndSendMagicLinkForWelcome({
+    email: normalizedEmail,
+    firstName: norm.data.firstName || null,
+    shareId: menuResult.shareId,
+    ipAddress: ipDetection.ip,
+    userAgent: req.headers['user-agent'] || null
+  });
+
+  const baseUrl = env.APP_BASE_URL;
+  return res.status(200).json({ ok: true, submissionId: submission.submissionId, shareId: menuResult.shareId, shareUrl: `${baseUrl}/menu/${menuResult.shareId}`, resultBundle })
     } catch (err) {
       logger.error('Public submit create user flow failed', { error: err })
       return res.status(500).json({ error: 'Erreur interne' })
@@ -196,7 +222,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try { await usersRepository.updateLastSubmission(submission.userId, menuResult.id) } catch (err) { logger.error('updateLastSubmission failed', { error: err }) }
   try { await usersRepository.markTrialAsUsed(submission.userId) } catch (err) { logger.error('markTrialAsUsed failed', { error: err }) }
 
-  return res.status(200).json({ ok: true, submissionId: submission.submissionId, shareId: menuResult.shareId, shareUrl: `${process.env.NEXT_PUBLIC_APP_URL || 'https://quinoia.fr'}/menu/${menuResult.shareId}`, resultBundle })
+  // Generate magic link and send welcome email
+  await createAndSendMagicLinkForWelcome({
+    email: normalizedEmail,
+    firstName: norm.data.firstName || null,
+    shareId: menuResult.shareId,
+    ipAddress: ipDetection.ip,
+    userAgent: req.headers['user-agent'] || null
+  });
+
+  const baseUrl = env.APP_BASE_URL;
+  return res.status(200).json({ ok: true, submissionId: submission.submissionId, shareId: menuResult.shareId, shareUrl: `${baseUrl}/menu/${menuResult.shareId}`, resultBundle })
     } catch (err) {
       logger.error('Existing trial_available submit failed', { error: err })
       return res.status(500).json({ error: 'Erreur interne' })

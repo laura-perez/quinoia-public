@@ -4,72 +4,19 @@
  */
 
 import { sendEmail } from './client';
-import { getWelcomeMenuSubject, getWelcomeMenuHtml } from './templates/welcome-menu';
 import { getInsufficientRecipesSubject, getInsufficientRecipesHtml } from './templates/insufficient-recipes-alert';
-import { getMagicLinkSubject, getMagicLinkHtml } from './templates/magic-link';
+import {
+  getMagicLinkSubject,
+  getMagicLinkHtml,
+  getWelcomeMenuWithActivationSubject,
+  getWelcomeMenuWithActivationHtml
+} from './templates';
 import { env } from '@/lib/config/env';
-import type { User, MenuData, EmailType } from './types';
+import type { EmailType } from './types';
 import type { SelectionContext } from '@/types/recipes';
 import { createLogger } from '@/lib/logger';
 
 const logger = createLogger();
-
-export interface SendWelcomeMenuParams {
-  user: User;
-  menu: MenuData;
-}
-
-/**
- * Send welcome menu email (premier menu gratuit)
- */
-export async function sendWelcomeMenuEmail({ user, menu }: SendWelcomeMenuParams) {
-  logger.info('Sending welcome menu email', {
-    userId: user.id,
-    email: user.email.substring(0, 3) + '***',
-    shareId: menu.shareId,
-    numRecipes: menu.numRecipes
-  });
-
-  // Mock email sending during integration tests
-  if (process.env.INTEGRATION_TESTS === 'true') {
-    logger.info('Email sending mocked for integration tests', {
-      userId: user.id,
-      shareId: menu.shareId,
-      testMode: true
-    });
-    return {
-      success: true,
-      id: `mock-email-${Date.now()}`,
-    };
-  }
-
-  const subject = getWelcomeMenuSubject(user);
-  const html = getWelcomeMenuHtml(user, menu);
-
-  const result = await sendEmail({
-    to: user.email,
-    subject,
-    html,
-    from: 'Quinoïa <hello@rs.quinoia.fr>',
-    replyTo: 'hello@rs.quinoia.fr'
-  });
-
-  if (result.success) {
-    logger.info('Welcome menu email sent successfully', {
-      userId: user.id,
-      emailId: result.id,
-      shareId: menu.shareId
-    });
-  } else {
-    logger.error('Welcome menu email failed', {
-      userId: user.id,
-      shareId: menu.shareId,
-      error: result.error
-    });
-  }
-
-  return result;
-}
 
 export interface SendInsufficientRecipesAlertParams {
   context: SelectionContext;
@@ -166,7 +113,7 @@ export async function sendMagicLinkEmail({ email, magicLinkUrl, firstName }: Sen
   }
 
   const subject = getMagicLinkSubject(firstName);
-  const html = getMagicLinkHtml(magicLinkUrl, firstName);
+  const html = getMagicLinkHtml({ magicLinkUrl, firstName });
 
   const result = await sendEmail({
     to: email,
@@ -190,3 +137,64 @@ export async function sendMagicLinkEmail({ email, magicLinkUrl, firstName }: Sen
 
   return result;
 }
+
+export interface SendWelcomeMenuWithActivationParams {
+  email: string;
+  firstName: string | null;
+  shareUrl: string;
+  magicLinkUrl: string;
+}
+
+/**
+ * Send welcome menu email with activation link (Email 1)
+ * Envoyé après soumission du formulaire avec 2 boutons: Voir menu + Activer compte
+ */
+export async function sendWelcomeMenuWithActivationEmail({
+  email,
+  firstName,
+  shareUrl,
+  magicLinkUrl
+}: SendWelcomeMenuWithActivationParams) {
+  logger.info('Sending welcome menu with activation email', {
+    email: email.substring(0, 3) + '***',
+    hasFirstName: !!firstName
+  });
+
+  // Mock email sending during integration tests
+  if (process.env.INTEGRATION_TESTS === 'true') {
+    logger.info('Email sending mocked for integration tests', {
+      email: email.substring(0, 3) + '***',
+      testMode: true
+    });
+    return {
+      success: true,
+      id: `mock-email-${Date.now()}`,
+    };
+  }
+
+  const subject = getWelcomeMenuWithActivationSubject(firstName);
+  const html = getWelcomeMenuWithActivationHtml({ firstName, shareUrl, magicLinkUrl });
+
+  const result = await sendEmail({
+    to: email,
+    subject,
+    html,
+    from: 'Quinoïa <hello@rs.quinoia.fr>',
+    replyTo: 'hello@rs.quinoia.fr'
+  });
+
+  if (result.success) {
+    logger.info('Welcome menu with activation email sent successfully', {
+      email: email.substring(0, 3) + '***',
+      emailId: result.id
+    });
+  } else {
+    logger.error('Welcome menu with activation email failed', {
+      email: email.substring(0, 3) + '***',
+      error: result.error
+    });
+  }
+
+  return result;
+}
+
