@@ -280,7 +280,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Ethics Section - Centered, full width */}
-          <div className="max-w-3xl mx-auto mb-12">
+          <div className="max-w-3xl mx-auto mb-12 mt-12">
             <div className="bg-gradient-to-br from-[#F4C95D]/10 to-[#E5B84A]/10 rounded-xl border-2 border-[#F4C95D]/30 p-6 lg:p-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="text-4xl">💚</div>
