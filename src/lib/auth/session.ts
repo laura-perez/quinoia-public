@@ -83,6 +83,7 @@ export async function validateSession(token: string): Promise<SessionUser | null
     email: session.user.email,
     firstName: session.user.firstName,
     status: session.user.status,
+    lastMenuResultId: session.user.lastMenuResultId,
     isFirstLogin: session.user.isFirstLogin,
     lastLoginAt: session.user.lastLoginAt,
   };

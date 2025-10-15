@@ -15,9 +15,10 @@ export interface UserSession {
   user: {
     email: string;
     firstName: string | null;
-  status: UserStatus;
+    status: UserStatus;
     isFirstLogin: boolean;
     lastLoginAt: Date | null;
+    lastMenuResultId: string | null;
   };
 }
 
@@ -105,7 +106,8 @@ export class SessionsRepository {
           firstName,
           status,
           isFirstLogin,
-          lastLoginAt
+          lastLoginAt,
+          lastMenuResultId
         )
       `)
       .eq("token", token)
