@@ -7,6 +7,7 @@ import { ShoppingCart, Lock, Trash2 } from 'lucide-react';
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { Badge } from '@/components/ui/badge';
 import { RecipeModal } from '@/components/ui/RecipeModal';
+import { PremiumUpgradeModal } from '@/components/ui/PremiumUpgradeModal';
 import { useMenuSwap } from '@/hooks/useMenuSwap';
 import { generateShoppingList } from '@/utils/shoppingList/generator';
 import type { DashboardMenu } from '@/types/dashboard';
@@ -42,6 +43,7 @@ export function MenuSection({
 }: MenuSectionProps) {
   const [selectedRecipeIndex, setSelectedRecipeIndex] = useState<number | null>(null);
   const [currentRecipe, setCurrentRecipe] = useState(0);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   // Filter swap pool to remove recipes already in active recipes
@@ -111,11 +113,13 @@ export function MenuSection({
   };
 
   const handleAddRecipe = () => {
-    if (!canAddRecipe) {
-      onSwapQuotaExceeded();
+    // If max recipes reached for free users, show premium modal
+    if (maxRecipesReached) {
+      setShowPremiumModal(true);
       return;
     }
 
+    // Otherwise, add recipe normally
     if (swapPool.length > 0) {
       addRecipe();
     }
@@ -238,20 +242,28 @@ export function MenuSection({
             </div>
           ))}
 
-          {/* Add Recipe Card */}
-          {canAddRecipe && swapPool.length > 0 && (
+          {/* Add Recipe Card - Always visible, grayed out when max reached */}
+          {swapPool.length > 0 && (
             <div
-              className="flex-shrink-0 rounded-2xl overflow-hidden shadow-lg relative aspect-square snap-center transition-all duration-300 bg-gradient-to-br from-[#F4C95D] to-[#E5B84A] cursor-pointer hover:scale-105"
+              className={`flex-shrink-0 rounded-2xl overflow-hidden shadow-lg relative aspect-square snap-center transition-all duration-300 cursor-pointer ${
+                maxRecipesReached
+                  ? 'bg-gradient-to-br from-gray-300 to-gray-400 opacity-60'
+                  : 'bg-gradient-to-br from-[#F4C95D] to-[#E5B84A] hover:scale-105'
+              }`}
               style={{ width: '42.5vw', maxWidth: '175px' }}
               onClick={handleAddRecipe}
             >
               <div className="w-full h-full flex flex-col items-center justify-center p-4">
-                <div className="w-16 h-16 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center mb-3">
-                  <span className="text-4xl text-white">+</span>
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-3 ${
+                  maxRecipesReached ? 'bg-white/50' : 'bg-white/30 backdrop-blur-sm'
+                }`}>
+                  <span className={`text-4xl ${maxRecipesReached ? 'text-gray-600' : 'text-white'}`}>+</span>
                 </div>
-                <p className="text-white font-medium text-center text-sm">Ajouter une recette</p>
-                <p className="text-white/80 text-xs text-center mt-1">
-                  {isPremium ? 'Illimité' : `${3 - activeRecipes.length} restantes`}
+                <p className={`font-medium text-center text-sm ${maxRecipesReached ? 'text-gray-600' : 'text-white'}`}>
+                  Ajouter une recette
+                </p>
+                <p className={`text-xs text-center mt-1 ${maxRecipesReached ? 'text-gray-500' : 'text-white/80'}`}>
+                  {maxRecipesReached ? 'Premium 💎' : isPremium ? 'Illimité' : `${3 - activeRecipes.length} restantes`}
                 </p>
               </div>
             </div>
@@ -317,19 +329,27 @@ export function MenuSection({
           </div>
         ))}
 
-        {/* Add Recipe Card */}
-        {canAddRecipe && swapPool.length > 0 && (
+        {/* Add Recipe Card - Always visible, grayed out when max reached */}
+        {swapPool.length > 0 && (
           <div
-            className="aspect-square rounded-2xl overflow-hidden shadow-lg cursor-pointer bg-gradient-to-br from-[#F4C95D] to-[#E5B84A] hover:scale-105 transition-transform duration-300"
+            className={`aspect-square rounded-2xl overflow-hidden shadow-lg cursor-pointer transition-transform duration-300 ${
+              maxRecipesReached
+                ? 'bg-gradient-to-br from-gray-300 to-gray-400 opacity-60'
+                : 'bg-gradient-to-br from-[#F4C95D] to-[#E5B84A] hover:scale-105'
+            }`}
             onClick={handleAddRecipe}
           >
             <div className="w-full h-full flex flex-col items-center justify-center p-4">
-              <div className="w-20 h-20 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center mb-4">
-                <span className="text-5xl text-white">+</span>
+              <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${
+                maxRecipesReached ? 'bg-white/50' : 'bg-white/30 backdrop-blur-sm'
+              }`}>
+                <span className={`text-5xl ${maxRecipesReached ? 'text-gray-600' : 'text-white'}`}>+</span>
               </div>
-              <p className="text-white font-bold text-center">Ajouter une recette</p>
-              <p className="text-white/90 text-sm text-center mt-2">
-                {isPremium ? 'Illimité' : `${3 - activeRecipes.length} restantes`}
+              <p className={`font-bold text-center ${maxRecipesReached ? 'text-gray-600' : 'text-white'}`}>
+                Ajouter une recette
+              </p>
+              <p className={`text-sm text-center mt-2 ${maxRecipesReached ? 'text-gray-500' : 'text-white/90'}`}>
+                {maxRecipesReached ? 'Premium 💎' : isPremium ? 'Illimité' : `${3 - activeRecipes.length} restantes`}
               </p>
             </div>
           </div>
@@ -394,6 +414,12 @@ export function MenuSection({
       >
         <ShoppingCart className="w-6 h-6" />
       </button>
+
+      {/* Premium Upgrade Modal */}
+      <PremiumUpgradeModal
+        isOpen={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+      />
 
       {/* Recipe Modal */}
       {selectedRecipeIndex !== null && (
