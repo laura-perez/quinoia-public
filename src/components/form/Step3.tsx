@@ -16,16 +16,18 @@ const COOKING_LEVELS = [
 // Equipment options
 const EQUIPMENT_OPTIONS = ["Four", "Mixeur/Blender", "Thermomix", "Air Fryer"];
 
-// Recipe and portion count options
-const RECIPE_COUNTS = [2, 3]; // Only free options
-const PREMIUM_RECIPE_COUNTS = [4, 5, 6, 7]; // Premium options (fake buttons)
+// Portion count options
 const PORTION_COUNTS = [2, 3, 4];
 
-export default function Step3({ formData, updateFormData, goToNext, goToPrev, email, isLast }: FormStepProps) {
+export default function Step3({ formData, updateFormData, goToNext, goToPrev, email, isLast, isPremium = false }: FormStepProps) {
   const { errors, clearFieldError, setValidationErrors } = useFormStep();
   const { validateRequiredFields, hasValidationErrors } = useFormValidation();
   const { handleInputChange, createCheckboxArrayHandler, createBooleanRadioHandler } = useFormHandlers(updateFormData, clearFieldError);
   const [hoveredPremium, setHoveredPremium] = useState<number | null>(null);
+
+  // Recipe count options - dynamic based on premium status
+  const RECIPE_COUNTS = isPremium ? [2, 3, 4, 5, 6, 7] : [2, 3];
+  const PREMIUM_RECIPE_COUNTS = isPremium ? [] : [4, 5, 6, 7]; // Only show fake buttons for free users
 
   // Initialize default values when component mounts
   useEffect(() => {

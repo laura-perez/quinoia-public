@@ -88,10 +88,6 @@ export default function Dashboard() {
       const response = await fetch('/api/dashboard/generate-menu', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          numRecipes: 7,
-          numServings: 2,
-        }),
       });
 
       if (!response.ok) {

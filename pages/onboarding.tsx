@@ -6,6 +6,7 @@ import Step1 from "../src/components/form/Step1";
 import Step2 from "../src/components/form/Step2";
 import Step3 from "../src/components/form/Step3";
 import Step4Onboarding from "../src/components/form/Step4Onboarding";
+import { USER_STATUS } from "../src/lib/supabase/types/user.types";
 
 const steps = [
   { id: 1, component: Step1 },
@@ -24,6 +25,7 @@ export default function Onboarding() {
   });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPremium, setIsPremium] = useState(false);
 
   // Check authentication on mount
   useEffect(() => {
@@ -39,6 +41,8 @@ export default function Onboarding() {
           }
         }
 
+        const data = await response.json();
+        setIsPremium(data.user.status === USER_STATUS.PAID_ACTIVE);
         setIsAuthenticated(true);
       } catch (error) {
         router.push('/login');
@@ -99,6 +103,7 @@ export default function Onboarding() {
                 goToPrev={goToPrev}
                 email=""
                 isLast={currentStep === steps.length - 1}
+                isPremium={isPremium}
               />
             </motion.div>
           </AnimatePresence>

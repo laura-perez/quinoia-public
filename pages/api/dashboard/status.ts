@@ -152,6 +152,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
           activeRecipes,
           swapPool,
           swapsCount: menuResult.swapsCount,
+          numRecipes: menuResult.numRecipes,
           numServings: menuResult.numServings,
           createdAt: menuResult.createdAt.toISOString()
         };

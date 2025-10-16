@@ -42,6 +42,7 @@ export interface FormStepProps {
   goToPrev?: () => void; // Support both naming conventions
   email?: string; // Email prop passed from parent
   isLast?: boolean; // Whether this is the last step
+  isPremium?: boolean; // Whether user has premium subscription
 }
 
 

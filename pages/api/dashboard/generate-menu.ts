@@ -6,8 +6,6 @@
  */
 
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { setZodErrorMapFR, formatZodErrors } from '@/schemas/zodErrorMap.fr';
-import { generateMenuSchema } from '@/schemas/dashboard.schema';
 import { createLogger } from '@/lib/logger';
 import { withAuthAndQuota } from '@/middleware/withQuotaCheck';
 import type { SessionUser } from '@/lib/auth/session';
@@ -20,8 +18,6 @@ import { USER_STATUS } from '@/lib/supabase/types/user.types';
 import { getServiceClient } from '@/lib/supabase/client';
 import { randomBytes } from 'crypto';
 import type { SelectionContext } from '@/types/recipes';
-
-setZodErrorMapFR();
 
 // Generate a secure, URL-safe shareId
 function generateShareId(): string {
@@ -48,27 +44,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
     logger.warn('Invalid method', { method: req.method });
     return res.status(405).json({ error: 'Méthode non autorisée' });
   }
-
-  // Parse body
-  let raw: any;
-  try {
-    raw = req.body;
-    if (typeof raw === 'string') raw = JSON.parse(raw);
-  } catch (e) {
-    logger.error('Invalid request body', { error: e });
-    return res.status(400).json({ error: 'Corps de requête invalide' });
-  }
-
-  // Validate with Zod
-  const parsed = generateMenuSchema.safeParse(raw);
-  if (!parsed.success) {
-    logger.error('Generate menu validation failed', {
-      errors: formatZodErrors(parsed.error)
-    });
-    return res.status(400).json({ errors: formatZodErrors(parsed.error) });
-  }
-
-  const { numRecipes, numServings } = parsed.data;
 
   try {
     // User already provided by withAuth middleware
@@ -107,8 +82,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       canGenerate: quotaResult.canGenerate
     });
 
-    // Determine pool size: 1 for free, 10 for premium
-    const poolSize = premium ? 10 : 1;
+    // Determine pool size: 3 for free, 10 for premium
+    const poolSize = premium ? 10 : 3;
 
     // Build selection context from user's submission (onboarding preferences)
     const selectionContext: SelectionContext = {
@@ -117,15 +92,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       proteinPreferences: existingSubmission.proteinPreferences || [],
       equipmentAvailable: existingSubmission.equipmentAvailable || [],
       cookingLevel: existingSubmission.cookingLevel,
-      numRecipes: numRecipes + poolSize, // Active + pool
-      numServings,
+      numRecipes: existingSubmission.numRecipes + poolSize, // From submission + pool
+      numServings: existingSubmission.numServings, // From submission
       proteinFloorG: existingSubmission.proteinFloorG || 0,
       primaryGoal: existingSubmission.primaryGoal || 'balanced',
     };
 
     logger.info('Starting recipe selection', {
       userId,
-      totalRecipesToSelect: numRecipes + poolSize,
+      totalRecipesToSelect: existingSubmission.numRecipes + poolSize,
       poolSize,
       isPremium: premium
     });
@@ -138,9 +113,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
 
     const selectedRecipes = selectionResult.selectedRecipes;
 
-    if (selectedRecipes.length < numRecipes + poolSize) {
+    if (selectedRecipes.length < existingSubmission.numRecipes + poolSize) {
       logger.error('Insufficient recipes selected', {
-        requested: numRecipes + poolSize,
+        requested: existingSubmission.numRecipes + poolSize,
         received: selectedRecipes.length
       });
 
@@ -151,8 +126,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
     }
 
     // Split into active recipes and swap pool
-    const activeRecipes = selectedRecipes.slice(0, numRecipes);
-    const swapPool = selectedRecipes.slice(numRecipes, numRecipes + poolSize);
+    const activeRecipes = selectedRecipes.slice(0, existingSubmission.numRecipes);
+    const swapPool = selectedRecipes.slice(existingSubmission.numRecipes, existingSubmission.numRecipes + poolSize);
 
     logger.info('Recipes split successfully', {
       activeCount: activeRecipes.length,
@@ -190,8 +165,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
           recipes: selectedRecipes,
           nutritionSummary: selectionResult.nutritionSummary,
         },
-        numRecipes,
-        numServings,
+        numRecipes: existingSubmission.numRecipes,
+        numServings: existingSubmission.numServings,
         shareId,
         activeRecipeIds: activeRecipes.map(r => r.id),
         swapPoolRecipeIds: swapPool.map(r => r.id),
@@ -232,7 +207,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
         activeRecipes,
         swapPool,
         swapsCount: 0,
-        numServings,
+        numServings: existingSubmission.numServings,
       },
       ingredientsCatalog,
       quotas: {
@@ -246,7 +221,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
     logger.info('Menu generated successfully', {
       userId,
       menuResultId: menuResult.id,
-      numRecipes,
+      numRecipes: existingSubmission.numRecipes,
       poolSize
     });
 

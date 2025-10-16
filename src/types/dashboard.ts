@@ -38,10 +38,6 @@ export interface DashboardMenu {
   activeRecipes: Recipe[];
   swapPool: Recipe[];
   swapsCount: number;
-  numServings: number;
-}
-
-export interface MenuGenerationRequest {
   numRecipes: number;
   numServings: number;
 }
