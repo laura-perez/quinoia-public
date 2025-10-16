@@ -183,14 +183,14 @@ export function MenuSection({
           {transformedRecipes.map((recipe: any, index: number) => (
             <div
               key={recipe.id}
-              className={`flex-shrink-0 snap-center transition-all duration-300 ${
+              className={`flex-shrink-0 snap-center transition-all duration-300 bg-white rounded-2xl p-3 shadow-lg flex flex-col ${
                 index === currentRecipe ? 'opacity-100 scale-100' : 'opacity-60 scale-95'
               }`}
               style={{ width: '42.5vw', maxWidth: '175px' }}
             >
               {/* Photo Container */}
               <div
-                className="aspect-square rounded-2xl overflow-hidden shadow-lg relative cursor-pointer"
+                className="aspect-square rounded-xl overflow-hidden relative cursor-pointer"
                 onClick={() => setSelectedRecipeIndex(index)}
               >
                 <ImageWithFallback
@@ -200,18 +200,18 @@ export function MenuSection({
                 />
 
                 {/* Time Badge on Photo */}
-                <Badge className="absolute top-3 right-3 bg-[#F4C95D] text-[#414535] text-xs">
+                <Badge className="absolute top-2 right-2 bg-[#F4C95D] text-[#414535] text-xs">
                   {recipe.meta.icon} {recipe.meta.text}
                 </Badge>
               </div>
 
               {/* Title */}
-              <h3 className="text-[#414535] font-medium text-sm leading-tight mt-2 line-clamp-2">
+              <h3 className="text-[#414535] font-medium text-sm leading-tight mt-2 line-clamp-2 flex-grow">
                 {recipe.title}
               </h3>
 
               {/* Action Buttons */}
-              <div className="flex gap-2 mt-2">
+              <div className="flex gap-2 mt-auto pt-2 justify-end">
                 {/* Delete Button */}
                 <button
                   onClick={(e) => {
@@ -219,7 +219,7 @@ export function MenuSection({
                     removeRecipe(recipe);
                   }}
                   disabled={isSwapping}
-                  className="flex-1 bg-white border border-red-600 text-red-600 p-2 rounded-lg hover:bg-red-50 transition-all disabled:opacity-50 flex items-center justify-center"
+                  className="bg-white border border-red-600 text-red-600 p-2 rounded-lg hover:bg-red-50 transition-all disabled:opacity-50 flex items-center justify-center"
                   title="Supprimer"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -233,9 +233,11 @@ export function MenuSection({
                       handleSwap(recipe);
                     }}
                     disabled={isSwapping}
-                    className="flex-1 bg-[#F4C95D] text-[#414535] p-2 rounded-lg text-xs font-medium hover:bg-[#E5B84A] transition-all disabled:opacity-50"
+                    className="bg-[#F4C95D] text-[#414535] px-3 py-2 rounded-lg hover:bg-[#E5B84A] transition-all disabled:opacity-50 flex items-center justify-center gap-1"
+                    title="Swap"
                   >
-                    🔄 Swap
+                    <span className="text-base leading-none">🔄</span>
+                    <span className="text-xs font-medium">Swap</span>
                   </button>
                 )}
               </div>
@@ -274,10 +276,10 @@ export function MenuSection({
       {/* Recipes Grid (Desktop) */}
       <div className="hidden lg:grid lg:grid-cols-6 gap-4 mb-8">
         {transformedRecipes.map((recipe: any, index: number) => (
-          <div key={recipe.id} className="group">
+          <div key={recipe.id} className="group bg-white rounded-2xl p-3 shadow-lg flex flex-col">
             {/* Photo Container */}
             <div
-              className="aspect-square rounded-2xl overflow-hidden shadow-lg relative cursor-pointer"
+              className="aspect-square rounded-xl overflow-hidden relative cursor-pointer"
               onClick={() => setSelectedRecipeIndex(index)}
             >
               <ImageWithFallback
@@ -287,18 +289,18 @@ export function MenuSection({
               />
 
               {/* Time Badge on Photo */}
-              <Badge className="absolute top-3 right-3 bg-[#F4C95D] text-[#414535] text-xs">
+              <Badge className="absolute top-2 right-2 bg-[#F4C95D] text-[#414535] text-xs">
                 {recipe.meta.icon} {recipe.meta.text}
               </Badge>
             </div>
 
             {/* Title */}
-            <h3 className="text-[#414535] font-medium text-sm leading-tight mt-3 line-clamp-2">
+            <h3 className="text-[#414535] font-medium text-sm leading-tight mt-3 line-clamp-2 flex-grow">
               {recipe.title}
             </h3>
 
             {/* Action Buttons */}
-            <div className="flex gap-2 mt-3">
+            <div className="flex gap-2 mt-auto pt-3 justify-end">
               {/* Delete Button */}
               <button
                 onClick={(e) => {
@@ -306,7 +308,7 @@ export function MenuSection({
                   removeRecipe(recipe);
                 }}
                 disabled={isSwapping}
-                className="flex-1 bg-white border border-red-600 text-red-600 p-2 rounded-lg hover:bg-red-50 transition-all disabled:opacity-50 flex items-center justify-center"
+                className="bg-white border border-red-600 text-red-600 p-2 rounded-lg hover:bg-red-50 transition-all disabled:opacity-50 flex items-center justify-center"
                 title="Supprimer"
               >
                 <Trash2 className="w-4 h-4" />
@@ -320,9 +322,11 @@ export function MenuSection({
                     handleSwap(recipe);
                   }}
                   disabled={isSwapping}
-                  className="flex-1 bg-[#F4C95D] text-[#414535] p-2 rounded-lg text-xs font-medium hover:bg-[#E5B84A] transition-all disabled:opacity-50"
+                  className="bg-[#F4C95D] text-[#414535]  px-3 py-2 rounded-lg hover:bg-[#E5B84A] transition-all disabled:opacity-50 flex items-center justify-center gap-1"
+                  title="Swap"
                 >
-                  🔄 Swap
+                  <span className="text-base leading-none">🔄</span>
+                  <span className="text-xs font-medium">Swap</span>
                 </button>
               )}
             </div>
