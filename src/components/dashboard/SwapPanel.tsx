@@ -93,8 +93,9 @@ export function SwapPanel({
         ) : (
           !hasSwappedThisWeek && (
             <div className="mx-6 mt-6 p-4 bg-orange-50 border border-orange-200 rounded-lg relative z-20">
-              <p className="text-sm text-orange-800">
-                ⚠️ <strong>Attention :</strong> Ce swap consommera ton unique swap gratuit de la semaine.
+              <p className="text-sm text-[#414535]">
+                🍋 Ce swap utilisera ton swap gratuit de la semaine. 
+                Ton quota se rechargera tout seul la semaine prochaine
               </p>
             </div>
           )
@@ -152,16 +153,6 @@ export function SwapPanel({
               </div>
             ))
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="sticky bottom-0 bg-[#FDFBF8] border-t border-gray-200 p-6">
-          <button
-            onClick={onClose}
-            className="w-full bg-white border border-[#414535] text-[#414535] py-3 rounded-lg font-medium hover:bg-gray-50 transition"
-          >
-            Annuler
-          </button>
         </div>
       </div>
 
