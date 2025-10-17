@@ -144,19 +144,14 @@ export function ShoppingListDrawer({
 
   return (
     <>
-      {/* Backdrop - Mobile: dark overlay, Desktop: transparent click zone */}
+      {/* Backdrop - Overlay */}
       <div
-        className="fixed inset-0 z-40 lg:bg-transparent bg-black/50"
+        className="fixed inset-0 bg-black/50 z-40 transition-opacity"
         onClick={onClose}
       />
 
       {/* Drawer */}
-      <div
-        className={`fixed right-0 top-0 bottom-0 w-full max-w-md bg-white z-50 shadow-xl transform transition-transform duration-300 ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        } lg:max-w-sm lg:border-l lg:border-[#EAEAEA]`}
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-white z-50 shadow-2xl overflow-y-auto animate-slide-in">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-[#EAEAEA] p-4 z-10">
           <div className="flex items-center justify-between mb-2">
@@ -305,6 +300,20 @@ export function ShoppingListDrawer({
           )}
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes slide-in {
+          from {
+            transform: translateX(100%);
+          }
+          to {
+            transform: translateX(0);
+          }
+        }
+        .animate-slide-in {
+          animation: slide-in 0.3s ease-out;
+        }
+      `}</style>
     </>
   );
 }

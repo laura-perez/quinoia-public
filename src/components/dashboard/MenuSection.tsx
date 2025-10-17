@@ -8,6 +8,7 @@ import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { Badge } from '@/components/ui/badge';
 import { RecipeModal } from '@/components/ui/RecipeModal';
 import { PremiumUpgradeModal } from '@/components/ui/PremiumUpgradeModal';
+import { SwapPanel } from './SwapPanel';
 import { useMenuSwap } from '@/hooks/useMenuSwap';
 import { generateShoppingList } from '@/utils/shoppingList/generator';
 import type { DashboardMenu } from '@/types/dashboard';
@@ -44,6 +45,8 @@ export function MenuSection({
   const [selectedRecipeIndex, setSelectedRecipeIndex] = useState<number | null>(null);
   const [currentRecipe, setCurrentRecipe] = useState(0);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [swapPanelOpen, setSwapPanelOpen] = useState(false);
+  const [recipeToSwap, setRecipeToSwap] = useState<Recipe | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   // Filter swap pool to remove recipes already in active recipes
@@ -62,6 +65,7 @@ export function MenuSection({
     addRecipe,
     isSwapping,
     isSaving,
+    availableForSwap,
   } = useMenuSwap({
     initialActiveRecipes: menu.activeRecipes,
     initialSwapPool: cleanedSwapPool,
@@ -88,28 +92,28 @@ export function MenuSection({
     [activeRecipes]
   );
 
-  const canSwap = isPremium || swapQuota.used < (swapQuota.limit || 0);
+  const canSwap = isPremium || swapsCount < (swapQuota.limit || 1);
   const canAddRecipe = isPremium || activeRecipes.length < 3;
   const maxRecipesReached = !canAddRecipe;
 
-  // swapRemaining for free users (0 or 1)
-  const swapRemaining = isPremium ? null : Math.max(0, (swapQuota.limit || 1) - swapQuota.used);
-
-  const handleSwap = (recipe: any) => {
-    if (!canSwap) {
-      onSwapQuotaExceeded();
-      return;
-    }
-
-    // If free user and this swap will consume the last swap, ask confirmation
-    if (!isPremium && swapRemaining === 1) {
-      const confirmed = window.confirm("Ce swap consommera ton seul swap gratuit de la semaine. Continuer ?");
-      if (!confirmed) return;
-    }
-
+  const handleSwapPremium = (recipe: any) => {
     if (swapPool.length > 0) {
       swapRecipe(recipe, swapPool[0]);
     }
+  };
+
+  const handleSwapFree = (recipe: any) => {
+    setRecipeToSwap(recipe);
+    setSwapPanelOpen(true);
+  };
+
+  const handleSwapConfirm = (chosenRecipe: any) => {
+    if (!recipeToSwap) return;
+
+    swapRecipe(recipeToSwap, chosenRecipe);
+
+    setSwapPanelOpen(false);
+    setRecipeToSwap(null);
   };
 
   const handleAddRecipe = () => {
@@ -230,10 +234,10 @@ export function MenuSection({
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleSwap(recipe);
+                      isPremium ? handleSwapPremium(recipe) : handleSwapFree(recipe);
                     }}
                     disabled={isSwapping}
-                    className="bg-[#F4C95D] text-[#414535] px-3 py-2 rounded-lg hover:bg-[#E5B84A] transition-all disabled:opacity-50 flex items-center justify-center gap-1"
+                    className="bg-[#F4C95D] text-white px-3 py-2 rounded-lg hover:bg-[#E5B84A] transition-all disabled:opacity-50 flex items-center justify-center gap-1"
                     title="Swap"
                   >
                     <span className="text-base leading-none">🔄</span>
@@ -319,10 +323,10 @@ export function MenuSection({
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleSwap(recipe);
+                    isPremium ? handleSwapPremium(recipe) : handleSwapFree(recipe);
                   }}
                   disabled={isSwapping}
-                  className="bg-[#F4C95D] text-[#414535]  px-3 py-2 rounded-lg hover:bg-[#E5B84A] transition-all disabled:opacity-50 flex items-center justify-center gap-1"
+                  className="bg-[#F4C95D] text-white px-3 py-2 rounded-lg hover:bg-[#E5B84A] transition-all disabled:opacity-50 flex items-center justify-center gap-1"
                   title="Swap"
                 >
                   <span className="text-base leading-none">🔄</span>
@@ -424,6 +428,23 @@ export function MenuSection({
         isOpen={showPremiumModal}
         onClose={() => setShowPremiumModal(false)}
       />
+
+      {/* Swap Panel - Gratuit only */}
+      {!isPremium && (
+        <SwapPanel
+          isOpen={swapPanelOpen}
+          onClose={() => {
+            setSwapPanelOpen(false);
+            setRecipeToSwap(null);
+          }}
+          availableRecipes={availableForSwap}
+          targetRecipe={recipeToSwap}
+          onSwapConfirm={handleSwapConfirm}
+          hasSwappedThisWeek={swapsCount > 0}
+          numServings={menu.numServings}
+          quotaExceeded={!canSwap}
+        />
+      )}
 
       {/* Recipe Modal */}
       {selectedRecipeIndex !== null && (

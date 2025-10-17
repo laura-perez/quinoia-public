@@ -42,6 +42,7 @@ export interface UseMenuSwapReturn {
   error: string | null;
   canRefetchPool: boolean;
   refetchPool: () => Promise<void>;
+  availableForSwap: Recipe[];
 }
 
 const DEBOUNCE_DELAY_MS = 500;
@@ -71,6 +72,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     swapPoolRecipeIds: string[];
     swapsCount: number;
   } | null>(null);
+  const swapsCountRef = useRef<number>(0);
 
   /**
    * Save current state to database (debounced)
@@ -78,11 +80,12 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
   const saveToDatabase = useCallback(async () => {
     const activeRecipeIds = activeRecipes.map((r) => r.id);
     const swapPoolRecipeIds = swapPool.map((r) => r.id);
+    const currentSwapsCount = swapsCountRef.current;
 
     pendingSaveRef.current = {
       activeRecipeIds,
       swapPoolRecipeIds,
-      swapsCount,
+      swapsCount: currentSwapsCount,
     };
 
     setIsSaving(true);
@@ -94,7 +97,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
         body: JSON.stringify({
           activeRecipeIds,
           swapPoolRecipeIds,
-          swapsCount,
+          swapsCount: currentSwapsCount,
         }),
       });
 
@@ -123,7 +126,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     } finally {
       setIsSaving(false);
     }
-  }, [activeRecipes, swapPool, swapsCount, menuId, onQuotaExceeded, onError]);
+  }, [activeRecipes, swapPool, menuId, onQuotaExceeded, onError]);
 
   /**
    * Schedule debounced save to database
@@ -178,7 +181,11 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
         });
 
         // Increment swaps count
-        setSwapsCount((prev) => prev + 1);
+        setSwapsCount((prev) => {
+          const newCount = prev + 1;
+          swapsCountRef.current = newCount; // Sync ref with state
+          return newCount;
+        });
 
         // Schedule debounced save
         scheduleDebouncedSave();
@@ -194,7 +201,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
   );
 
   /**
-   * Remove recipe from menu - does NOT add to swap pool
+   * Remove recipe from menu - adds to END of swap pool (LIFO stack)
    */
   const removeRecipe = useCallback(
     (recipe: Recipe) => {
@@ -203,10 +210,10 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
 
       try {
         // Remove recipe from active recipes
-        setActiveRecipes((prev) => {
-          const filtered = prev.filter((r) => r.id !== recipe.id);
-          return filtered;
-        });
+        setActiveRecipes((prev) => prev.filter((r) => r.id !== recipe.id));
+
+        // Add to END of swap pool (LIFO stack)
+        setSwapPool((prev) => [...prev, recipe]);
 
         // Schedule debounced save
         scheduleDebouncedSave();
@@ -222,7 +229,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
   );
 
   /**
-   * Add recipe from swap pool to active recipes
+   * Add recipe from swap pool to active recipes - takes LAST recipe (LIFO stack)
    */
   const addRecipe = useCallback(() => {
     setIsSwapping(true);
@@ -230,19 +237,20 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
 
     try {
       if (swapPool.length === 0) {
-        setError('Aucune recette disponible dans le pool');
-        if (onError) onError('Aucune recette disponible dans le pool');
+        setError('Aucune recette disponible');
+        if (onError) onError('Aucune recette disponible');
         setIsSwapping(false);
         return;
       }
 
-      const recipeToAdd = swapPool[0];
+      // Take LAST recipe from pool (LIFO stack)
+      const recipeToAdd = swapPool[swapPool.length - 1];
 
       // Add recipe to active recipes
       setActiveRecipes((prev) => [...prev, recipeToAdd]);
 
-      // Remove from swap pool
-      setSwapPool((prev) => prev.slice(1));
+      // Remove last from swap pool
+      setSwapPool((prev) => prev.slice(0, -1));
 
       // Schedule debounced save
       scheduleDebouncedSave();
@@ -333,7 +341,8 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     isSwapping,
     isSaving,
     error,
-    canRefetchPool: swapPool.length > 0, // Can refetch if pool exists
+    canRefetchPool: swapPool.length > 0,
     refetchPool,
+    availableForSwap: swapPool.slice(0, 3),
   };
 }
