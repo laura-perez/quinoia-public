@@ -47,7 +47,7 @@ export interface UseMenuSwapReturn {
   availableForSwap: Recipe[];
 }
 
-const DEBOUNCE_DELAY_MS = 0;
+const DEBOUNCE_DELAY_MS = 500;
 
 export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
   const {
@@ -80,12 +80,27 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
   const refetchAttemptsRef = useRef<number>(0);
   const MAX_REFETCH_ATTEMPTS = 3;
 
+  // Refs to always have latest state values (avoid stale closures)
+  const activeRecipesRef = useRef<Recipe[]>(initialActiveRecipes);
+  const swapPoolRef = useRef<Recipe[]>(initialSwapPool);
+
+  // Sync refs with state changes
+  useEffect(() => {
+    activeRecipesRef.current = activeRecipes;
+  }, [activeRecipes]);
+
+  useEffect(() => {
+    swapPoolRef.current = swapPool;
+  }, [swapPool]);
+
   /**
    * Save current state to database (debounced)
+   * Uses refs to always get latest values, avoiding stale closures
    */
   const saveToDatabase = useCallback(async () => {
-    const activeRecipeIds = activeRecipes.map((r) => r.id);
-    const swapPoolRecipeIds = swapPool.map((r) => r.id);
+    // Get latest values from refs (not closure)
+    const activeRecipeIds = activeRecipesRef.current.map((r) => r.id);
+    const swapPoolRecipeIds = swapPoolRef.current.map((r) => r.id);
     const currentSwapsCount = swapsCountRef.current;
 
     pendingSaveRef.current = {
@@ -132,7 +147,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     } finally {
       setIsSaving(false);
     }
-  }, [activeRecipes, swapPool, menuId, onQuotaExceeded, onError]);
+  }, [menuId, onQuotaExceeded, onError]);
 
   /**
    * Schedule debounced save to database
