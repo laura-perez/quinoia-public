@@ -430,7 +430,7 @@ export function MenuSection({
       {/* Floating Shopping List Button - Aligned with container right edge */}
       <button
         onClick={onOpenShoppingList}
-        className="fixed bottom-24 right-6 lg:bottom-8 bg-[#F4C95D] text-[#414535] p-6 rounded-full shadow-lg hover:shadow-2xl hover:bg-[#E5B84A] transition-all hover:scale-110 hover:ring-4 hover:ring-[#F4C95D]/30 z-40 flex items-center gap-3 group"
+        className="fixed bottom-4 right-6 lg:bottom-8 bg-[#F4C95D] text-[#414535] p-6 rounded-full shadow-lg hover:shadow-2xl hover:bg-[#E5B84A] transition-all hover:scale-110 hover:ring-4 hover:ring-[#F4C95D]/30 z-40 flex items-center gap-3 group"
         style={{
           right: 'max(1.5rem, calc((100vw - 72rem) / 2 + 1rem))'
         }}

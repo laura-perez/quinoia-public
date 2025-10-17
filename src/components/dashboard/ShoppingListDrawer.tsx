@@ -11,6 +11,20 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { getSectionDisplayNameWithContext } from '@/lib/constants';
 
+// TypeScript interfaces
+interface ShoppingItem {
+  id: string;
+  name: string;
+  quantity: string;
+  checked: boolean;
+  category: string;
+  rayon?: string; // Only for checked items
+}
+
+interface ShoppingDataByRayon {
+  [rayonName: string]: ShoppingItem[];
+}
+
 interface ShoppingListDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -21,6 +35,35 @@ interface ShoppingListDrawerProps {
   onUpgrade: () => void;
 }
 
+// Reusable Shopping List Item Component
+interface ShoppingListItemProps {
+  item: ShoppingItem;
+  isPremium: boolean;
+  onToggle: () => void;
+}
+
+const ShoppingListItem: React.FC<ShoppingListItemProps> = ({ item, isPremium, onToggle }) => (
+  <div className="flex items-center gap-3">
+    {isPremium ? (
+      <Checkbox
+        checked={item.checked}
+        onCheckedChange={onToggle}
+        className="flex-shrink-0"
+      />
+    ) : (
+      <div className="w-5 h-5 flex-shrink-0" />
+    )}
+    <span
+      className={`flex-1 text-sm leading-tight min-w-0 ${
+        item.checked ? 'line-through text-[#8A8A8A]' : 'text-[#414535]'
+      }`}
+    >
+      <span className="truncate block">{item.name}</span>
+      <span className="text-xs opacity-75">{item.quantity}</span>
+    </span>
+  </div>
+);
+
 export function ShoppingListDrawer({
   isOpen,
   onClose,
@@ -30,13 +73,13 @@ export function ShoppingListDrawer({
   recipeCount,
   onUpgrade,
 }: ShoppingListDrawerProps) {
-  const [shoppingData, setShoppingData] = useState<any>({});
-  const [checkedItems, setCheckedItems] = useState<any[]>([]);
+  const [shoppingData, setShoppingData] = useState<ShoppingDataByRayon>({});
+  const [checkedItems, setCheckedItems] = useState<ShoppingItem[]>([]);
 
   // Initialize shopping data
   useEffect(() => {
     if (shoppingList?.organizedByCategory) {
-      const transformedData: any = {};
+      const transformedData: ShoppingDataByRayon = {};
 
       shoppingList.organizedByCategory.forEach((categoryGroup: any) => {
         const sectionName = getSectionDisplayNameWithContext(
@@ -63,50 +106,55 @@ export function ShoppingListDrawer({
     }
   }, [shoppingList]);
 
-  const toggleItem = (rayonName: string, itemId: string) => {
-    if (!isPremium) return; // No checkboxes for free users
+  // Toggle item from unchecked → checked (immutable)
+  const toggleItemToChecked = (rayonName: string, itemId: string) => {
+    if (!isPremium) return;
 
-    setShoppingData((prev: any) => {
-      const newData = { ...prev };
-      const rayon = newData[rayonName];
-      const itemIndex = rayon.findIndex((item: any) => item.id === itemId);
+    setShoppingData((prev) => {
+      const rayon = prev[rayonName];
+      const item = rayon.find((item) => item.id === itemId);
 
-      if (itemIndex !== -1) {
-        const item = { ...rayon[itemIndex] };
-        item.checked = !item.checked;
+      if (!item) return prev;
 
-        if (item.checked) {
-          setCheckedItems((prevChecked) => [...prevChecked, { ...item, rayon: rayonName }]);
-          rayon.splice(itemIndex, 1);
-        } else {
-          rayon[itemIndex] = item;
-        }
-      }
+      // Immutable: filter out the item instead of splice
+      const newRayon = rayon.filter((item) => item.id !== itemId);
 
-      return newData;
+      // Add to checked items
+      setCheckedItems((prevChecked) => [
+        ...prevChecked,
+        { ...item, checked: true, rayon: rayonName },
+      ]);
+
+      return {
+        ...prev,
+        [rayonName]: newRayon,
+      };
     });
   };
 
-  const toggleCheckedItem = (itemId: string) => {
+  // Toggle item from checked → unchecked (immutable)
+  const toggleItemToUnchecked = (itemId: string) => {
     setCheckedItems((prev) => {
-      const itemIndex = prev.findIndex((item) => item.id === itemId);
-      if (itemIndex !== -1) {
-        const item = prev[itemIndex];
-        setShoppingData((prevData: any) => {
-          const newData = { ...prevData };
-          const rayon = newData[item.rayon];
-          rayon.push({ ...item, checked: false });
-          return newData;
-        });
-        return prev.filter((item) => item.id !== itemId);
-      }
-      return prev;
+      const item = prev.find((item) => item.id === itemId);
+      if (!item || !item.rayon) return prev;
+
+      // Add back to original rayon
+      setShoppingData((prevData) => {
+        const rayon = prevData[item.rayon!];
+        return {
+          ...prevData,
+          [item.rayon!]: [...rayon, { ...item, checked: false }],
+        };
+      });
+
+      // Immutable: filter out from checked items
+      return prev.filter((item) => item.id !== itemId);
     });
   };
 
   const getTotalItems = () => {
     const uncheckedCount = Object.values(shoppingData).reduce(
-      (total: number, rayon: any) => total + rayon.length,
+      (total, rayon) => total + rayon.length,
       0
     );
     const checkedCount = checkedItems.length;
@@ -122,8 +170,9 @@ export function ShoppingListDrawer({
     }
     // Copy to clipboard
     const text = Object.entries(shoppingData)
-      .map(([rayon, items]: [string, any]) => {
-        const itemList = items.map((item: any) => `- ${item.name}: ${item.quantity}`).join('\n');
+      .filter(([_, items]) => items.length > 0)
+      .map(([rayon, items]) => {
+        const itemList = items.map((item) => `- ${item.name}: ${item.quantity}`).join('\n');
         return `${rayon}\n${itemList}`;
       })
       .join('\n\n');
@@ -206,43 +255,37 @@ export function ShoppingListDrawer({
         {/* Content */}
         <div className="overflow-y-auto h-[calc(100%-140px)] p-4">
           <Accordion type="multiple" className="space-y-2">
-            {Object.entries(shoppingData).map(([rayonName, items]: [string, any]) => (
-              <AccordionItem
-                key={rayonName}
-                value={rayonName}
-                className="border rounded-lg"
-                style={{ borderColor: '#EAEAEA' }}
-              >
-                <AccordionTrigger className="px-4 py-3 hover:no-underline">
-                  <div className="flex items-center justify-between w-full">
-                    <span className="text-[#414535] truncate pr-2">
-                      {rayonName} ({items.length})
-                    </span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="px-4 pb-4">
-                  <div className="space-y-3">
-                    {items.map((item: any) => (
-                      <div key={item.id} className="flex items-center gap-3">
-                        {isPremium ? (
-                          <Checkbox
-                            checked={item.checked}
-                            onCheckedChange={() => toggleItem(rayonName, item.id)}
-                            className="flex-shrink-0"
-                          />
-                        ) : (
-                          <div className="w-5 h-5 flex-shrink-0" /> // Placeholder
-                        )}
-                        <span className="flex-1 text-sm leading-tight min-w-0 text-[#414535]">
-                          <span className="truncate block">{item.name}</span>
-                          <span className="text-xs opacity-75">{item.quantity}</span>
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
+            {/* Rayons with unchecked items */}
+            {Object.entries(shoppingData)
+              .filter(([_, items]) => items.length > 0)
+              .map(([rayonName, items]) => (
+                <AccordionItem
+                  key={rayonName}
+                  value={rayonName}
+                  className="border rounded-lg"
+                  style={{ borderColor: '#EAEAEA' }}
+                >
+                  <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                    <div className="flex items-center justify-between w-full">
+                      <span className="text-[#414535] truncate pr-2">
+                        {rayonName} ({items.length})
+                      </span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="px-4 pb-4">
+                    <div className="space-y-3">
+                      {items.map((item) => (
+                        <ShoppingListItem
+                          key={item.id}
+                          item={item}
+                          isPremium={isPremium}
+                          onToggle={() => toggleItemToChecked(rayonName, item.id)}
+                        />
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
 
             {/* Checked Items (Premium only) */}
             {isPremium && checkedItems.length > 0 && (
@@ -260,18 +303,13 @@ export function ShoppingListDrawer({
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4">
                   <div className="space-y-3">
-                    {checkedItems.map((item: any) => (
-                      <div key={item.id} className="flex items-center gap-3">
-                        <Checkbox
-                          checked={true}
-                          onCheckedChange={() => toggleCheckedItem(item.id)}
-                          className="flex-shrink-0"
-                        />
-                        <span className="flex-1 text-sm leading-tight line-through min-w-0 text-[#8A8A8A]">
-                          <span className="truncate block">{item.name}</span>
-                          <span className="text-xs opacity-75">{item.quantity}</span>
-                        </span>
-                      </div>
+                    {checkedItems.map((item) => (
+                      <ShoppingListItem
+                        key={item.id}
+                        item={item}
+                        isPremium={isPremium}
+                        onToggle={() => toggleItemToUnchecked(item.id)}
+                      />
                     ))}
                   </div>
                 </AccordionContent>

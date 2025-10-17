@@ -233,33 +233,35 @@ export function RecipeModal({
         onClick={onClose}
       />
 
-      {/* Recipe image background */}
-      <div className="relative h-full">
-        <ImageWithFallback
-          src={currentRecipe.image}
-          alt={currentRecipe.title}
-          className="w-full h-[50vh] object-cover object-top md:object-center"
-        />
+      {/* Centered container for desktop (max-w-6xl like MenuSection) */}
+      <div className="relative h-full max-w-6xl mx-auto">
+        {/* Recipe image background */}
+        <div className="relative h-full">
+          <ImageWithFallback
+            src={currentRecipe.image}
+            alt={currentRecipe.title}
+            className="w-full h-[50vh] object-cover object-top md:object-center"
+          />
 
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-colors hover:bg-white/90"
-        >
-          <X className="w-5 h-5" style={{ color: '#414535' }} />
-        </button>
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center transition-colors hover:bg-white/90"
+          >
+            <X className="w-5 h-5" style={{ color: '#414535' }} />
+          </button>
 
 
-        {/* Sliding white container */}
-        <div
-          ref={containerRef}
-          className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl transition-all duration-500 ease-out ${
-            isExtended ? 'h-full' : 'h-[60%]'
-          }`}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
+          {/* Sliding white container */}
+          <div
+            ref={containerRef}
+            className={`absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl transition-all duration-500 ease-out ${
+              isExtended ? 'h-full' : 'h-[60%]'
+            }`}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
           {/* Handle indicator */}
           <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mt-3 mb-2" />
 
@@ -445,6 +447,7 @@ export function RecipeModal({
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

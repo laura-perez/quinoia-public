@@ -47,7 +47,7 @@ export interface UseMenuSwapReturn {
   availableForSwap: Recipe[];
 }
 
-const DEBOUNCE_DELAY_MS = 500;
+const DEBOUNCE_DELAY_MS = 0;
 
 export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
   const {
