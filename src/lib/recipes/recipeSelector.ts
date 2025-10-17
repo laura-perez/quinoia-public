@@ -44,8 +44,8 @@ export async function selectRecipes(
       status: 'active',
       maxPrepTime: 30,
       minProtein: context.proteinFloorG,
-      // No exclusion yet - will filter after getting recency data
-      excludeRecipeIds: []
+      // Exclude recipes passed in context (e.g., active recipes during refetch)
+      excludeRecipeIds: context.excludeRecipeIds || []
     })
   ]);
 

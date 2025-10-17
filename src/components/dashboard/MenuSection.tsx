@@ -72,6 +72,7 @@ export function MenuSection({
     initialSwapsCount: menu.swapsCount,
     menuId: menu.id,
     numServings: menu.numServings,
+    isPremium,
     onError,
   });
 
@@ -124,8 +125,9 @@ export function MenuSection({
       return;
     }
 
-    // Otherwise, add recipe normally
-    if (swapPool.length > 0) {
+    // Premium: Pool auto-refetches, wait if currently loading
+    // Free: Only add if pool has recipes
+    if (swapPool.length > 0 && !isSaving) {
       addRecipe();
     }
   };
@@ -249,13 +251,13 @@ export function MenuSection({
             </div>
           ))}
 
-          {/* Add Recipe Card - Always visible, grayed out when max reached */}
-          {swapPool.length > 0 && (
+          {/* Add Recipe Card - Always visible for premium (pool auto-refetches), for free only if pool > 0 */}
+          {(isPremium || swapPool.length > 0) && (
             <div
-              className={`flex-shrink-0 rounded-2xl overflow-hidden shadow-lg relative aspect-square snap-center transition-all duration-300 cursor-pointer ${
-                maxRecipesReached
-                  ? 'bg-gradient-to-br from-gray-300 to-gray-400 opacity-60'
-                  : 'bg-gradient-to-br from-[#F4C95D] to-[#E5B84A] hover:scale-105'
+              className={`flex-shrink-0 rounded-2xl overflow-hidden shadow-lg relative aspect-square snap-center transition-all duration-300 ${
+                maxRecipesReached || (swapPool.length === 0 && !isPremium)
+                  ? 'bg-gradient-to-br from-gray-300 to-gray-400 opacity-60 cursor-not-allowed'
+                  : 'bg-gradient-to-br from-[#F4C95D] to-[#E5B84A] hover:scale-105 cursor-pointer'
               }`}
               style={{ width: '42.5vw', maxWidth: '175px' }}
               onClick={handleAddRecipe}
@@ -264,10 +266,14 @@ export function MenuSection({
                 <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-3 ${
                   maxRecipesReached ? 'bg-white/50' : 'bg-white/30 backdrop-blur-sm'
                 }`}>
-                  <span className={`text-4xl ${maxRecipesReached ? 'text-gray-600' : 'text-white'}`}>+</span>
+                  {isSaving && swapPool.length === 0 ? (
+                    <div className="animate-spin text-2xl">⏳</div>
+                  ) : (
+                    <span className={`text-4xl ${maxRecipesReached ? 'text-gray-600' : 'text-white'}`}>+</span>
+                  )}
                 </div>
                 <p className={`font-medium text-center text-sm ${maxRecipesReached ? 'text-gray-600' : 'text-white'}`}>
-                  Ajouter une recette
+                  {isSaving && swapPool.length === 0 ? 'Chargement...' : 'Ajouter une recette'}
                 </p>
                 <p className={`text-xs text-center mt-1 ${maxRecipesReached ? 'text-gray-500' : 'text-white/80'}`}>
                   {maxRecipesReached ? 'Premium 💎' : isPremium ? 'Illimité' : `${3 - activeRecipes.length} restantes`}
@@ -338,13 +344,13 @@ export function MenuSection({
           </div>
         ))}
 
-        {/* Add Recipe Card - Always visible, grayed out when max reached */}
-        {swapPool.length > 0 && (
+        {/* Add Recipe Card - Always visible for premium (pool auto-refetches), for free only if pool > 0 */}
+        {(isPremium || swapPool.length > 0) && (
           <div
-            className={`aspect-square rounded-2xl overflow-hidden shadow-lg cursor-pointer transition-transform duration-300 ${
-              maxRecipesReached
-                ? 'bg-gradient-to-br from-gray-300 to-gray-400 opacity-60'
-                : 'bg-gradient-to-br from-[#F4C95D] to-[#E5B84A] hover:scale-105'
+            className={`aspect-square rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 ${
+              maxRecipesReached || (swapPool.length === 0 && !isPremium)
+                ? 'bg-gradient-to-br from-gray-300 to-gray-400 opacity-60 cursor-not-allowed'
+                : 'bg-gradient-to-br from-[#F4C95D] to-[#E5B84A] hover:scale-105 cursor-pointer'
             }`}
             onClick={handleAddRecipe}
           >
@@ -352,10 +358,14 @@ export function MenuSection({
               <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${
                 maxRecipesReached ? 'bg-white/50' : 'bg-white/30 backdrop-blur-sm'
               }`}>
-                <span className={`text-5xl ${maxRecipesReached ? 'text-gray-600' : 'text-white'}`}>+</span>
+                {isSaving && swapPool.length === 0 ? (
+                  <div className="animate-spin text-3xl">⏳</div>
+                ) : (
+                  <span className={`text-5xl ${maxRecipesReached ? 'text-gray-600' : 'text-white'}`}>+</span>
+                )}
               </div>
               <p className={`font-bold text-center ${maxRecipesReached ? 'text-gray-600' : 'text-white'}`}>
-                Ajouter une recette
+                {isSaving && swapPool.length === 0 ? 'Chargement...' : 'Ajouter une recette'}
               </p>
               <p className={`text-sm text-center mt-2 ${maxRecipesReached ? 'text-gray-500' : 'text-white/90'}`}>
                 {maxRecipesReached ? 'Premium 💎' : isPremium ? 'Illimité' : `${3 - activeRecipes.length} restantes`}

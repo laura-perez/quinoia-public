@@ -26,12 +26,13 @@ export type GenerateMenuInput = z.infer<typeof generateMenuSchema>;
 
 /**
  * Schema for update menu swap request body
+ * Note: Premium users can have more than 7 recipes (free users start with max 7)
  */
 export const updateMenuSwapSchema = z.object({
   activeRecipeIds: z
     .array(z.string().uuid('ID de recette invalide'))
     .min(1, 'Au moins une recette active requise')
-    .max(7, 'Maximum 7 recettes actives'),
+    .max(20, 'Maximum 20 recettes actives'), // Increased for premium users who can add recipes
   swapPoolRecipeIds: z
     .array(z.string().uuid('ID de recette invalide'))
     .max(10, 'Maximum 10 recettes dans le pool'),

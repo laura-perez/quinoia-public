@@ -67,6 +67,9 @@ export interface SelectionContext {
 
   // User history
   userId: string;
+
+  // Exclusions (for refetch-pool to avoid duplicates)
+  excludeRecipeIds?: string[];
 }
 
 // Recipe with scoring (6 components)

@@ -27,6 +27,7 @@ export interface UseMenuSwapInput {
   initialSwapsCount?: number;
   menuId: string;
   numServings: number;
+  isPremium?: boolean; // To enable auto-refetch for premium users
   onQuotaExceeded?: () => void;
   onError?: (error: string) => void;
 }
@@ -55,6 +56,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     initialSwapsCount = 0,
     menuId,
     numServings,
+    isPremium = false,
     onQuotaExceeded,
     onError,
   } = input;
@@ -155,6 +157,13 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
       setIsSwapping(true);
       setError(null);
 
+      console.log('🔄 SWAP - Avant:', {
+        swapPoolSize: swapPool.length,
+        swapPool: swapPool.map(r => ({ id: r.id, title: r.titleFr })),
+        removing: { id: recipeToRemove.id, title: recipeToRemove.titleFr },
+        adding: { id: recipeToAdd.id, title: recipeToAdd.titleFr }
+      });
+
       try {
         // Prevent swapping to a recipe already in activeRecipes
         const isAlreadyActive = activeRecipes.some((r) => r.id === recipeToAdd.id);
@@ -179,7 +188,14 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
         // Move swapped-out recipe to pool (at the end - FIFO queue), remove swapped-in recipe from pool
         setSwapPool((prev) => {
           const filtered = prev.filter((r) => r.id !== recipeToAdd.id);
-          return [...filtered, recipeToRemove];
+          const newPool = [...filtered, recipeToRemove];
+
+          console.log('🔄 SWAP - Après:', {
+            swapPoolSize: newPool.length,
+            swapPool: newPool.map(r => ({ id: r.id, title: r.titleFr }))
+          });
+
+          return newPool;
         });
 
         // Increment swaps count
@@ -199,23 +215,49 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
         setIsSwapping(false);
       }
     },
-    [activeRecipes, onError, scheduleDebouncedSave]
+    [activeRecipes, swapPool, onError, scheduleDebouncedSave]
   );
 
   /**
-   * Remove recipe from menu - adds to END of swap pool (LIFO stack)
+   * Remove recipe from menu
+   * - Free users: adds to END of swap pool (LIFO stack for undo)
+   * - Premium users: removes permanently (pool auto-refetches anyway)
    */
   const removeRecipe = useCallback(
     (recipe: Recipe) => {
       setIsSwapping(true);
       setError(null);
 
+      console.log('🗑️ REMOVE - Avant:', {
+        isPremium,
+        swapPoolSize: swapPool.length,
+        swapPool: swapPool.map(r => ({ id: r.id, title: r.titleFr })),
+        removing: { id: recipe.id, title: recipe.titleFr }
+      });
+
       try {
         // Remove recipe from active recipes
         setActiveRecipes((prev) => prev.filter((r) => r.id !== recipe.id));
 
-        // Add to END of swap pool (LIFO stack)
-        setSwapPool((prev) => [...prev, recipe]);
+        // Free users: Add to END of swap pool (LIFO stack for undo)
+        // Premium users: Don't add to pool (removal is permanent, pool will refetch)
+        if (!isPremium) {
+          setSwapPool((prev) => {
+            const newPool = [...prev, recipe];
+
+            console.log('🗑️ REMOVE - Après (FREE - ajouté au pool):', {
+              swapPoolSize: newPool.length,
+              swapPool: newPool.map(r => ({ id: r.id, title: r.titleFr }))
+            });
+
+            return newPool;
+          });
+        } else {
+          console.log('🗑️ REMOVE - Après (PREMIUM - pas ajouté au pool):', {
+            swapPoolSize: swapPool.length,
+            swapPool: swapPool.map(r => ({ id: r.id, title: r.titleFr }))
+          });
+        }
 
         // Schedule debounced save
         scheduleDebouncedSave();
@@ -227,7 +269,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
         setIsSwapping(false);
       }
     },
-    [onError, scheduleDebouncedSave]
+    [isPremium, swapPool, onError, scheduleDebouncedSave]
   );
 
   /**
@@ -236,6 +278,11 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
   const addRecipe = useCallback(() => {
     setIsSwapping(true);
     setError(null);
+
+    console.log('➕ ADD - Avant:', {
+      swapPoolSize: swapPool.length,
+      swapPool: swapPool.map(r => ({ id: r.id, title: r.titleFr }))
+    });
 
     try {
       if (swapPool.length === 0) {
@@ -248,11 +295,25 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
       // Take LAST recipe from pool (LIFO stack)
       const recipeToAdd = swapPool[swapPool.length - 1];
 
+      console.log('➕ ADD - Recette choisie:', {
+        id: recipeToAdd.id,
+        title: recipeToAdd.titleFr
+      });
+
       // Add recipe to active recipes
       setActiveRecipes((prev) => [...prev, recipeToAdd]);
 
       // Remove last from swap pool
-      setSwapPool((prev) => prev.slice(0, -1));
+      setSwapPool((prev) => {
+        const newPool = prev.slice(0, -1);
+
+        console.log('➕ ADD - Après:', {
+          swapPoolSize: newPool.length,
+          swapPool: newPool.map(r => ({ id: r.id, title: r.titleFr }))
+        });
+
+        return newPool;
+      });
 
       // Schedule debounced save
       scheduleDebouncedSave();
@@ -308,6 +369,15 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
       setIsSaving(false);
     }
   }, [activeRecipes, swapPool, menuId, onError]);
+
+  /**
+   * Auto-refetch pool when empty (Premium only)
+   */
+  useEffect(() => {
+    if (isPremium && swapPool.length === 0 && !isSaving) {
+      refetchPool();
+    }
+  }, [swapPool.length, isPremium, isSaving, refetchPool]);
 
   /**
    * Cleanup: Save pending changes on unmount

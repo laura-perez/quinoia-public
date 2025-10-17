@@ -101,7 +101,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
 
     logger.debug('Premium user verified', { userId });
 
-    // Get user and menu details
+    // Get user, menu details, and user's submission
     const user = await usersRepository.findById(userId);
     const menuResult = await menuResultsRepository.findById(menuId);
 
@@ -110,44 +110,109 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       return res.status(404).json({ error: 'Données non trouvées' });
     }
 
-    // Build selection context for new recipes
-    // Note: Using default preferences - in production, fetch from user profile/last submission
+    // Get user's submission to use their preferences
+    const { getServiceClient } = await import('@/lib/supabase/client');
+    const supabase = getServiceClient();
+
+    const { data: submission } = await supabase
+      .from('submission')
+      .select('*')
+      .eq('userId', userId)
+      .order('createdAt', { ascending: false })
+      .single();
+
+    if (!submission) {
+      logger.error('No submission found for user', { userId });
+      return res.status(400).json({
+        error: 'Aucune préférence trouvée',
+        message: 'Impossible de recharger le pool sans préférences utilisateur'
+      });
+    }
+
+    logger.debug('Using user submission for context', {
+      submissionId: submission.id,
+      diet: submission.diet,
+      proteinPreferences: submission.proteinPreferences
+    });
+
+    // Combine user-provided excludes with current active recipes to avoid duplicates
+    const allExcludeIds = [
+      ...excludeRecipeIds,
+      ...menuResult.activeRecipeIds
+    ];
+
+    // Build selection context using user's submission preferences
     const selectionContext: SelectionContext = {
       userId,
-      diet: 'omnivore', // Default - should come from user profile
-      proteinPreferences: ['Poultry', 'Fish', 'Eggs'], // Default
-      equipmentAvailable: ['Oven'], // Default
-      cookingLevel: 'beginner', // Default
+      diet: submission.diet,
+      proteinPreferences: submission.proteinPreferences || [],
+      equipmentAvailable: submission.equipmentAvailable || [],
+      cookingLevel: submission.cookingLevel,
       numRecipes: 10, // Premium pool size
       numServings: menuResult.numServings,
-      proteinFloorG: 20, // Default
-      primaryGoal: 'balanced'// Default
+      proteinFloorG: submission.proteinFloorG || 0,
+      primaryGoal: submission.primaryGoal || 'balanced',
+      excludeRecipeIds: allExcludeIds // Exclude active recipes + user-provided excludes
     };
 
     logger.info('Starting recipe selection for pool refetch', {
       userId,
-      excludeCount: excludeRecipeIds.length,
-      poolSize: 10
+      excludeCount: allExcludeIds.length,
+      activeRecipesCount: menuResult.activeRecipeIds.length,
+      userExcludesCount: excludeRecipeIds.length,
+      poolSize: 10,
+      diet: submission.diet
     });
 
-    // Select 10 new recipes (excluding current active + existing pool + user-provided excludes)
-    // Note: In production, you'd fetch the actual excludeRecipeIds from the menu
-    const selectionResult = await selectRecipes(selectionContext, {
+    // Try to select 10 new recipes with full user preferences
+    let selectionResult = await selectRecipes(selectionContext, {
       userEmail: user.email,
-      submissionId: 'pool-refetch'
+      submissionId: submission.id
     });
 
-    const newSwapPool = selectionResult.selectedRecipes;
+    let newSwapPool = selectionResult.selectedRecipes;
 
+    // Fallback: If insufficient recipes, try with diet-only (remove protein/equipment constraints)
     if (newSwapPool.length < 10) {
-      logger.warn('Insufficient recipes for pool refetch', {
+      logger.warn('Insufficient recipes with full preferences, trying diet-only fallback', {
         requested: 10,
         received: newSwapPool.length
       });
 
-      return res.status(500).json({
-        error: 'Recettes insuffisantes',
-        message: 'Impossible de recharger le pool avec assez de nouvelles recettes'
+      const fallbackContext: SelectionContext = {
+        userId,
+        diet: submission.diet,
+        proteinPreferences: [], // Remove protein constraints
+        equipmentAvailable: [], // Remove equipment constraints
+        cookingLevel: submission.cookingLevel,
+        numRecipes: 10,
+        numServings: menuResult.numServings,
+        proteinFloorG: 0, // Remove protein floor
+        primaryGoal: submission.primaryGoal || 'balanced',
+        excludeRecipeIds: allExcludeIds // Keep exclusions in fallback
+      };
+
+      selectionResult = await selectRecipes(fallbackContext, {
+        userEmail: user.email,
+        submissionId: submission.id
+      });
+
+      newSwapPool = selectionResult.selectedRecipes;
+
+      if (newSwapPool.length < 10) {
+        logger.error('Insufficient recipes even with diet-only fallback', {
+          requested: 10,
+          received: newSwapPool.length
+        });
+
+        return res.status(500).json({
+          error: 'Recettes insuffisantes',
+          message: 'Impossible de trouver assez de nouvelles recettes compatibles avec ton régime alimentaire'
+        });
+      }
+
+      logger.info('Diet-only fallback successful', {
+        recipesFound: newSwapPool.length
       });
     }
 
