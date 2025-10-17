@@ -163,13 +163,14 @@ export function MenuSection({
   const maxPrepTime = Math.max(...activeRecipes.map((r: any) => r.prepTimeMinutes));
 
   return (
-    <div className="px-4 py-6">
+    <div className="px-4 py-6 max-w-6xl mx-auto">
       {/* Header */}
-      <div className="mb-6">
+      <div className="mb-6 bg-[#FCFAF7] -mx-4 px-4 py-4 rounded-lg">
         <div>
           <h2 className="text-2xl font-bold text-[#414535]">Ta semaine est prête 🍽️</h2>
           <p className="text-[#8A8A8A] mt-1">
-            <span className="font-semibold text-[#F4C95D]">{activeRecipes.length} recettes équilibrées</span>
+            <span className="font-semibold text-[#F4C95D]">{activeRecipes.length} recettes</span>
+            <span className="font-semibold text-[#7D9476]"> équilibrées</span>
             , {maxPrepTime} min max chacune
           </p>
         </div>
@@ -285,7 +286,7 @@ export function MenuSection({
       </div>
 
       {/* Recipes Grid (Desktop) */}
-      <div className="hidden lg:grid lg:grid-cols-6 gap-4 mb-8">
+      <div className="hidden lg:grid lg:grid-cols-5 gap-6 mb-8">
         {transformedRecipes.map((recipe: any, index: number) => (
           <div key={recipe.id} className="group bg-white rounded-2xl p-3 shadow-lg flex flex-col">
             {/* Photo Container */}
@@ -347,10 +348,10 @@ export function MenuSection({
         {/* Add Recipe Card - Always visible for premium (pool auto-refetches), for free only if pool > 0 */}
         {(isPremium || swapPool.length > 0) && (
           <div
-            className={`aspect-square rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 ${
+            className={`aspect-square rounded-2xl overflow-hidden shadow-lg transition-all duration-300 ${
               maxRecipesReached || (swapPool.length === 0 && !isPremium)
                 ? 'bg-gradient-to-br from-gray-300 to-gray-400 opacity-60 cursor-not-allowed'
-                : 'bg-gradient-to-br from-[#F4C95D] to-[#E5B84A] hover:scale-105 cursor-pointer'
+                : 'bg-gradient-to-br from-[#F4C95D] to-[#E5B84A] hover:bg-[#F5D476] hover:scale-105 cursor-pointer'
             }`}
             onClick={handleAddRecipe}
           >
@@ -367,7 +368,7 @@ export function MenuSection({
               <p className={`font-bold text-center ${maxRecipesReached ? 'text-gray-600' : 'text-white'}`}>
                 {isSaving && swapPool.length === 0 ? 'Chargement...' : 'Ajouter une recette'}
               </p>
-              <p className={`text-sm text-center mt-2 ${maxRecipesReached ? 'text-gray-500' : 'text-white/90'}`}>
+              <p className={`text-xs text-center mt-2 opacity-80 ${maxRecipesReached ? 'text-gray-500' : 'text-white/70'}`}>
                 {maxRecipesReached ? 'Premium 💎' : isPremium ? 'Illimité' : `${3 - activeRecipes.length} restantes`}
               </p>
             </div>
@@ -377,8 +378,8 @@ export function MenuSection({
 
       {/* Historique Section */}
       {historique && historique.length > 0 && (
-        <div className="mt-12">
-          <h3 className="text-xl font-bold text-[#414535] mb-4">Historique</h3>
+        <div className="mt-12 -mx-4 px-4 py-6 bg-[#FCFAF7] border-t border-[#EAEAEA]">
+          <h2 className="text-2xl font-bold text-[#414535] mb-6">Historique</h2>
 
           {/* Historique Carousel */}
           <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
@@ -426,13 +427,19 @@ export function MenuSection({
         </div>
       )}
 
-      {/* Floating Shopping List Button */}
+      {/* Floating Shopping List Button - Aligned with container right edge */}
       <button
         onClick={onOpenShoppingList}
-        className="fixed bottom-8 right-6 lg:right-8 bg-[#F4C95D] text-[#414535] p-5 rounded-full shadow-2xl hover:bg-[#E5B84A] transition-all hover:scale-110 z-40 ring-4 ring-[#F4C95D]/20"
+        className="fixed bottom-24 right-6 lg:bottom-8 bg-[#F4C95D] text-[#414535] p-6 rounded-full shadow-lg hover:shadow-2xl hover:bg-[#E5B84A] transition-all hover:scale-110 hover:ring-4 hover:ring-[#F4C95D]/30 z-40 flex items-center gap-3 group"
+        style={{
+          right: 'max(1.5rem, calc((100vw - 72rem) / 2 + 1rem))'
+        }}
         aria-label="Ouvrir la liste de courses"
       >
-        <ShoppingCart className="w-8 h-8" />
+        <ShoppingCart className="w-9 h-9" />
+        <span className="hidden lg:block text-sm font-semibold opacity-90 group-hover:opacity-100 transition-opacity">
+          Ma liste
+        </span>
       </button>
 
       {/* Premium Upgrade Modal */}
