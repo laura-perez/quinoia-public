@@ -17,6 +17,8 @@ export interface Recipe {
   titleFr: string;
   ingredients: RecipeIngredient[];
   servingsBase: number;
+  picture_file : string;
+  prepTimeMinutes : number;
 }
 
 export interface ScaledIngredient {

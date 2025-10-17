@@ -7,7 +7,6 @@
 import React, { useState, useRef } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import { Lightbulb, CheckSquare, List } from 'lucide-react';
 import { getServiceClient } from '@/lib/supabase/client';
 import { getRecipeImageUrls } from '@/lib/supabase/storage';
 import { createLogger } from '@/lib/logger';

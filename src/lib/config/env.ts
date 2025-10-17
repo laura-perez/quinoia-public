@@ -9,7 +9,6 @@ const envSchema = z.object({
   RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY is required"),
   FROM_EMAIL: z.string().email("FROM_EMAIL must be a valid email address"),
   ADMIN_EMAIL: z.string().email("ADMIN_EMAIL must be a valid email address").optional(),
-  OPENAI_API_KEY: z.string().min(1, "OPENAI_API_KEY is required"),
 
   // Stripe
   STRIPE_SECRET_KEY: z.string().min(1, "STRIPE_SECRET_KEY is required"),
@@ -33,7 +32,6 @@ const _env = {
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   FROM_EMAIL: process.env.FROM_EMAIL,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL,
-  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
   STRIPE_PRICE_MONTHLY_PROMO: process.env.STRIPE_PRICE_MONTHLY_PROMO,

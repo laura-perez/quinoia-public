@@ -123,7 +123,7 @@ export function SwapPanel({
                   {/* Image */}
                   <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden relative">
                     <ImageWithFallback
-                      src={recipe.imageUrl || fallbackImageUrl}
+                      src={recipe.picture_file || fallbackImageUrl}
                       alt={recipe.titleFr}
                       className="w-full h-full object-cover"
                     />
