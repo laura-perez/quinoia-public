@@ -159,13 +159,6 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
       setIsSwapping(true);
       setError(null);
 
-      console.log('🔄 SWAP - Avant:', {
-        swapPoolSize: swapPool.length,
-        swapPool: swapPool.map(r => ({ id: r.id, title: r.titleFr })),
-        removing: { id: recipeToRemove.id, title: recipeToRemove.titleFr },
-        adding: { id: recipeToAdd.id, title: recipeToAdd.titleFr }
-      });
-
       try {
         // Prevent swapping to a recipe already in activeRecipes
         const isAlreadyActive = activeRecipes.some((r) => r.id === recipeToAdd.id);
@@ -190,14 +183,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
         // Move swapped-out recipe to pool (at the end - FIFO queue), remove swapped-in recipe from pool
         setSwapPool((prev) => {
           const filtered = prev.filter((r) => r.id !== recipeToAdd.id);
-          const newPool = [...filtered, recipeToRemove];
-
-          console.log('🔄 SWAP - Après:', {
-            swapPoolSize: newPool.length,
-            swapPool: newPool.map(r => ({ id: r.id, title: r.titleFr }))
-          });
-
-          return newPool;
+          return [...filtered, recipeToRemove];
         });
 
         // Increment swaps count
@@ -230,13 +216,6 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
       setIsSwapping(true);
       setError(null);
 
-      console.log('🗑️ REMOVE - Avant:', {
-        isPremium,
-        swapPoolSize: swapPool.length,
-        swapPool: swapPool.map(r => ({ id: r.id, title: r.titleFr })),
-        removing: { id: recipe.id, title: recipe.titleFr }
-      });
-
       try {
         // Remove recipe from active recipes
         setActiveRecipes((prev) => prev.filter((r) => r.id !== recipe.id));
@@ -244,21 +223,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
         // Free users: Add to END of swap pool (LIFO stack for undo)
         // Premium users: Don't add to pool (removal is permanent, pool will refetch)
         if (!isPremium) {
-          setSwapPool((prev) => {
-            const newPool = [...prev, recipe];
-
-            console.log('🗑️ REMOVE - Après (FREE - ajouté au pool):', {
-              swapPoolSize: newPool.length,
-              swapPool: newPool.map(r => ({ id: r.id, title: r.titleFr }))
-            });
-
-            return newPool;
-          });
-        } else {
-          console.log('🗑️ REMOVE - Après (PREMIUM - pas ajouté au pool):', {
-            swapPoolSize: swapPool.length,
-            swapPool: swapPool.map(r => ({ id: r.id, title: r.titleFr }))
-          });
+          setSwapPool((prev) => [...prev, recipe]);
         }
 
         // Schedule debounced save
@@ -281,11 +246,6 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     setIsSwapping(true);
     setError(null);
 
-    console.log('➕ ADD - Avant:', {
-      swapPoolSize: swapPool.length,
-      swapPool: swapPool.map(r => ({ id: r.id, title: r.titleFr }))
-    });
-
     try {
       if (swapPool.length === 0) {
         setError('Aucune recette disponible');
@@ -297,25 +257,11 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
       // Take LAST recipe from pool (LIFO stack)
       const recipeToAdd = swapPool[swapPool.length - 1];
 
-      console.log('➕ ADD - Recette choisie:', {
-        id: recipeToAdd.id,
-        title: recipeToAdd.titleFr
-      });
-
       // Add recipe to active recipes
       setActiveRecipes((prev) => [...prev, recipeToAdd]);
 
       // Remove last from swap pool
-      setSwapPool((prev) => {
-        const newPool = prev.slice(0, -1);
-
-        console.log('➕ ADD - Après:', {
-          swapPoolSize: newPool.length,
-          swapPool: newPool.map(r => ({ id: r.id, title: r.titleFr }))
-        });
-
-        return newPool;
-      });
+      setSwapPool((prev) => prev.slice(0, -1));
 
       // Schedule debounced save
       scheduleDebouncedSave();
@@ -380,10 +326,8 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     if (isPremium && swapPool.length === 0 && !isSaving) {
       if (refetchAttemptsRef.current < MAX_REFETCH_ATTEMPTS) {
         refetchAttemptsRef.current += 1;
-        console.log(`🔄 Auto-refetch attempt ${refetchAttemptsRef.current}/${MAX_REFETCH_ATTEMPTS}`);
         refetchPool();
       } else {
-        console.log('⛔ Max refetch attempts reached, stopping auto-refetch');
         setError('Plus de nouvelles recettes disponibles dans le catalogue');
       }
     }
@@ -394,7 +338,6 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
    */
   useEffect(() => {
     if (swapPool.length > 0 && refetchAttemptsRef.current > 0) {
-      console.log('✅ Pool refilled, resetting refetch attempts counter');
       refetchAttemptsRef.current = 0;
     }
   }, [swapPool.length]);
