@@ -69,6 +69,7 @@ export function MenuSection({
   } = useMenuSwap({
     initialActiveRecipes: menu.activeRecipes,
     initialSwapPool: cleanedSwapPool,
+    initialSwapsCount: menu.swapsCount,
     menuId: menu.id,
     numServings: menu.numServings,
     onError,

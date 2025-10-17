@@ -49,6 +49,7 @@ export function MenuDisplayModern({ menu, ingredientsCatalog, onError }: MenuDis
   } = useMenuSwap({
     initialActiveRecipes: menu?.activeRecipes || [],
     initialSwapPool: menu?.swapPool || [],
+    initialSwapsCount: menu?.swapsCount || 0,
     menuId: menu?.id || '',
     numServings: menu?.numServings || 2,
     onError,

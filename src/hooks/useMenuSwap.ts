@@ -24,6 +24,7 @@ import type { Recipe } from '@/lib/recipes/types';
 export interface UseMenuSwapInput {
   initialActiveRecipes: Recipe[];
   initialSwapPool: Recipe[];
+  initialSwapsCount?: number;
   menuId: string;
   numServings: number;
   onQuotaExceeded?: () => void;
@@ -51,6 +52,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
   const {
     initialActiveRecipes,
     initialSwapPool,
+    initialSwapsCount = 0,
     menuId,
     numServings,
     onQuotaExceeded,
@@ -60,7 +62,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
   // Local state (source of truth for UI)
   const [activeRecipes, setActiveRecipes] = useState<Recipe[]>(initialActiveRecipes);
   const [swapPool, setSwapPool] = useState<Recipe[]>(initialSwapPool);
-  const [swapsCount, setSwapsCount] = useState(0);
+  const [swapsCount, setSwapsCount] = useState(initialSwapsCount);
   const [isSwapping, setIsSwapping] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -72,7 +74,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     swapPoolRecipeIds: string[];
     swapsCount: number;
   } | null>(null);
-  const swapsCountRef = useRef<number>(0);
+  const swapsCountRef = useRef<number>(initialSwapsCount);
 
   /**
    * Save current state to database (debounced)
