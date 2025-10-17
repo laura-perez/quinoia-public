@@ -77,6 +77,8 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     swapsCount: number;
   } | null>(null);
   const swapsCountRef = useRef<number>(initialSwapsCount);
+  const refetchAttemptsRef = useRef<number>(0);
+  const MAX_REFETCH_ATTEMPTS = 3;
 
   /**
    * Save current state to database (debounced)
@@ -372,12 +374,30 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
 
   /**
    * Auto-refetch pool when empty (Premium only)
+   * Limited to 3 attempts to avoid infinite loops
    */
   useEffect(() => {
     if (isPremium && swapPool.length === 0 && !isSaving) {
-      refetchPool();
+      if (refetchAttemptsRef.current < MAX_REFETCH_ATTEMPTS) {
+        refetchAttemptsRef.current += 1;
+        console.log(`🔄 Auto-refetch attempt ${refetchAttemptsRef.current}/${MAX_REFETCH_ATTEMPTS}`);
+        refetchPool();
+      } else {
+        console.log('⛔ Max refetch attempts reached, stopping auto-refetch');
+        setError('Plus de nouvelles recettes disponibles dans le catalogue');
+      }
     }
   }, [swapPool.length, isPremium, isSaving, refetchPool]);
+
+  /**
+   * Reset refetch attempts when pool gets refilled
+   */
+  useEffect(() => {
+    if (swapPool.length > 0 && refetchAttemptsRef.current > 0) {
+      console.log('✅ Pool refilled, resetting refetch attempts counter');
+      refetchAttemptsRef.current = 0;
+    }
+  }, [swapPool.length]);
 
   /**
    * Cleanup: Save pending changes on unmount

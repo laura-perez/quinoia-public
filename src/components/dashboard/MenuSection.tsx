@@ -429,9 +429,10 @@ export function MenuSection({
       {/* Floating Shopping List Button */}
       <button
         onClick={onOpenShoppingList}
-        className="fixed bottom-8 right-6 lg:right-8 bg-[#F4C95D] text-[#414535] p-4 rounded-full shadow-xl hover:bg-[#E5B84A] transition-all hover:scale-110 z-40"
+        className="fixed bottom-8 right-6 lg:right-8 bg-[#F4C95D] text-[#414535] p-5 rounded-full shadow-2xl hover:bg-[#E5B84A] transition-all hover:scale-110 z-40 ring-4 ring-[#F4C95D]/20"
+        aria-label="Ouvrir la liste de courses"
       >
-        <ShoppingCart className="w-6 h-6" />
+        <ShoppingCart className="w-8 h-8" />
       </button>
 
       {/* Premium Upgrade Modal */}

@@ -199,28 +199,31 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
 
       newSwapPool = selectionResult.selectedRecipes;
 
-      if (newSwapPool.length < 10) {
-        logger.error('Insufficient recipes even with diet-only fallback', {
-          requested: 10,
-          received: newSwapPool.length
-        });
-
-        return res.status(500).json({
-          error: 'Recettes insuffisantes',
-          message: 'Impossible de trouver assez de nouvelles recettes compatibles avec ton régime alimentaire'
-        });
-      }
-
-      logger.info('Diet-only fallback successful', {
+      logger.info('Diet-only fallback completed', {
         recipesFound: newSwapPool.length
       });
     }
 
+    // Accept partial pools - if we have ANY recipes, use them
+    if (newSwapPool.length === 0) {
+      logger.error('No recipes available at all', {
+        userId,
+        diet: submission.diet
+      });
+
+      return res.status(500).json({
+        error: 'Catalogue épuisé',
+        message: 'Aucune nouvelle recette disponible pour le moment. Toutes les recettes compatibles ont déjà été utilisées.',
+        catalogueExhausted: true
+      });
+    }
+
     logger.debug('New swap pool selected', {
-      count: newSwapPool.length
+      count: newSwapPool.length,
+      isPartial: newSwapPool.length < 10
     });
 
-    // Update swap pool in database
+    // Update swap pool in database (even if partial)
     await menuResultsRepository.updateSwapPool(
       menuId,
       newSwapPool.map(r => r.id)
@@ -229,14 +232,19 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
     logger.info('Swap pool refetched successfully', {
       menuId,
       userId,
-      newPoolSize: newSwapPool.length
+      newPoolSize: newSwapPool.length,
+      isPartial: newSwapPool.length < 10
     });
 
     // Return full recipe objects for frontend
     return res.status(200).json({
       success: true,
       newSwapPool,
-      message: 'Pool rechargé avec succès'
+      message: newSwapPool.length < 10
+        ? `Pool rechargé avec ${newSwapPool.length} recettes (catalogue limité)`
+        : 'Pool rechargé avec succès',
+      partial: newSwapPool.length < 10,
+      catalogueNearExhaustion: newSwapPool.length < 5
     });
 
   } catch (error) {
