@@ -12,6 +12,7 @@ import type { SessionUser } from '@/lib/auth/session';
 import { dashboardDataRepository } from '@/lib/supabase/repositories/dashboardData';
 import { getRecipesByIds } from '@/lib/supabase/repositories/recipes';
 import { ingredientsCache } from '@/lib/cache/ingredientsCache';
+import { getRecipeImageUrls } from '@/lib/supabase/storage';
 
 async function handler(req: NextApiRequest, res: NextApiResponse, userId: string, sessionUser: SessionUser) {
   const logger = createLogger();
@@ -95,8 +96,37 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
         fetchedCount: recipes.length
       });
 
+      // Get recipe image URLs from Supabase Storage
+      const recipeImageUrls = new Map<string, string | null>();
+      const pictureFiles = recipes
+        .map((recipe: any) => recipe.picture_file as string | undefined)
+        .filter((file): file is string => Boolean(file));
+
+      if (pictureFiles.length > 0) {
+        try {
+          const urlMap = await getRecipeImageUrls(pictureFiles);
+          urlMap.forEach((url, filename) => {
+            recipeImageUrls.set(filename, url);
+          });
+
+          logger.debug('Recipe images loaded', {
+            imageCount: recipeImageUrls.size
+          });
+        } catch (imageError) {
+          logger.warn('Failed to load recipe images', {
+            error: imageError
+          });
+        }
+      }
+
+      // Add image URLs to recipes
+      const recipesWithImages = recipes.map((recipe: any) => ({
+        ...recipe,
+        imageUrl: recipe.picture_file ? recipeImageUrls.get(recipe.picture_file) : null
+      }));
+
       // Map recipes by ID for easy lookup
-      const recipeMap = new Map(recipes.map(r => [r.id, r]));
+      const recipeMap = new Map(recipesWithImages.map(r => [r.id, r]));
 
       // Build active recipes array
       const activeRecipes = dashboardData.activeRecipeIds

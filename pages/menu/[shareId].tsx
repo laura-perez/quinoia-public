@@ -471,19 +471,11 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
                 <p className="font-medium leading-relaxed" style={{ color: '#414535', fontSize: '24px' }}>
                   <span>{resultBundle?.userProfile?.firstName || 'Laura'},</span> tu viens de déverrouiller ta semaine sans prise de tête.
                 </p>
-                <p className="text-sm font-medium leading-relaxed" style={{ color: '#414535' }}>
-                  <span className="font-semibold" style={{ color: '#F4C95D' }}>
-                    {resultBundle.meta.numRecipes} repas équilibrés
-                  </span>
-                  , prêts en{' '}
-                  <span className="font-semibold" style={{ color: '#F4C95D' }}>
-                    {Math.max(...resultBundle.recipes.map(r => r.prepTimeMinutes))} min max 
-                  </span>
-                  , avec ta liste de courses incluse.
-                </p>
-                <p className="text-sm font-medium" style={{ color: '#414535' }}>
-                  Cette semaine, c'est simple, clair et rassasiant.
-                </p>
+                <p className="text-[#8A8A8A] mt-1">
+                <span className="font-semibold text-[#F4C95D]">{resultBundle.meta.numRecipes} recettes</span>
+                <span className="font-semibold text-[#7D9476]"> équilibrées</span>
+                , {Math.max(...resultBundle.recipes.map(r => r.prepTimeMinutes))} min max chacune
+              </p>
               </div>
             </div>
           </div>
