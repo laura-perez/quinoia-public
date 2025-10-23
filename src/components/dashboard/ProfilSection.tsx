@@ -25,6 +25,7 @@ interface ProfilSectionProps {
   onManageSubscription?: () => void;
   onUpgrade?: () => void;
   onDeleteAccount?: () => void;
+  onLogout?: () => void;
   onBackToDashboard?: () => void;
 }
 
@@ -35,6 +36,7 @@ export function ProfilSection({
   onManageSubscription,
   onUpgrade,
   onDeleteAccount,
+  onLogout,
   onBackToDashboard,
 }: ProfilSectionProps) {
   const [activeSubTab, setActiveSubTab] = useState('preferences');
@@ -200,10 +202,17 @@ export function ProfilSection({
                 />
               </div>
 
-              <div className="pt-4 border-t border-[#EAEAEA]">
+              <div className="pt-4 border-t border-[#EAEAEA] space-y-3">
+                <button
+                  onClick={onLogout}
+                  className="w-full bg-[#414535] text-white px-4 py-2 rounded-lg hover:bg-[#2f3226] transition-all text-sm font-medium"
+                >
+                  Se déconnecter
+                </button>
+
                 <button
                   onClick={onDeleteAccount}
-                  className="text-red-600 text-sm hover:underline"
+                  className="text-red-600 text-sm hover:underline block"
                 >
                   Supprimer mon compte
                 </button>

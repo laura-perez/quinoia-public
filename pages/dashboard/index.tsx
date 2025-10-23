@@ -421,6 +421,7 @@ function DashboardContent() {
                     // Handle account deletion
                   }
                 }}
+                onLogout={handleLogout}
                 onBackToDashboard={() => setActiveTab('menu')}
               />
             )}
