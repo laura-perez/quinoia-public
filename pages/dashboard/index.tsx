@@ -16,6 +16,7 @@ import { ProfilSection } from '@/components/dashboard/ProfilSection';
 import { ShoppingListDrawer } from '@/components/dashboard/ShoppingListDrawer';
 import { UpsellModal } from '@/components/dashboard/UpsellModals';
 import { generateShoppingList } from '@/utils/shoppingList/generator';
+import { ToastProvider, useToast } from '@/components/ui/Toast';
 import type {
   DashboardStatusResponse,
   DashboardMenu,
@@ -23,10 +24,14 @@ import type {
   DashboardUser,
 } from '@/types/dashboard';
 import type { CanonicalIngredientInfo } from '@/lib/supabase/repositories/ingredients';
+import type { FormData } from '@/components/form/types';
+import { cookingLevelMap } from '@/schemas/mappers';
 
-export default function Dashboard() {
+function DashboardContent() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [dashboardData, setDashboardData] = useState<DashboardStatusResponse | null>(null);
+  const [submission, setSubmission] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [isGeneratingMenu, setIsGeneratingMenu] = useState(false);
@@ -41,7 +46,7 @@ export default function Dashboard() {
     type: 'swap' | 'history' | 'shopping';
   }>({ isOpen: false, type: 'swap' });
 
-  // Load dashboard data on mount
+  // Load dashboard data on mount (includes submission)
   useEffect(() => {
     loadDashboardData();
   }, []);
@@ -72,6 +77,8 @@ export default function Dashboard() {
 
       const data = await response.json();
       setDashboardData(data);
+      // Extract submission from response (already included)
+      setSubmission(data.submission);
     } catch (err) {
       console.error('Error loading dashboard:', err);
       setError(err instanceof Error ? err.message : 'Erreur de chargement');
@@ -146,6 +153,41 @@ export default function Dashboard() {
 
   const handleSwapQuotaExceeded = () => {
     setUpsellModal({ isOpen: true, type: 'swap' });
+  };
+
+  const handleSavePreferences = async (formData: FormData) => {
+    try {
+      const submissionData = {
+        firstName: user?.firstName || '',
+        diet: formData.dietType || 'Omnivore',
+        proteinPreferences: formData.proteinPreferences || [],
+        equipmentAvailable: formData.equipmentAvailable || [],
+        cookingLevel: cookingLevelMap[formData.cookingLevel as keyof typeof cookingLevelMap] || 'beginner',
+        numRecipes: parseInt(formData.numRecipes as string) || 3,
+        numServings: parseInt(formData.numServings as string) || 2,
+        dislikedFoods: formData.dislikedFoods || '',
+      };
+
+      const response = await fetch('/api/onboarding/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submissionData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erreur lors de la sauvegarde');
+      }
+
+      // Reload dashboard data (includes updated submission)
+      await loadDashboardData();
+
+      // Show success toast
+      showToast('Tes préférences ont été mises à jour.', 'success');
+    } catch (err) {
+      console.error('Error saving preferences:', err);
+      showToast('Erreur lors de la sauvegarde', 'error');
+    }
   };
 
   // Calculate shopping list (uses currentActiveRecipes if available, otherwise fallback to dashboardData)
@@ -248,7 +290,7 @@ export default function Dashboard() {
               </span>
             )}
             <button
-              onClick={() => setActiveTab('profil')}
+              onClick={() => setActiveTab(activeTab === 'profil' ? 'menu' : 'profil')}
               className="p-2 hover:bg-[#FAFAFA] rounded-lg transition-colors"
               title="Profil"
             >
@@ -370,6 +412,8 @@ export default function Dashboard() {
             {activeTab === 'profil' && user && (
               <ProfilSection
                 user={user}
+                submission={submission}
+                onSavePreferences={handleSavePreferences}
                 onUpgrade={handleUpgrade}
                 onManageSubscription={() => router.push('/account/subscription')}
                 onDeleteAccount={() => {
@@ -377,6 +421,7 @@ export default function Dashboard() {
                     // Handle account deletion
                   }
                 }}
+                onBackToDashboard={() => setActiveTab('menu')}
               />
             )}
           </>
@@ -403,6 +448,15 @@ export default function Dashboard() {
         type={upsellModal.type}
       />
     </>
+  );
+}
+
+// Wrapper with ToastProvider
+export default function Dashboard() {
+  return (
+    <ToastProvider>
+      <DashboardContent />
+    </ToastProvider>
   );
 }
 

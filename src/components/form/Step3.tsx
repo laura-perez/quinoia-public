@@ -3,21 +3,15 @@ import RadioGroup from "./form-components/RadioGroup";
 import ProgressBar from "./form-components/ProgressBar";
 import CheckboxGroup from "./form-components/CheckboxGroup";
 import { FormStepProps } from "./types";
-import { FORM_LABELS } from "../../lib/constants/ui";
+import {
+  FORM_LABELS,
+  COOKING_LEVELS,
+  EQUIPMENT_OPTIONS,
+  PORTION_COUNTS,
+  getRecipeCountOptions,
+  getPremiumOnlyRecipeCounts
+} from "../../lib/constants";
 import { useFormStep, useFormValidation, useFormHandlers } from "./hooks";
-
-// Cooking level options
-const COOKING_LEVELS = [
-  "Débutant : Je veux juste que ce soit simple et rapide",
-  "Intermédiaire : Je suis à l’aise, mais pas un chef non plus",
-  "Confirmé : Cuisiner, c’est mon terrain de jeu",
-];
-
-// Equipment options
-const EQUIPMENT_OPTIONS = ["Four", "Mixeur/Blender", "Thermomix", "Air Fryer"];
-
-// Portion count options
-const PORTION_COUNTS = [2, 3, 4];
 
 export default function Step3({ formData, updateFormData, goToNext, goToPrev, email, isLast, isPremium = false }: FormStepProps) {
   const { errors, clearFieldError, setValidationErrors } = useFormStep();
@@ -26,8 +20,8 @@ export default function Step3({ formData, updateFormData, goToNext, goToPrev, em
   const [hoveredPremium, setHoveredPremium] = useState<number | null>(null);
 
   // Recipe count options - dynamic based on premium status
-  const RECIPE_COUNTS = isPremium ? [2, 3, 4, 5, 6, 7] : [2, 3];
-  const PREMIUM_RECIPE_COUNTS = isPremium ? [] : [4, 5, 6, 7]; // Only show fake buttons for free users
+  const RECIPE_COUNTS = getRecipeCountOptions(isPremium);
+  const PREMIUM_RECIPE_COUNTS = getPremiumOnlyRecipeCounts(isPremium);
 
   // Initialize default values when component mounts
   useEffect(() => {

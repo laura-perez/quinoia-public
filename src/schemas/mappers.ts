@@ -12,11 +12,26 @@ export const dietMap = {
   Vegan: "vegan",
 } as const;
 
+// Reverse mapping for displaying stored values in forms
+export const dietReverseMap: Record<string, string> = {
+  'omnivore': 'Omnivore',
+  'flexitarian': 'Flexitarien',
+  'vegetarian': 'Végétarien',
+  'vegan': 'Vegan',
+};
+
 export const cookingLevelMap = {
   "Débutant : Je veux juste que ce soit simple et rapide": "beginner",
   "Intermédiaire : Je suis à l’aise, mais pas un chef non plus": "intermediate",
   "Confirmé : Cuisiner, c’est mon terrain de jeu": "advanced",
 } as const;
+
+// Reverse mapping for displaying stored values in forms
+export const cookingLevelReverseMap: Record<string, string> = {
+  'beginner': "Débutant : Je veux juste que ce soit simple et rapide",
+  'intermediate': "Intermédiaire : Je suis à l’aise, mais pas un chef non plus",
+  'advanced': "Confirmé : Cuisiner, c’est mon terrain de jeu",
+};
 
 export const proteinPreferenceMap = {
   Boeuf: "Beef",
@@ -32,15 +47,35 @@ export const proteinPreferenceMap = {
   "Simili-viandes (Heura, LaVie etc ..)": "Meat alternatives"
 } as const;
 
+// Reverse mapping for displaying stored English values in French forms
+export const proteinPreferenceReverseMap: Record<string, string> = {
+  'Beef': 'Boeuf',
+  'Poultry': 'Volaille',
+  'Fish': 'Poisson',
+  'Eggs': 'Œufs',
+  'Dairy': 'Fromages, Produits laitiers',
+  'Legumes': 'Légumineuses (Pois chiches, lentilles ..)',
+  'Tofu': 'Tofu',
+  'Meat alternatives': 'Simili-viandes (Heura, LaVie etc ..)',
+};
+
 export const equipmentMap = {
   Four: "Oven",
-  "Mixeur/Blender": "Blender", 
+  "Mixeur/Blender": "Blender",
   Thermomix: "Thermomix",
   "Air Fryer": "Air Fryer",
   // Base equipment mappings (for database data)
   "Poêle": "Pan",
   "Casserole": "Pot",
 } as const;
+
+// Reverse mapping for displaying stored English values in French forms
+export const equipmentReverseMap: Record<string, string> = {
+  'Oven': 'Four',
+  'Blender': 'Mixeur/Blender',
+  'Thermomix': 'Thermomix',
+  'Air Fryer': 'Air Fryer',
+};
 
 export const canonicalAllergens = [
   "Gluten",

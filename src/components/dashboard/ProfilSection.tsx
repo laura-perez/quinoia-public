@@ -4,7 +4,15 @@
 
 import React, { useState } from 'react';
 import { USER_STATUS } from '@/lib/supabase/types/user.types';
-import { Settings, Bell, CreditCard, User } from 'lucide-react';
+import { Settings, Bell, CreditCard, User, ArrowLeft } from 'lucide-react';
+import { PreferencesForm } from './PreferencesForm';
+import type { FormData } from '../form/types';
+import {
+  cookingLevelReverseMap,
+  dietReverseMap,
+  proteinPreferenceReverseMap,
+  equipmentReverseMap
+} from '@/schemas/mappers';
 
 interface ProfilSectionProps {
   user: {
@@ -12,22 +20,58 @@ interface ProfilSectionProps {
     firstName?: string | null;
     status: string;
   };
-  onSavePreferences?: (prefs: any) => void;
+  submission?: any; // User submission data
+  onSavePreferences?: (prefs: FormData) => Promise<void>;
   onManageSubscription?: () => void;
   onUpgrade?: () => void;
   onDeleteAccount?: () => void;
+  onBackToDashboard?: () => void;
 }
 
 export function ProfilSection({
   user,
+  submission,
   onSavePreferences,
   onManageSubscription,
   onUpgrade,
   onDeleteAccount,
+  onBackToDashboard,
 }: ProfilSectionProps) {
   const [activeSubTab, setActiveSubTab] = useState('preferences');
 
   const isPremium = user.status === USER_STATUS.PAID_ACTIVE;
+
+  // Convert submission to FormData format for PreferencesForm
+  // Reverse map English DB values to French form labels
+  const formDataFromSubmission: FormData = submission ? {
+    // Reverse map diet: 'flexitarian' → 'Flexitarien'
+    dietType: dietReverseMap[submission.diet] || 'Omnivore',
+    // Reverse map protein preferences: ['Poultry', 'Fish'] → ['Volaille', 'Poisson']
+    proteinPreferences: (submission.proteinPreferences || []).map(
+      (p: string) => proteinPreferenceReverseMap[p] || p
+    ),
+    // Allergies field doesn't exist in submission table - default to 'Aucune'
+    allergens: ['Aucune'],
+    otherAllergies: '',
+    dislikedFoods: submission.dislikedFoods || '',
+    favoriteFoods: submission.favoriteFoods || '',
+    // Reverse map cooking level: 'advanced' → 'Confirmé : ...'
+    cookingLevel: cookingLevelReverseMap[submission.cookingLevel] || cookingLevelReverseMap['intermediate'],
+    // Reverse map equipment: ['Oven', 'Blender'] → ['Four', 'Mixeur/Blender']
+    equipmentAvailable: (submission.equipmentAvailable || []).map(
+      (e: string) => equipmentReverseMap[e] || e
+    ),
+    numRecipes: String(submission.numRecipes || 3),
+    numServings: String(submission.numServings || 2),
+  } : {
+    dietType: 'Omnivore',
+    proteinPreferences: [],
+    allergens: ['Aucune'],
+    cookingLevel: cookingLevelReverseMap['intermediate'],
+    equipmentAvailable: [],
+    numRecipes: '3',
+    numServings: '2',
+  };
 
   const subTabs = [
     { id: 'preferences', label: 'Préférences', icon: Settings },
@@ -40,6 +84,13 @@ export function ProfilSection({
     <div className="px-4 py-6">
       <div className="mb-6">
         <p className="text-[#8A8A8A] mt-1">{user.firstName || 'toi'} - {user.email}</p>
+        <button
+          onClick={onBackToDashboard}
+          className="flex items-center gap-2 mt-2 text-sm text-[#F4C95D] hover:text-[#E5B84A] transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Retour au dashboard</span>
+        </button>
       </div>
 
       {/* Sub-tabs */}
@@ -64,14 +115,19 @@ export function ProfilSection({
       <div className="max-w-2xl">
         {activeSubTab === 'preferences' && (
           <div className="space-y-4">
-            <p className="text-sm text-[#8A8A8A]">
-              Modifie tes préférences alimentaires (régime, goûts, équipements, exclusions)
-            </p>
-            <div className="bg-white border border-[#EAEAEA] rounded-xl p-6">
-              <p className="text-[#8A8A8A] text-center py-8">
-                [À implémenter : Formulaire de préférences - réutiliser les composants de l'onboarding]
-              </p>
-            </div>
+            {onSavePreferences ? (
+              <PreferencesForm
+                initialData={formDataFromSubmission}
+                onSave={onSavePreferences}
+                isPremium={isPremium}
+              />
+            ) : (
+              <div className="bg-white border border-[#EAEAEA] rounded-xl p-6">
+                <p className="text-[#8A8A8A] text-center py-8">
+                  Chargement des préférences...
+                </p>
+              </div>
+            )}
           </div>
         )}
 

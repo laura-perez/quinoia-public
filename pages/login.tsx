@@ -99,8 +99,7 @@ function LoginPageContent() {
       }
 
       // Success - always show same message (anti-enumeration)
-      setSuccessMessage('✔️ Lien envoyé ! Vérifie tes emails.');
-      showToast('✔️ Lien envoyé ! Vérifie tes emails.', 'success');
+      setSuccessMessage('Lien envoyé ! Vérifie tes emails.');
     } catch (err) {
       console.error('Login error:', err);
       setErrorMessage('Erreur réseau. Vérifie ta connexion.');
@@ -220,25 +219,12 @@ function LoginPageContent() {
                     Envoi en cours...
                   </span>
                 ) : successMessage ? (
-                  'Lien envoyé ✔️'
+                  'Lien envoyé'
                 ) : (
                   'Recevoir le lien de connexion'
                 )}
               </button>
             </form>
-
-            {/* Help Text */}
-            <div className="mt-6 text-center">
-              <p className="text-sm text-[#8A8A8A]">
-                Pas encore de compte ?{' '}
-                <Link
-                  href="/formulaire"
-                  className="text-[#414535] font-medium hover:underline"
-                >
-                  Commence ton essai gratuit
-                </Link>
-              </p>
-            </div>
           </div>
 
           {/* Security Note */}

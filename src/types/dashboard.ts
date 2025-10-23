@@ -56,6 +56,7 @@ export interface DashboardStatusResponse {
   quotas: QuotaStatus;
   currentMenu: DashboardMenu | null;
   ingredientsCatalog: Record<string, CanonicalIngredientInfo> | null;
+  submission: any | null; // User submission data (preferences)
 }
 
 // ==================== Swap Operations ====================

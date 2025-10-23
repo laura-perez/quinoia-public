@@ -2,7 +2,7 @@ import React from "react";
 
 interface RadioGroupProps {
   name: string;
-  options: Array<string | number>;
+  options: ReadonlyArray<string | number> | Array<string | number>;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string | undefined;

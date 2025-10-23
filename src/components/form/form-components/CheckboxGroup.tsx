@@ -2,7 +2,7 @@ import React from "react";
 
 interface CheckboxGroupProps {
   name: string;
-  options: string[];
+  options: readonly string[] | string[];
   values: string[];
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   label: string;

@@ -11,3 +11,6 @@ export * from './nutrition';
 
 // Supermarket sections organization
 export * from './supermarket-sections';
+
+// Form options (diet, equipment, cooking levels, etc.)
+export * from './formOptions';

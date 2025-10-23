@@ -89,13 +89,13 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: (id: string) => 
       bg: 'bg-green-50',
       border: 'border-green-200',
       text: 'text-green-800',
-      icon: '✔️',
+      icon: null,
     },
     error: {
       bg: 'bg-red-50',
       border: 'border-red-200',
       text: 'text-red-800',
-      icon: '❌',
+      icon: null,
     },
     info: {
       bg: 'bg-blue-50',

@@ -14,6 +14,7 @@ import { checkUserQuota } from '@/lib/quotas/checker';
 import { getRecipesByIds } from '@/lib/supabase/repositories/recipes';
 import { getCanonicalIngredientsByIds } from '@/lib/supabase/repositories/ingredients';
 import { USER_STATUS } from '@/lib/supabase/types/user.types';
+import { getServiceClient } from '@/lib/supabase/client';
 
 async function handler(req: NextApiRequest, res: NextApiResponse, userId: string, sessionUser: SessionUser) {
   const logger = createLogger();
@@ -39,6 +40,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       userId: user.id,
       status: user.status
     });
+
+    // Fetch user submission (for preferences editing)
+    const { data: submission } = await getServiceClient()
+      .from('submission')
+      .select('*')
+      .eq('userId', userId)
+      .maybeSingle();
 
     // Fetch quotas (skip for premium users)
     const isPremium = user.status === USER_STATUS.PAID_ACTIVE;
@@ -182,6 +190,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       },
       currentMenu,
       ingredientsCatalog,
+      submission: submission || null,
     };
 
     logger.info('Dashboard status fetched successfully', {

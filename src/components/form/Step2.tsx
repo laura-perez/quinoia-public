@@ -4,29 +4,8 @@ import ProgressBar from "./form-components/ProgressBar";
 import CheckboxGroup from "./form-components/CheckboxGroup";
 import TextInput from "./form-components/TextInput";
 import type { FormStepProps } from "./types";
-import { FORM_LABELS, FORM_PLACEHOLDERS } from "../../lib/constants/ui";
+import { FORM_LABELS, FORM_PLACEHOLDERS, DIET_OPTIONS, PROTEIN_OPTIONS, ALLERGY_OPTIONS } from "../../lib/constants";
 import { useFormStep, useFormValidation, useFormHandlers } from "./hooks";
-
-const DIET_OPTIONS = ["Omnivore", "Flexitarien", "Végétarien", "Vegan"];
-const PROTEIN_OPTIONS = [
-  "Boeuf",
-  "Volaille",
-  "Poisson",
-  "Œufs",
-  "Fromages, Produits laitiers",
-  "Tofu",
-  "Légumineuses (Pois chiches, lentilles ..)",
-  "Simili-viandes (Heura, LaVie etc ..)",
-];
-
-const ALLERGY_OPTIONS = [
-  { value: "none", label: "Aucune" },
-  { value: "Gluten", label: "Gluten" },
-  { value: "Milk", label: "Lactose" },
-  { value: "Tree nuts", label: "Noix" },
-  { value: "Eggs", label: "Œufs" },
-  { value: "other", label: "Autres" }
-];
 
 /**
  * Step 2: Dietary preferences and restrictions.

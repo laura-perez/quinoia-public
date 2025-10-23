@@ -18,8 +18,8 @@ import { dietMap, cookingLevelMap, proteinPreferenceMap, equipmentMap, genderMap
 const onboardingSchema = z.object({
   // User profile
   firstName: z.string().min(1, 'First name is required'),
-  age: z.number().int().min(1).max(120).nullable(),
-  gender: z.string().nullable(),
+  age: z.number().int().min(1).max(120).nullable().optional(),
+  gender: z.string().nullable().optional(),
 
   // Dietary preferences
   diet: z.string().min(1, 'Diet is required'),
@@ -101,13 +101,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       dislikedFoods: data.dislikedFoods,
     };
 
-    logger.info('Mapped form values', {
-      originalDiet: data.diet,
-      mappedDiet,
-      originalGender: data.gender,
-      mappedGender,
-      cookingLevel: data.cookingLevel
-    });
 
     // Update user firstName
     const { error: userUpdateError } = await supabase
@@ -139,42 +132,40 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       .single();
 
     if (existingSubmission) {
-      logger.info('User already has submission, updating...', {
-        userId,
-        existingSubmissionId: existingSubmission.id
-      });
+      // Build update object - only include age/gender if provided
+      const updateData: any = {
+        diet: mappedDiet,
+        proteinPreferences: mappedProteinPreferences,
+        equipmentAvailable: mappedEquipment,
+        cookingLevel: data.cookingLevel,
+        numRecipes: data.numRecipes,
+        numServings: data.numServings,
+        dislikedFoods: data.dislikedFoods,
+        rawFormJson,
+        normalizedInput,
+      };
 
-      // Update existing submission
-      const { error: updateError } = await supabase
+      // Only update age/gender if they were provided (onboarding flow)
+      if (data.age !== undefined) {
+        updateData.age = data.age;
+      }
+      if (data.gender !== undefined) {
+        updateData.gender = mappedGender;
+      }
+
+      const { data: updateResult, error: updateError, count } = await supabase
         .from('submission')
-        .update({
-          age: data.age,
-          gender: mappedGender,
-          diet: mappedDiet,
-          proteinPreferences: mappedProteinPreferences,
-          equipmentAvailable: mappedEquipment,
-          cookingLevel: data.cookingLevel,
-          numRecipes: data.numRecipes,
-          numServings: data.numServings,
-          dislikedFoods: data.dislikedFoods,
-          rawFormJson,
-          normalizedInput,
-        })
-        .eq('id', existingSubmission.id);
+        .update(updateData)
+        .eq('id', existingSubmission.id)
+        .select();
 
       if (updateError) {
         logger.error('Failed to update submission', {
           error: updateError,
-          errorDetails: JSON.stringify(updateError),
           userId
         });
         throw updateError;
       }
-
-      logger.info('Submission updated successfully', {
-        submissionId: existingSubmission.id,
-        userId
-      });
 
       return res.status(200).json({
         success: true,
