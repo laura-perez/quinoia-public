@@ -385,6 +385,7 @@ function DashboardContent() {
                     onActiveRecipesChange={setCurrentActiveRecipes}
                     historique={historique}
                     onUpgradeHistory={() => setUpsellModal({ isOpen: true, type: 'history' })}
+                    userFirstName={user?.firstName}
                   />
                 ) : (
                   <EmptyState

@@ -75,6 +75,9 @@ export function ShoppingListDrawer({
 }: ShoppingListDrawerProps) {
   const [shoppingData, setShoppingData] = useState<ShoppingDataByRayon>({});
   const [checkedItems, setCheckedItems] = useState<ShoppingItem[]>([]);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [isClosing, setIsClosing] = useState(false);
 
   // Initialize shopping data
   useEffect(() => {
@@ -189,18 +192,60 @@ export function ShoppingListDrawer({
     alert('Partage disponible bientôt !');
   };
 
-  if (!isOpen) return null;
+  // Minimum swipe distance (in px) to trigger close
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    // Close drawer on right swipe (swipe away)
+    if (isRightSwipe) {
+      handleClose();
+    }
+  };
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+      setIsClosing(false);
+    }, 300); // Match animation duration
+  };
+
+  if (!isOpen && !isClosing) return null;
 
   return (
     <>
       {/* Backdrop - Overlay */}
       <div
-        className="fixed inset-0 bg-black/50 z-40 transition-opacity"
-        onClick={onClose}
+        className={`fixed inset-0 bg-black/50 z-40 transition-opacity ${
+          isClosing ? 'opacity-0' : 'opacity-100'
+        }`}
+        onClick={handleClose}
       />
 
       {/* Drawer */}
-      <div className="fixed top-0 right-0 h-full w-full md:w-[500px] bg-white z-50 shadow-2xl overflow-y-auto animate-slide-in">
+      <div
+        className={`fixed top-0 right-0 h-full w-full md:w-[500px] bg-white z-50 shadow-2xl overflow-y-auto ${
+          isClosing ? 'animate-slide-out' : 'animate-slide-in'
+        }`}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-[#EAEAEA] p-4 z-10">
           <div className="flex items-center justify-between mb-2">
@@ -208,7 +253,7 @@ export function ShoppingListDrawer({
               🛒 Liste de courses complète
             </h3>
             <button
-              onClick={onClose}
+              onClick={handleClose}
               className="p-2 hover:bg-[#FAFAFA] rounded-lg transition-colors"
             >
               <X className="w-5 h-5" />
@@ -348,8 +393,19 @@ export function ShoppingListDrawer({
             transform: translateX(0);
           }
         }
+        @keyframes slide-out {
+          from {
+            transform: translateX(0);
+          }
+          to {
+            transform: translateX(100%);
+          }
+        }
         .animate-slide-in {
           animation: slide-in 0.3s ease-out;
+        }
+        .animate-slide-out {
+          animation: slide-out 0.3s ease-out;
         }
       `}</style>
     </>

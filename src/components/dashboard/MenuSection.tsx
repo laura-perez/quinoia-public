@@ -3,7 +3,7 @@
  */
 
 import React, { useState, useRef, useMemo, useEffect } from 'react';
-import { ShoppingCart, Lock, Trash2 } from 'lucide-react';
+import { ShoppingCart, Lock, Trash2, ClipboardList } from 'lucide-react';
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { Badge } from '@/components/ui/badge';
 import { RecipeModal } from '@/components/ui/RecipeModal';
@@ -26,6 +26,7 @@ interface MenuSectionProps {
   onActiveRecipesChange?: (activeRecipes: Recipe[]) => void;
   historique?: any[];
   onUpgradeHistory?: () => void;
+  userFirstName?: string | null;
 }
 
 const fallbackImageUrl = `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmb29kJTIwZGlzaHxlbnwxfHx8fDE3NTY4Mjg0MjF8MA&ixlib=rb-4.1.0&q=80&w=1080`;
@@ -41,13 +42,12 @@ export function MenuSection({
   onActiveRecipesChange,
   historique = [],
   onUpgradeHistory,
+  userFirstName,
 }: MenuSectionProps) {
   const [selectedRecipeIndex, setSelectedRecipeIndex] = useState<number | null>(null);
-  const [currentRecipe, setCurrentRecipe] = useState(0);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [swapPanelOpen, setSwapPanelOpen] = useState(false);
   const [recipeToSwap, setRecipeToSwap] = useState<Recipe | null>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
 
   // Filter swap pool to remove recipes already in active recipes
   const cleanedSwapPool = useMemo(() => {
@@ -132,42 +132,16 @@ export function MenuSection({
     }
   };
 
-  const handleCarouselScroll = () => {
-    if (!carouselRef.current || !transformedRecipes) return;
-
-    const container = carouselRef.current;
-    const scrollLeft = container.scrollLeft;
-    const containerWidth = container.clientWidth;
-    const scrollCenter = scrollLeft + containerWidth / 2;
-
-    const recipeElements = container.children;
-    let closestIndex = 0;
-    let closestDistance = Infinity;
-
-    for (let i = 0; i < recipeElements.length; i++) {
-      const element = recipeElements[i] as HTMLElement;
-      const elementCenter = element.offsetLeft + element.offsetWidth / 2;
-      const distance = Math.abs(scrollCenter - elementCenter);
-
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestIndex = i;
-      }
-    }
-
-    if (closestIndex !== currentRecipe) {
-      setCurrentRecipe(closestIndex);
-    }
-  };
-
   const maxPrepTime = Math.max(...activeRecipes.map((r: any) => r.prepTimeMinutes));
 
   return (
-    <div className="px-4 py-6 max-w-6xl mx-auto">
+    <div className="px-4 max-w-6xl mx-auto pb-20">
       {/* Header */}
       <div className="mb-6 bg-[#FCFAF7] -mx-4 px-4 py-4 rounded-lg">
         <div>
-          <h2 className="text-2xl font-bold text-[#414535]">Ta semaine est prête 🍽️</h2>
+          <h2 className="text-2xl font-bold text-[#414535]">
+            {userFirstName ? `${userFirstName}, ta` : 'Ta'} semaine est prête 🍽️
+          </h2>
           <p className="text-[#8A8A8A] mt-1">
             <span className="font-semibold text-[#F4C95D]">{activeRecipes.length} recettes</span>
             <span className="font-semibold text-[#7D9476]"> équilibrées</span>
@@ -176,25 +150,13 @@ export function MenuSection({
         </div>
       </div>
 
-      {/* Recipes Carousel (Mobile) */}
+      {/* Recipes Grid (Mobile) - Max 3 columns */}
       <div className="lg:hidden mb-8">
-        <div
-          ref={carouselRef}
-          className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory pb-4"
-          style={{
-            scrollSnapType: 'x mandatory',
-            scrollBehavior: 'smooth',
-            WebkitOverflowScrolling: 'touch',
-          }}
-          onScroll={handleCarouselScroll}
-        >
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {transformedRecipes.map((recipe: any, index: number) => (
             <div
               key={recipe.id}
-              className={`flex-shrink-0 snap-center transition-all duration-300 bg-white rounded-2xl p-3 shadow-lg flex flex-col ${
-                index === currentRecipe ? 'opacity-100 scale-100' : 'opacity-60 scale-95'
-              }`}
-              style={{ width: '42.5vw', maxWidth: '175px' }}
+              className="bg-white rounded-2xl p-3 shadow-lg flex flex-col"
             >
               {/* Photo Container */}
               <div
@@ -255,12 +217,11 @@ export function MenuSection({
           {/* Add Recipe Card - Always visible for premium (pool auto-refetches), for free only if pool > 0 */}
           {(isPremium || swapPool.length > 0) && (
             <div
-              className={`flex-shrink-0 rounded-2xl overflow-hidden shadow-lg relative aspect-square snap-center transition-all duration-300 ${
+              className={`rounded-2xl overflow-hidden shadow-lg relative aspect-square transition-all duration-300 ${
                 maxRecipesReached || (swapPool.length === 0 && !isPremium)
                   ? 'bg-gradient-to-br from-gray-300 to-gray-400 opacity-60 cursor-not-allowed'
                   : 'bg-gradient-to-br from-[#F4C95D] to-[#E5B84A] hover:scale-105 cursor-pointer'
               }`}
-              style={{ width: '42.5vw', maxWidth: '175px' }}
               onClick={handleAddRecipe}
             >
               <div className="w-full h-full flex flex-col items-center justify-center p-4">
@@ -427,20 +388,17 @@ export function MenuSection({
         </div>
       )}
 
-      {/* Floating Shopping List Button - Aligned with container right edge */}
-      <button
-        onClick={onOpenShoppingList}
-        className="fixed bottom-4 right-6 lg:bottom-8 bg-[#F4C95D] text-[#414535] p-6 rounded-full shadow-lg hover:shadow-2xl hover:bg-[#E5B84A] transition-all hover:scale-110 hover:ring-4 hover:ring-[#F4C95D]/30 z-40 flex items-center gap-3 group"
-        style={{
-          right: 'max(1.5rem, calc((100vw - 72rem) / 2 + 1rem))'
-        }}
-        aria-label="Ouvrir la liste de courses"
-      >
-        <ShoppingCart className="w-9 h-9" />
-        <span className="hidden lg:block text-sm font-semibold opacity-90 group-hover:opacity-100 transition-opacity">
-          Ma liste
-        </span>
-      </button>
+      {/* Centered Shopping List Button at Bottom */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 max-w-6xl w-full px-4">
+        <button
+          onClick={onOpenShoppingList}
+          className="bg-[#F4C95D] text-white px-9 py-4 rounded-full shadow-lg hover:shadow-2xl hover:bg-[#E5B84A] transition-all hover:scale-110 hover:ring-4 hover:ring-[#F4C95D]/30 flex items-center gap-4 mx-auto"
+          aria-label="Voir ma liste de courses"
+        >
+          <ClipboardList className="w-9 h-9" />
+          <span className="text-lg font-semibold">Voir ma liste</span>
+        </button>
+      </div>
 
       {/* Premium Upgrade Modal */}
       <PremiumUpgradeModal
@@ -472,7 +430,7 @@ export function MenuSection({
           initialRecipeIndex={selectedRecipeIndex}
           isOpen={selectedRecipeIndex !== null}
           onClose={() => setSelectedRecipeIndex(null)}
-          onRecipeChange={setCurrentRecipe}
+          onRecipeChange={setSelectedRecipeIndex}
           numServings={menu.numServings}
         />
       )}
