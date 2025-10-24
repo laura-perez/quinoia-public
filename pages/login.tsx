@@ -10,10 +10,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Navbar } from '@/components/ui';
 import { ToastProvider, useToast } from '@/components/ui/Toast';
+import { EMAIL_REGEX } from '@/lib/constants';
 
 function LoginPageContent() {
   const router = useRouter();
@@ -48,8 +48,7 @@ function LoginPageContent() {
   }, [router]);
 
   const validateEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return EMAIL_REGEX.test(email);
   };
 
   const onSubmit = async (e: React.FormEvent) => {

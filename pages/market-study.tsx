@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Navbar from '../src/components/ui/Navbar';
+import { EMAIL_REGEX } from '@/lib/constants';
 
 interface FormData {
   galeres: string[];
@@ -81,7 +82,7 @@ const MarketStudyPage = () => {
       const emailTrimmed = formData.email.trim().toLowerCase();
       if (!emailTrimmed) {
         newErrors.email = 'Email requis pour le test gratuit';
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrimmed)) {
+      } else if (!EMAIL_REGEX.test(emailTrimmed)) {
         newErrors.email = 'Format d\'email invalide';
       }
     }

@@ -7,6 +7,7 @@ import { createCheckoutSession, PLAN_METADATA, PlanType } from '@/lib/stripe';
 import { getClientIPForRateLimit } from '@/lib/auth';
 import { limit } from '@/lib/auth/rateLimits';
 import { createLogger } from '@/lib/logger';
+import { EMAIL_REGEX } from '@/lib/constants';
 
 const logger = createLogger();
 
@@ -48,8 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(customerEmail)) {
+    if (!EMAIL_REGEX.test(customerEmail)) {
       return res.status(400).json({
         error: 'Invalid email format'
       });

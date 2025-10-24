@@ -14,3 +14,6 @@ export * from './supermarket-sections';
 
 // Form options (diet, equipment, cooking levels, etc.)
 export * from './formOptions';
+
+// Email validation regex
+export * from './emailRegex';

@@ -1,23 +1,23 @@
 import { describe, it, expect } from 'vitest';
+import { EMAIL_REGEX } from '@/lib/constants';
 
 describe('Checkout API Input Validation', () => {
   describe('Email validation', () => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     it('should accept valid emails', () => {
-      expect(emailRegex.test('test@example.com')).toBe(true);
-      expect(emailRegex.test('user+tag@domain.co.uk')).toBe(true);
-      expect(emailRegex.test('name.surname@company.fr')).toBe(true);
-      expect(emailRegex.test('user123@test-domain.org')).toBe(true);
+      expect(EMAIL_REGEX.test('test@example.com')).toBe(true);
+      expect(EMAIL_REGEX.test('user+tag@domain.co.uk')).toBe(true);
+      expect(EMAIL_REGEX.test('name.surname@company.fr')).toBe(true);
+      expect(EMAIL_REGEX.test('user123@test-domain.org')).toBe(true);
+      expect(EMAIL_REGEX.test('jane.doe+quinoia@proton.me')).toBe(true);
     });
 
     it('should reject invalid emails', () => {
-      expect(emailRegex.test('')).toBe(false);
-      expect(emailRegex.test('notanemail')).toBe(false);
-      expect(emailRegex.test('missing@domain')).toBe(false);
-      expect(emailRegex.test('@nodomain.com')).toBe(false);
-      expect(emailRegex.test('spaces in@email.com')).toBe(false);
-      expect(emailRegex.test('no-at-symbol.com')).toBe(false);
+      expect(EMAIL_REGEX.test('')).toBe(false);
+      expect(EMAIL_REGEX.test('notanemail')).toBe(false);
+      expect(EMAIL_REGEX.test('missing@domain')).toBe(false);
+      expect(EMAIL_REGEX.test('@nodomain.com')).toBe(false);
+      expect(EMAIL_REGEX.test('spaces in@email.com')).toBe(false);
+      expect(EMAIL_REGEX.test('no-at-symbol.com')).toBe(false);
     });
   });
 

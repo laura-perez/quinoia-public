@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { ArrowLeft } from 'lucide-react';
 import { Navbar } from '@/components/ui';
 import { PLAN_METADATA, PlanType } from '@/lib/stripe/config';
+import { EMAIL_REGEX } from '@/lib/constants';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -65,8 +66,7 @@ export default function CheckoutPage() {
     }
 
     // Validate email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!EMAIL_REGEX.test(email)) {
       setError('Format d\'email invalide');
       return;
     }
