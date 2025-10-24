@@ -10,13 +10,15 @@ import Head from 'next/head';
 import { getServiceClient } from '@/lib/supabase/client';
 import { getRecipeImageUrls } from '@/lib/supabase/storage';
 import { createLogger } from '@/lib/logger';
-import { SECTION_DISPLAY_ORDER, getSectionDisplayNameWithContext } from '@/lib/constants';
+import { getSectionDisplayNameWithContext } from '@/lib/constants';
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import Navbar from '@/components/ui/Navbar';
 import { RecipeModal } from '@/components/ui/RecipeModal';
+import { ShoppingListDrawer } from '@/components/dashboard/ShoppingListDrawer';
+import { ClipboardList } from 'lucide-react';
 
 const logger = createLogger();
 
@@ -141,6 +143,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
   const [selectedRecipeIndex, setSelectedRecipeIndex] = useState<number | null>(null);
   const [showActivationModal, setShowActivationModal] = useState(false);
   const [isRequestingLink, setIsRequestingLink] = useState(false);
+  const [isShoppingListOpen, setIsShoppingListOpen] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   // Refs for scrolling
@@ -541,8 +544,29 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
               </div>
             </div>
 
-            {/* Liste de courses Section */}
-            <div ref={listeRef} id="liste" className="space-y-6 w-full pt-6">
+            {/* Activation Banner - Mobile: below carousel */}
+            <div className="w-full -mx-4 px-4 py-4 bg-gradient-to-r from-[#F4C95D] to-[#F5D76A]">
+              <div className="flex flex-col items-center gap-3">
+                <div className="text-center">
+                  <h3 className="text-[#414535] font-bold text-sm mb-1">
+                    Crée ton compte pour débloquer ton espace perso :
+                  </h3>
+                  <p className="text-[#414535] text-xs">
+                    🔄 changer tes recettes • 📜 sauvegarder ton menu • 🍽️ recevoir 3 nouvelles recettes gratuites chaque semaine
+                  </p>
+                </div>
+                <button
+                  onClick={handleActivateAccount}
+                  disabled={isRequestingLink}
+                  className="bg-[#414535] text-white px-6 py-2 rounded-full font-semibold hover:bg-[#2f3226] transition-all disabled:opacity-50 text-sm"
+                >
+                  {isRequestingLink ? 'Envoi en cours...' : '✨ Créer mon compte gratuit'}
+                </button>
+              </div>
+            </div>
+
+            {/* Liste de courses Section - Hidden on mobile, will use drawer instead */}
+            <div ref={listeRef} id="liste" className="hidden space-y-6 w-full pt-6">
               <div className="w-full">
                 <div className="flex items-start justify-between w-full mb-2">
                   <div>
@@ -810,36 +834,59 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
           </div>
         </div>
 
-        {/* Activation Banner - Desktop & Mobile */}
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-[#F4C95D] to-[#F5D76A] shadow-2xl">
-          <div className="max-w-7xl mx-auto px-4 py-4 lg:py-5">
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-3 lg:gap-4">
+        {/* Activation Banner - Desktop only (fixed bottom) */}
+        <div className="hidden lg:block fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r from-[#F4C95D] to-[#F5D76A] shadow-2xl">
+          <div className="max-w-7xl mx-auto px-4 py-5">
+            <div className="flex flex-row items-center justify-between gap-4">
               {/* Text Content */}
-              <div className="text-center lg:text-left flex-1">
-                <h3 className="text-[#414535] font-bold text-sm lg:text-lg mb-1 lg:mb-2">
+              <div className="text-left flex-1">
+                <h3 className="text-[#414535] font-bold text-lg mb-2">
                 Crée ton compte pour débloquer ton espace perso :
                 </h3>
-                <p className="text-[#414535] text-xs lg:text-base">
+                <p className="text-[#414535] text-base">
                   🔄 changer tes recettes • 📜 sauvegarder ton menu • 🍽️ recevoir 3 nouvelles recettes gratuites chaque semaine
                 </p>
               </div>
 
               {/* CTA Button */}
-              <div className="flex flex-col items-center gap-1 lg:gap-2">
+              <div className="flex flex-col items-center gap-2">
                 <button
                   onClick={handleActivateAccount}
                   disabled={isRequestingLink}
-                  className="bg-[#414535] text-white px-6 py-2.5 lg:py-3 rounded-full font-semibold text-sm lg:text-base hover:bg-[#2f3226] transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-[#414535] text-white px-6 py-3 rounded-full font-semibold text-base hover:bg-[#2f3226] transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isRequestingLink ? 'Envoi...' : 'Activer mon compte'}
                 </button>
-                <p className="text-[#414535] text-[10px] lg:text-xs">
+                <p className="text-[#414535] text-xs">
                   🔐 Pas de mot de passe, juste un lien magique par email
                 </p>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Shopping List Button - Mobile only (centered bottom) */}
+        <div className="lg:hidden fixed bottom-8 left-1/2 -translate-x-1/2 z-40 max-w-6xl w-full px-4">
+          <button
+            onClick={() => setIsShoppingListOpen(true)}
+            className="bg-[#F4C95D] text-white px-9 py-4 rounded-full shadow-lg hover:shadow-2xl hover:bg-[#E5B84A] transition-all hover:scale-110 hover:ring-4 hover:ring-[#F4C95D]/30 flex items-center gap-4 mx-auto"
+            aria-label="Voir ma liste de courses"
+          >
+            <ClipboardList className="w-9 h-9" />
+            <span className="text-lg font-semibold">Voir ma liste</span>
+          </button>
+        </div>
+
+        {/* Shopping List Drawer - Mobile */}
+        <ShoppingListDrawer
+          isOpen={isShoppingListOpen}
+          onClose={() => setIsShoppingListOpen(false)}
+          shoppingList={shoppingData}
+          isPremium={false}
+          numServings={resultBundle?.meta.numServings || 2}
+          recipeCount={resultBundle?.meta.numRecipes || 3}
+          onUpgrade={handleActivateAccount}
+        />
 
         {/* Recipe Modal */}
         {selectedRecipeIndex !== null && (
