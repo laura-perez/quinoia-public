@@ -24,12 +24,22 @@ body {
   background-color: #FDFBF8;
   border-bottom: 1px solid #EAEAEA;
   padding: 16px 30px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
 }
 
 .navbar img {
   height: 42px;
   width: auto;
+}
+
+.navbar-text {
+  font-size: 28px;
+  font-weight: 600;
+  color: #414535;
+  margin: 0;
 }
 
 .content {
@@ -62,15 +72,15 @@ body {
 }
 
 .cta-button {
-  background: linear-gradient(135deg, #F4C95D 0%, #F5D76A 100%);
-  color: #414535;
+  background: transparent;
+  color: #666666;
   padding: 18px 36px;
   text-decoration: none;
   border-radius: 50px;
+  border: 2px solid #F4C95D;
   font-weight: 600;
   font-size: 16px;
   display: inline-block;
-  box-shadow: 0 4px 12px rgba(244, 201, 93, 0.3);
   transition: transform 0.2s ease;
 }
 

@@ -43,7 +43,8 @@ export function buildEmailHtml(params: {
   <div class="container">
     <!-- Navbar -->
     <div class="navbar">
-      <img src="https://quinoia.fr/quinoia_logo.png" alt="Quinoïa Logo" />
+      <img src="https://quinoia.fr/quinoia_leaf.png" alt="Quinoïa" />
+      <span class="navbar-text">Quinoïa</span>
     </div>
 
     <!-- Content -->
