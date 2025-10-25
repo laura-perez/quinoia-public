@@ -129,6 +129,15 @@ export class SessionsRepository {
       userId: data.userId
     });
 
+    // Check if user data exists (join might return null)
+    if (!data.user) {
+      this.logger.error('Session found but user data is null', {
+        userId: data.userId,
+        token: token.substring(0, 8) + '...'
+      });
+      return null;
+    }
+
     return {
       ...data,
       expiresAt: new Date(data.expiresAt),

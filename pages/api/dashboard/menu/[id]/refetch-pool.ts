@@ -16,7 +16,7 @@ import { usersRepository } from '@/lib/supabase/repositories/users';
 import { selectRecipes } from '@/lib/recipes/recipeSelector';
 import { checkUserQuota, isPremiumUser } from '@/lib/quotas/checker';
 import type { SelectionContext } from '@/types/recipes';
-import { USER_STATUS } from '@/lib/supabase/types/user.types';
+import { getRecipeImageUrls } from '@/lib/supabase/storage';
 
 setZodErrorMapFR();
 
@@ -223,28 +223,57 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       isPartial: newSwapPool.length < 10
     });
 
+    // Transform recipe images to include full URLs (match dashboard/status.ts behavior)
+    const recipeImageUrls = new Map<string, string | null>();
+    const pictureFiles = newSwapPool
+      .map((recipe: any) => recipe.picture_file as string | undefined)
+      .filter((file): file is string => Boolean(file));
+
+    if (pictureFiles.length > 0) {
+      try {
+        const urlMap = await getRecipeImageUrls(pictureFiles);
+        urlMap.forEach((url, filename) => {
+          recipeImageUrls.set(filename, url);
+        });
+
+        logger.debug('Recipe images loaded for refetched pool', {
+          imageCount: recipeImageUrls.size
+        });
+      } catch (imageError) {
+        logger.warn('Failed to load recipe images for refetched pool', {
+          error: imageError
+        });
+      }
+    }
+
+    // Add imageUrl to each recipe
+    const recipesWithImages = newSwapPool.map((recipe: any) => ({
+      ...recipe,
+      imageUrl: recipe.picture_file ? recipeImageUrls.get(recipe.picture_file) : null
+    }));
+
     // Update swap pool in database (even if partial)
     await menuResultsRepository.updateSwapPool(
       menuId,
-      newSwapPool.map(r => r.id)
+      recipesWithImages.map(r => r.id)
     );
 
     logger.info('Swap pool refetched successfully', {
       menuId,
       userId,
-      newPoolSize: newSwapPool.length,
-      isPartial: newSwapPool.length < 10
+      newPoolSize: recipesWithImages.length,
+      isPartial: recipesWithImages.length < 10
     });
 
     // Return full recipe objects for frontend
     return res.status(200).json({
       success: true,
-      newSwapPool,
-      message: newSwapPool.length < 10
-        ? `Pool rechargé avec ${newSwapPool.length} recettes (catalogue limité)`
+      newSwapPool: recipesWithImages,
+      message: recipesWithImages.length < 10
+        ? `Pool rechargé avec ${recipesWithImages.length} recettes (catalogue limité)`
         : 'Pool rechargé avec succès',
-      partial: newSwapPool.length < 10,
-      catalogueNearExhaustion: newSwapPool.length < 5
+      partial: recipesWithImages.length < 10,
+      catalogueNearExhaustion: recipesWithImages.length < 5
     });
 
   } catch (error) {
