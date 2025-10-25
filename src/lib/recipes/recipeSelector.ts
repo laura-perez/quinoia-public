@@ -346,22 +346,37 @@ function applyDiversitySelection(scoredRecipes: ScoredRecipe[], context: Selecti
   }
   
   // Phase 2: Fill remaining slots with best scoring recipes, respecting diversity
+  // Use round-robin rotation through protein categories to ensure variety
+  let diversityIndex = 0;
   while (selected.length < context.numRecipes && used.size < scoredRecipes.length) {
     const remaining = scoredRecipes.filter(r => !used.has(r.id));
     if (remaining.length === 0) break;
-    
-    // Try to find next recipe following diversity order
+
+    // Try to find next recipe following diversity order with round-robin rotation
     let nextRecipe = null;
-    for (const proteinCategory of diversityOrder) {
+    let attempts = 0;
+
+    // Try each protein category in order, starting from current diversity index
+    while (!nextRecipe && attempts < diversityOrder.length) {
+      const proteinCategory = diversityOrder[diversityIndex % diversityOrder.length];
       nextRecipe = remaining.find(r => r.proteinCategory === proteinCategory);
-      if (nextRecipe) break;
+
+      if (nextRecipe) {
+        // Found a recipe in this category, move to next category for next iteration
+        diversityIndex++;
+        break;
+      }
+
+      // No recipe in this category, try next one
+      diversityIndex++;
+      attempts++;
     }
-    
-    // If no diversity option available, take highest scoring
+
+    // If no diversity option available (all categories exhausted), take highest scoring
     if (!nextRecipe) {
       nextRecipe = remaining[0];
     }
-    
+
     selected.push(nextRecipe);
     used.add(nextRecipe.id);
   }
