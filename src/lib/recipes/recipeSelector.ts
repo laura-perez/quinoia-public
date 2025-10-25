@@ -1,16 +1,27 @@
 import { createLogger } from '@/lib/logger';
 import { getFilteredRecipes } from '@/lib/supabase/repositories/recipes';
-import { getUserRecencyFromView } from '@/lib/supabase/recency';
+import { getUserRecencyFromView, type RecencyViewData } from '@/lib/supabase/recency';
 import { mapValue, equipmentMap } from '@/schemas/mappers';
 import type { Recipe, SelectionContext, ScoredRecipe, RecipeSelectionResult } from '@/types/recipes';
-// Using recency view now instead of userRecipeHistory direct table reads
-interface RecencyViewData {
-  excludeRecipeIds: string[];
-  recentStrict: string[]; // recipes to hard-exclude (≤14/15 days)
-  recentSoft: string[];   // recipes to soft-penalize (15-21 days)
-}
 
 const logger = createLogger();
+
+// Freshness scoring constants
+const FRESHNESS_THRESHOLDS = {
+  VERY_RECENT: 7,
+  RECENT: 14,
+  NEUTRAL: 21,
+  OLD: 30
+} as const;
+
+const FRESHNESS_BONUSES = {
+  VERY_RECENT_PENALTY: -2.0,
+  NEUTRAL: 0.0,
+  RECENT_SOFT_BONUS: 0.5,
+  OLD_BONUS: 1.5,
+  VERY_OLD_BONUS: 2.0,
+  NEVER_SEEN_BONUS: 0.5
+} as const;
 
 /**
  * Main recipe selection algorithm implementing the scoring system
@@ -21,7 +32,13 @@ const logger = createLogger();
  * - Batch cooking: +0.5 if both user wants and recipe supports
  * - Favorite foods: +1 per match
  * - Disliked foods: -3 per match
- * - Recent recipes: -1.5 penalty for 14-21 day recipes
+ * - Freshness bonus/penalty (NEW): Replaces hard recency exclusion
+ *   • Never seen: +0.5
+ *   • >30 days: +2.0
+ *   • 22-30 days (inclusive): +1.5
+ *   • 15-21 days (inclusive): +0.5
+ *   • 8-14 days (inclusive): 0 (neutral)
+ *   • ≤7 days: -2.0
  */
 export async function selectRecipes(
   context: SelectionContext,
@@ -56,44 +73,19 @@ export async function selectRecipes(
     recencyDataFound: !!recency
   });
 
-  // 2. Apply remaining filters (now in-memory but much faster)
+  // 2. Apply remaining filters with automatic cycle reset fallback
   const filteredRecipes = applyRemainingFilters(baseRecipes, context, recency);
-  
+
+  // Note: No longer throw error for insufficient recipes
+  // The progressive fallback in applyRemainingFilters ensures we always have recipes
+  // In the worst case (extreme heavy user), all recipes are re-included with freshness penalties
   if (filteredRecipes.length < context.numRecipes) {
-    logger.error('Insufficient recipes after hard filtering', {
+    logger.warn('Pool smaller than requested but continuing with available recipes', {
       available: filteredRecipes.length,
       requested: context.numRecipes,
-      userId: context.userId,
-      diet: context.diet,
-      proteinPreferences: context.proteinPreferences,
-      proteinFloorG: context.proteinFloorG
+      userId: context.userId
     });
-
-    // Send alert email to admin (non-blocking)
-    if (alertParams) {
-      try {
-        const { sendInsufficientRecipesAlert } = await import('@/lib/email');
-        await sendInsufficientRecipesAlert({
-          context,
-          availableCount: filteredRecipes.length,
-          requestedCount: context.numRecipes,
-          userEmail: alertParams.userEmail,
-          submissionId: alertParams.submissionId
-        });
-        logger.info('Insufficient recipes alert sent', {
-          userId: context.userId,
-          submissionId: alertParams.submissionId
-        });
-      } catch (emailError) {
-        logger.error('Failed to send insufficient recipes alert', {
-          userId: context.userId,
-          submissionId: alertParams.submissionId,
-          error: emailError
-        });
-      }
-    }
-
-    throw new Error(`Recipe selection aborted: only ${filteredRecipes.length} recipes available (< ${context.numRecipes} required)`);
+    // Continue anyway - diversity selection will handle it
   }
   
   // 3. Score all filtered recipes (soft list provides recency penalty)
@@ -132,68 +124,19 @@ export async function selectRecipes(
 
 
 /**
- * Apply hard filters that cannot be compromised
- */
-async function applyHardFilters(
-  context: SelectionContext,
-  recency: RecencyViewData
-): Promise<Recipe[]> {
-  // Get recipes using repository
-  const recipes = await getFilteredRecipes({
-    diet: context.diet,
-    status: 'active',
-    maxPrepTime: 30,
-    minProtein: context.proteinFloorG,
-    // Exclude union of strict recent list + explicit exclusion list (deduped)
-    excludeRecipeIds: Array.from(new Set([...(recency.recentStrict || []), ...(recency.excludeRecipeIds || [])]))
-  });
-  
-  // Base equipment assumed to be available for everyone (in English to match user input after mapping)
-  const BASE_EQUIPMENT = ["Pan", "Pot"];
-  const userEquipmentWithBase = [...BASE_EQUIPMENT, ...context.equipmentAvailable];
-  
-  // Additional filtering for equipment, cooking level, and protein preferences
-  return recipes.filter(recipe => {
-    // Equipment check: translate French equipment to English and compare
-    const hasRequiredEquipment = recipe.equipmentRequired.every(
-      (eq: string) => {
-        const mappedEquipment = mapValue(equipmentMap, eq) || eq;
-        return userEquipmentWithBase.includes(mappedEquipment);
-      }
-    );
-    
-    // Cooking level check
-    const levelOrder: Record<string, number> = { beginner: 1, intermediate: 2, advanced: 3 };
-    const hasSkillLevel = levelOrder[recipe.cookingLevel] <= levelOrder[context.cookingLevel];
-    
-// Protein category check: only allow user's preferences
-    const isPreferredProtein = context.proteinPreferences.includes(recipe.proteinCategory);
-    
-    return hasRequiredEquipment && hasSkillLevel && isPreferredProtein;
-  });
-}
-
-/**
  * Apply remaining filters after parallel query execution
- * This combines the recency filtering with equipment/skill/protein filtering
+ * NEW: Progressive fallback when pool is too small (automatic cycle reset)
+ * FIX: Apply context filters FIRST, then recency fallback to maintain minimum pool size
  */
 function applyRemainingFilters(
   baseRecipes: Recipe[],
   context: SelectionContext,
   recency: RecencyViewData
 ): Recipe[] {
-  // First, filter out recipes that should be excluded based on recency
-  const excludeIds = new Set([
-    ...(recency.recentStrict || []),
-    ...(recency.excludeRecipeIds || [])
-  ]);
+  const MIN_POOL_SIZE = 15; // Minimum comfortable pool size for variety
 
-  const recipesAfterRecencyFilter = baseRecipes.filter(recipe =>
-    !excludeIds.has(recipe.id)
-  );
-
-  // Then apply the remaining filters (equipment, skill level, protein preferences)
-  // Optimize with Set for O(1) lookups instead of O(n) includes()
+  // STEP 1: Apply context filters FIRST (equipment, skill level, protein preferences)
+  // This ensures we know the actual available pool before applying recency logic
   const BASE_EQUIPMENT = ["Pan", "Pot"];
   const userEquipmentSet = new Set([...BASE_EQUIPMENT, ...context.equipmentAvailable]);
   const proteinPreferencesSet = new Set(context.proteinPreferences);
@@ -201,7 +144,7 @@ function applyRemainingFilters(
   const levelOrder: Record<string, number> = { beginner: 1, intermediate: 2, advanced: 3 };
   const userSkillLevel = levelOrder[context.cookingLevel];
 
-  return recipesAfterRecencyFilter.filter(recipe => {
+  const recipesAfterContextFilter = baseRecipes.filter(recipe => {
     // Equipment check: translate French equipment to English and compare
     const hasRequiredEquipment = recipe.equipmentRequired.every(
       (eq: string) => {
@@ -210,19 +153,91 @@ function applyRemainingFilters(
       }
     );
 
-    // Cooking level check (pre-computed)
+    // Cooking level check
     const hasSkillLevel = levelOrder[recipe.cookingLevel] <= userSkillLevel;
 
-    // Protein category check: O(1) Set lookup
-    // If no preferences specified, allow all proteins
+    // Protein category check
     const isPreferredProtein = !hasProteinPreferences || proteinPreferencesSet.has(recipe.proteinCategory);
 
     return hasRequiredEquipment && hasSkillLevel && isPreferredProtein;
   });
+
+  // STEP 2: Apply recency filters with progressive fallback on the context-filtered pool
+  const excludeIds = new Set(recency.excludeRecipeIds || []);
+
+  // First attempt: exclude all recipes from last 21 days
+  let finalPool = recipesAfterContextFilter.filter(recipe =>
+    !excludeIds.has(recipe.id)
+  );
+
+  // Progressive fallback: if pool is too small, gradually re-include older recipes
+  if (finalPool.length < MIN_POOL_SIZE) {
+    logger.info('Pool too small - starting cycle fallback (re-including recipes 15-21 days old)', {
+      userId: context.userId,
+      currentPoolSize: finalPool.length,
+      minRequired: MIN_POOL_SIZE,
+      recipesExcluded: excludeIds.size
+    });
+
+    // Fallback Level 1: Re-include recipes seen 15-21 days ago
+    // These already have +0.5 freshness bonus, so they're naturally lower priority
+    finalPool = recipesAfterContextFilter.filter(recipe => {
+      const daysSince = getDaysSinceLastSeen(recipe.id, recency);
+      // Keep recipes never seen OR seen more than 14 days ago
+      return daysSince === null || daysSince > 14;
+    });
+  }
+
+  // Fallback Level 2: if still too small, re-include recipes 8-14 days old
+  if (finalPool.length < MIN_POOL_SIZE) {
+    logger.info('Pool still too small - extending fallback (re-including recipes 8-14 days old)', {
+      userId: context.userId,
+      currentPoolSize: finalPool.length
+    });
+
+    finalPool = recipesAfterContextFilter.filter(recipe => {
+      const daysSince = getDaysSinceLastSeen(recipe.id, recency);
+      // Keep recipes never seen OR seen more than 7 days ago
+      return daysSince === null || daysSince > 7;
+    });
+  }
+
+  // Fallback Level 3: if STILL too small (pathological heavy user), reset completely
+  if (finalPool.length < MIN_POOL_SIZE) {
+    logger.warn('Extreme heavy user detected - complete cycle reset (all recipes available)', {
+      userId: context.userId,
+      recipesSeenInLast21Days: excludeIds.size,
+      poolAfterContextFilters: recipesAfterContextFilter.length
+    });
+
+    // Reset cycle: all context-filtered recipes available
+    // (freshness scoring will still penalize recent ones)
+    finalPool = recipesAfterContextFilter;
+  }
+
+  return finalPool;
+}
+
+/**
+ * Calculate days since last seen for a recipe
+ * Uses recipeTimestamps from the view for accurate calculation
+ * @returns number of days or null if never seen
+ */
+function getDaysSinceLastSeen(recipeId: string, recency: RecencyViewData): number | null {
+  const timestampData = recency.recipeTimestamps?.[recipeId];
+
+  if (timestampData) {
+    // Use pre-calculated daysSince from the view
+    return timestampData.daysSince;
+  }
+
+  // Recipe never seen before
+  return null;
 }
 
 /**
  * Score recipes using the deterministic algorithm from SPECS
+ * NEW: Replaces hard recency exclusion with freshness bonus/penalty
  */
 function scoreRecipes(
   recipes: Recipe[],
@@ -239,37 +254,54 @@ function scoreRecipes(
       batchBonus: 0,
       favoriteBonus: 0,
       dislikedPenalty: 0,
-      recencyPenalty: 0
+      freshnessBonus: 0 // NEW: Replaces recencyPenalty (can be positive or negative)
     };
 
     // 1. Protein preference bonus: +1 for each matching preferred protein category
     scoreBreakdown.proteinPreferenceBonus = context.proteinPreferences.includes(recipe.proteinCategory) ? 1 : 0;
-    
+
     // 2. Protein density bonus: +0.8 × (protein_g / 100_kcal)
     const proteinDensity = (recipe.proteinGPerServing / recipe.caloriesPerServing) * 100;
     scoreBreakdown.proteinDensity = 0.8 * proteinDensity;
-    
+
     // 3. Batch cooking bonus
     if (context.batchMode && recipe.batchFriendly) {
       scoreBreakdown.batchBonus = 0.5;
     }
-    
+
     // 4. Favorite foods bonus (+1 per match with ingredients/tags/title)
     const recipeText = `${recipe.titleFr} ${recipe.tags.join(' ')} ${recipe.ingredients.map(i => i.nom).join(' ')}`.toLowerCase();
-    scoreBreakdown.favoriteBonus = favoriteWords.reduce((sum, word) => 
+    scoreBreakdown.favoriteBonus = favoriteWords.reduce((sum, word) =>
       recipeText.includes(word) ? sum + 1 : sum, 0
     );
-    
+
     // 5. Disliked foods penalty (-3 per match with ingredients/tags/title)
     scoreBreakdown.dislikedPenalty = -3 * dislikedWords.reduce((sum, word) =>
       recipeText.includes(word) ? sum + 1 : sum, 0
     );
-    
-    // 6. Recency penalty for soft recent recipes (-1.5)
-  if (recency.recentSoft.includes(recipe.id)) {
-      scoreBreakdown.recencyPenalty = -1.5;
+
+    // 6. NEW: Freshness bonus/penalty (replaces hard recency exclusion)
+    //    Recipes rotate naturally: old ones come back, recent ones are penalized
+    const daysSinceLastSeen = getDaysSinceLastSeen(recipe.id, recency);
+
+    if (daysSinceLastSeen === null) {
+      scoreBreakdown.freshnessBonus = FRESHNESS_BONUSES.NEVER_SEEN_BONUS;
+    } else if (daysSinceLastSeen > FRESHNESS_THRESHOLDS.OLD) {
+      scoreBreakdown.freshnessBonus = FRESHNESS_BONUSES.VERY_OLD_BONUS;
+    } else if (daysSinceLastSeen >= 22) {
+      // 22-30 days inclusive
+      scoreBreakdown.freshnessBonus = FRESHNESS_BONUSES.OLD_BONUS;
+    } else if (daysSinceLastSeen >= 15) {
+      // 15-21 days inclusive
+      scoreBreakdown.freshnessBonus = FRESHNESS_BONUSES.RECENT_SOFT_BONUS;
+    } else if (daysSinceLastSeen >= 8) {
+      // 8-14 days inclusive: neutral
+      scoreBreakdown.freshnessBonus = FRESHNESS_BONUSES.NEUTRAL;
+    } else {
+      // 0-7 days: big penalty
+      scoreBreakdown.freshnessBonus = FRESHNESS_BONUSES.VERY_RECENT_PENALTY;
     }
-    
+
     const totalScore = Object.values(scoreBreakdown).reduce((sum, score) => sum + score, 0);
     
     return {

@@ -19,10 +19,16 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'test') {
 /**
  * Interface pour les données de récence depuis la vue userRecency
  */
-interface UserRecencyData {
+export interface RecipeTimestamp {
+  lastSeenAt: string;
+  daysSince: number;
+}
+
+export interface RecencyViewData {
   excludeRecipeIds: string[]
-  recentStrict: string[]
-  recentSoft: string[]
+  recentStrict: string[]  // DEPRECATED: kept for backward compatibility only
+  recentSoft: string[]    // DEPRECATED: kept for backward compatibility only
+  recipeTimestamps: Record<string, RecipeTimestamp>
 }
 
 /**
@@ -30,22 +36,23 @@ interface UserRecencyData {
  * @param userId - ID utilisateur (optionnel)
  * @returns Objet avec les trois listes de recettes ou tableaux vides
  */
-export async function getUserRecencyFromView(userId?: string): Promise<UserRecencyData> {
+export async function getUserRecencyFromView(userId?: string): Promise<RecencyViewData> {
   // Si pas d'utilisateur, retourner tableaux vides
   if (!userId) {
     return {
       excludeRecipeIds: [],
       recentStrict: [],
-      recentSoft: []
+      recentSoft: [],
+      recipeTimestamps: {}
     }
   }
 
   try {
     const supabase = getServiceClient()
-    
+
     const { data, error } = await supabase
       .from("userRecency")
-      .select('"excludeRecipeIds", "recentStrict", "recentSoft"')
+      .select('"excludeRecipeIds", "recentStrict", "recentSoft", "recipeTimestamps"')
       .eq("userId", userId)
       .maybeSingle()
 
@@ -55,7 +62,8 @@ export async function getUserRecencyFromView(userId?: string): Promise<UserRecen
       return {
         excludeRecipeIds: [],
         recentStrict: [],
-        recentSoft: []
+        recentSoft: [],
+        recipeTimestamps: {}
       }
     }
 
@@ -64,7 +72,8 @@ export async function getUserRecencyFromView(userId?: string): Promise<UserRecen
       return {
         excludeRecipeIds: [],
         recentStrict: [],
-        recentSoft: []
+        recentSoft: [],
+        recipeTimestamps: {}
       }
     }
 
@@ -72,7 +81,8 @@ export async function getUserRecencyFromView(userId?: string): Promise<UserRecen
     return {
       excludeRecipeIds: (data.excludeRecipeIds || []).filter(Boolean),
       recentStrict: (data.recentStrict || []).filter(Boolean),
-      recentSoft: (data.recentSoft || []).filter(Boolean)
+      recentSoft: (data.recentSoft || []).filter(Boolean),
+      recipeTimestamps: data.recipeTimestamps || {}
     }
 
   } catch (err) {
@@ -81,7 +91,8 @@ export async function getUserRecencyFromView(userId?: string): Promise<UserRecen
     return {
       excludeRecipeIds: [],
       recentStrict: [],
-      recentSoft: []
+      recentSoft: [],
+      recipeTimestamps: {}
     }
   }
 }

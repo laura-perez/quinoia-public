@@ -81,7 +81,7 @@ export interface ScoredRecipe extends Recipe {
     batchBonus: number;
     favoriteBonus: number;
     dislikedPenalty: number;
-    recencyPenalty: number;
+    freshnessBonus: number; // Replaces recencyPenalty - can be positive or negative
   };
 }
 
