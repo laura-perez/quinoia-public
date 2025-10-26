@@ -8,6 +8,7 @@
 import { getServiceClient } from '@/lib/supabase/client'
 import { createLogger } from '@/lib/logger'
 import type { RecentRecipe, ExclusionLists, RecencyAndExclusion } from '@/types/recency'
+import { DEFAULT_RECENCY_DAYS } from '@/lib/constants/recipeSelection'
 
 const logger = createLogger()
 
@@ -26,8 +27,6 @@ export interface RecipeTimestamp {
 
 export interface RecencyViewData {
   excludeRecipeIds: string[]
-  recentStrict: string[]  // DEPRECATED: kept for backward compatibility only
-  recentSoft: string[]    // DEPRECATED: kept for backward compatibility only
   recipeTimestamps: Record<string, RecipeTimestamp>
 }
 
@@ -41,8 +40,6 @@ export async function getUserRecencyFromView(userId?: string): Promise<RecencyVi
   if (!userId) {
     return {
       excludeRecipeIds: [],
-      recentStrict: [],
-      recentSoft: [],
       recipeTimestamps: {}
     }
   }
@@ -52,7 +49,7 @@ export async function getUserRecencyFromView(userId?: string): Promise<RecencyVi
 
     const { data, error } = await supabase
       .from("userRecency")
-      .select('"excludeRecipeIds", "recentStrict", "recentSoft", "recipeTimestamps"')
+      .select('"excludeRecipeIds", "recipeTimestamps"')
       .eq("userId", userId)
       .maybeSingle()
 
@@ -61,8 +58,6 @@ export async function getUserRecencyFromView(userId?: string): Promise<RecencyVi
       // Fallback gracieux
       return {
         excludeRecipeIds: [],
-        recentStrict: [],
-        recentSoft: [],
         recipeTimestamps: {}
       }
     }
@@ -71,8 +66,6 @@ export async function getUserRecencyFromView(userId?: string): Promise<RecencyVi
     if (!data) {
       return {
         excludeRecipeIds: [],
-        recentStrict: [],
-        recentSoft: [],
         recipeTimestamps: {}
       }
     }
@@ -80,8 +73,6 @@ export async function getUserRecencyFromView(userId?: string): Promise<RecencyVi
     // Nettoyer les données (enlever les nulls des array_agg)
     return {
       excludeRecipeIds: (data.excludeRecipeIds || []).filter(Boolean),
-      recentStrict: (data.recentStrict || []).filter(Boolean),
-      recentSoft: (data.recentSoft || []).filter(Boolean),
       recipeTimestamps: data.recipeTimestamps || {}
     }
 
@@ -90,15 +81,10 @@ export async function getUserRecencyFromView(userId?: string): Promise<RecencyVi
     // Fallback gracieux
     return {
       excludeRecipeIds: [],
-      recentStrict: [],
-      recentSoft: [],
       recipeTimestamps: {}
     }
   }
 }
-
-// Configuration par défaut pour la récence
-const DEFAULT_RECENCY_DAYS = 7
 
 /**
  * Récupère les recettes consommées récemment par l'utilisateur

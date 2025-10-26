@@ -17,6 +17,7 @@ import { selectRecipes } from '@/lib/recipes/recipeSelector';
 import { checkUserQuota, isPremiumUser } from '@/lib/quotas/checker';
 import type { SelectionContext } from '@/types/recipes';
 import { getRecipeImageUrls } from '@/lib/supabase/storage';
+import { PREMIUM_POOL_SIZE } from '@/lib/constants/recipeSelection';
 
 setZodErrorMapFR();
 
@@ -135,11 +136,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       proteinPreferences: submission.proteinPreferences
     });
 
-    // Combine user-provided excludes with current active recipes to avoid duplicates
-    const allExcludeIds = [
+    // Combine user-provided excludes with current active recipes AND removed recipes to avoid duplicates
+    // Note: excludeRecipeIds already contains activeRecipes + swapPool + removedRecipeIds from frontend
+    // We add database values to handle race conditions where frontend hasn't saved yet
+    const allExcludeIdsSet = new Set([
       ...excludeRecipeIds,
-      ...menuResult.activeRecipeIds
-    ];
+      ...menuResult.activeRecipeIds,
+      ...(menuResult.removedRecipeIds || [])
+    ]);
+    const allExcludeIds = Array.from(allExcludeIdsSet);
 
     // Build selection context using user's submission preferences
     const selectionContext: SelectionContext = {
@@ -148,7 +153,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       proteinPreferences: submission.proteinPreferences || [],
       equipmentAvailable: submission.equipmentAvailable || [],
       cookingLevel: submission.cookingLevel,
-      numRecipes: 10, // Premium pool size
+      numRecipes: PREMIUM_POOL_SIZE,
       numServings: menuResult.numServings,
       proteinFloorG: submission.proteinFloorG || 0,
       primaryGoal: submission.primaryGoal || 'balanced',
@@ -165,17 +170,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
     });
 
     // Try to select 10 new recipes with full user preferences
-    let selectionResult = await selectRecipes(selectionContext, {
-      userEmail: user.email,
-      submissionId: submission.id
-    });
+    let selectionResult = await selectRecipes(selectionContext);
 
     let newSwapPool = selectionResult.selectedRecipes;
 
     // Fallback: If insufficient recipes, try with diet-only (remove protein/equipment constraints)
-    if (newSwapPool.length < 10) {
+    if (newSwapPool.length < PREMIUM_POOL_SIZE) {
       logger.warn('Insufficient recipes with full preferences, trying diet-only fallback', {
-        requested: 10,
+        requested: PREMIUM_POOL_SIZE,
         received: newSwapPool.length
       });
 
@@ -185,17 +187,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
         proteinPreferences: [], // Remove protein constraints
         equipmentAvailable: [], // Remove equipment constraints
         cookingLevel: submission.cookingLevel,
-        numRecipes: 10,
+        numRecipes: PREMIUM_POOL_SIZE,
         numServings: menuResult.numServings,
         proteinFloorG: 0, // Remove protein floor
         primaryGoal: submission.primaryGoal || 'balanced',
         excludeRecipeIds: allExcludeIds // Keep exclusions in fallback
       };
 
-      selectionResult = await selectRecipes(fallbackContext, {
-        userEmail: user.email,
-        submissionId: submission.id
-      });
+      selectionResult = await selectRecipes(fallbackContext);
 
       newSwapPool = selectionResult.selectedRecipes;
 
@@ -204,23 +203,65 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       });
     }
 
-    // Accept partial pools - if we have ANY recipes, use them
+    // Track if we did a cycle reset
+    let didCycleReset = false;
+
+    // If no recipes found even with fallback, reset the cycle by clearing removedRecipeIds
     if (newSwapPool.length === 0) {
-      logger.error('No recipes available at all', {
+      logger.warn('Catalogue exhausted - resetting cycle by clearing removedRecipeIds', {
         userId,
-        diet: submission.diet
+        diet: submission.diet,
+        removedCount: menuResult.removedRecipeIds?.length || 0
       });
 
-      return res.status(500).json({
-        error: 'Catalogue épuisé',
-        message: 'Aucune nouvelle recette disponible pour le moment. Toutes les recettes compatibles ont déjà été utilisées.',
-        catalogueExhausted: true
+      // Clear removed recipes to allow a fresh cycle
+      // IMPORTANT: Only exclude active recipes and current swap pool, NOT removed recipes
+      const resetExcludeIds = new Set([
+        ...menuResult.activeRecipeIds,
+        ...menuResult.swapPoolRecipeIds
+      ]);
+
+      const resetContext: SelectionContext = {
+        userId,
+        diet: submission.diet,
+        proteinPreferences: [], // Diet-only for maximum pool
+        equipmentAvailable: [],
+        cookingLevel: submission.cookingLevel,
+        numRecipes: PREMIUM_POOL_SIZE,
+        numServings: menuResult.numServings,
+        proteinFloorG: 0,
+        primaryGoal: submission.primaryGoal || 'balanced',
+        excludeRecipeIds: Array.from(resetExcludeIds) // Only exclude active + pool (NOT removed)
+      };
+
+      selectionResult = await selectRecipes(resetContext);
+
+      newSwapPool = selectionResult.selectedRecipes;
+
+      logger.info('Cycle reset completed', {
+        recipesFound: newSwapPool.length
       });
+
+      // If STILL no recipes (should never happen), return error
+      if (newSwapPool.length === 0) {
+        logger.error('No recipes available even after cycle reset', {
+          userId,
+          diet: submission.diet
+        });
+
+        return res.status(500).json({
+          error: 'Catalogue épuisé',
+          message: 'Aucune nouvelle recette disponible pour le moment. Toutes les recettes compatibles ont déjà été utilisées.',
+          catalogueExhausted: true
+        });
+      }
+
+      didCycleReset = true;
     }
 
     logger.debug('New swap pool selected', {
       count: newSwapPool.length,
-      isPartial: newSwapPool.length < 10
+      isPartial: newSwapPool.length < PREMIUM_POOL_SIZE
     });
 
     // Transform recipe images to include full URLs (match dashboard/status.ts behavior)
@@ -252,28 +293,47 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       imageUrl: recipe.picture_file ? recipeImageUrls.get(recipe.picture_file) : null
     }));
 
-    // Update swap pool in database (even if partial)
-    await menuResultsRepository.updateSwapPool(
-      menuId,
-      recipesWithImages.map(r => r.id)
-    );
+    // Update swap pool in database
+    if (didCycleReset) {
+      // Cycle was reset - clear removedRecipeIds
+      await menuResultsRepository.updateSwap(menuId, {
+        activeRecipeIds: menuResult.activeRecipeIds,
+        swapPoolRecipeIds: recipesWithImages.map(r => r.id),
+        swapsCount: menuResult.swapsCount || 0,
+        removedRecipeIds: [] // Reset removed recipes after cycle completion
+      });
+
+      logger.info('Cycle reset: removedRecipeIds cleared', {
+        menuId,
+        previousRemovedCount: menuResult.removedRecipeIds?.length || 0
+      });
+    } else {
+      // Normal update - just update swap pool, keep removedRecipeIds unchanged
+      await menuResultsRepository.updateSwapPool(
+        menuId,
+        recipesWithImages.map(r => r.id)
+      );
+    }
 
     logger.info('Swap pool refetched successfully', {
       menuId,
       userId,
       newPoolSize: recipesWithImages.length,
-      isPartial: recipesWithImages.length < 10
+      isPartial: recipesWithImages.length < PREMIUM_POOL_SIZE
     });
 
     // Return full recipe objects for frontend
     return res.status(200).json({
       success: true,
       newSwapPool: recipesWithImages,
-      message: recipesWithImages.length < 10
+      message: didCycleReset
+        ? `Nouveau cycle démarré ! ${recipesWithImages.length} recettes disponibles`
+        : recipesWithImages.length < PREMIUM_POOL_SIZE
         ? `Pool rechargé avec ${recipesWithImages.length} recettes (catalogue limité)`
         : 'Pool rechargé avec succès',
-      partial: recipesWithImages.length < 10,
-      catalogueNearExhaustion: recipesWithImages.length < 5
+      partial: recipesWithImages.length < PREMIUM_POOL_SIZE,
+      catalogueNearExhaustion: recipesWithImages.length < 5,
+      cycleReset: didCycleReset // Flag to inform frontend that cycle was reset
     });
 
   } catch (error) {

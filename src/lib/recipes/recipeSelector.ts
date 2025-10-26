@@ -41,8 +41,7 @@ const FRESHNESS_BONUSES = {
  *   • ≤7 days: -2.0
  */
 export async function selectRecipes(
-  context: SelectionContext,
-  alertParams?: { userEmail: string; submissionId: string }
+  context: SelectionContext
 ): Promise<RecipeSelectionResult> {
   logger.info('Starting recipe selection', { 
     userId: context.userId,
@@ -107,7 +106,9 @@ export async function selectRecipes(
   logger.info('Recipe selection completed', {
     userId: context.userId,
     selectedCount: selectedRecipes.length,
-    avgScore: selectedRecipes.reduce((sum, r) => sum + r.score, 0) / selectedRecipes.length
+    avgScore: selectedRecipes.length > 0
+      ? selectedRecipes.reduce((sum, r) => sum + r.score, 0) / selectedRecipes.length
+      : 0
   });
 
   return {
@@ -406,6 +407,13 @@ function getDiversityStrategy(diet: string): string {
  * Calculate nutrition summary for selected recipes
  */
 function calculateNutritionSummary(recipes: ScoredRecipe[], numServings: number) {
+  if (recipes.length === 0) {
+    return {
+      avgProtein: 0,
+      totalProtein: 0
+    };
+  }
+
   const totalProtein = recipes.reduce((sum, r) => sum + r.proteinGPerServing, 0) * numServings;
 
   return {

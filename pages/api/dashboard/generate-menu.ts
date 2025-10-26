@@ -18,6 +18,7 @@ import { USER_STATUS } from '@/lib/supabase/types/user.types';
 import { getServiceClient } from '@/lib/supabase/client';
 import { randomBytes } from 'crypto';
 import type { SelectionContext } from '@/types/recipes';
+import { FREE_POOL_SIZE, PREMIUM_POOL_SIZE } from '@/lib/constants/recipeSelection';
 
 // Generate a secure, URL-safe shareId
 function generateShareId(): string {
@@ -82,8 +83,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       canGenerate: quotaResult.canGenerate
     });
 
-    // Determine pool size: 3 for free, 10 for premium
-    const poolSize = premium ? 10 : 3;
+    // Determine pool size based on user tier
+    const poolSize = premium ? PREMIUM_POOL_SIZE : FREE_POOL_SIZE;
 
     // Build selection context from user's submission (onboarding preferences)
     const selectionContext: SelectionContext = {
@@ -106,10 +107,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
     });
 
     // Select recipes (active + swap pool)
-    const selectionResult = await selectRecipes(selectionContext, {
-      userEmail: user.email,
-      submissionId: existingSubmission.id
-    });
+    const selectionResult = await selectRecipes(selectionContext);
 
     const selectedRecipes = selectionResult.selectedRecipes;
 

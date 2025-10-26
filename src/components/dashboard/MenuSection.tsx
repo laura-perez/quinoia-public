@@ -70,6 +70,7 @@ export function MenuSection({
     initialActiveRecipes: menu.activeRecipes,
     initialSwapPool: cleanedSwapPool,
     initialSwapsCount: menu.swapsCount,
+    initialRemovedRecipeIds: menu.removedRecipeIds || [],
     menuId: menu.id,
     numServings: menu.numServings,
     isPremium,

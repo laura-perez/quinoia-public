@@ -61,7 +61,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
     return res.status(400).json({ errors: formatZodErrors(parsed.error) });
   }
 
-  const { activeRecipeIds, swapPoolRecipeIds, swapsCount } = parsed.data;
+  const { activeRecipeIds, swapPoolRecipeIds, swapsCount, removedRecipeIds } = parsed.data;
 
   try {
     // Verify menu exists and ownership
@@ -120,6 +120,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse, userId: string
       activeRecipeIds,
       swapPoolRecipeIds,
       swapsCount,
+      removedRecipeIds,
     });
 
     logger.info('Menu updated successfully', { menuId, userId, swapsCount });

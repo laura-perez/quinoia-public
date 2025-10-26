@@ -40,6 +40,10 @@ export const updateMenuSwapSchema = z.object({
     .number()
     .int()
     .min(0, 'Le compteur de swaps ne peut pas être négatif'),
+  removedRecipeIds: z
+    .array(z.string().uuid('ID de recette invalide'))
+    .optional()
+    .default([]),
 });
 
 export type UpdateMenuSwapInput = z.infer<typeof updateMenuSwapSchema>;

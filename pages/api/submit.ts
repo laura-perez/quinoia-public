@@ -89,7 +89,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     let recipeResults: any
     try {
-      recipeResults = await selectRecipes(selectionContext, { userEmail: norm.data.email, submissionId: submissionIdGlobal })
+      recipeResults = await selectRecipes(selectionContext)
     } catch (err) {
       logger.error('selectRecipes failed', {
         error: err instanceof Error ? err.stack || err.message : String(err),

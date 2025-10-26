@@ -20,11 +20,13 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import type { Recipe } from '@/lib/recipes/types';
+import { MENU_SAVE_DEBOUNCE_MS } from '@/lib/constants/recipeSelection';
 
 export interface UseMenuSwapInput {
   initialActiveRecipes: Recipe[];
   initialSwapPool: Recipe[];
   initialSwapsCount?: number;
+  initialRemovedRecipeIds?: string[]; // Track removed recipes to prevent reappearing
   menuId: string;
   numServings: number;
   isPremium?: boolean; // To enable auto-refetch for premium users
@@ -47,13 +49,12 @@ export interface UseMenuSwapReturn {
   availableForSwap: Recipe[];
 }
 
-const DEBOUNCE_DELAY_MS = 500;
-
 export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
   const {
     initialActiveRecipes,
     initialSwapPool,
     initialSwapsCount = 0,
+    initialRemovedRecipeIds = [],
     menuId,
     numServings,
     isPremium = false,
@@ -65,6 +66,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
   const [activeRecipes, setActiveRecipes] = useState<Recipe[]>(initialActiveRecipes);
   const [swapPool, setSwapPool] = useState<Recipe[]>(initialSwapPool);
   const [swapsCount, setSwapsCount] = useState(initialSwapsCount);
+  const [removedRecipeIds, setRemovedRecipeIds] = useState<string[]>(initialRemovedRecipeIds);
   const [isSwapping, setIsSwapping] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -75,6 +77,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     activeRecipeIds: string[];
     swapPoolRecipeIds: string[];
     swapsCount: number;
+    removedRecipeIds: string[];
   } | null>(null);
   const swapsCountRef = useRef<number>(initialSwapsCount);
   const refetchAttemptsRef = useRef<number>(0);
@@ -83,6 +86,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
   // Refs to always have latest state values (avoid stale closures)
   const activeRecipesRef = useRef<Recipe[]>(initialActiveRecipes);
   const swapPoolRef = useRef<Recipe[]>(initialSwapPool);
+  const removedRecipeIdsRef = useRef<string[]>(initialRemovedRecipeIds);
 
   // Sync refs with state changes
   useEffect(() => {
@@ -93,6 +97,10 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     swapPoolRef.current = swapPool;
   }, [swapPool]);
 
+  useEffect(() => {
+    removedRecipeIdsRef.current = removedRecipeIds;
+  }, [removedRecipeIds]);
+
   /**
    * Save current state to database (debounced)
    * Uses refs to always get latest values, avoiding stale closures
@@ -102,11 +110,13 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     const activeRecipeIds = activeRecipesRef.current.map((r) => r.id);
     const swapPoolRecipeIds = swapPoolRef.current.map((r) => r.id);
     const currentSwapsCount = swapsCountRef.current;
+    const currentRemovedRecipeIds = removedRecipeIdsRef.current;
 
     pendingSaveRef.current = {
       activeRecipeIds,
       swapPoolRecipeIds,
       swapsCount: currentSwapsCount,
+      removedRecipeIds: currentRemovedRecipeIds,
     };
 
     setIsSaving(true);
@@ -119,6 +129,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
           activeRecipeIds,
           swapPoolRecipeIds,
           swapsCount: currentSwapsCount,
+          removedRecipeIds: currentRemovedRecipeIds,
         }),
       });
 
@@ -162,7 +173,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     // Schedule new save
     saveTimeoutRef.current = setTimeout(() => {
       saveToDatabase();
-    }, DEBOUNCE_DELAY_MS);
+    }, MENU_SAVE_DEBOUNCE_MS);
   }, [saveToDatabase]);
 
   /**
@@ -223,8 +234,8 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
 
   /**
    * Remove recipe from menu
-   * - Free users: adds to END of swap pool (LIFO stack for undo)
-   * - Premium users: removes permanently (pool auto-refetches anyway)
+   * Removed recipes are permanently removed from the menu and will not be re-added to the swap pool.
+   * They are tracked in removedRecipeIds to prevent them from reappearing in refetched pools.
    */
   const removeRecipe = useCallback(
     (recipe: Recipe) => {
@@ -235,11 +246,17 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
         // Remove recipe from active recipes
         setActiveRecipes((prev) => prev.filter((r) => r.id !== recipe.id));
 
-        // Free users: Add to END of swap pool (LIFO stack for undo)
-        // Premium users: Don't add to pool (removal is permanent, pool will refetch)
-        if (!isPremium) {
-          setSwapPool((prev) => [...prev, recipe]);
-        }
+        // Track removed recipe ID to prevent it from reappearing in refetched pools
+        setRemovedRecipeIds((prev) => {
+          if (prev.includes(recipe.id)) return prev;
+          return [...prev, recipe.id];
+        });
+
+        // NOTE: We no longer add removed recipes back to the swap pool (for both free and premium users)
+        // Reason: With the infinite catalog system (progressive fallback), removed recipes
+        // will naturally re-appear after 21+ days with appropriate freshness penalties.
+        // Adding them back to the pool immediately caused UX issues where users would
+        // get back recipes they just removed when adding new recipes.
 
         // Schedule debounced save
         scheduleDebouncedSave();
@@ -251,7 +268,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
         setIsSwapping(false);
       }
     },
-    [isPremium, swapPool, onError, scheduleDebouncedSave]
+    [onError, scheduleDebouncedSave]
   );
 
   /**
@@ -291,12 +308,13 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
 
   /**
    * Refetch swap pool (premium only)
-   * Fetches 10 new recipes excluding current active + pool
+   * Fetches 10 new recipes excluding current active + pool + removed recipes
    */
   const refetchPool = useCallback(async (): Promise<void> => {
     const excludeRecipeIds = [
       ...activeRecipes.map((r) => r.id),
       ...swapPool.map((r) => r.id),
+      ...removedRecipeIds, // Exclude removed recipes to prevent them from reappearing
     ];
 
     setIsSaving(true);
@@ -323,6 +341,20 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
 
       const data = await response.json();
       setSwapPool(data.newSwapPool);
+
+      // If the backend did a cycle reset, clear removedRecipeIds to sync
+      if (data.cycleReset) {
+        setRemovedRecipeIds([]);
+
+        // CRITICAL: Cancel any pending save that contains old removedRecipeIds
+        // to prevent race condition where old state overwrites the reset
+        if (saveTimeoutRef.current) {
+          clearTimeout(saveTimeoutRef.current);
+          saveTimeoutRef.current = null;
+        }
+        pendingSaveRef.current = null;
+      }
+
       setError(null);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erreur de rechargement';
@@ -331,7 +363,7 @@ export function useMenuSwap(input: UseMenuSwapInput): UseMenuSwapReturn {
     } finally {
       setIsSaving(false);
     }
-  }, [activeRecipes, swapPool, menuId, onError]);
+  }, [activeRecipes, swapPool, removedRecipeIds, menuId, onError]);
 
   /**
    * Auto-refetch pool when empty (Premium only)

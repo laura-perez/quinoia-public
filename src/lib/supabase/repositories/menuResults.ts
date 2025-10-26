@@ -21,6 +21,7 @@ export interface MenuResultData {
   activeRecipeIds: string[];
   swapPoolRecipeIds: string[];
   swapsCount: number;
+  removedRecipeIds?: string[];
   updatedAt: Date | null;
 }
 
@@ -39,6 +40,7 @@ export interface UpdateMenuSwapInput {
   activeRecipeIds: string[];
   swapPoolRecipeIds: string[];
   swapsCount: number;
+  removedRecipeIds?: string[];
 }
 
 /**
@@ -141,6 +143,7 @@ export class MenuResultsRepository {
         activeRecipeIds: input.activeRecipeIds,
         swapPoolRecipeIds: input.swapPoolRecipeIds,
         swapsCount: input.swapsCount,
+        removedRecipeIds: input.removedRecipeIds || [],
         updatedAt: new Date().toISOString(),
       })
       .eq("id", id);

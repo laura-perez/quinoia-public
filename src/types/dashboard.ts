@@ -38,6 +38,7 @@ export interface DashboardMenu {
   activeRecipes: Recipe[];
   swapPool: Recipe[];
   swapsCount: number;
+  removedRecipeIds?: string[];
   numRecipes: number;
   numServings: number;
 }

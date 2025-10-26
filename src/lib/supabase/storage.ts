@@ -10,12 +10,12 @@
 import { getServiceClient } from './client';
 import { createLogger } from '@/lib/logger';
 import { recipeImagesCache } from '@/lib/cache/recipeImagesCache';
+import { SIGNED_URL_TTL } from '@/lib/constants/recipeSelection';
 
 const logger = createLogger();
 
 // Configuration
 const BUCKET_NAME = 'recipes_photos';
-const SIGNED_URL_TTL = 7 * 24 * 60 * 60; // 7 days in seconds
 const USE_PUBLIC_BUCKET = process.env.NEXT_PUBLIC_RECIPES_PHOTOS_PUBLIC === 'true';
 
 /**
