@@ -5,15 +5,16 @@
 - **Next.js 15.4.5** app with file-based routing in `/pages`. All routes and API endpoints are defined here.
 - **UI**: Modular React components in `src/components` (UI, forms, layout). Use composition and props for reusability.
 - **Business logic & utilities**: In `src/lib` organized by domain:
-  - `src/lib/auth/` - Authentication (reCAPTCHA)
-  - `src/lib/business/` - Core business logic (calculations, nutritional targets)
+  - `src/lib/auth/` - Authentication (magic links, sessions, reCAPTCHA, rate limiting)
+  - `src/lib/recipes/` - Core business logic (recipe selection, shopping list generation)
+  - `src/lib/constants/` - Business constants (nutrition, activity factor, recipe selection)
   - `src/lib/supabase/` - Database operations and queries
   - `src/lib/logger/` - Structured logging system
   - `src/lib/config/` - Environment and configuration
 - **Static assets**: In `/public`.
-- **Styling**: Tailwind CSS (see `tailwind.config.js`), global styles in `/styles`.
+- **Styling**: Tailwind CSS (see `tailwind.config.js`), global styles in `src/styles/globals.css`.
 - **Data flow**: User input flows from forms (multi-step in `components/form/`) to API routes, then to native processing (recipe selection, shopping list generation) and database persistence (Supabase).
-- **Environment variables**: Always import via `src/lib/env`. Never introduce new names.
+- **Environment variables**: Always import via `src/lib/config` (`src/lib/config/env.ts`). Never introduce new names.
 
 ## Developer Workflows
 
@@ -22,7 +23,7 @@
 - **Lint**: `npm run lint`
 - **Unit tests**: `npx vitest run` (Vitest, happy-dom, MSW, jest-dom)
 - **E2E tests**: `npx playwright test` (Playwright, see `playwright.config.ts`)
-- **Test setup**: All test env setup in `tests/setupTests.ts` (MSW, jest-dom). Add new handlers in `tests/msw/handlers.ts`.
+- **Test setup**: All test env setup in `src/tests/setupTests.ts` (MSW, jest-dom), env loading in `src/tests/setup-env.ts`. Add new handlers in `src/tests/msw/handlers.ts`.
 - **PRs**: All changes via PR to `develop`. Use Conventional Commits for titles. One logical change per PR. All code, comments, and text in English.
 
 ## AI Agent Implementation Workflow
@@ -96,7 +97,7 @@ Perform a comprehensive quality assessment before finalizing:
 
 #### Architecture & Repository Impact
 
-- **File organization**: New files placed in appropriate directories (`src/lib/domain/`)
+- **File organization**: New files placed in appropriate directories (`src/lib/<domain>/`)
 - **Import/export consistency**: Clean module boundaries, organized index.ts files
 - **Dependency management**: No circular dependencies, minimal external additions
 - **Breaking changes**: Backward compatibility maintained or migration path provided
@@ -205,10 +206,10 @@ describe("Security Tests", () => {
 
 ## Testing Patterns
 
-- **Unit tests**: Place in `tests/unit/` or `src/tests/unit/`. Use Vitest, MSW for mocking, jest-dom for DOM assertions.
-- **Integration tests**: Place in `src/tests/integration/`. Test complete workflows (e.g., `v2-system.test.ts`).
-- **E2E tests**: Place in `tests/e2e/`. Use Playwright. Example: `smoke.spec.ts` checks home page loads.
-- **Test setup**: All test env setup in `tests/setupTests.ts`.
+- **Unit tests**: Place in `src/tests/unit/`. Use Vitest, MSW for mocking, jest-dom for DOM assertions.
+- **Integration tests**: Place in `src/tests/integration/`. Test complete workflows (e.g., `onboarding/success-flow.test.ts`).
+- **E2E tests**: Place in `src/tests/e2e/`. Use Playwright. Example: `smoke.spec.ts` checks home page loads.
+- **Test setup**: All test env setup in `src/tests/setupTests.ts`.
 - **Mock patterns**:
   - Always mock external services (Supabase, logger)
   - Use `vi.hoisted()` for complex mock objects
@@ -220,7 +221,6 @@ describe("Security Tests", () => {
 ### Build Analysis
 
 - **Bundle size**: Monitor with `npm run build` - watch for significant increases
-- **Bundle analysis**: Use `npm run analyze` (if available) before major releases
 - **Tree shaking**: Ensure unused code is eliminated in production builds
 - **Code splitting**: Leverage dynamic imports for route-based splitting
 
@@ -236,7 +236,6 @@ describe("Security Tests", () => {
 ```bash
 # Performance testing commands
 npm run build                    # Check bundle size impact
-npm run build:analyze           # Bundle composition analysis (if available)
 npx vitest run --coverage       # Test coverage with performance impact
 ```
 
@@ -262,8 +261,8 @@ npx vitest run --coverage       # Test coverage with performance impact
 
 - **Env import**: `import { env } from '@/lib/config/env'`
 - **API error shape**: `{ error: 'Invalid input', code: 400, details: { ... } }`
-- **Unit test**: See `tests/unit/activityFactor.test.ts` for nutritional calculations testing.
-- **Business logic**: See `src/lib/business/targets.ts` for complete nutritional calculations pipeline.
+- **Unit test**: See `src/tests/unit/portion-scaling.test.ts` for business logic testing.
+- **Business logic**: See `src/lib/recipes/recipeSelector.ts` for the recipe selection pipeline.
 
 ## Technical Patterns & Best Practices
 
@@ -279,7 +278,7 @@ const logger = createLogger();
 export async function getUserData(userId: string) {
   try {
     const supabase = getServiceClient();
-    const { data, error } = await supabase.from("users").select("*").eq("id", userId).single();
+    const { data, error } = await supabase.from("user").select("*").eq("id", userId).single();
 
     if (error) {
       logger.error("Database query failed:", error);
@@ -403,12 +402,16 @@ vi.mock("@/lib/supabase/client", () => ({
 ```
 src/lib/
 ├── auth/           # Authentication & security
-├── business/       # Core business logic & calculations
 ├── config/         # Configuration & environment
+├── constants/      # Business constants
+├── email/          # Transactional emails (Resend)
 ├── logger/         # Structured logging system
+├── quotas/         # Usage quotas
+├── recipes/        # Recipe selection & shopping list
+├── stripe/         # Payments
 ├── supabase/       # Database operations & queries
-├── utils/          # Pure utility functions
-└── validation/     # Zod schemas & validators
+└── utils/          # Pure utility functions
+src/schemas/        # Zod schemas & validators
 ```
 
 ## Troubleshooting Common Issues

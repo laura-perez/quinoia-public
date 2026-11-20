@@ -26,6 +26,8 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # local env files
+# .env.test is intentionally tracked: it only contains fake values used by unit tests and local builds.
+.env
 .env*.local
 .env.local.test
 
@@ -49,4 +51,13 @@ yarn-error.log*
 /supabase/.temp/
 /supabase/.branches/
 /supabase/volumes/
-/.vscode/mcp.json
+
+# editor and agent-local settings
+.vscode/
+.claude/settings.local.json
+
+# TypeScript incremental build info
+*.tsbuildinfo
+
+# local working notes (not part of the project)
+market-study-data.md
