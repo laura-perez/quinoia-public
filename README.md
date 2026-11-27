@@ -112,7 +112,7 @@ npm run dev                  # http://localhost:3000
 
 All variables are listed and commented in [.env.example](.env.example). The required server variables are validated by [src/lib/config/env.ts](src/lib/config/env.ts).
 
-Database: `npx supabase start` (or `npx supabase db reset`) applies the migrations in [supabase/migrations/](supabase/migrations/), a baseline of the production schema followed by the RLS hardening, then loads the recipes and ingredients from [supabase/seed.sql](supabase/seed.sql), generated from [supabase/data/](supabase/data/). The earlier hand-applied migrations are kept for reference in [supabase/migrations_archive/](supabase/migrations_archive/).
+Database: `npx supabase start` (or `npx supabase db reset`) applies the migrations in [supabase/migrations/](supabase/migrations/), a baseline of the production schema followed by the RLS hardening and later fixes, then loads the recipes and ingredients from [supabase/seed.sql](supabase/seed.sql), generated from [supabase/data/](supabase/data/). The earlier hand-applied migrations are kept for reference in [supabase/migrations_archive/](supabase/migrations_archive/).
 
 Other commands:
 
