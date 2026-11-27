@@ -9,6 +9,16 @@ Integration tests run against **real local services** with **mocked external API
 - ✅ **Real HTTP requests** (using fetch)
 - ❌ **Mocked Stripe API calls** (no external calls)
 
+## How Integration Tests Are Selected
+
+`npm test` (`vitest run`) only runs unit tests: `vitest.config.ts` defines a `unit` project
+(happy-dom) that excludes `src/tests/integration/**`. The `integration` project (node
+environment, so server-only modules such as `src/lib/supabase/client.ts` can be imported)
+is only added when `INTEGRATION_TESTS=true`, which `npm run test:integration` sets.
+
+With `INTEGRATION_TESTS=true`, the test setup loads `.env.local.test` instead of `.env.test`.
+Test helpers use the same variable names as the app: `SUPABASE_URL` and `SUPABASE_SERVICE_KEY`.
+
 ## Prerequisites
 
 ### 1. Start Supabase Local
@@ -45,9 +55,10 @@ curl http://localhost:3000
 
 **Important**: The server MUST be started with `INTEGRATION_TESTS=true` to enable Stripe SDK mocking.
 
-### 3. Ensure .env.local Points to Local Supabase
+### 3. Ensure .env.local and .env.local.test Point to Local Supabase
+The dev server reads `.env.local`; the test runner reads `.env.local.test`. Both need:
 ```bash
-# .env.local
+# .env.local and .env.local.test
 SUPABASE_URL=http://127.0.0.1:54321
 SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU
 SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0
@@ -219,7 +230,7 @@ const email = `test-unique-${Date.now()}@example.com`;
 ```
 
 ### 3. Don't Mock What You're Testing
-- ✅ Mock external APIs (Stripe, OpenAI)
+- ✅ Mock external APIs (Stripe)
 - ❌ Don't mock your own code under test
 - ❌ Don't mock the database
 
