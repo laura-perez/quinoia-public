@@ -1,5 +1,7 @@
 # Quinoïa MVP - Spécification Technique v3.1
 
+> Historical specification (v3.1). AI-generated tips were later replaced by tips stored per recipe; see the README for the current architecture.
+
 ## Architecture & Objectif
 
 **Mission**: Sélection automatisée de recettes françaises personnalisées avec génération de listes de courses et astuces IA.

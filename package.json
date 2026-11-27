@@ -1,6 +1,8 @@
 {
   "name": "quinoia",
   "version": "0.1.0",
+  "description": "Meal-planning web app: rule-based weekly menus, shopping lists and Stripe subscriptions.",
+  "license": "UNLICENSED",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,7 +10,6 @@
     "start": "next start",
     "lint": "next lint",
     "vercel-build": "npm install --legacy-peer-deps && npm run build",
-    "diff:ingredients": "npx tsx database/scripts/diff-recipe-ingredients.ts",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "test": "vitest run",
     "test:watch": "vitest",

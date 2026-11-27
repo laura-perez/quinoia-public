@@ -24,7 +24,7 @@
 - **Unit tests**: `npx vitest run` (Vitest, happy-dom, MSW, jest-dom)
 - **E2E tests**: `npx playwright test` (Playwright, see `playwright.config.ts`)
 - **Test setup**: All test env setup in `src/tests/setupTests.ts` (MSW, jest-dom), env loading in `src/tests/setup-env.ts`. Add new handlers in `src/tests/msw/handlers.ts`.
-- **PRs**: All changes via PR to `develop`. Use Conventional Commits for titles. One logical change per PR. All code, comments, and text in English.
+- **PRs**: All changes via PR to `main`. Use Conventional Commits for titles. One logical change per PR. All code, comments, and text in English.
 
 ## AI Agent Implementation Workflow
 
@@ -116,7 +116,7 @@ Perform a comprehensive quality assessment before finalizing:
 - **Validation**: All env validated at boot with Zod (`src/lib/config/env.ts`). Use Zod for all schema validation (client & server).
 - **Error handling**: API responses must use `{ error, code?, details? }` shape. Show user-friendly errors, log details for ops.
 - **Accessibility**: All interactive elements must be keyboard accessible and have ARIA labels/attributes. Use `aria-describedby` for error messages.
-- **Security**: Rate-limit `/api/submit` (see `src/lib/auth/rateLimits.ts`). Verify reCAPTCHA server-side (`src/lib/auth/recaptcha.ts`).
+- **Security**: Protect `/api/submit` with server-side reCAPTCHA (`src/lib/auth/recaptcha.ts`); rate-limit other public endpoints with `src/lib/auth/rateLimits.ts`.
 - **SEO**: `/menu/{shareId}` must send `X-Robots-Tag: noindex` and `<meta name="robots" content="noindex,nofollow">`.
 - **Logging**: Use structured logging system (`src/lib/logger`) - never `console.error` in production code.
 - **Tests**: All tests must pass before any implementation is considered complete.

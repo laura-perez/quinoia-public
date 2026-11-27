@@ -1,3 +1,5 @@
+> Historical design document (2025); the README describes the current architecture.
+
 🎯 Version 2.1 : Émotionnel dosé (pas de spectacle)
 
 Page résultat essai - VERSION ÉPURÉE

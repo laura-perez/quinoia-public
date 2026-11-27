@@ -1,5 +1,7 @@
 # 📋 Tâches d'implémentation - Dashboard & Auth System
 
+> Historical design document (2025); the README describes the current architecture.
+
 **Version**: 1.0
 **Date**: 5 octobre 2025
 **Dernière mise à jour**: 5 octobre 2025 - 20h30
