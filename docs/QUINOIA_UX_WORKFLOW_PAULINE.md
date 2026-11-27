@@ -309,8 +309,6 @@
 
 ---
 
-## 🎯 **Score UX Global de Pauline : 7.5/10**
-
 ### **Décision Probable de Pauline :**
 
 - ✅ **Teste l'essai gratuit** (risque zéro, résout son problème)

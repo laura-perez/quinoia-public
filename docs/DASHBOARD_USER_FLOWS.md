@@ -1,5 +1,7 @@
 # Quinoia — Dashboard & User Flows (scan)
 
+> Historical design document (2025); the README describes the current architecture.
+
 Ce document synthétise le scan complet du code lié au dashboard, à l'auth, aux quotas, à la génération de menus et aux services Supabase. Il recense les endpoints, les modèles de données, les composants front, les middlewares et décrit les user flows principaux avec diagrammes.
 
 ## Fichiers et zones scannés

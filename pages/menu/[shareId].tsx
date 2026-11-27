@@ -379,7 +379,7 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
     }
   }, [currentRecipe, resultBundle?.recipes]);
 
-  // Get AI tips from resultBundle or fallback to mock data
+  // Get general tips from resultBundle or fall back to default tips
   const displayTips = resultBundle?.aiTips?.generalTips || [
     { id: "1", type: "organization", icon: "⚡", text: "Réalise en avance des découpes de légumes → 10 min de gagné" },
     { id: "2", type: "batch", icon: "🔥", text: "Préchauffage four pendant que tu prépares → temps optimisé" },

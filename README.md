@@ -154,3 +154,7 @@ supabase/              SQL migrations and seed data
 docs/                  Specifications, UX flows, setup notes
 AGENTS.md              Conventions for AI coding agents
 ```
+
+## License
+
+Source available for review. All rights reserved.

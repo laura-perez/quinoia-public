@@ -1,5 +1,7 @@
 # Architecture technique - Système d'authentification et Dashboard
 
+> Historical design document (2025); the README describes the current architecture.
+
 ## 📋 Table des matières
 
 1. [Vue d'ensemble](#vue-densemble)

@@ -1,5 +1,7 @@
 # Integration Tests Refactoring Summary
 
+> Historical document (2025-10-03); test counts and structure may have changed since.
+
 **Date:** October 3, 2025
 **Status:** ✅ Completed
 **Tests Passing:** 50/50 (100%)
@@ -198,7 +200,7 @@ If further refactoring is desired:
 
 ## Conclusion
 
-The refactoring successfully improved code organization and maintainability while maintaining 100% test coverage with zero regressions. The new structure provides a solid foundation for future test development.
+The refactoring successfully improved code organization and maintainability with zero regressions. The new structure provides a solid foundation for future test development.
 
 **Total impact:**
 - ✅ 305 lines of dead code removed (Phase 1)

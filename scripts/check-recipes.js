@@ -8,7 +8,6 @@ const supabase = createClient(
 
 async function checkRecipes() {
   console.log('🔍 Checking recipes in database...');
-  console.log('Database URL:', process.env.SUPABASE_URL);
 
   const { data, error, count } = await supabase
     .from('recipe')
