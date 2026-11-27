@@ -61,7 +61,7 @@ Menu generation is rule-based and deterministic for a given input; it does not c
 5. **Near-duplicate filter.** A similarity score combines ingredient overlap (Jaccard), title-token overlap, a shared base dish and protein, and a shared cooking pattern. Lower-scored recipes with a similarity of 0.7 or more to a kept recipe are dropped, unless that would remove more than 40% of the pool.
 6. **Diversity.** One recipe per preferred protein category is picked first, then the remaining slots rotate round-robin through a diet-specific protein order (for example Beef, Poultry, Meat alternatives, Fish, Eggs, Dairy, Legumes, Tofu for omnivores).
 
-The route asks for the number of menu recipes plus a swap pool (3 for free users, 10 for paid users, [src/lib/constants/recipeSelection.ts](src/lib/constants/recipeSelection.ts)), keeps the first N as the menu and stores the rest as the pool. A unique index on user and calendar week rejects a second menu in the same week ([supabase/migrations/20251008_migrate_quota_to_menuresult.sql](supabase/migrations/20251008_migrate_quota_to_menuresult.sql)).
+The route asks for the number of menu recipes plus a swap pool (3 for free users, 10 for paid users, [src/lib/constants/recipeSelection.ts](src/lib/constants/recipeSelection.ts)), keeps the first N as the menu and stores the rest as the pool. A unique index on user and calendar week rejects a second menu in the same week ([supabase/migrations/20251027000000_baseline_production_schema.sql](supabase/migrations/20251027000000_baseline_production_schema.sql)).
 
 When the pool is refetched, recipes already in the menu and recipes the user removed (`removedRecipeIds`) are excluded. If fewer than 10 recipes are found, the route retries without protein preferences or protein floor; if none are found, it clears the removed list to start a new cycle ([pages/api/dashboard/menu/[id]/refetch-pool.ts](pages/api/dashboard/menu/[id]/refetch-pool.ts)).
 
@@ -72,7 +72,7 @@ Both entry points pass diet, protein preferences, equipment and cooking level. T
 **Security**
 
 - Server-only database access: [src/lib/supabase/client.ts](src/lib/supabase/client.ts) throws if it is imported in the browser and creates the client with the service_role key.
-- Database hardening: [supabase/migrations/20261120_harden_rls.sql](supabase/migrations/20261120_harden_rls.sql) enables row-level security on every public table, switches the views to `security_invoker`, and revokes all direct table grants (including default privileges for tables created by the migration role) from the `anon` and `authenticated` roles.
+- Database hardening: [supabase/migrations/20261120000000_harden_rls.sql](supabase/migrations/20261120000000_harden_rls.sql) enables row-level security on every public table, switches the views to `security_invoker`, and revokes all direct table grants (including default privileges for tables created by the migration role) from the `anon` and `authenticated` roles.
 - Magic-link authentication with its own session table: tokens are random UUIDs, links expire after 15 minutes and can be used once, sessions last 30 days in an `HttpOnly; Secure; SameSite=Strict` cookie ([src/lib/auth/tokens.ts](src/lib/auth/tokens.ts), [pages/api/auth/verify-magic-link.ts](pages/api/auth/verify-magic-link.ts), [src/lib/auth/session.ts](src/lib/auth/session.ts)). Dashboard routes are wrapped in [src/middleware/withAuth.ts](src/middleware/withAuth.ts) and [src/middleware/withQuotaCheck.ts](src/middleware/withQuotaCheck.ts).
 - Rate limiting with Upstash (token bucket): 3 magic-link requests per email per hour, 5 checkout sessions per IP per minute ([src/lib/auth/rateLimits.ts](src/lib/auth/rateLimits.ts), [pages/api/auth/request-magic-link.ts](pages/api/auth/request-magic-link.ts), [pages/api/checkout/create-session.ts](pages/api/checkout/create-session.ts)). Without Upstash credentials the limiter runs in no-op mode.
 - reCAPTCHA v3 is verified server-side with a minimum score of 0.5 on the public questionnaire ([src/lib/auth/recaptcha.ts](src/lib/auth/recaptcha.ts)).
@@ -112,7 +112,7 @@ npm run dev                  # http://localhost:3000
 
 All variables are listed and commented in [.env.example](.env.example). The required server variables are validated by [src/lib/config/env.ts](src/lib/config/env.ts).
 
-Database: SQL migrations in [supabase/migrations/](supabase/migrations/), recipe and ingredient data in [supabase/data/](supabase/data/).
+Database: `npx supabase start` (or `npx supabase db reset`) applies the migrations in [supabase/migrations/](supabase/migrations/), a baseline of the production schema followed by the RLS hardening, then loads the recipes and ingredients from [supabase/seed.sql](supabase/seed.sql), generated from [supabase/data/](supabase/data/). The earlier hand-applied migrations are kept for reference in [supabase/migrations_archive/](supabase/migrations_archive/).
 
 Other commands:
 
