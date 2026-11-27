@@ -1,6 +1,13 @@
 import { z } from "zod";
 
-const envSchema = z.object({
+/**
+ * Treats a blank value as unset, so an optional variable left empty in a .env file
+ * (e.g. `CRON_SECRET=` copied from .env.example) passes validation as undefined.
+ */
+const optionalVar = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess((value) => (value === "" ? undefined : value), schema.optional());
+
+export const envSchema = z.object({
   RECAPTCHA_SECRET_KEY: z.string().min(1, "RECAPTCHA_SECRET_KEY is required"),
   SUPABASE_URL: z.string().min(1, "SUPABASE_URL is required"),
   SUPABASE_SERVICE_KEY: z.string().min(1, "SUPABASE_SERVICE_KEY is required"),
@@ -8,7 +15,7 @@ const envSchema = z.object({
   APP_BASE_URL: z.string().min(1, "APP_BASE_URL is required"),
   RESEND_API_KEY: z.string().min(1, "RESEND_API_KEY is required"),
   FROM_EMAIL: z.string().email("FROM_EMAIL must be a valid email address"),
-  ADMIN_EMAIL: z.string().email("ADMIN_EMAIL must be a valid email address").optional(),
+  ADMIN_EMAIL: optionalVar(z.string().email("ADMIN_EMAIL must be a valid email address")),
 
   // Stripe
   STRIPE_SECRET_KEY: z.string().min(1, "STRIPE_SECRET_KEY is required"),
@@ -17,10 +24,11 @@ const envSchema = z.object({
   STRIPE_PRICE_YEARLY: z.string().min(1, "STRIPE_PRICE_YEARLY is required"),
 
   // Optional
-  NEXT_PUBLIC_RECAPTCHA_SITE_KEY: z.string().optional(),
-  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
-  UPSTASH_REDIS_REST_URL: z.string().optional(),
-  UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+  NEXT_PUBLIC_RECAPTCHA_SITE_KEY: optionalVar(z.string()),
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: optionalVar(z.string()),
+  UPSTASH_REDIS_REST_URL: optionalVar(z.string()),
+  UPSTASH_REDIS_REST_TOKEN: optionalVar(z.string()),
+  CRON_SECRET: optionalVar(z.string().min(16, "CRON_SECRET must be at least 16 characters")),
 });
 
 const _env = {
@@ -40,6 +48,7 @@ const _env = {
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
   UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
   UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
+  CRON_SECRET: process.env.CRON_SECRET,
 };
 
 // Skip validation in test environment to allow dotenv to load vars first

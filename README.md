@@ -87,6 +87,7 @@ Both entry points pass diet, protein preferences, equipment and cooking level. T
 **Observability**
 
 - Structured JSON logger with a run ID (route handlers create one per request and return it in `X-Run-ID`), automatic PII redaction of every log context (emails, IPv4 addresses, prefixed tokens, URLs with secrets) and hash-based sampling of debug logs ([src/lib/logger/](src/lib/logger/)).
+- Health check endpoint called daily by Vercel Cron ([pages/api/health.ts](pages/api/health.ts), [vercel.json](vercel.json)).
 
 **Testing**
 
