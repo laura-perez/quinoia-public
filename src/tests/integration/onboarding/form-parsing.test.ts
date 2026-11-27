@@ -24,11 +24,13 @@ describe('Form Parsing & Normalization - Production Data', () => {
 
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.data.form.email).toBe('loz@test.com');
-        expect(result.data.form.name).toBe('TESTLOZ');
-        expect(result.data.form.age).toBe('36'); // submitRequestSchema doesn't coerce - keeps as string
-        expect(result.data.form.numRecipes).toBe('4');
-        expect(result.data.form.numServings).toBe('3');
+        // submitRequestSchema types `form` as unknown; it is validated later by normalizedInputSchema
+        const form = result.data.form as Record<string, unknown>;
+        expect(form.email).toBe('loz@test.com');
+        expect(form.name).toBe('TESTLOZ');
+        expect(form.age).toBe('36'); // submitRequestSchema doesn't coerce - keeps as string
+        expect(form.numRecipes).toBe('4');
+        expect(form.numServings).toBe('3');
       }
     });
 

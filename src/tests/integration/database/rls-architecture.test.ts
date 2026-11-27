@@ -36,8 +36,10 @@ describe('RLS Architecture Integration', () => {
     it('should bypass RLS to query userRecency view', async () => {
       const mockRecencyData = {
         excludeRecipeIds: ['recipe3', 'recipe4'],
-        recentStrict: ['recipe1'],
-        recentSoft: ['recipe2']
+        recipeTimestamps: {
+          recipe1: { lastSeenAt: '2025-01-10T12:00:00.000Z', daysSince: 2 },
+          recipe2: { lastSeenAt: '2025-01-01T12:00:00.000Z', daysSince: 11 }
+        }
       }
 
       mockServiceClient.from.mockReturnValue({
@@ -70,8 +72,7 @@ describe('RLS Architecture Integration', () => {
 
       expect(result).toEqual({
         excludeRecipeIds: [],
-        recentStrict: [],
-        recentSoft: []
+        recipeTimestamps: {}
       })
       expect(mockLogger.error).toHaveBeenCalledWith('Erreur récupération userRecency:', { error: mockError })
     })
@@ -81,8 +82,7 @@ describe('RLS Architecture Integration', () => {
 
       expect(result).toEqual({
         excludeRecipeIds: [],
-        recentStrict: [],
-        recentSoft: []
+        recipeTimestamps: {}
       })
       expect(mockServiceClient.from).not.toHaveBeenCalled()
       expect(mockLogger.error).not.toHaveBeenCalled()
