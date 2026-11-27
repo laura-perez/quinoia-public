@@ -28,24 +28,89 @@ describe('IP Detection Security', () => {
       expect(result.source).toBe('socket.remoteAddress');
     });
 
-    it('should prefer Cloudflare headers with high confidence', () => {
+    it('should prefer x-real-ip over other headers', () => {
       const req = createMockRequest({
-        socket: { remoteAddress: '192.168.1.1' } as any,
+        socket: {} as any,
         headers: {
-          'cf-connecting-ip': '203.0.113.5',
-          'x-forwarded-for': '203.0.113.6, 192.168.1.1',
+          'x-real-ip': '203.0.113.5',
+          'x-vercel-forwarded-for': '203.0.113.7',
+          'x-forwarded-for': '203.0.113.6',
         },
       });
 
       const result = detectClientIP(req);
 
       expect(result.ip).toBe('203.0.113.5');
-      // Note: cf-connecting-ip always gets high confidence as it's from a trusted proxy
-      expect(result.confidence).toBe('high'); 
-      expect(result.source).toBe('cf-connecting-ip');
+      expect(result.confidence).toBe('medium');
+      expect(result.source).toBe('x-real-ip');
     });
 
-    it('should detect spoofing attempt with multiple suspicious headers', () => {
+    it('should not let forged cf-connecting-ip or true-client-ip headers change the detected IP', () => {
+      const headers = {
+        'x-real-ip': '203.0.113.5',
+        'x-forwarded-for': '203.0.113.5',
+      };
+      const baseline = detectClientIP(createMockRequest({ headers }));
+      const forged = detectClientIP(
+        createMockRequest({
+          headers: {
+            ...headers,
+            'cf-connecting-ip': '7.7.7.7',
+            'true-client-ip': '6.6.6.6',
+          },
+        })
+      );
+
+      expect(forged.ip).toBe('203.0.113.5');
+      expect(forged.source).toBe('x-real-ip');
+      expect(forged.ip).toBe(baseline.ip);
+      expect(forged.confidence).toBe(baseline.confidence);
+      expect(forged.allCandidates.some(c => c.ip === '7.7.7.7' || c.ip === '6.6.6.6')).toBe(false);
+    });
+
+    it('should not let forged cf-connecting-ip or true-client-ip headers change the rate-limit key', () => {
+      const headers = { 'x-real-ip': '203.0.113.5', 'user-agent': 'Mozilla/5.0' };
+      const baseline = getClientIPForRateLimit(createMockRequest({ headers }));
+      const forged = getClientIPForRateLimit(
+        createMockRequest({
+          headers: { ...headers, 'cf-connecting-ip': '7.7.7.7', 'true-client-ip': '6.6.6.6' },
+        })
+      );
+
+      expect(forged.key).toBe(baseline.key);
+      expect(forged.key).toBe('203.0.113.5');
+    });
+
+    it('should use x-vercel-forwarded-for when x-real-ip is absent', () => {
+      const req = createMockRequest({
+        headers: {
+          'x-vercel-forwarded-for': '203.0.113.7',
+          'x-forwarded-for': '203.0.113.8',
+        },
+      });
+
+      const result = detectClientIP(req);
+
+      expect(result.ip).toBe('203.0.113.7');
+      expect(result.source).toBe('x-vercel-forwarded-for');
+    });
+
+    it('should use the first x-forwarded-for entry when the other headers are absent', () => {
+      const req = createMockRequest({
+        socket: { remoteAddress: '10.0.0.2' } as any,
+        headers: {
+          'x-forwarded-for': '203.0.113.9, 198.51.100.1',
+        },
+      });
+
+      const result = detectClientIP(req);
+
+      expect(result.ip).toBe('203.0.113.9');
+      expect(result.source).toBe('x-forwarded-for');
+      expect(result.confidence).toBe('low');
+    });
+
+    it('should flag many distinct IPs as suspicious with low confidence', () => {
       const req = createMockRequest({
         socket: { remoteAddress: '192.168.1.1' } as any,
         headers: {
@@ -58,8 +123,26 @@ describe('IP Detection Security', () => {
 
       const result = detectClientIP(req);
 
-      expect(result.confidence).toBe('high'); // cf-connecting-ip gets high confidence even with multiple candidates
+      expect(result.ip).toBe('5.5.5.5');
+      expect(result.source).toBe('x-real-ip');
+      expect(result.confidence).toBe('low');
       expect(result.allCandidates.length).toBeGreaterThan(3);
+    });
+
+    it('should not flag the same client IP repeated across Vercel headers as suspicious', () => {
+      const req = createMockRequest({
+        socket: { remoteAddress: '10.0.0.2' } as any,
+        headers: {
+          'x-real-ip': '203.0.113.5',
+          'x-vercel-forwarded-for': '203.0.113.5',
+          'x-forwarded-for': '203.0.113.5',
+        },
+      });
+
+      const result = detectClientIP(req);
+
+      expect(result.ip).toBe('203.0.113.5');
+      expect(result.confidence).toBe('medium');
     });
 
     it('should handle x-forwarded-for with multiple IPs', () => {
@@ -112,17 +195,16 @@ describe('IP Detection Security', () => {
         headers: {
           'x-forwarded-for': '1.1.1.1',
           'x-real-ip': '2.2.2.2',
-          'cf-connecting-ip': '3.3.3.3',
+          'x-vercel-forwarded-for': '3.3.3.3',
         },
       });
 
       const result = detectClientIP(req, {
-        headerPriority: ['x-real-ip', 'cf-connecting-ip', 'x-forwarded-for']
+        headerPriority: ['x-vercel-forwarded-for', 'x-real-ip', 'x-forwarded-for']
       });
 
-      // CF headers still take priority due to hardcoded trust levels
       expect(result.ip).toBe('3.3.3.3');
-      expect(result.source).toBe('cf-connecting-ip');
+      expect(result.source).toBe('x-vercel-forwarded-for');
     });
   });
 

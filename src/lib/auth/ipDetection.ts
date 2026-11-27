@@ -31,11 +31,13 @@ const DEFAULT_CONFIG: Required<IPDetectionConfig> = {
     '192.168.0.0/16', // Private network
     '127.0.0.1/32',   // Localhost
   ],
+  // The app runs on Vercel, which overwrites these headers with the real client IP.
+  // Headers Vercel passes through unchanged (e.g. cf-connecting-ip, true-client-ip)
+  // are client-controlled and must not be trusted.
   headerPriority: [
-    'cf-connecting-ip',        // Cloudflare (most trustworthy if behind CF)
-    'true-client-ip',          // Cloudflare Enterprise
-    'x-real-ip',              // Nginx proxy_pass
-    'x-forwarded-for',        // Standard proxy header (least trustworthy)
+    'x-real-ip',              // Set by Vercel
+    'x-vercel-forwarded-for', // Set by Vercel
+    'x-forwarded-for',        // Set by Vercel; only the first entry is used
   ],
   strictValidation: true,
 };
@@ -87,7 +89,7 @@ export function detectClientIP(
     candidates.push({ ip: socketIP, source: 'socket.remoteAddress' });
   }
   
-  // 2. Check headers in order of trust
+  // 2. Check headers in priority order
   for (const header of finalConfig.headerPriority) {
     const headerValue = req.headers[header];
     if (headerValue) {
@@ -111,10 +113,7 @@ export function detectClientIP(
   }
   
   // 3. Determine best candidate with confidence level
-  let bestCandidate = candidates[0];
-  let confidence: 'high' | 'medium' | 'low' = 'low';
-  
-  if (!bestCandidate) {
+  if (candidates.length === 0) {
     logger.warn('No IP candidates found in request', {
       headers: Object.keys(req.headers),
       hasSocket: Boolean(socketIP)
@@ -127,36 +126,32 @@ export function detectClientIP(
     };
   }
   
-  // Find the best candidate based on trust level and header priority
-  for (const candidate of candidates) {
-    if (candidate.source === 'cf-connecting-ip' || candidate.source === 'true-client-ip') {
-      bestCandidate = candidate;
-      confidence = 'high';
-      break; // Cloudflare headers are most trustworthy
-    } else if (candidate.source === 'x-real-ip' && confidence !== 'high') {
-      bestCandidate = candidate;
-      confidence = 'medium';
-    } else if (candidate.source === 'socket.remoteAddress' && !isPrivateIP(candidate.ip) && 
-               !['cf-connecting-ip', 'true-client-ip', 'x-real-ip'].some(header => 
-                 candidates.find(c => c.source === header)
-               )) {
-      // Only use socket if no trusted headers are available and socket is public IP
-      bestCandidate = candidate;
-      confidence = 'high';
-    }
-  }
+  // First configured header present wins; for multi-value headers such as
+  // x-forwarded-for this is the first (client) entry.
+  const headerCandidate = finalConfig.headerPriority
+    .map(header => candidates.find(c => c.source === header))
+    .find((candidate): candidate is { ip: string; source: string } => Boolean(candidate));
+  const socketCandidate = candidates.find(c => c.source === 'socket.remoteAddress');
   
-  // Fallback confidence assessment for remaining cases
-  if (confidence === 'low') {
-    if (bestCandidate.source === 'socket.remoteAddress' && !isPrivateIP(bestCandidate.ip)) {
-      confidence = 'medium';
-    } else if (bestCandidate.source === 'socket.remoteAddress' && isPrivateIP(bestCandidate.ip)) {
-      confidence = 'low'; // Private IPs get low confidence
-    } else if (bestCandidate.source === 'x-real-ip') {
-      confidence = 'medium';
-    } else if (bestCandidate.source === 'x-forwarded-for') {
-      confidence = 'low';
-    }
+  let bestCandidate: { ip: string; source: string };
+  let confidence: 'high' | 'medium' | 'low';
+  
+  if (headerCandidate && headerCandidate.source !== 'x-forwarded-for') {
+    // x-real-ip / x-vercel-forwarded-for
+    bestCandidate = headerCandidate;
+    confidence = 'medium';
+  } else if (socketCandidate && !isPrivateIP(socketCandidate.ip)) {
+    // Direct connection from a public address: use the socket
+    bestCandidate = socketCandidate;
+    confidence = 'high';
+  } else if (headerCandidate) {
+    // Only x-forwarded-for is available
+    bestCandidate = headerCandidate;
+    confidence = 'low';
+  } else {
+    // Private socket address without any proxy header
+    bestCandidate = candidates[0];
+    confidence = 'low';
   }
   
   // Reduce confidence for private IPs from high to medium
@@ -169,18 +164,17 @@ export function detectClientIP(
     confidence = 'low';
   }
   
-  // Log suspicious patterns
-  if (candidates.length > 3) {
+  // Log suspicious patterns (the same client IP repeated across headers is expected)
+  const distinctIPCount = new Set(candidates.map(c => c.ip)).size;
+  if (distinctIPCount > 3) {
     logger.warn('Multiple IP candidates detected - possible header injection', {
       candidateCount: candidates.length,
+      distinctIPCount,
       sources: candidates.map(c => c.source),
       selectedIP: bestCandidate.ip,
       selectedSource: bestCandidate.source
     });
-    // Only reduce confidence if not a trusted Cloudflare header
-    if (bestCandidate.source !== 'cf-connecting-ip' && bestCandidate.source !== 'true-client-ip') {
-      confidence = 'low';
-    }
+    confidence = 'low';
   }
   
   logger.info('Client IP detected', {
