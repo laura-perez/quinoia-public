@@ -39,8 +39,8 @@ export default function Formulaire() {
           if (response.ok) {
             const data = await response.json();
 
-            // If user exists and status is NOT trial_available, redirect to login
-            if (data.exists && data.status !== 'trial_available') {
+            // Existing user whose trial is no longer available: redirect to login
+            if (data.requiresLogin) {
               router.push('/login');
               return;
             }
