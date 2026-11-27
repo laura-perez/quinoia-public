@@ -120,10 +120,11 @@ Other commands:
 npm run lint
 npm run build
 
-# Unit tests (no database needed)
-npx vitest run --exclude 'src/tests/integration/**'
+# Unit tests (no database needed; integration tests are skipped)
+npm test
 
-# Integration tests: local Supabase stack, .env.local.test, and a dev server
+# Integration tests: only run when INTEGRATION_TESTS=true (set by the script below).
+# They need a local Supabase stack, .env.local.test, and a dev server
 # started with INTEGRATION_TESTS=true (see src/tests/integration/README.md)
 npx supabase start
 npx cross-env INTEGRATION_TESTS=true npm run dev   # separate terminal
