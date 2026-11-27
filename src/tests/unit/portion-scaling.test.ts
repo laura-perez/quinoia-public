@@ -11,6 +11,8 @@ describe('Portion Scaling', () => {
     id: 'test-recipe-1',
     titleFr: 'Test Recipe',
     servingsBase: 2, // All recipes in DB serve 2 portions by default
+    picture_file: '',
+    prepTimeMinutes: 30,
     ingredients: [
       {
         nom: 'Riz basmati',

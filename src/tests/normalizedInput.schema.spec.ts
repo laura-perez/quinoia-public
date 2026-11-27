@@ -40,8 +40,8 @@ describe("normalizedInputSchema integration", () => {
       normalizedInputSchema.parse(candidate);
       throw new Error("Should have failed");
     } catch (err: any) {
-      const errors = formatZodErrors(err);
-      expect(errors.fieldErrors.email?.[0]).toMatch(/email/i);
+      const { fieldErrors } = formatZodErrors(err) as { fieldErrors: Record<string, string[] | undefined> };
+      expect(fieldErrors.email?.[0]).toMatch(/email/i);
     }
   });
 
@@ -52,8 +52,8 @@ describe("normalizedInputSchema integration", () => {
       normalizedInputSchema.parse(candidate);
       throw new Error("Should have failed");
     } catch (err: any) {
-      const errors = formatZodErrors(err);
-      expect(errors.fieldErrors.numRecipes?.[0]).toMatch(/min|petit/i);
+      const { fieldErrors } = formatZodErrors(err) as { fieldErrors: Record<string, string[] | undefined> };
+      expect(fieldErrors.numRecipes?.[0]).toMatch(/min|petit/i);
     }
   });
 
@@ -64,8 +64,8 @@ describe("normalizedInputSchema integration", () => {
       normalizedInputSchema.parse(candidate);
       throw new Error("Should have failed");
     } catch (err: any) {
-      const errors = formatZodErrors(err);
-      expect(errors.fieldErrors.numRecipes?.[0]).toMatch(/max|grand/i);
+      const { fieldErrors } = formatZodErrors(err) as { fieldErrors: Record<string, string[] | undefined> };
+      expect(fieldErrors.numRecipes?.[0]).toMatch(/max|grand/i);
     }
   });
 

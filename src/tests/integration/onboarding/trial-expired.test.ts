@@ -67,7 +67,7 @@ describe('Onboarding - Trial Expired (trial_used)', () => {
     // ============================================
     const { data: user } = await supabase
       .from('user')
-      .select('status')
+      .select('id, status')
       .eq('email', email)
       .single();
 

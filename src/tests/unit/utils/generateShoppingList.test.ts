@@ -21,6 +21,8 @@ const mockRecipe1: Recipe = {
   id: 'recipe-1',
   titleFr: 'Poulet rôti',
   servingsBase: 2,
+  picture_file: '',
+  prepTimeMinutes: 30,
   ingredients: [
     {
       nom: 'Blanc de poulet',
@@ -50,6 +52,8 @@ const mockRecipe2: Recipe = {
   id: 'recipe-2',
   titleFr: 'Curry de légumes',
   servingsBase: 2,
+  picture_file: '',
+  prepTimeMinutes: 30,
   ingredients: [
     {
       nom: 'Oignon',
@@ -79,6 +83,8 @@ const mockRecipeUnmapped: Recipe = {
   id: 'recipe-3',
   titleFr: 'Recette avec ingrédient non mappé',
   servingsBase: 2,
+  picture_file: '',
+  prepTimeMinutes: 30,
   ingredients: [
     {
       nom: 'Ingredient inconnu',
@@ -91,25 +97,21 @@ const mockRecipeUnmapped: Recipe = {
 
 const mockIngredientsCatalog: Record<string, CanonicalIngredientInfo> = {
   'chicken-breast': {
-    id: 'chicken-breast',
     nameFr: 'Blanc de poulet',
     category: 'Viandes',
     sectionCode: 'viande',
   },
   'basmati-rice': {
-    id: 'basmati-rice',
     nameFr: 'Riz basmati',
     category: 'Féculents',
     sectionCode: 'epicerie',
   },
   onion: {
-    id: 'onion',
     nameFr: 'Oignon',
     category: 'Légumes',
     sectionCode: 'fruits-legumes',
   },
   'coconut-milk': {
-    id: 'coconut-milk',
     nameFr: 'Lait de coco',
     category: 'Produits exotiques',
     sectionCode: 'epicerie',
@@ -240,6 +242,8 @@ describe('generateShoppingList', () => {
       id: 'recipe-zero',
       titleFr: 'Test',
       servingsBase: 2,
+      picture_file: '',
+      prepTimeMinutes: 30,
       ingredients: [
         {
           nom: 'Sel',
@@ -293,6 +297,8 @@ describe('generateShoppingList', () => {
       id: 'recipe-multi',
       titleFr: 'Test multi',
       servingsBase: 2,
+      picture_file: '',
+      prepTimeMinutes: 30,
       ingredients: [
         { nom: 'Tomate', quantite: 100, unite: 'g', canonicalId: 'tomato', canonicalName: 'Tomate' },
         { nom: 'Aubergine', quantite: 150, unite: 'g', canonicalId: 'eggplant', canonicalName: 'Aubergine' },
