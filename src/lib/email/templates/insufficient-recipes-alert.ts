@@ -1,6 +1,6 @@
 /**
- * Template Email - Alerte Catalogue Insuffisant
- * Email d'alerte pour Laura quand un profil utilisateur n'a pas assez de recettes
+ * Email template - insufficient recipe catalogue alert
+ * Alert sent to the admin when a user profile does not match enough recipes
  */
 
 import type { SelectionContext } from '@/types/recipes';

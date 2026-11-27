@@ -472,7 +472,11 @@ export default function MenuPage({resultBundle, error }: MenuPageProps) {
             <div className="max-w-2xl mx-auto lg:max-w-4xl">
               <div className="text-left space-y-2">
                 <p className="font-medium leading-relaxed" style={{ color: '#414535', fontSize: '24px' }}>
-                  <span>{resultBundle?.userProfile?.firstName || 'Laura'},</span> tu viens de déverrouiller ta semaine sans prise de tête.
+                  {resultBundle?.userProfile?.firstName ? (
+                    <><span>{resultBundle.userProfile.firstName},</span> tu viens de déverrouiller ta semaine sans prise de tête.</>
+                  ) : (
+                    <>Tu viens de déverrouiller ta semaine sans prise de tête.</>
+                  )}
                 </p>
                 <p className="text-[#8A8A8A] mt-1">
                 <span className="font-semibold text-[#F4C95D]">{resultBundle.meta.numRecipes} recettes</span>
