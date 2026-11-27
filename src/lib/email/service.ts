@@ -24,11 +24,12 @@ export interface SendInsufficientRecipesAlertParams {
   requestedCount: number;
   userEmail: string;
   submissionId: string;
-  adminEmail?: string; // Email de Laura, optionnel (peut être en env var)
+  adminEmail?: string; // Admin recipient; optional, falls back to ADMIN_EMAIL
 }
 
 /**
- * Send insufficient recipes alert email to admin (Laura)
+ * Send insufficient recipes alert email to the admin.
+ * Skipped (with a logged warning) when no admin email is configured.
  */
 export async function sendInsufficientRecipesAlert({
   context,
@@ -36,8 +37,15 @@ export async function sendInsufficientRecipesAlert({
   requestedCount,
   userEmail,
   submissionId,
-  adminEmail = env.ADMIN_EMAIL || 'laura@quinoia.fr' // Use env var or fallback
+  adminEmail = env.ADMIN_EMAIL
 }: SendInsufficientRecipesAlertParams) {
+  if (!adminEmail) {
+    logger.warn('ADMIN_EMAIL is not configured: insufficient recipes alert skipped', {
+      submissionId
+    });
+    return { success: false, error: 'ADMIN_EMAIL not configured' };
+  }
+
   logger.info('Sending insufficient recipes alert', {
     userId: context.userId,
     availableCount,
